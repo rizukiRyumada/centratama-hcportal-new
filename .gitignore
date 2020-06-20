@@ -23,6 +23,7 @@ application/logs/*
 /vendor/
 
 assets/vendor/node_modules/*
+/var/www/centratama-survey/application/config/config.php
 
 ### CodeIgniter Patch ###
 
