@@ -1,0 +1,18 @@
+{
+  "name": "centratama_survey",
+  "version": "0.0.1",
+  "description": "survey app for hcportal centratama",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "survey",
+    "centratama"
+  ],
+  "author": "Rizuki Ryumada",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "admin-lte": "^3.0.5"
+  }
+}
