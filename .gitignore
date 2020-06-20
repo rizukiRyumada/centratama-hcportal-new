@@ -23,7 +23,7 @@ application/logs/*
 /vendor/
 
 assets/vendor/node_modules/*
-!application/config/config.php
+# !application/config/config.php
 
 ### CodeIgniter Patch ###
 
