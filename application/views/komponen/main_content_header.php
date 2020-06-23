@@ -7,10 +7,16 @@
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Starter Page</li>
+                        <?php $jml_brdcrm = count($breadcrumb); ?>
+                        <?php foreach($breadcrumb as $key => $value): ?>
+                            <?php if($key+1 == $jml_brdcrm): ?>
+                                <li class="breadcrumb-item active"><?= $value['judul']; ?></li>
+                            <?php else: ?>
+                                <li class="breadcrumb-item"><a href="<?= $value['url']; ?>"><?= $value['judul']; ?></a></li>
+                            <?php endif; ?>
+                        <?php endforeach;  ?>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
-</div>
+</div><!-- content header -->

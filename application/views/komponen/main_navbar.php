@@ -60,20 +60,21 @@
                 <i class="fas fa-cogs"></i>
             </a>
         </li>
-        <!-- Sidebar user panel (optional) -->
+        <!-- user image (optional) -->
         <li class="nav-item user-panel d-flex mt-1">
-            <div class="image">
+            <a class="nav-link image p-0">
                 <!-- <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image"> -->
                 <i class="fa fa-user-circle fa-2x"></i>
-            </div>
+            </a>
         </li>
+        <!-- user menu -->
         <li class="nav-item dropdown">
-            <a id="userDropDown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="nav-link dropdown-toggle">Karyawan</a>
+            <a id="userDropDown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="nav-link dropdown-toggle"><?= $user['emp_name'] ?></a>
             <ul aria-labelledby="userDropDown" class="dropdown-menu border-0 shadow" style="left: 0px; right: inherit;">
                 <li><a href="#" class="dropdown-item"><i class="fa fa-user"></i> <span class="ml-1">My Profile</span></a></li>
                 <li class="dropdown-divider"></li>
-                <li><a href="#" class="dropdown-item text-danger"><i class="fa fa-sign-out-alt"></i> <span class="ml-1">Logout</span></a></li>
+                <li><a href="<?= base_url('login/logout') ?>" class="dropdown-item text-danger"><i class="fa fa-sign-out-alt"></i> <span class="ml-1">Logout</span></a></li>
             </ul>
         </li>
     </ul>
-</nav>
+</nav><!-- /main navbar -->

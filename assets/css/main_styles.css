@@ -1,15 +1,59 @@
 /* -------------------------------------------------------------------------- */
-/*                                navbar styles                               */
+/*                              custom core style                             */
 /* -------------------------------------------------------------------------- */
-/* user panel */
-a#userDropDown{
-    color: rgba(255,255,255,.75) !important;
+
+/* ------------------------------ button styles ----------------------------- */
+.btn-primary{
+    border-radius: 2em !important;
+    background-color: #0072C6 !important;
+    border-color: #0072C6 !important;
 }
-nav.main-header.navbar.navbar-expand.navbar-dark.navbar-primary ul.navbar-nav.ml-auto li.nav-item.user-panel.d-flex.mt-1 div.image i{
-    color: rgba(255,255,255,.75) !important;
-}
-/* user panel:hover */
-nav.main-header.navbar.navbar-expand.navbar-dark.navbar-primary ul.navbar-nav.ml-auto li.nav-item.user-panel.d-flex.mt-1 div.info a:hover{
-    color: #ffffff;
+.btn-primary:hover{
+    border-radius: 2em !important;
+    background-color: rgb(0, 82, 141) !important;
+    border-color: rgb(0, 82, 141) !important;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                              responsive style                              */
+/* -------------------------------------------------------------------------- */
+.responsive-image{
+    width: 100%;
+    height: auto;
+}
+
+/* ----------------------- Floating Contact Us button ----------------------- */
+.fl-fl{
+    background: #06D755;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    padding: 4px;
+    width: 170px;
+    position: fixed;
+    right: -110px;
+    z-index: 1000;
+    font: normal normal 10px Arial;
+    -webkit-transition: all .25s ease;
+    -moz-transition: all .25s ease;
+    -ms-transition: all .25s ease;
+    -o-transition: all .25s ease;
+    transition: all .25s ease;
+    border-radius: 30px 0 0 30px;
+    opacity: 0.65;
+}
+.fl-fl:hover {
+    right: 0;
+    opacity: 1;
+}
+.fl-fl a {
+    font-size: 12px;
+    color: #fff !important;
+    text-decoration: none;
+    text-align: center;
+    line-height: 43px !important;
+    vertical-align: top !important;
+}
+.float-wa {
+    height: 55px;
+    top: 115px;
+}

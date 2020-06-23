@@ -22,37 +22,59 @@
         <nav class="mt-3">
             <ul class="nav nav-pills nav-sidebar flex-column nav-flat" data-widget="treeview" role="menu">
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
-                <li class="nav-item has-treeview menu-open">
-                    <a href="#" class="nav-link active">
-                        <i class="nav-icon fas fa-file-alt"></i>
-                        <p>
-                            Survey
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
+                <?php foreach($sidebar['menu'] as $key => $value): ?>
+                    <?php if($this->_general_m->getOnce('id_menu', 'survey_user_menu_sub', array('id_menu' => $value['id_menu']))): ?>
+                        <li class="nav-item has-treeview menu-open">
+                            <a href="<?php base_url($value['url']); ?>" class="nav-link <?php 
+                                if($this->uri->segment(1) == $value['url']){
+                                    echo "active";
+                                }
+                            ?>">
+                                <i class="nav-icon <?= $value['icon']; ?>"></i>
+                                <p>
+                                    <?= $value['title']; ?>
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>    
+                            <ul class="nav nav-treeview">
+                                <?php foreach($sidebar['submenu'] as $v): ?>
+                                    <?php if($v['id_menu'] == $value['id_menu']): ?>
+                                        <li class="nav-item">
+                                            <a href="<?= base_url($v['url']); ?>" class="nav-link <?php 
+                                            $thisUrlSub = $this->uri->segment(1).'/'.$this->uri->segment(2);
+                                            
+                                            if($thisUrlSub == $v['url']){
+                                                echo "active";
+                                            } elseif($thisUrlSub == $v['url'].'/'){
+                                                echo "active";
+                                            } else {
+                                                //nothing
+                                            } ?>">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p><?= $v['title']; ?></p>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
+                    <?php else: ?>
                         <li class="nav-item">
-                            <a href="#" class="nav-link active">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Service Excellence</p>
+                            <a href="<?= base_url($value['url']); ?>" class="nav-link  <?php 
+                                if($this->uri->segment(1) == $value['url']){
+                                    echo "active";
+                                }
+                            ?>">
+                                <i class="nav-icon <?= $value['icon']; ?>"></i>
+                                <p>
+                                    <?= $value['title']; ?>
+                                </p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Service Engagement</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>360 Review</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
                 
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
@@ -60,8 +82,8 @@
                             <span class="right badge badge-danger">New</span>
                         </p>
                     </a>
-                </li>
+                </li> -->
             </ul>
         </nav><!-- /.sidebar-menu -->
     </div><!-- /.sidebar -->
-</aside>
+</aside><!-- /main sidebar -->

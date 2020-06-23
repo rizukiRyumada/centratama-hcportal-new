@@ -31,6 +31,7 @@
     <style type="text/css" id="light-mode-custom-style"></style>
 
 </head>
+
 <body class="sidebar-mini layout-fixed layout-navbar-fixed" style="height: auto;">
     
     <!-- website wrapper -->
@@ -100,11 +101,12 @@
                 </li>
                 <!-- Sidebar user panel (optional) -->
                 <li class="nav-item user-panel d-flex mt-1">
-                    <div class="image">
+                    <a class="nav-link image p-0">
                         <!-- <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image"> -->
                         <i class="fa fa-user-circle fa-2x"></i>
-                    </div>
+                    </a>
                 </li>
+                
                 <li class="nav-item dropdown">
                     <a id="userDropDown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="nav-link dropdown-toggle">Karyawan</a>
                     <ul aria-labelledby="userDropDown" class="dropdown-menu border-0 shadow" style="left: 0px; right: inherit;">
@@ -113,8 +115,10 @@
                         <li><a href="#" class="dropdown-item text-danger"><i class="fa fa-sign-out-alt"></i> <span class="ml-1">Logout</span></a></li>
                     </ul>
                 </li>
+
+                
             </ul>
-        </nav>
+        </nav><!-- /main navbar -->
 
         <!-- main sidebar -->
         <aside class="main-sidebar sidebar-light-primary elevation-4">
@@ -437,102 +441,101 @@
                         </div>
                     </form>
                         
-                        <!-- content -->
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
-                                        
-                                        <p class="card-text">
-                                            Some quick example text to build on the card title and make up the bulk of the card's
-                                            content.
-                                        </p>
-                                        
-                                        <a href="#" class="card-link">Card link</a>
-                                        <a href="#" class="card-link">Another link</a>
-                                    </div>
-                                </div>
-                                
-                                <div class="card card-primary card-outline">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card title</h5>
-                                        
-                                        <p class="card-text">
-                                            Some quick example text to build on the card title and make up the bulk of the card's
-                                            content.
-                                        </p>
-                                        <a href="#" class="card-link">Card link</a>
-                                        <a href="#" class="card-link">Another link</a>
-                                    </div>
-                                </div><!-- /.card -->
-                            </div>
-                            <!-- /.col-md-6 -->
-                            <div class="col-lg-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="m-0">Featured</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title">Special title treatment</h6>
-                                        
-                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                                    </div>
-                                </div>
-                                
-                                <div class="card card-primary card-outline">
-                                    <div class="card-header">
-                                        <h5 class="m-0">Featured</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <h6 class="card-title">Special title treatment</h6>
-                                        
-                                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                                    </div>
+                    <!-- content -->
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the card's
+                                        content.
+                                    </p>
+                                    
+                                    <a href="#" class="card-link">Card link</a>
+                                    <a href="#" class="card-link">Another link</a>
                                 </div>
                             </div>
-                            <!-- /.col-md-6 -->
+                            
+                            <div class="card card-primary card-outline">
+                                <div class="card-body">
+                                    <h5 class="card-title">Card title</h5>
+                                    
+                                    <p class="card-text">
+                                        Some quick example text to build on the card title and make up the bulk of the card's
+                                        content.
+                                    </p>
+                                    <a href="#" class="card-link">Card link</a>
+                                    <a href="#" class="card-link">Another link</a>
+                                </div>
+                            </div><!-- /.card -->
                         </div>
-                        <!-- /.row -->
-                    </div><!-- /.container-fluid -->
-                </div>
-            </div>
-            
-            <!-- footer -->
-            <footer class="main-footer text-sm text-center">
-                <!-- To the right -->
-                <!-- <div class="float-right d-none d-sm-inline">
-                    Anything you want
-                </div> -->
-                <!-- Default to the left -->
-                <strong>Copyright © 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
-            </footer>
-        </div>
-        
-        <!-- script file -->
-        <!-- jquery -->
-        <script src="<?= base_url('/assets/vendor/node_modules/jquery/dist/jquery.min.js') ?>"></script>
-        <!-- bootstrap -->
-        <script src="<?= base_url('/assets/vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'); ?>"></script>
-        <!-- adminlte -->
-        <script src="<?= base_url('/assets/vendor/node_modules/admin-lte/dist/js/adminlte.min.js') ?>"></script>
-        <!-- adminlte for demo -->
-        <script src="<?= base_url('/assets/vendor/node_modules/admin-lte/dist/js/demo.js') ?>"></script>
-        <script src="<?= base_url('/assets/vendor/node_modules/toastr/build/toastr.min.js') ?>"></script>
-        <script src="<?= base_url('/assets/vendor/node_modules/overlayscrollbars/js/jquery.overlayScrollbars.min.js'); ?>"></script>
+                        <!-- /.col-md-6 -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="m-0">Featured</h5>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">Special title treatment</h6>
+                                    
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                </div>
+                            </div>
+                            
+                            <div class="card card-primary card-outline">
+                                <div class="card-header">
+                                    <h5 class="m-0">Featured</h5>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">Special title treatment</h6>
+                                    
+                                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                </div>
+                            </div>
+                        </div><!-- /.col-md-6 -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div><!-- /content -->
+        </div><!-- /content wrapper -->
 
-        <!-- general script -->
-        <script>
-            $(document).ready(function(){
-                // $("body").overlayScrollbars({ 
-                //     // className : 'os-theme-dark'
-                // }); // set overlay scrollbar to body tag html
-                $(".sidebar").overlayScrollbars({
-                    className : "os-theme-dark"
-                }); // set overlay sidebar scrollbar color to dark
-            });
-        </script>
-    </body>
-    </html>
+        <!-- main footer -->
+        <footer class="main-footer text-sm text-center">
+            <!-- To the right -->
+            <!-- <div class="float-right d-none d-sm-inline">
+                Anything you want
+            </div> -->
+            <!-- Default to the left -->
+            <strong>Copyright © 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+        </footer>
+    </div><!-- /page wrapper -->
+        
+    <!-- script file -->
+    <!-- jquery -->
+    <script src="<?= base_url('/assets/vendor/node_modules/jquery/dist/jquery.min.js') ?>"></script>
+    <!-- bootstrap -->
+    <script src="<?= base_url('/assets/vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'); ?>"></script>
+    <!-- adminlte -->
+    <script src="<?= base_url('/assets/vendor/node_modules/admin-lte/dist/js/adminlte.min.js') ?>"></script>
+    <!-- adminlte for demo -->
+    <script src="<?= base_url('/assets/vendor/node_modules/admin-lte/dist/js/demo.js') ?>"></script>
+    <script src="<?= base_url('/assets/vendor/node_modules/toastr/build/toastr.min.js') ?>"></script>
+    <script src="<?= base_url('/assets/vendor/node_modules/overlayscrollbars/js/jquery.overlayScrollbars.min.js'); ?>"></script>
+
+    <!-- general script -->
+    <script>
+        $(document).ready(function(){
+            // $("body").overlayScrollbars({ 
+            //     // className : 'os-theme-dark'
+            // }); // set overlay scrollbar to body tag html
+            $(".sidebar").overlayScrollbars({
+                className : "os-theme-dark"
+            }); // set overlay sidebar scrollbar color to dark
+        });
+    </script>
+</body>
+
+</html>
