@@ -24,7 +24,11 @@
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
                 <?php foreach($sidebar['menu'] as $key => $value): ?>
                     <?php if($this->_general_m->getOnce('id_menu', 'survey_user_menu_sub', array('id_menu' => $value['id_menu']))): ?>
-                        <li class="nav-item has-treeview menu-open">
+                        <li class="nav-item has-treeview <?php 
+                                if($this->uri->segment(1) == $value['url']){
+                                    echo("menu-open");
+                                }
+                            ?>">
                             <a href="<?php base_url($value['url']); ?>" class="nav-link <?php 
                                 if($this->uri->segment(1) == $value['url']){
                                     echo "active";

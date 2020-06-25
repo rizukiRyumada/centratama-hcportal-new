@@ -7,6 +7,8 @@
 <body class="layout-top-nav m-0" >
     <!-- load preloader -->
     <?php $this->load->view('komponen/preloader_v'); ?>
+    <!-- floating contact -->
+    <?php $this->load->view('komponen/floating_contact') ?>
     <!-- load view -->
     <?php $this->load->view($load_view);?>
 

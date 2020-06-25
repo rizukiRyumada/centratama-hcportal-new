@@ -16,7 +16,7 @@ class Login extends CI_Controller {
         if ($this->session->userdata('nik')) { // cek apa sudah login
             if(empty($this->session->userdata('token'))){ // cek apa ada token
                 // TODO tambah fitur buat ganti arah redirect sehabis login
-                redirect('survey', 'refresh'); // target to home job profile
+                redirect('dashboard', 'refresh'); // target to home job profile
             } else {
                 //targetkan sesuai token
                 header('location: '. base_url('direct/arahkan'));
@@ -26,7 +26,7 @@ class Login extends CI_Controller {
         $this->form_validation->set_rules('password', 'Password', 'trim|required');
         if ($this->form_validation->run() == false){
             // prepare data
-            $data['page_title'] = "Survey";
+            $data['page_title'] = "HC Portal";
             $data['load_view'] = 'login/index_login_v';
             $this->load->view('login/login_v', $data);
         } else {
@@ -59,7 +59,7 @@ class Login extends CI_Controller {
 
                     if(empty($this->session->userdata('token'))){ // cek apa ada token
                         // TODO tambahkan fitur buat mengganti arah redirect sehabis login
-					    redirect('survey', 'refresh'); // target to home job profile
+					    redirect('dashboard', 'refresh'); // target to home job profile
                     } else {
                         //targetkan sesuai token
                         header('location: '. base_url('direct/arahkan'));

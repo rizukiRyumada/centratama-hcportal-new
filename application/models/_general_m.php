@@ -64,6 +64,17 @@ class _general_m extends CI_Model {
         $this->db->join($joinTable, $joinIndex, 'left');
         return $this->db->get_where($table, $where)->result_array();
     }
+    
+    /**
+     * getRow
+     *
+     * @param  mixed $table
+     * @param  mixed $where
+     * @return void
+     */
+    public function getRow($table, $where){
+        return $this->db->get_where($table, $where)->num_rows();
+    }
 
     // INSERT INTO    
     /**
@@ -75,6 +86,19 @@ class _general_m extends CI_Model {
      */
     public function insert($table, $data){
         $this->db->insert($table, $data);
+    }
+    
+    /**
+     * insertAll
+     *
+     * @param  mixed $table
+     * @param  mixed $data
+     * @return void
+     */
+    public function insertAll($table, $data){
+        foreach($data as $v){
+            $this->db->insert($table, $v);
+        }
     }
 
     // UPDATE    

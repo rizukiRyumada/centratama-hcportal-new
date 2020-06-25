@@ -44,13 +44,13 @@
 
     <!-- main script file -->
     <?php $this->load->view('komponen/main_script'); ?>
-    <!-- load preloader -->
-    <?php $this->load->view('komponen/preloader_script'); ?>
     <!-- load other custom script -->
     <?php if(!empty($custom_script)): ?>
         <?php foreach($custom_script as $v): ?>
             <?php $this->load->view('komponen/'.$v); ?>
         <?php endforeach; ?>
     <?php endif; ?>
+    <!-- load preloader -->
+    <?php $this->load->view('komponen/preloader_script'); ?>
 </body>
 </html>

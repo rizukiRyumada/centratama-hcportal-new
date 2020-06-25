@@ -2,14 +2,21 @@
 /*                              custom core style                             */
 /* -------------------------------------------------------------------------- */
 
+/* -------------------------------- HTML tag -------------------------------- */
+
+html {
+    scroll-behavior: smooth;
+}
+
 /* ------------------------------ button styles ----------------------------- */
-.btn-primary{
+.btn{
     border-radius: 2em !important;
+}
+.btn-primary{
     background-color: #0072C6 !important;
     border-color: #0072C6 !important;
 }
 .btn-primary:hover{
-    border-radius: 2em !important;
     background-color: rgb(0, 82, 141) !important;
     border-color: rgb(0, 82, 141) !important;
 }
@@ -57,3 +64,84 @@
     height: 55px;
     top: 115px;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                           Responsive Styles on screen                      */
+/* -------------------------------------------------------------------------- */
+
+/* ----------------------------- MIN WIDTH STYLE ---------------------------- */
+/* Extra small devices (portrait phones, less than 576px) */
+/* No media query for `xs` since this is the default in Bootstrap */
+/* Small devices (landscape phones, 320px and up) */
+@media (min-width: 320px) {
+    .text-responsive{
+        font-size: 0.65rem;
+    }
+    .text-index-responsive{
+        font-size: 0.65rem;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+    .text-responsive{
+        font-size: 0.75rem;
+    }
+    .text-index-responsive{
+        font-size: 0.65rem;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+    .text-responsive{
+        font-size: 0.85rem;
+    }
+    .text-index-responsive{
+        font-size: 0.67rem;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+    .text-responsive{
+        font-size: 0.85rem;
+    }
+    .text-index-responsive{
+        font-size: 0.67rem;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+    .text-responsive{
+        font-size: 0.92rem;
+    }
+    .text-index-responsive{
+        font-size: 0.92rem;
+    }
+}
+
+/* ----------------------------- MAX WIDTH STYLE ---------------------------- */
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) { 
+    
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) { 
+    
+}
+
+/* Medium devices (tablets, less than 992px) */
+@media (max-width: 991.98px) { 
+
+}
+
+/* Large devices (desktops, less than 1200px) */
+@media (max-width: 1199.98px) { 
+    
+}
+
+/* Extra large devices (large desktops) */
+/* No media query since the extra-large breakpoint has no upper bound on its width */
