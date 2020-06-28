@@ -15,10 +15,20 @@ html {
 .btn-primary{
     background-color: #0072C6 !important;
     border-color: #0072C6 !important;
+    transition: 0.25s;
 }
 .btn-primary:hover{
     background-color: rgb(0, 82, 141) !important;
     border-color: rgb(0, 82, 141) !important;
+}
+
+/* custom color and hover */
+.link-primary{
+    color: #0072C6 !important;
+    transition: 0.25s;
+}
+.link-primary:hover{
+    color: rgb(0, 82, 141) !important;
 }
 
 /* -------------------------------------------------------------------------- */

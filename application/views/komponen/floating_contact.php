@@ -15,7 +15,7 @@
         <div class="col-8">
             <div class="container d-flex h-100 m-0 p-0">
                 <div class="row justify-content-center align-self-center p-0 m-0">
-                    <a href="https://wa.me/6281384740074" target="_blank" >HC Care</a>
+                    <a href="https://wa.me/6281384740074/?text=*%5BHC%20Portal%5D*" target="_blank" >HC Care</a>
                 </div>
             </div>
         </div>

@@ -14,6 +14,11 @@ function is_logged_in(){
     
     //cek apa dia sudah login
     if(!$CI->session->userdata('nik')){
+        // buat nampilin pesan perintah login
+        $CI->session->set_flashdata('message', '<div class="alert alert-warning" role="alert">
+                    Please Login to Continue. </div>');
+        $CI->session->set_userdata(array('error' => 1));
+        
         // arahkan kembali ke base_url
         redirect('login','refresh');
     } else {

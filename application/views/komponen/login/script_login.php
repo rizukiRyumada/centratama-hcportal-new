@@ -41,7 +41,7 @@
                     minlength: "Your NIK must be at least 8 characters long"
                 },
                 password: {
-                    required: "Please provide a password",
+                    required: "Please enter your password",
                     minlength: "Your password must be at least 8 characters long"
                 }
             },

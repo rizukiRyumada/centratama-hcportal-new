@@ -17,7 +17,7 @@
             <div class="icon">
                 <i class="fa fa-file-alt"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="<?= base_url('survey/excellence'); ?>" class="small-box-footer">
                 Let's fill the survey <i class="fas fa-arrow-circle-right"></i>
             </a>
         </div><!-- /small card -->
@@ -38,7 +38,7 @@
             <div class="icon">
                 <i class="fa fa-file-alt"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="<?= base_url('survey/engagement'); ?>" class="small-box-footer">
                 Let's fill the survey <i class="fas fa-arrow-circle-right"></i>
             </a>
         </div><!-- /small card -->

@@ -1,3 +1,23 @@
+/* ---------------------------- f360 index styles --------------------------- */
+table.table.table-hover thead tr th.th-f360-wider{
+    width: 27.5%
+}
+table.table.table-hover thead tr th.th-f360{
+    width: 20.5%
+}
+table.table.table-hover thead tr th.th-f360-btn{
+    width: 5%;
+}
+table.table.table-hover thead tr th.th-f360-80{
+    width: 80%;
+}
+.f360-desktop-wrapper{
+    display: block;
+}
+.f360-mobile-wrapper{
+    display: none;
+}
+
 /* row survey */
 .row-survey-striped{
     background-color: #eee;
@@ -13,6 +33,13 @@
 @media screen and (max-width: 1080px) {
     .form-survey{
         font-size: 0.90em;
+    }
+
+    .f360-desktop-wrapper{
+        display: none;
+    }
+    .f360-mobile-wrapper{
+        display: block;
     }
 
     /* .col-6.departemen-name.d-flex.align-items-center{

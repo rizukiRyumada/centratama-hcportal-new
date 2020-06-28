@@ -1,7 +1,7 @@
 <!-- main sidebar -->
 <aside class="main-sidebar sidebar-light-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?= base_url('survey'); ?>" class="brand-link">
+    <a href="<?= base_url('dashboard'); ?>" class="brand-link">
         <img src="<?= base_url('assets'); ?>/img/logo3.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8" width="70px">
         <span class="brand-text font-weight-light"><img src="<?= base_url('assets'); ?>/img/logo2.png" alt="" width="120px"></span>
     </a>

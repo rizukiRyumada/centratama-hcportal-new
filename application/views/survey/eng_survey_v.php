@@ -86,7 +86,7 @@
                                 }
                             ?>">
                             <div class="col-1"><p class="card-text text-center text-index-responsive"><?= $x.'.'; ?></p></div>
-                            <div class="col-6 text-responsive"><?= $v['pertanyaan']; ?></div>
+                            <div class="col text-responsive"><?= $v['pertanyaan']; ?></div>
                             <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center"><input class="form-check-input" type="radio" name="<?= $v['id']; ?>" value="1" required></div></div>
                             <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center"><input class="form-check-input" type="radio" name="<?= $v['id']; ?>" value="2" required></div></div>
                             <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center"><input class="form-check-input" type="radio" name="<?= $v['id']; ?>" value="3" required></div></div>
