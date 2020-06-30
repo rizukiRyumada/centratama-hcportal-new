@@ -3,6 +3,9 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Survey extends CI_Controller {
+    protected $title_excellence = 'Service Excellence';
+    protected $title_engagement = 'Employee Engagement';
+    protected $title_f360 = '360° Feedback';
     
     public function __construct(){
         // show_error($message, $status_code, $heading = 'An Error Was Encountered')
@@ -14,18 +17,56 @@ class Survey extends CI_Controller {
         is_logged_in(); //Cek Login
         date_default_timezone_set('Asia/Jakarta'); // set timezone
     }
-    
 
-    // public function index(){
+    public function index(){
+        // cek apa survey excellence sudah diisi
+        if($this->_general_m->getRow('survey_exc_hasil', array('nik' => $this->session->userdata('nik'))) < 1){
+            //nothing
+        } else {
+            $data['survey_status']['exc'] = 'closed';
+        }
+        // cek apa survey engagement sudah diisi
+        if($this->_general_m->getRow('survey_eng_hasil', array('nik' => $this->session->userdata('nik'))) < 1){
+            // nothing
+        } else {
+            $data['survey_status']['eng'] = 'closed';
+        }
+
+        // cek apa survey 360 sudah diisi atau dia tidak memiliki akses
+        $data_employe = $this->_general_m->getJoin2tables(
+            'position.hirarki_org, position.dept_id, position.div_id, position.id_atasan1', 
+            'employe', 
+            'position', 
+            'position.id = employe.position_id', 
+            array('nik' => $this->session->userdata('nik'))
+        )[0];
+        // cek hirarki apa dia N-1, N-2, atau N-3
+        if($data_employe['hirarki_org'] == 'N-1' || $data_employe['hirarki_org'] == 'N-2' || $data_employe['hirarki_org'] == 'N-3') {
+            $data_survey = $this->f360getData($data_employe); // ambil data survey
+            $data_survey_complete_f360 = $this->f360counterStatusOF($data_survey); // ambil data counter survey OF
+            // cek jika antara counter survey dan counter complete sama
+            if($data_survey_complete_f360['counter_survey_f360'] == $data_survey_complete_f360['counter_complete_f360']){
+                $data['survey_status']['f360'] = "closed";
+            }
+        } else { // jika dia bukan dari N-1, N-2, atau N-3
+            $data['survey_status']['f360'] = "closed";
+        }
+        // survey title
+        $data['survey_title'] = array(
+            'excellence' => $this->title_excellence,
+            'engagement' => $this->title_engagement,
+            'f360' => $this->title_f360
+        );
+
         // main data
-        // $data['sidebar'] = getMenu(); // ambil menu
-        // $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
-        // $data['user'] = getDetailUser(); //ambil informasi user
-        // $data['page_title'] = "Survey";
-        // $data['load_view'] = 'survey/exc_survey_v';
+        $data['sidebar'] = getMenu(); // ambil menu
+        $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+        $data['user'] = getDetailUser(); //ambil informasi user
+        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+        $data['load_view'] = 'survey/survey_v';
         
-        // $this->load->view('main_v', $data);
-    // }
+        $this->load->view('main_v', $data);
+    }
 
     /* -------------------------------------------------------------------------- */
     /*                          Service Excellence Survey                         */
@@ -36,22 +77,22 @@ class Survey extends CI_Controller {
             //ambil departemen yang dinilai
             $departemen = $this->_general_m->getAll('*', 'survey_exc_departemen', array());
 
-            // FIXME ambil id departemen
-            $my_departemen = $this->_general_m->getJoin2tables('nama_departemen', 'position', 'departemen', 'position.dept_id = departemen.id', 'position.id='.$this->session->userdata('position_id'));
+            //  ambil id departemen
+            $my_departemen = $this->_general_m->getJoin2tables('nama_departemen, departemen.id', 'position', 'departemen', 'position.dept_id = departemen.id', 'position.id='.$this->session->userdata('position_id'))[0];
 
-            // FIXME samain id departemen dan hapus yang sama
+            // samain id departemen dan hapus yang sama
             // hapus departemen kalo dia itu berada di departemen itu
             $x = 0; // prepare variable
             foreach($departemen as $dept){
-                if ($my_departemen[0]['nama_departemen'] != $dept['nama']){
+                if ($my_departemen['nama_departemen'] != $dept['nama']){
                     $data['departemen'][$x] = $dept;
                     $x++;
                 }
             }
-
+            
             // ambil data survey
             $data['survey1'] = $this->_general_m->getAll('*', 'survey_exc_pertanyaan', array('id_tipepertanyaan' => 'A'));
-            $data['survey2'] = $this->_general_m->getAll('*', 'survey_exc_pertanyaan', array('id_tipepertanyaan' => 'B'));
+            $data['survey2'] = $this->_general_m->getAll('*', 'survey_exc_pertanyaan', 'id_tipepertanyaan = "B" AND id_departemen != '.$my_departemen['id']);
 
             // ambil informasi data departemen
             foreach($data['survey2'] as $k => $v){
@@ -72,7 +113,7 @@ class Survey extends CI_Controller {
         $data['sidebar'] = getMenu(); // ambil menu
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->uri_string()))['title'];;
+        $data['page_title'] = $this->title_excellence;
         $data['load_view'] = $load_view;
         $data['custom_styles'] = array('survey_styles');
         $data['custom_script'] = array('survey/script_survey', 'survey/script_exc_survey');
@@ -147,7 +188,7 @@ class Survey extends CI_Controller {
         //ubah is_done karyawan kalau dia sudah selesai mengisi
         // $this->_general_m->updateOnce('employe', array('nik' => $nik) , array('is_done' => 1));
         
-        header('location: ' . base_url('survey/excellence'));
+        header('location: ' . base_url('survey'));
     }
 
     /* -------------------------------------------------------------------------- */
@@ -172,7 +213,8 @@ class Survey extends CI_Controller {
         $data['sidebar'] = getMenu(); // ambil menu
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->uri_string()))['title'];;
+        // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->uri_string()))['title'];;
+        $data['page_title'] = $this->title_engagement;
         $data['load_view'] = $load_view;
         $data['custom_styles'] = array('survey_styles');
         $data['custom_script'] = array('survey/script_survey', 'survey/script_eng_survey');
@@ -223,11 +265,11 @@ class Survey extends CI_Controller {
         // masukkan data ke database
         $this->_general_m->insertAll('survey_eng_hasil', $jawaban_survey);
 
-        header('location: ' . base_url('survey/engagement'));
+        header('location: ' . base_url('survey'));
     }
 
     /* -------------------------------------------------------------------------- */
-    /*                              Feedback 360 Survey                             */
+    /*                              Feedback 360 Survey                           */
     /* -------------------------------------------------------------------------- */
     public function feedback360(){ // Feedback 360 main function
         // ambil nik
@@ -240,85 +282,27 @@ class Survey extends CI_Controller {
         // N-1 menilai teman sebaya N-1, N-1 di div lain max 3
 
         $data_employe = $this->_general_m->getJoin2tables(
-            'position.hirarki_org, position.dept_id, position.div_id', 
+            'position.hirarki_org, position.dept_id, position.div_id, position.id_atasan1', 
             'employe', 
             'position', 
             'position.id = employe.position_id', 
             array('nik' => $this->session->userdata('nik'))
         )[0];
+        // NOW
 
-        if($data_employe['hirarki_org'] == 'N-1') {
-            //ambil data teman sebaya di divisi dan deptnya
-            $data_peers = $this->f360getEmployeDetail(
-                'hirarki_org = "N-1"'.
-                ' AND div_id = "'.$data_employe['div_id'].
-                '" AND dept_id = "'.$data_employe['dept_id'].
-                '" AND nik != "'.$this->session->userdata('nik').'"'
-            );
-            // ambil data di employe di divisi lain
-            $data_other_function = $this->f360getEmployeDetail(
-                'hirarki_org = "N-1"'.
-                ' AND div_id != "'.$data_employe['div_id'].
-                '" AND nik != "'.$this->session->userdata('nik').'"'
-            );
-        } elseif($data_employe['hirarki_org'] == 'N-2') {
-            // ambil atasan di dept dan divisi yang sama N-1
-            $data_atasan = $this->f360getEmployeDetail(array(
-                'hirarki_org' => 'N-1', 
-                'div_id' => $data_employe['div_id'],
-                'dept_id' => $data_employe['dept_id']
-            ));
-            // ambil data teman sebaya di div, dept, dan hirarki yang sama
-            $data_peers = $this->f360getEmployeDetail(
-                'hirarki_org = "N-2"'.
-                ' AND div_id = "'.$data_employe['div_id'].
-                '" AND dept_id = "'.$data_employe['dept_id'].
-                '" AND nik != "'.$this->session->userdata('nik').'"'
-            );
-            // ambil data div sama, dept beda, hirarki sama
-            $data_other_function = $this->f360getEmployeDetail(
-                'hirarki_org = "N-2"'.
-                ' AND div_id = "'.$data_employe['div_id'].
-                '" AND dept_id != "'.$data_employe['dept_id'].
-                '" AND nik != "'.$this->session->userdata('nik').'"'
-            );
-        } elseif($data_employe['hirarki_org'] == 'N-3') {
-            // ambil data atasannya
-            $data_atasan = $this->f360getEmployeDetail(array(
-                'hirarki_org' => 'N-2', 
-                'div_id' => $data_employe['div_id'],
-                'dept_id' => $data_employe['dept_id']
-            ));
-        } else { // jika posisinya bukan N-1, N-2, atau N-3
-            header('location: ' . base_url('survey/f360limitedUser'));
+        // cek hirarki apa dia N-1, N-2, atau N-3
+        if($data_employe['hirarki_org'] == 'N-1' || $data_employe['hirarki_org'] == 'N-2' || $data_employe['hirarki_org'] == 'N-3') {
+            $data_survey = $this->f360getData($data_employe); // ambil data survey
+        } else {
+            header('location: ' . base_url('survey/f360limitedUser')); // arahkan ke pesan blocked
         }
 
-        // cek status pengisian survey di masing2 variabel data
-        if(!empty($data_atasan)){ // data atasan
-            foreach($data_atasan as $k => $v){
-                $data_atasan[$k]['status'] = $this->f360cekStatus($this->session->userdata('nik'), $v['nik']);
-            }
+        //cek status pengisian survey
+        $data_survey_complete_f360 = $this->f360counterStatusOF($data_survey); // ambil data counter survey OF
+        // cek jika antara counter survey dan counter complete sama
+        if($data_survey_complete_f360['counter_survey_f360'] == $data_survey_complete_f360['counter_complete_f360']){
+            header('location: ' . base_url('survey')); // arahkan ke halaman survey index
         }
-        if(!empty($data_peers)){  // data peers
-            foreach($data_peers as $k => $v){
-                $data_peers[$k]['status'] = $this->f360cekStatus($this->session->userdata('nik'), $v['nik']);
-            }
-        }
-        $data_complete_of = array(); $data_notyet_of = array(); $x=0; $y=0;
-        if(!empty($data_other_function)){ // data other function
-            foreach($data_other_function as $k => $v){
-                if($this->f360cekStatus($this->session->userdata('nik'), $v['nik']) == TRUE){
-                    $data_complete_of[$x] = $v;
-                    $x++;
-                } else {
-                    $data_notyet_of[$y] = $v;
-                    $y++;
-                }
-            }
-        }
-
-        // print_r(json_encode($data_other_function));
-        // exit;
 
         // counter buat max feedback other function
         $data['max_feedback_other_peers'] = 3;
@@ -328,18 +312,29 @@ class Survey extends CI_Controller {
         }
         
         // survey data
-        $data['data_atasan'] = $data_atasan;
-        $data['data_peers'] = $data_peers;
-        $data['data_other_function'] = $data_other_function;
+        if(!empty($data_survey['data_atasan'])){
+            $data['data_atasan'] = $data_survey['data_atasan'];
+        }
+        if(!empty($data_survey['data_peers'])){
+            $data['data_peers'] = $data_survey['data_peers'];
+        }
+        if(!empty($data_survey['data_other_function'])){
+            $data['data_other_function'] = $data_survey['data_other_function'];
+        }
         // data other function
-        $data['data_complete_of'] = $data_complete_of;
-        $data['data_notyet_of'] = $data_notyet_of;
+        if(!empty($data_survey['data_complete_of'])){
+            $data['data_complete_of'] = $data_survey['data_complete_of'];
+        }
+        if(!empty($data_survey['data_notyet_of'])){
+            $data['data_notyet_of'] = $data_survey['data_notyet_of'];
+        }
 
         // main data
         $data['sidebar'] = getMenu(); // ambil menu
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->uri_string()))['title'];
+        // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->uri_string()))['title'];
+        $data['page_title'] = $this->title_f360;
         $data['load_view'] = "survey/f360_index_survey_v";
         $data['custom_styles'] = array('survey_styles');
         $data['custom_script'] = array('survey/script_survey', 'survey/script_f360_index_survey');
@@ -351,10 +346,10 @@ class Survey extends CI_Controller {
         // ambil nik penilai dan dinilai
         $nik_penilai = $this->session->userdata('nik');
         $nik_dinilai = $this->input->get('nik');
-
         $data_penilai = $this->f360getEmployeDetail(array('nik' => $nik_penilai))[0]; // ambil data penilai
 
-        $data_dinilai = $this->f360cekOtoritas($data_penilai, $nik_dinilai);
+        //cek otoritas penilaian karyawan
+        $this->f360cekOtoritas($data_penilai, $nik_dinilai);
 
         // cek apa udh diisi survey karyawan ini
         if($this->_general_m->getRow('survey_f360_hasil', array('nik_penilai' => $nik_penilai, 'nik_dinilai' => $nik_dinilai)) > 1){
@@ -364,6 +359,7 @@ class Survey extends CI_Controller {
 
         // ambil kategori pertanyaan
         $pertanyaan = $this->_general_m->getAll('*', 'survey_f360_kategoripertanyaan', array());
+        //ambil pertanyaan
         foreach($pertanyaan as $key => $value){
             $pertanyaan[$key]['survey_pertanyaan'] = $this->_general_m->getAll('*', 'survey_f360_pertanyaan', array('id_kategori_pertanyaan' => $value['id_kategori_pertanyaan']));        
         }
@@ -377,29 +373,22 @@ class Survey extends CI_Controller {
         $data['sidebar'] = getMenu(); // ambil menu
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => 'survey/feedback360'))['title'];
+        // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => 'survey/feedback360'))['title'];
+        $data['page_title'] = $this->title_f360;
         $data['load_view'] = "survey/f360_survey_v";
         $data['custom_styles'] = array('survey_styles');
         $data['custom_script'] = array('survey/script_survey', 'survey/script_f360_survey');
         
         $this->load->view('main_v', $data);
-
-
-        // cek apa dia punya akses untuk menilai karyawan 
-        // $data_karyawan = $this->f360getEmployeDetail(
-        //     'hirarki_org = "N-1"'.
-        //     ' AND div_id = "'.$data_employe['div_id'].
-        //     '" AND dept_id = "'.$data_employe['dept_id'].
-        //     '" AND nik != "'.$this->session->userdata('nik').'"'
-        // );
     }
 
+    // tampilan buat karyawan yang buka N-1, N-2, dan N-3
     public function f360limitedUser() {
         // main data
         $data['sidebar'] = getMenu(); // ambil menu
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = "360° Feedback";
+        $data['page_title'] = $this->title_f360;
         $data['load_view'] = "survey/f360_blocked_survey_v";
         $data['custom_styles'] = array('survey_styles');
         $data['custom_script'] = array('survey/script_survey');
@@ -448,6 +437,137 @@ class Survey extends CI_Controller {
     }
 
     /* ----------------------------- f360 Other Functions ---------------------------- */
+    //NOW
+    public function f360counterStatusOF($data_survey){
+        // print_r(json_encode($data_survey));
+        // exit;
+        // totalkan jumlah karyawan yang mau dinilai dan buat counter conplete
+        $counter_survey_f360 = 0; $counter_complete_f360 = 0; 
+        if(!empty($data_survey['data_atasan'])){
+            // jumlahkan survey yang mau dinilai
+            $counter_survey_f360 = $counter_survey_f360 + count($data_survey['data_atasan']);
+            // jumlahkan data survey yang komplit
+            foreach($data_survey['data_atasan'] as $v){
+                if($v['status'] == true){
+                    $counter_complete_f360++;
+                }
+            }
+        }
+        if(!empty($data_survey['data_peers'])){
+            // jumlahkan survey yang mau dinilai
+            $counter_survey_f360 = $counter_survey_f360 + count($data_survey['data_peers']);
+            // jumlahkan data survey yang komplit
+            foreach($data_survey['data_peers'] as $v){
+                if($v['status'] == true){
+                    $counter_complete_f360++;
+                }
+            }
+        }
+        if(!empty($data_survey['data_other_function'])){
+            // jumlahkan survey yang mau dinilai
+            $counter_survey_f360 = $counter_survey_f360 + 3;
+        }
+        // cek khusus buat $data_other_function
+        if(!empty($data_survey['data_complete_of'])){
+            $counter_complete_f360 = $counter_complete_f360 + count($data_survey['data_complete_of']);
+        }
+        $data = array(
+            'counter_survey_f360' => $counter_survey_f360,
+            'counter_complete_f360' => $counter_complete_f360
+        );
+        
+        return $data;
+    }
+
+    // get data Feedback 360°
+    public function f360getData($data_employe) {
+        if($data_employe['hirarki_org'] == 'N-1') {
+            //ambil data teman sebaya di divisi dan deptnya
+            $data_peers = $this->f360getEmployeDetail(
+                'hirarki_org = "N-1"'.
+                ' AND div_id = "'.$data_employe['div_id'].
+                '" AND nik != "'.$this->session->userdata('nik').'"'
+            );
+            // ambil data di employe di divisi lain
+            $data_other_function = $this->f360getEmployeDetail(
+                'hirarki_org = "N-1"'.
+                ' AND div_id != "'.$data_employe['div_id'].
+                '" AND nik != "'.$this->session->userdata('nik').'"'
+            );
+        } elseif($data_employe['hirarki_org'] == 'N-2') {
+            // ambil atasan di dept dan divisi yang sama N-1
+            $data_atasan = $this->f360getEmployeDetail(array(
+                'position.id' => $data_employe['id_atasan1']
+            ));
+            // ambil data teman sebaya di div, dept, dan hirarki yang sama
+            $data_peers = $this->f360getEmployeDetail(
+                'hirarki_org = "N-2"'.
+                ' AND div_id = "'.$data_employe['div_id'].
+                '" AND dept_id = "'.$data_employe['dept_id'].
+                '" AND nik != "'.$this->session->userdata('nik').'"'
+            );
+            // ambil data div sama, dept beda, hirarki sama
+            $data_other_function = $this->f360getEmployeDetail(
+                'hirarki_org = "N-2"'.
+                ' AND div_id = "'.$data_employe['div_id'].
+                '" AND dept_id != "'.$data_employe['dept_id'].
+                '" AND nik != "'.$this->session->userdata('nik').'"'
+            );
+        } elseif($data_employe['hirarki_org'] == 'N-3') {
+            // ambil data atasannya
+            $data_atasan = $this->f360getEmployeDetail(array(
+                'position.id' => $data_employe['id_atasan1']
+            ));
+        } else { // jika posisinya bukan N-1, N-2, atau N-3
+            // nothing
+        }
+
+        // cek status pengisian survey di masing2 variabel data
+        if(!empty($data_atasan)){ // data atasan
+            foreach($data_atasan as $k => $v){
+                // cek status data atasan dengan melihat nik poenilai dan nik dinilai
+                $data_atasan[$k]['status'] = $this->f360cekStatus($this->session->userdata('nik'), $v['nik']);
+            }
+        }
+        if(!empty($data_peers)){  // data peers
+            foreach($data_peers as $k => $v){
+                // cek status dengan melihat nik penilai dan nik dinilai
+                $data_peers[$k]['status'] = $this->f360cekStatus($this->session->userdata('nik'), $v['nik']);
+            }
+        }
+        $data_complete_of = array(); $data_notyet_of = array(); $x=0; $y=0;
+        if(!empty($data_other_function)){ // data other function
+            foreach($data_other_function as $k => $v){
+                if($this->f360cekStatus($this->session->userdata('nik'), $v['nik']) == TRUE){
+                    $data_complete_of[$x] = $v;
+                    $x++;
+                } else {
+                    $data_notyet_of[$y] = $v;
+                    $y++;
+                }
+            }
+        }
+
+        //masukkan ke ada jika ada
+        if(!empty($data_atasan)){
+            $data['data_atasan'] = $data_atasan;
+        }
+        if(!empty($data_peers)) {
+            $data['data_peers'] = $data_peers;
+        }
+        if(!empty($data_other_function)){
+            $data['data_other_function'] = $data_other_function;
+        }
+        //data other function
+        if(!empty($data_complete_of)){
+            $data['data_complete_of'] = $data_complete_of;
+        }
+        if(!empty($data_notyet_of)){
+            $data['data_notyet_of'] = $data_notyet_of;
+        }
+        
+        return $data; // balikkan data
+    }
     public function f360cekOtoritas($data_penilai, $nik_dinilai) { // cek otoritas terhadap karyawan
         // cek dalam 3 kodisi
         if($data_penilai['hirarki_org'] == 'N-1') {
@@ -525,12 +645,13 @@ class Survey extends CI_Controller {
     }
 
     public function f360getEmployeDetail($where){ // dapatkan detail employe
-        $data = $this->_general_m->getJoin2tables(
+        $data = $this->_general_m->getJoin2tablesOrder(
             'nik, emp_name, position_name, div_id, dept_id, hirarki_org',
             'employe',
             'position',
             'position.id = employe.position_id',
-            $where
+            $where,
+            'emp_name'
         );
 
         // get nama div_id sama dept_id

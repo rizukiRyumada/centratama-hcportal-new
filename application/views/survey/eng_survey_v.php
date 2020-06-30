@@ -1,5 +1,5 @@
 <!-- gambar tema -->
-<div class="row justify-content-center">
+<!-- <div class="row justify-content-center">
     <div class="col-lg-7">
         <div class="card">
             <div class="card-body p-0">
@@ -7,53 +7,49 @@
             </div>
         </div>
     </div>
-</div><!-- /gambar tema -->
+</div> -->
+<!-- /gambar tema -->
 
 <!-- penjelasan -->
 <div class="row justify-content-center">
     <div class="col-lg-7">
-        <div class="card card-warning card-outline">
+        <div class="card card-primary card-outline">
             <div class="card-header"><?= $survey_title; ?></div>
             <div class="card-body">
+                <ul class="pl-4">
+                    <li>Survey ini terdiri dari 18 pertanyaan</li>
+                    <li>Jawaban / opini Individu adalah sepenuhnya <b>RAHASIA</b></li>
+                    <li>Diharapkan kejujuran dan spontanistas dalam pengisian survey</li>
+                    <li>Tidak ada jawaban / opini yang benar atau salah</li>
+                    <li>Gunakan kesempatan sebaik-baiknya ini untuk memberikan opini Saudara</li>
+                </ul>
                 <p class="card-text">
-                    <ul class="pl-4">
-                        <li>Survey ini terdiri dari 16 pertanyaan</li>
-                        <li>Jawaban / opini Individu adalah sepenuhnya <b>RAHASIA</b></li>
-                        <li>Diharapkan kejujuran dan spontanistas dalam pengisian survey</li>
-                        <li>Tidak ada jawaban / opini yang benar atau salah</li>
-                        <li>Gunakan kesempatan sebaik-baiknya ini untuk memberikan opini Saudara</li>
-                    </ul>
+                    Isilah pertanyaan survey pada nomor jawaban yang sesuai dengan opini Saudara dengan kategori:
                 </p>
-                <p class="card-text">
-                    Isilah pertanyaan survey pada nomor jawaban yang sesuai dengan opini Saudara dengan kategori: <br/>
-                    <table>
+                <table>
+                    <tbody>
                         <tr>
-                            <td><span class="badge badge-danger">1</span></td>
-                            <td>:</td>
-                            <td>Sangat tidak sesuai</td>
+                            <td class="px-2"><span class="badge badge-danger">1</span></td>
+                            <td class="border-left border-primary px-2">STS</td>
+                            <td class="border-left border-primary px-2">Sangat Tidak Sesuai</td>
                         </tr>
                         <tr>
-                            <td><span class="badge bg-orange">2</span></td>
-                            <td>:</td>
-                            <td>Tidak sesuai</td>
+                            <td class="px-2"><span class="badge badge-warning">2</span></td>
+                            <td class="border-left border-primary px-2">TS</td>
+                            <td class="border-left border-primary px-2">Tidak Sesuai</td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-warning">3</span></td>
-                            <td>:</td>
-                            <td>Netral, antara sesuai dan tidak</td>
+                            <td class="px-2"><span class="badge badge-info">3</span></td>
+                            <td class="border-left border-primary px-2">S</td>
+                            <td class="border-left border-primary px-2">Sesuai</td>
                         </tr>
                         <tr>
-                            <td><span class="badge badge-info">4</span></td>
-                            <td>:</td>
-                            <td>Sesuai</td>
+                            <td class="px-2"><span class="badge badge-success">4</span></td>
+                            <td class="border-left border-primary px-2">SS</td>
+                            <td class="border-left border-primary px-2">Sangat Sesuai</td>
                         </tr>
-                        <tr>
-                            <td><span class="badge badge-success">5</span></td>
-                            <td>:</td>
-                            <td>Sangat Sesuai</td>
-                        </tr>
-                    </table>
-                </p>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -67,15 +63,14 @@
     <div class="row justify-content-center">
         <div class="col-lg-7">
             <div class="card">
-                <div class="card-body border-bottom border-warning">
-                    <div class="row justify-content-center">
-                        <div class="col-1"><p class="card-text text-center text-index-responsive">No.</p></div>
-                        <div class="col"><p class="card-text text-center text-responsive">Pertanyaan</p> </div>
-                        <div class="col-1 text-center"><span class="badge badge-danger">1</span></div>
-                        <div class="col-1 text-center"><span class="badge bg-orange">2</span></div>
-                        <div class="col-1 text-center"><span class="badge badge-warning">3</span></div>
-                        <div class="col-1 text-center"><span class="badge badge-info">4</span></div>
-                        <div class="col-1 text-center"><span class="badge badge-success">5</span></div>
+                <div class="card-body border-bottom border-primary">
+                    <div class="row justify-content-center d-flex">
+                        <div class="align-self-center col-1"><p class="card-text text-center text-index-responsive">No.</p></div>
+                        <div class="align-self-center col"><p class="card-text text-center text-responsive">Pertanyaan</p> </div>
+                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="badge badge-survey-tag badge-danger">1<br/><span class="badge-survey-tag-keterangan">STS</span></span></p></div>
+                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="badge badge-survey-tag bg-warning">2<br/><span class="badge-survey-tag-keterangan">TS</span></span></p></div>
+                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="badge badge-survey-tag badge-info">3<br/><span class="badge-survey-tag-keterangan">S</span></span></p></div>
+                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="badge badge-survey-tag badge-success">4<br/><span class="badge-survey-tag-keterangan">SS</span></span></p></div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -91,7 +86,6 @@
                             <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center"><input class="form-check-input" type="radio" name="<?= $v['id']; ?>" value="2" required></div></div>
                             <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center"><input class="form-check-input" type="radio" name="<?= $v['id']; ?>" value="3" required></div></div>
                             <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center"><input class="form-check-input" type="radio" name="<?= $v['id']; ?>" value="4" required></div></div>
-                            <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center"><input class="form-check-input" type="radio" name="<?= $v['id']; ?>" value="5" required></div></div>
                         </div>
                         <?php $x++; ?>
                     <?php endforeach;?>

@@ -24,6 +24,7 @@
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
                 <?php foreach($sidebar['menu'] as $key => $value): ?>
                     <?php if($this->_general_m->getOnce('id_menu', 'survey_user_menu_sub', array('id_menu' => $value['id_menu']))): ?>
+                        <!-- jika ada submenunya pilih treeview -->
                         <li class="nav-item has-treeview <?php 
                                 if($this->uri->segment(1) == $value['url']){
                                     echo("menu-open");
@@ -63,18 +64,22 @@
                             </ul>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item">
-                            <a href="<?= base_url($value['url']); ?>" class="nav-link  <?php 
-                                if($this->uri->segment(1) == $value['url']){
-                                    echo "active";
-                                }
-                            ?>">
-                                <i class="nav-icon <?= $value['icon']; ?>"></i>
-                                <p>
-                                    <?= $value['title']; ?>
-                                </p>
-                            </a>
-                        </li>
+                        <!-- jika tidak ada submenunya pilih yang single link -->
+                        <!-- FIXME hapus penanda dashboard -->
+                        <?php if($value['id_menu'] != 0): ?>
+                            <li class="nav-item">
+                                <a href="<?= base_url($value['url']); ?>" class="nav-link  <?php 
+                                    if($this->uri->segment(1) == $value['url']){
+                                        echo "active";
+                                    }
+                                ?>">
+                                    <i class="nav-icon <?= $value['icon']; ?>"></i>
+                                    <p>
+                                        <?= $value['title']; ?>
+                                    </p>
+                                </a>
+                            </li>
+                        <?php endif; ?>
                     <?php endif; ?>
                 <?php endforeach; ?>
                 

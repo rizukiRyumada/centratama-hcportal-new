@@ -64,7 +64,25 @@ class _general_m extends CI_Model {
         $this->db->join($joinTable, $joinIndex, 'left');
         return $this->db->get_where($table, $where)->result_array();
     }
-    
+        
+    /**
+     * getJoin2tablesOrder
+     *
+     * @param  mixed $select
+     * @param  mixed $table
+     * @param  mixed $joinTable
+     * @param  mixed $joinIndex
+     * @param  mixed $where
+     * @param  mixed $order
+     * @return void
+     */
+    public function getJoin2tablesOrder($select, $table, $joinTable, $joinIndex, $where, $order){
+        $this->db->select($select);
+        $this->db->join($joinTable, $joinIndex, 'left');
+        $this->db->order_by($order);
+        return $this->db->get_where($table, $where)->result_array();
+    }
+
     /**
      * getRow
      *

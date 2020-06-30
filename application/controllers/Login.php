@@ -88,13 +88,8 @@ class Login extends CI_Controller {
         $this->session->unset_userdata('nik');
         $this->session->unset_userdata('role_id');
         $this->session->set_userdata(array('error' => 1)); // buat munculin modal login form
-        $this->session->set_flashdata('message', '<div class="alert alert-warning" role="alert">Thank You for using HC Portal, have a nice day :)</div>');
+        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Thank You for using Continuous Improvement Survey, have a nice day :)</div>');
         redirect('login');
-    }
-
-    public function blocked(){
-        // TODO tampilkan error default dari codeigniter
-        $this->load->view('login/blocked');
     }
 
     // template for view    
@@ -113,7 +108,6 @@ class Login extends CI_Controller {
         // ambil semua menu dan sub menu dan cek aksesnya
         // $data['sidebar_menu'] = $this->
 
-        // TODO buat breadcrumb helper
         //breadcrumb halaman
         $data['breadcrumb'] = array(
             array('judul' => 'Home', 'link' => base_url()),

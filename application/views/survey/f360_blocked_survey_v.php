@@ -9,5 +9,3 @@
         <img class="responsive-image" src="<?= base_url('/assets/img/illustration/undraw_starry_window_ppm0.svg'); ?>" alt="tema">  
     </div>
 </div>
-
-<!--  -->

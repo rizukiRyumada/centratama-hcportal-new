@@ -18,6 +18,14 @@ table.table.table-hover thead tr th.th-f360-80{
     display: none;
 }
 
+/* survey badge tag */
+.badge-survey-tag{
+    width: 100%;
+}
+.badge-survey-tag-keterangan{
+    font-size: 0.8em;
+}
+
 /* row survey */
 .row-survey-striped{
     background-color: #eee;
@@ -86,7 +94,9 @@ table.table.table-hover thead tr th.th-f360-80{
         flex-grow: 1;
         padding-left: 0.5em !important;
     }
-
+    div.row.justify-content-center.d-flex div.align-self-center.col-1.text-center{
+        padding: 0;
+    }
 }
 
 @media screen and (max-width: 500px) {

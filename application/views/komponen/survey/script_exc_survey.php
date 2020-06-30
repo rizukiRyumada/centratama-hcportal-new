@@ -1,5 +1,44 @@
 <script src="<?= base_url('assets/vendor/writelimit/writelimit.js'); ?>"></script>
+<script src="<?= base_url('/assets/vendor/node_modules/jquery-validation/dist/jquery.validate.min.js'); ?>"></script>
+<script src="<?= base_url('/assets/vendor/node_modules/jquery-validation/dist/additional-methods.min.js'); ?>"></script>
 <script>
+    $(document).ready(() => {
+        $('#formSurvey').validate({
+            rules: {
+                <?php foreach($survey2 as $k => $v): ?>
+                    <?= $v['id'].'_'.$v['id_departemen']; ?>: {
+                        required: true,
+                        minlength: 20
+                    }
+                    <?php if($k != count($survey2)-1): ?>
+                        <?= ','; ?>
+                    <?php endif; ?>
+                <?php endforeach;?>
+            },
+            messages: {
+                <?php foreach($survey2 as $k => $v): ?>
+                    <?= $v['id'].'_'.$v['id_departemen']; ?>: {
+                        required: "Please Enter Your Impression Messages",
+                        minlength: "Your Impression Messages must be at least 20 Characters"
+                    }
+                    <?php if($k != count($survey2)-1): ?>
+                        <?= ','; ?>
+                    <?php endif; ?>
+                <?php endforeach;?>
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group-lg').append(error); // tambah pesan error di dekat kelas form-group-lg
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
     // $('#nama-departemen').writeLimit('#feedback-nama_departemen', 1000, 'Karakter'); karakter counter code
     <?php foreach($survey2 as $v){
         echo("$('#".$v['id_departemen']."').writeLimit('#feedback-".$v['id_departemen']."', 1000, 'Karakter');");

@@ -10,7 +10,7 @@
                 <!-- table data atasan -->
                 <div class="row">
                     <div class="col-12 p-0">
-                        <div class="card card-danger">
+                        <div class="card card-blue">
                             <div class="card-header">
                                 <h3 class="card-title">Superior</h3>
                                 <div class="card-tools">
@@ -22,9 +22,9 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="th-f360-wider">Employe Name</th>
-                                            <th class="th-f360">Departemen</th>
-                                            <th class="th-f360">Divisi</th>
+                                            <th class="th-f360-wider">Employee Name</th>
+                                            <th class="th-f360">Departement</th>
+                                            <th class="th-f360">Division</th>
                                             <th class="th-f360-wider">Position</th>
                                             <th class="th-f360-btn"></th>
                                         </tr>
@@ -61,7 +61,7 @@
                 <!-- table data peers -->
                 <div class="row">
                     <div class="col-12 p-0">
-                        <div class="card card-warning">
+                        <div class="card card-orange">
                             <div class="card-header">
                                 <h3 class="card-title">Peers</h3>
                                 <div class="card-tools">
@@ -70,12 +70,12 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
+                                <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="th-f360-wider">Employe Name</th>
-                                            <th class="th-f360">Departemen</th>
-                                            <th class="th-f360">Divisi</th>
+                                            <th class="th-f360-wider">Employee Name</th>
+                                            <th class="th-f360">Departement</th>
+                                            <th class="th-f360">Division</th>
                                             <th class="th-f360-wider">Position</th>
                                             <th class="th-f360-btn"></th>
                                         </tr>
@@ -112,7 +112,7 @@
                 <!-- table data Other Function -->
                 <div class="row">
                     <div class="col-12 p-0">
-                        <div class="card card-info">
+                        <div class="card card-yellow">
                             <div class="card-header">
                                 <h3 class="card-title">Peers Other Function</h3>
                                 <div class="card-tools">
@@ -125,15 +125,16 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="th-f360-wider">Employe Name</th>
-                                            <th class="th-f360">Departemen</th>
-                                            <th class="th-f360">Divisi</th>
+                                            <th class="th-f360-wider">Employee Name</th>
+                                            <th class="th-f360">Departement</th>
+                                            <th class="th-f360">Division</th>
                                             <th class="th-f360-wider">Position</th>
                                             <th class="th-f360-btn"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <!-- jika ada survey yang sudah selesai -->
+                                        <?php $x=1; ?>
                                         <?php if(!empty($data_complete_of)): ?>
                                             <?php foreach($data_complete_of as $k => $v): ?>
                                                 <tr>
@@ -143,16 +144,18 @@
                                                     <td class="th-f360-wider" ><?= $v['position_name']; ?></td>
                                                     <td class="th-f360-btn"><i class="fa fa-check-circle fa-2x text-success"></i></td>
                                                 </tr>
+                                                <?php $x++; ?>
                                             <?php endforeach;?>
                                         <?php endif; ?>
                                         <?php if(!empty($data_notyet_of)): ?>
                                             <!-- options -->
-                                            <?php for($x=1; $x<=$max_feedback_other_peers; $x++){ ?>
+                                            <?php $y=1; ?>
+                                            <?php for($x; $x<=$max_feedback_other_peers; $x++){ ?>
                                                 <tr>
                                                     <td class="th-f360-wider">
                                                         <div class="input-group-sm">
                                                             <select class="custom-select" id="f360getEmployeDesktop_<?= $x; ?>">
-                                                                <?php if($x == 1): ?>
+                                                                <?php if($y == 1): ?>
                                                                     <option value="" selected>Choose...</option>
                                                                     <?php foreach($data_notyet_of as $v): ?>
                                                                         <option class="select2-selection__choice" value="<?= $v['nik']; ?>"><?= $v['emp_name']; ?></option>
@@ -172,6 +175,7 @@
                                                         </div>
                                                     </td>
                                                 </tr>
+                                                <?php $y++; ?>
                                             <?php } ?><!-- /options -->
                                         <?php endif; ?>
                                     </tbody>
@@ -195,7 +199,7 @@
             <?php if(!empty($data_atasan)): ?>
                 <div class="row">
                     <div class="col-12 p-0">
-                        <div class="card card-danger">
+                        <div class="card card-blue">
                             <div class="card-header">
                                 <h3 class="card-title">Superior</h3>
                                 <div class="card-tools">
@@ -207,7 +211,7 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="th-f360-80">Employe Name</th>
+                                            <th class="th-f360-80">Employee Name</th>
                                             <th class="th-f360-btn"></th>
                                             <th class="th-f360-btn"></th>
                                         </tr>
@@ -246,7 +250,7 @@
             <?php if(!empty($data_peers)): ?>
                 <div class="row">
                     <div class="col-12 p-0">
-                        <div class="card card-warning">
+                        <div class="card card-orange">
                             <div class="card-header">
                                 <h3 class="card-title">Peers</h3>
                                 <div class="card-tools">
@@ -255,10 +259,10 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap">
+                                <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="th-f360-80">Employe Name</th>
+                                            <th class="th-f360-80">Employee Name</th>
                                             <th class="th-f360-btn"></th>
                                             <th class="th-f360-btn"></th>
                                         </tr>
@@ -297,7 +301,7 @@
             <?php if(!empty($data_other_function)): ?>
                 <div class="row">
                     <div class="col-12 p-0">
-                        <div class="card card-info">
+                        <div class="card card-yellow">
                             <div class="card-header">
                                 <h3 class="card-title">Peers Other Function</h3>
                                 <div class="card-tools">
@@ -309,38 +313,68 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="th-f360-80">Employe Name</th>
+                                            <th class="th-f360-80">Employee Name</th>
                                             <th class="th-f360-btn"></th>
                                             <th class="th-f360-btn"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <!-- jika ada data survey yang sudah selesai -->
+                                        <?php $x=1; ?>
+                                        <?php if(!empty($data_complete_of)): ?>
+                                            <?php foreach($data_complete_of as $k => $v): ?>
+                                                <tr>
+                                                    <td><?= $v['emp_name']; ?></td>
+                                                    <td>
+                                                        <div class="d-flex justify-content-center">
+                                                            <a id="btnEmployeInfo_mobile_<?= $x; ?>" href="#" class="btnEmployeInfo" data-nik="<?= $v['nik']; ?>" data-emp_name="<?= $v['emp_name']; ?>" data-departemen="<?= $v['departemen']; ?>" data-divisi="<?= $v['divisi']; ?>" data-position_name="<?= $v['position_name']; ?>">
+                                                                <i class="fa fa-info-circle fa-2x link-primary"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="justify-content-center">
+                                                            <i class="fa fa-check-circle fa-2x text-success"></i>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <?php $x++; ?>
+                                            <?php endforeach;?>
+                                        <?php endif; ?>
                                         <!-- options -->
-                                        <?php for($x=1; $x<=$max_feedback_other_peers; $x++){ ?>
-                                            <tr>
-                                                <td>
-                                                    <div class="input-group-sm">
-                                                        <select class="custom-select" id="f360getEmployeMobile_<?= $x; ?>">
-                                                            <option selected>Choose...</option>
-                                                            <?php foreach($data_other_function as $v): ?>
-                                                                <option value="<?= $v['nik']; ?>"><?= $v['departemen'].' | '.$v['emp_name']; ?></option>
-                                                            <?php endforeach;?>
-                                                        </select>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <a id="btnEmployeInfo_mobile_<?= $x; ?>" href="#" class="invisible btnEmployeInfo">
-                                                            <i class="fa fa-info-circle fa-2x link-primary"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="justify-content-center">
-                                                        <a href="#" id="href_mobile_<?= $x; ?>" class="invisible btn btn-sm btn-primary"><i class="fa fa-pencil-alt"></i></a>                                                </div>
-                                                </td>
-                                            </tr>
-                                        <?php } ?><!-- /options -->
+                                        <?php if(!empty($data_notyet_of)): ?>
+                                            <?php $y=1; ?>
+                                            <?php for($x; $x<=$max_feedback_other_peers; $x++){ ?>
+                                                <tr>
+                                                    <td>
+                                                        <div class="input-group-sm">
+                                                            <select class="custom-select" id="f360getEmployeMobile_<?= $x; ?>">
+                                                                <?php if($y==1): ?>
+                                                                    <option selected>Choose...</option>
+                                                                    <?php foreach($data_notyet_of as $v): ?>
+                                                                        <option value="<?= $v['nik']; ?>"><?= $v['departemen'].' | '.$v['emp_name']; ?></option>
+                                                                    <?php endforeach;?>
+                                                                <?php else: ?>
+                                                                    <option selected>Please choose the top selection first...</option>
+                                                                <?php endif; ?>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex justify-content-center">
+                                                            <a id="btnEmployeInfo_mobile_<?= $x; ?>" href="#" class="invisible btnEmployeInfo">
+                                                                <i class="fa fa-info-circle fa-2x link-primary"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="justify-content-center">
+                                                            <a href="#" id="href_mobile_<?= $x; ?>" class="invisible btn btn-sm btn-primary"><i class="fa fa-pencil-alt"></i></a>                                                </div>
+                                                    </td>
+                                                </tr>
+                                                <?php $y++; ?>
+                                            <?php } ?>
+                                        <?php endif; ?><!-- /options -->
                                     </tbody>
                                 </table>
                             </div><!-- /.card-body -->
@@ -380,10 +414,10 @@
                                     <td>NIK</td><td>:</td><td id="infoModal_nik"></td>
                                 </tr>
                                 <tr>
-                                    <td>Divisi</td><td>:</td><td id="infoModal_divisi"></td>
+                                    <td>Division</td><td>:</td><td id="infoModal_divisi"></td>
                                 </tr>
                                 <tr>
-                                    <td>Departemen</td><td>:</td><td id="infoModal_departemen"></td>
+                                    <td>Departement</td><td>:</td><td id="infoModal_departemen"></td>
                                 </tr>
                                 <tr>
                                     <td>Position</td><td>:</td><td id="infoModal_position"></td>

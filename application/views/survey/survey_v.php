@@ -7,7 +7,7 @@
         <?php if(!empty($survey_status['eng'])): ?>
             bg-gray
         <?php else: ?>
-            bg-yellow    
+            bg-primary    
         <?php endif; ?>">
             <!-- kasih overlay apabila survey sudah diisi -->
             <?php if(!empty($survey_status['eng'])): ?>
@@ -17,7 +17,7 @@
             <div class="inner">
                 <h3>Engagement</h3>
 
-                <p>Employe Engagement Survey</p>
+                <p><?= $survey_title['engagement']; ?> Survey</p>
             </div>
             <div class="icon">
                 <i class="fa fa-file-alt"></i>
@@ -33,7 +33,7 @@
         <?php if(!empty($survey_status['exc'])): ?>
             bg-gray
         <?php else: ?>
-            bg-blue    
+            bg-orange    
         <?php endif; ?>">
             <!-- kasih overlay apabila survey sudah diisi -->
             <?php if(!empty($survey_status['exc'])): ?>
@@ -43,7 +43,7 @@
             <div class="inner">
                 <h3>Service</h3>
 
-                <p>Service Exellence Survey</p>
+                <p><?= $survey_title['excellence']; ?> Survey</p>
             </div>
             <div class="icon">
                 <i class="fa fa-file-alt"></i>
@@ -55,13 +55,22 @@
     </div>
     <div class="col-lg-4 col-6">
         <!-- small card -->
-        <a href="<?= base_url('survey/feedback360'); ?>" class="small-box bg-orange">
-            <!-- obverlay -->
+        <<?php if(!empty($survey_status['f360'])){echo"div";}else{echo"a";} ?> href="<?= base_url('survey/feedback360'); ?>" class="small-box 
+        <?php if(!empty($survey_status['f360'])): ?>
+            bg-gray
+        <?php else: ?>
+            bg-yellow
+        <?php endif; ?>">
+            <!-- kasih overlay apabila survey sudah diisi -->
+            <?php if(!empty($survey_status['f360'])): ?>
+                <!-- obverlay -->
+                <div class="overlay dark"></div>
+            <?php endif; ?>
             <!-- <di class="overlay dark"></di> -->
             <div class="inner">
                 <h3>360°</h3>
 
-                <p>360° Feedback</p>
+                <p><?= $survey_title['f360']; ?></p>
             </div>
             <div class="icon">
                 <i class="fa fa-file-alt"></i>
@@ -69,6 +78,7 @@
             <!-- <div class="small-box-footer">
                 Let's fill the survey <i class="fas fa-arrow-circle-right"></i>
             </div> -->
-        </a><!-- /small card -->
+        </<?php if(!empty($survey_status['f360'])){echo"div";}else{echo"a";} ?>>
+        <!-- /small card -->
     </div>
 </div>

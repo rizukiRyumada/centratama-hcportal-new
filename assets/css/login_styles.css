@@ -156,6 +156,10 @@ nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.o
 #content-wrap-smallscrenn{
     display: none;
 }
+/* FIXME hapus property ini */
+.layout-top-nav .wrapper .main-header .brand-image{
+    height: 72.5px !important;
+}
 
 /* ------------------------ set style for screen size ----------------------- */
 @media screen and (max-width: 1080px) {
@@ -168,16 +172,8 @@ nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.o
         width: 6em;
         height: auto !important;
     }
-    nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.order-1.order-md-3.navbar-nav.navbar-no-expand.ml-auto li.nav-item a.btn.btn-primary{
-        border-radius: 2em;
-        background-color: #0072C6;
-        border-color: #0072C6;
-        width: 6em;
-    }
-    nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.order-1.order-md-3.navbar-nav.navbar-no-expand.ml-auto li.nav-item a.btn.btn-primary:hover{
-        border-radius: 2em;
-        background-color: rgb(0, 82, 141);
-        border-color: rgb(0, 82, 141);
+    div#content-wrap-smallscrenn.content-wrapper.bg-transparent.h-100 div.content div.container-fluid div.row div.col-6.text-center a.btn.btn-primary{
+        width: 9em;
     }
     .navbar-text-leftbordered{
         border-left: 6px solid #0072C6;
@@ -187,6 +183,10 @@ nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.o
         height: 100%;
         margin: 0px;
         align-items: center;
+    }
+
+    nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.order-1.order-md-3.navbar-nav.navbar-no-expand.ml-auto{
+        display: none;
     }
 
     /* hide banner */
@@ -206,6 +206,11 @@ nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.o
         margin-left: auto;
         margin-right: auto;
         width: 80%;
+    }
+
+    /* FIXME hapus property ini */
+    .layout-top-nav .wrapper .main-header .brand-image{
+        height: 52.5px !important;
     }
 
     /* -------------------- other app card on smaller screen -------------------- */
