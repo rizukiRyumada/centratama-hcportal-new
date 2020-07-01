@@ -1,7 +1,9 @@
 <!-- Continous Improvement Survey Section -->
 <h4>Continuous Improvement Survey</h4>
+
+<!-- Survey Card -->
 <div class="row mb-2">
-    <div class="col-lg-4 col-6">
+    <div class="col-lg-4 col-md-6 col-12">
         <!-- small card -->
         <<?php if(!empty($survey_status['eng'])){echo"div";}else{echo"a";} ?> href="<?= base_url('survey/engagement'); ?>" class="small-box 
         <?php if(!empty($survey_status['eng'])): ?>
@@ -27,7 +29,7 @@
             </div> -->
         </<?php if(!empty($survey_status['eng'])){echo"div";}else{echo"a";} ?>><!-- /small card -->
     </div>
-    <div class="col-lg-4 col-6">
+    <div class="col-lg-4 col-md-6 col-12">
         <!-- small card -->
         <<?php if(!empty($survey_status['exc'])){echo"div";}else{echo"a";} ?> href="<?= base_url('survey/excellence'); ?>" class="small-box 
         <?php if(!empty($survey_status['exc'])): ?>
@@ -53,7 +55,7 @@
             </div> -->
         </<?php if(!empty($survey_status['exc'])){echo"div";}else{echo"a";} ?>><!-- /small card -->
     </div>
-    <div class="col-lg-4 col-6">
+    <div class="col-lg-4 col-md-6 col-12">
         <!-- small card -->
         <<?php if(!empty($survey_status['f360'])){echo"div";}else{echo"a";} ?> href="<?= base_url('survey/feedback360'); ?>" class="small-box 
         <?php if(!empty($survey_status['f360'])): ?>
@@ -81,4 +83,19 @@
         </<?php if(!empty($survey_status['f360'])){echo"div";}else{echo"a";} ?>>
         <!-- /small card -->
     </div>
-</div>
+</div><!-- /Survey Card -->
+
+<!-- Thank You Card -->
+<?php if(!empty($survey_complete)): ?>
+    <div class="row mb-2 justify-content-center">
+        <div class="col-lg-7">
+            <div class="card elevation-2">
+                <img class="responsive-image" src="<?= base_url('assets/img/survey/exc_thankyou.jpg'); ?>" alt="tema">  
+            </div>
+            <!-- <p class="card-text text-center mt-2">
+                Thank You for completing this Survey, Have a Nice Day :)
+            </p> -->
+        </div>
+    </div>
+<?php endif; ?>
+<!-- /Thank You Card -->

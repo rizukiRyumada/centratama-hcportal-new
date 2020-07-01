@@ -16,6 +16,27 @@
 
 <!-- general custom script -->
 <script>
+    // toaster popup notifications
+    toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": false,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+    }
+    
+    <?= $this->session->flashdata('all_survey'); ?>
+    <?= $this->session->flashdata('one_survey'); ?>
+
     $(document).ready(function(){
         // $("body").overlayScrollbars({ 
         //     // className : 'os-theme-dark'
