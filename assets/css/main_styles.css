@@ -50,7 +50,7 @@ html {
     width: 170px;
     position: fixed;
     right: -110px;
-    z-index: 1000;
+    z-index: 9999;
     font: normal normal 10px Arial;
     -webkit-transition: all .25s ease;
     -moz-transition: all .25s ease;
@@ -87,20 +87,20 @@ html {
 /* Small devices (landscape phones, 320px and up) */
 @media (min-width: 320px) {
     .text-responsive{
-        font-size: 0.65rem;
+        font-size: 0.85rem;
     }
     .text-index-responsive{
-        font-size: 0.65rem;
+        font-size: 0.75rem;
     }
 }
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
     .text-responsive{
-        font-size: 0.75rem;
+        font-size: 0.85rem;
     }
     .text-index-responsive{
-        font-size: 0.65rem;
+        font-size: 0.75rem;
     }
 }
 
@@ -110,7 +110,7 @@ html {
         font-size: 0.85rem;
     }
     .text-index-responsive{
-        font-size: 0.67rem;
+        font-size: 0.75rem;
     }
 }
 
@@ -120,7 +120,7 @@ html {
         font-size: 0.85rem;
     }
     .text-index-responsive{
-        font-size: 0.67rem;
+        font-size: 0.75rem;
     }
 }
 

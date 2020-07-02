@@ -9,7 +9,7 @@
         <?php if(!empty($survey_status['eng'])): ?>
             bg-gray
         <?php else: ?>
-            bg-primary    
+            bg-blue    
         <?php endif; ?>">
             <!-- kasih overlay apabila survey sudah diisi -->
             <?php if(!empty($survey_status['eng'])): ?>

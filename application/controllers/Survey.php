@@ -1,5 +1,6 @@
 <?php  
 // TODO tambah kolom penilaian N/A = "" = null = kosong
+// TODO buat halaman setting survey buat admin
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Survey extends CI_Controller {
@@ -41,8 +42,7 @@ class Survey extends CI_Controller {
             array('nik' => $this->session->userdata('nik'))
         )[0];
         // cek hirarki apa dia N-1, N-2, atau N-3
-        // FIXME
-        if($data_employe['hirarki_org'] == 'N-1' || $data_employe['hirarki_org'] == 'N-2' || $data_employe['hirarki_org'] == 'N-3' || $data_employe['hirarki_org'] == 'Functional-div' || $data_employe['hirarki_org'] == 'Functional-dep' || $data_employe['hirarki_org'] == 'Functional') {
+        if($data_employe['hirarki_org'] == 'N-1' || $data_employe['hirarki_org'] == 'N-2' || $data_employe['hirarki_org'] == 'N-3' || $data_employe['hirarki_org'] == 'Functional-div' || $data_employe['hirarki_org'] == 'Functional-dep') {
             $data_survey = $this->f360getData($data_employe); // ambil data survey
             $data_survey_complete_f360 = $this->f360counterStatusOF($data_survey); // ambil data counter survey OF
             // cek jika antara counter survey dan counter complete sama
@@ -302,8 +302,7 @@ class Survey extends CI_Controller {
         )[0];
 
         // cek hirarki apa dia N-1, N-2, N-3, atau functional div
-        // FIXME
-        if($data_employe['hirarki_org'] == 'N-1' || $data_employe['hirarki_org'] == 'N-2' || $data_employe['hirarki_org'] == 'N-3' || $data_employe['hirarki_org'] == 'Functional-div' || $data_employe['hirarki_org'] == 'Functional-dept' || $data_employe['hirarki_org'] == 'Functional') {
+        if($data_employe['hirarki_org'] == 'N-1' || $data_employe['hirarki_org'] == 'N-2' || $data_employe['hirarki_org'] == 'N-3' || $data_employe['hirarki_org'] == 'Functional-div' || $data_employe['hirarki_org'] == 'Functional-dep') {
             $data_survey = $this->f360getData($data_employe); // ambil data survey
         } else {
             header('location: ' . base_url('survey/f360limitedUser')); // arahkan ke pesan blocked
@@ -511,8 +510,7 @@ class Survey extends CI_Controller {
 // NOW
     // get data Feedback 360°
     public function f360getData($data_employe) {
-        // if($data_employe['hirarki_org'] == 'Functional-div'){
-        if($data_employe['hirarki_org'] == 'Functional'){
+        if($data_employe['hirarki_org'] == 'Functional-div'){
             //ambil data teman sebaya N-1 di divisi dan deptnya
             $data_peers = $this->f360getEmployeDetail(
                 'hirarki_org = "N-1"'.
@@ -522,8 +520,7 @@ class Survey extends CI_Controller {
             // FIXME
             //ambil data teman sebaya Functional-div di divisi dan deptnya
             $data_peers = array_merge($data_peers, $this->f360getEmployeDetail(
-                // 'hirarki_org = "Functional-div"'.
-                'hirarki_org = "Functional"'.
+                'hirarki_org = "Functional-div"'.
                 ' AND div_id = "'.$data_employe['div_id'].
                 '" AND nik != "'.$this->session->userdata('nik').'"'
             ));
@@ -547,8 +544,7 @@ class Survey extends CI_Controller {
             );
             //ambil data teman sebaya Functional-div di divisi dan deptnya
             $data_peers = array_merge($data_peers, $this->f360getEmployeDetail(
-                // 'hirarki_org = "Functional-div"'.
-                'hirarki_org = "Functional"'.
+                'hirarki_org = "Functional-div"'.
                 ' AND div_id = "'.$data_employe['div_id'].
                 '" AND nik != "'.$this->session->userdata('nik').'"'
             ));
@@ -581,8 +577,7 @@ class Survey extends CI_Controller {
             //FIXME
             //ambil data teman sebaya Functional-div di divisi dan deptnya
             $data_other_function = array_merge($data_other_function, $this->f360getEmployeDetail(
-                // 'hirarki_org = "Functional-div"'.
-                'hirarki_org = "Functional"'.
+                'hirarki_org = "Functional-div"'.
                 ' AND div_id = "'.$data_employe['div_id'].
                 '" AND nik != "'.$this->session->userdata('nik').'"'
             ));
@@ -643,20 +638,17 @@ class Survey extends CI_Controller {
     }
     public function f360cekOtoritas($data_penilai, $nik_dinilai) { // cek otoritas terhadap karyawan
         // cek dalam 3 kodisi
-        // if($data_penilai['hirarki_org'] == 'Functional-div'){
-        if($data_penilai['hirarki_org'] == 'Functional'){
+        if($data_penilai['hirarki_org'] == 'Functional-div'){
             //ambil data teman sebaya N-1 di divisi dan deptnya
             $data_peers = $this->f360getEmployeDetail(
                 'hirarki_org = "N-1"'.
                 ' AND div_id = "'.$data_penilai['div_id'].
                 '" AND nik = "'.$nik_dinilai.'"'
             );
-            // FIXME
             //ambil data teman sebaya Functional-div di divisi dan deptnya
             if(empty($data_peers)){
                 $data_peers =$this->f360getEmployeDetail(
-                    // 'hirarki_org = "Functional-div"'.
-                    'hirarki_org = "Functional"'.
+                    'hirarki_org = "Functional-div"'.
                     ' AND div_id = "'.$data_penilai['div_id'].
                     '" AND nik = "'.$nik_dinilai.'"'
                 );
@@ -683,8 +675,7 @@ class Survey extends CI_Controller {
             //ambil data teman sebaya Functional-div di divisi dan deptnya
             if(empty($data_peers)){
                 $data_peers = $this->f360getEmployeDetail(
-                    // 'hirarki_org = "Functional-div"'.
-                    'hirarki_org = "Functional"'.
+                    'hirarki_org = "Functional-div"'.
                     ' AND div_id = "'.$data_penilai['div_id'].
                     '" AND nik = "'.$nik_dinilai.'"'
                 );
@@ -721,8 +712,7 @@ class Survey extends CI_Controller {
             //ambil data teman sebaya Functional-div di divisi dan deptnya
             if(empty($data_other_function)){
                 $data_other_function = $this->f360getEmployeDetail(
-                    // 'hirarki_org = "Functional-div"'.
-                    'hirarki_org = "Functional"'.
+                    'hirarki_org = "Functional-div"'.
                     ' AND div_id = "'.$data_penilai['div_id'].
                     '" AND nik = "'.$nik_dinilai.'"'
                 );
