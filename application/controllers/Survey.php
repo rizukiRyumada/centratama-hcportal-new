@@ -460,7 +460,7 @@ class Survey extends CI_Controller {
     public function f360counterStatusOF($data_survey){
         // print_r(json_encode($data_survey));
         // exit;
-        // totalkan jumlah karyawan yang mau dinilai dan buat counter conplete
+        // totalkan jumlah karyawan yang mau dinilai dan buat counter complete
         $counter_survey_f360 = 0; $counter_complete_f360 = 0; 
         if(!empty($data_survey['data_atasan'])){
             // jumlahkan survey yang mau dinilai
@@ -483,8 +483,8 @@ class Survey extends CI_Controller {
             }
         }
         if(!empty($data_survey['data_other_function'])){
-            // jumlahkan survey yang mau dinilai
-            $counter_survey_f360 = $counter_survey_f360 + 3;
+            // jumlahkan survey yang mau dinilai dengan jumlah survey dari yang other function
+            $counter_survey_f360 = $counter_survey_f360 + 5;
         }
         // cek khusus buat $data_other_function
         if(!empty($data_survey['data_complete_of'])){
@@ -547,7 +547,8 @@ class Survey extends CI_Controller {
             );
             //ambil data teman sebaya Functional-div di divisi dan deptnya
             $data_peers = array_merge($data_peers, $this->f360getEmployeDetail(
-                'hirarki_org = "Functional-div"'.
+                // 'hirarki_org = "Functional-div"'.
+                'hirarki_org = "Functional"'.
                 ' AND div_id = "'.$data_employe['div_id'].
                 '" AND nik != "'.$this->session->userdata('nik').'"'
             ));
@@ -689,20 +690,6 @@ class Survey extends CI_Controller {
                 );
             }
             // ambil data di employe di divisi lain
-            $data_other_function = $this->f360getEmployeDetail(
-                'hirarki_org = "N-1"'.
-                ' AND div_id != "'.$data_penilai['div_id'].
-                '" AND nik = "'.$nik_dinilai.'"'
-            );
-        } elseif($data_penilai['hirarki_org'] == 'N-1') {
-            //ambil data teman sebaya di divisi dan deptnya dengan nik penilai
-            $data_peers = $this->f360getEmployeDetail(
-                'hirarki_org = "N-1"'.
-                ' AND div_id = "'.$data_penilai['div_id'].
-                '" AND dept_id = "'.$data_penilai['dept_id'].
-                '" AND nik = "'.$nik_dinilai.'"'
-            );
-            // ambil data di employe di divisi lain dengan nik penilai
             $data_other_function = $this->f360getEmployeDetail(
                 'hirarki_org = "N-1"'.
                 ' AND div_id != "'.$data_penilai['div_id'].
