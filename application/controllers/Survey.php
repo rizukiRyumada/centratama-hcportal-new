@@ -879,9 +879,16 @@ class Survey extends CI_Controller {
         $data['load_view'] = 'settings/survey_status_settings_v';
 
         // custom styles and script
-        $data['additional_styles'] = array('datatables/styles_datatables' ,'tableexport/styles_tableexport');
-        // $data['custom_styles'] = array();
-        $data['custom_script'] = array('datatables/script_datatables', 'tableexport/script_tableexport');
+        if($this->session->userdata('survey_status') == 1){ // jika lagi ga print mode sembunyikan tombol export
+            $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+            // $data['custom_styles'] = array();
+            $data['custom_script'] = array('plugins/datatables/script_datatables');
+        } else {
+            $data['additional_styles'] = array('plugins/tableexport/styles_tableexport', 'plugins/datatables/styles_datatables');
+            // $data['custom_styles'] = array();
+            $data['custom_script'] = array('plugins/tableexport/script_tableexport', 'plugins/datatables/script_datatables');
+        }
+        
         
         $this->load->view('main_v', $data);
     }
@@ -985,9 +992,9 @@ class Survey extends CI_Controller {
         $data['load_view'] = 'settings/survey_statusDepartemen_settings_v';
 
         // custom styles and script
-        $data['additional_styles'] = array('tableexport/styles_tableexport');
+        $data['additional_styles'] = array('plugins/tableexport/styles_tableexport');
         // $data['custom_styles'] = array();
-        $data['custom_script'] = array('tableexport/script_tableexport');
+        $data['custom_script'] = array('plugins/tableexport/script_tableexport');
         
         $this->load->view('main_v', $data);
     }

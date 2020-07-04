@@ -5,24 +5,34 @@
                 <h3 class="card-title">Data Karyawan Survey Status</h3>
             </div><!-- /.card-header -->
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-xs-1">
-                        <a href="<?= base_url('settings/survey'); ?>" class="btn btn-primary"><i class="fa fa-chevron-left txt-white"></i></a>
+                <nav class="navbar navbar-expand-md navbar-light bg-light mb-3">
+                    <a href="<?= base_url('settings/survey'); ?>" class="btn btn-primary"><i class="fa fa-chevron-left text-white"></i></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mr-auto pl-2">
+                            <li class="nav-item">
+                                <a href="<?= base_url('survey/settings_printModeTable'); ?>?url=survey/settings_status" class="btn 
+                                <?php if($this->session->userdata('survey_status') == 1): ?>
+                                    btn-primary
+                                <?php else: ?>
+                                    btn-danger    
+                                <?php endif; ?>"><i class="fa fa-print"></i>
+                                    <?php if($this->session->userdata('survey_status') == 1): ?>
+                                        Enable Print Mode
+                                    <?php else: ?>
+                                        Disable Print Mode
+                                    <?php endif; ?>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav nav-pills ml-auto p-2">
+                            <li class="nav-item"><a class="nav-link active" href="#"><i class="fa fa-id-card"></i> Employee</a></li>
+                            <li class="nav-item"><a class="nav-link" href="<?= base_url('survey/settings_statusDepartemen'); ?>"><i class="fa fa-sitemap"></i> Summary</a></li>
+                        </ul>
                     </div>
-                    <div class="col-xs-1 pl-1">
-                        <!-- <a href="<?= base_url('survey/settings_printModeTable'); ?>?url=survey/settings_status" class="btn 
-                        <?php if($this->session->userdata('survey_status') == 1): ?>
-                            btn-secondary
-                        <?php else: ?>
-                            btn-warning    
-                        <?php endif; ?>">Print View</a> -->
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-sm-6 toolsMainTable">
-
-                    </div>
-                </div>
+                </nav>
                 <table id="mainTable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -97,7 +107,12 @@
                         <?php endforeach;?>
                     </tbody>
                 </table>
-            </div><!-- /.card-body -->
+            </><!-- /.card-body -->
         </div><!-- /.card -->
     </div>
 </div>
+
+<!-- variable buat export data -->
+<script>
+    var excelFileName = "Survey Status per Employe";
+</script>
