@@ -3,6 +3,15 @@
 <head>
     <!-- head settings -->
     <?php $this->load->view('komponen/main_head'); ?>
+
+    <!-- additional css -->
+    <?php if(!empty($additional_styles)): ?>
+        <?php foreach($additional_styles as $v): ?>
+            <?php $this->load->view('komponen/'.$v); ?>
+        <?php endforeach;?>
+    <?php endif; ?>
+            
+    <!-- custom styles -->
     <?php if(!empty($custom_styles)): ?>
         <?php foreach($custom_styles as $v): ?>
             <link rel="stylesheet" href="<?= base_url('assets/css/').$v.'.css'; ?>">
@@ -44,6 +53,7 @@
 
     <!-- main script file -->
     <?php $this->load->view('komponen/main_script'); ?>
+
     <!-- load other custom script -->
     <?php if(!empty($custom_script)): ?>
         <?php foreach($custom_script as $v): ?>

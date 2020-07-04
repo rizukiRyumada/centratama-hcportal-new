@@ -156,7 +156,9 @@ function getMenu(){
 
     $CI->load->model('_general_m');
 
-    $menu = $CI->_general_m->getJoin2tables('*', 'survey_user_menu', 'survey_user_menu_access', 'survey_user_menu.id_menu = survey_user_menu_access.id_menu', array('id_user' => $CI->session->userdata('role_id')));
+    // $menu = $CI->_general_m->getJoin2tables('*', 'survey_user_menu', 'survey_user_menu_access', 'survey_user_menu.id_menu = survey_user_menu_access.id_menu', array('id_user' => $CI->session->userdata('role_id')));
+    // ambil list menu tanpa setting
+    $menu = $CI->_general_m->getJoin2tables('*', 'survey_user_menu', 'survey_user_menu_access', 'survey_user_menu.id_menu = survey_user_menu_access.id_menu', 'id_user = '.$CI->session->userdata('role_id').' AND survey_user_menu.id_menu != 5');
 
     // ambil submenu
     $x = 0; $sub_menu = array();

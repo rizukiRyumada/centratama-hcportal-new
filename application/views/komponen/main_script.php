@@ -42,7 +42,7 @@
         //     // className : 'os-theme-dark'
         // }); // set overlay scrollbar to body tag html
         $(".sidebar").overlayScrollbars({
-            className : "os-theme-dark"
+            className : "os-theme-light"
         }); // set overlay sidebar scrollbar color to dark
     });
 

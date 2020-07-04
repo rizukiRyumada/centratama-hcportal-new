@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- head settings -->
+      <!-- head settings -->
     <?php $this->load->view('komponen/login/head_login'); ?>
 </head>
 <body class="layout-top-nav m-0" >
