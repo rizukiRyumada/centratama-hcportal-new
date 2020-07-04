@@ -694,9 +694,7 @@ class Survey extends CI_Controller {
         } elseif($data_penilai['hirarki_org'] == 'N-2') {
             // ambil atasan di dept dan divisi yang sama N-1 dengan nik penilai
             $data_atasan = $this->f360getEmployeDetail(array(
-                'hirarki_org' => 'N-1', 
-                'div_id' => $data_penilai['div_id'],
-                'dept_id' => $data_penilai['dept_id'],
+                'position.id' => $data_penilai['id_atasan1'],
                 'nik' => $nik_dinilai
             ));
             // ambil data teman sebaya di div, dept, dan hirarki yang sama dengan nik penilai
