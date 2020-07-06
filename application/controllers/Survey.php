@@ -120,9 +120,8 @@ class Survey extends CI_Controller {
 
             // main data
             $load_view = 'survey/exc_survey_v';
-        } else {
-            //main data
-            $load_view = 'survey/exc_selesai_survey_v';
+        } else { // kalo sudah selesai
+            header('location: ' . base_url('survey')); // arahkan ke halaman survey index
         }
         
         // survey data
@@ -209,9 +208,8 @@ class Survey extends CI_Controller {
 
             // load view
             $load_view = 'survey/eng_survey_v';
-        } else {
-            // load view
-            $load_view = 'survey/eng_selesai_survey_v';
+        } else { // kalo sudah selesai
+            header('location: ' . base_url('survey')); // arahkan ke halaman survey index
         }
         // survey data
         $data['survey_title'] = $this->_general_m->getOnce('judul', 'survey_page_title', array('id_survey' => 1))['judul'];
