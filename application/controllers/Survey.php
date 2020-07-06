@@ -20,6 +20,11 @@ class Survey extends CI_Controller {
     }
 
     public function index(){
+        // tambah pengecualian buat GA Driver untuk survey engagement
+        if($this->session->userdata('position_id') == 184){
+            $data['survey_status']['exc'] = 'closed';
+        }
+
         // cek apa survey excellence sudah diisi
         if($this->_general_m->getRow('survey_exc_hasil', array('nik' => $this->session->userdata('nik'))) < 1){
             //nothing
@@ -27,7 +32,7 @@ class Survey extends CI_Controller {
             $data['survey_status']['exc'] = 'closed';
         }
         // cek apa survey engagement sudah diisi
-        if($this->_general_m->getRow('survey_eng_hasil', array('nik' => $this->session->userdata('nik'))) < 1){
+        if($this->_general_m->getRow('survey_eng_hasil', array('nik' => $this->session->userdata('nik'))) < 1 ){
             // nothing
         } else {
             $data['survey_status']['eng'] = 'closed';
@@ -82,6 +87,10 @@ class Survey extends CI_Controller {
     /*                          Service Excellence Survey                         */
     /* -------------------------------------------------------------------------- */
     public function excellence(){ // main survey excellence function
+        // tambah pengecualian buat GA Driver
+        if($this->session->userdata('position_id') == 184){
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        }
         //cek apakah karyawan sudah mengisi Service Excellence Survey
         if($this->_general_m->getRow('survey_exc_hasil', array('nik' => $this->session->userdata('nik'))) < 1 ){
             //ambil departemen yang dinilai
@@ -148,21 +157,8 @@ class Survey extends CI_Controller {
 
         // $menu = $CI->_general_m->getJoin2tables('', 'survey_user_menu', 'survey_user_menu_access', 'survey_user_menu.id_menu = survey_user_menu_access.id_menu', array('id_user' => $CI->session->userdata('role_id')));
 
-        //post semua pertanyaan
-        // print_r(json_encode($this->input->post()));
-        // exit;
-
         //ambil id pertanyaan
         $data_pertanyaan = $this->_general_m->getAll('id, judul_pertanyaan, id_tipepertanyaan', 'survey_exc_pertanyaan', array());
-
-        
-        // print_r(json_encode($data_pertanyaan));
-
-        // //ambil id pertanyaan
-
-        // echo("<br/>");
-        // echo("<br/>");
-        // echo("<br/>");
 
         // masukkan semua data dalam 1 variabel
         $x=0; //siapkan pointer
@@ -510,6 +506,7 @@ class Survey extends CI_Controller {
 // NOW
     // get data Feedback 360°
     public function f360getData($data_employe) {
+        // cek hirarki karyawan
         if($data_employe['hirarki_org'] == 'Functional-div'){
             //ambil data teman sebaya N-1 di divisi dan deptnya
             $data_peers = $this->f360getEmployeDetail(
@@ -642,7 +639,7 @@ class Survey extends CI_Controller {
         }
     }
     public function f360cekOtoritas($data_penilai, $nik_dinilai) { // cek otoritas terhadap karyawan
-        // cek dalam 3 kodisi
+        // cek dalam beberapa kondisi 
         if($data_penilai['hirarki_org'] == 'Functional-div'){
             //ambil data teman sebaya N-1 di divisi dan deptnya
             $data_peers = $this->f360getEmployeDetail(
@@ -835,21 +832,27 @@ class Survey extends CI_Controller {
                     $temp_status_f360s = 0; // jika dia belum selesai
                 }
             } else {
-                $temp_status_f360s = 2;
+                $temp_status_f360s = 2; // jika dia tidak berhak mengisi
             }
             
             // cek status survey service excellence
-            // cek apa survey excellence sudah diisi
-            if($this->_general_m->getRow('survey_exc_hasil', array('nik' => $v['nik'])) < 1){
-                $temp_status_exc = FALSE; // jika belum selesai
+            //untuk excellence cek position_idnya buat GA Driver
+            if($v['position_id'] != 184){
+                // cek apa survey engagement sudah diisi
+                if($this->_general_m->getRow('survey_exc_hasil', array('nik' => $v['nik'])) < 1){
+                    $temp_status_exc = 0; // jika belum selesai
+                } else {
+                    $temp_status_exc = 1; // jika sudah selesai
+                }
             } else {
-                $temp_status_exc = TRUE; // jika sudah selesai
+                $temp_status_exc = 2; // jika dia tidak berhak mengisi
             }
+
             // cek apa survey engagement sudah diisi
             if($this->_general_m->getRow('survey_eng_hasil', array('nik' => $v['nik'])) < 1){
-                $temp_status_eng = FALSE; // jika belum selesai
+                $temp_status_eng = 0; // jika belum selesai
             } else {
-                $temp_status_eng = TRUE; // jika sudah selesai
+                $temp_status_eng = 1; // jika sudah selesai
             }
                 
             // tambah data ke data karyawan
@@ -903,10 +906,17 @@ class Survey extends CI_Controller {
             // ambil departemen
             $data_survey[$k]['departemen'] = $this->_general_m->getAll('id, nama_departemen', 'departemen', array('div_id' => $v['id']));            
 
+            // counter grandtotal survey
+            if($k === array_key_first($data_survey)){
+                $counter_data_survey['total_eng'] = 0; $counter_data_survey['total_exc'] = 0; $counter_data_survey['total_f360'] = 0;
+                $counter_data_survey['total_done_eng'] = 0; $counter_data_survey['total_done_exc'] = 0; $counter_data_survey['total_done_f360'] = 0;
+            }
+
+            // NOW add counter per survey type
             // ambil data 
             foreach($data_survey[$k]['departemen'] as $key => $value){
                 $data_karyawan = $this->_general_m->getJoin2tables(
-                    'employe.nik, position.div_id, position.dept_id, position.hirarki_org, position.id_atasan1',
+                    'employe.nik, employe.position_id, position.div_id, position.dept_id, position.hirarki_org, position.id_atasan1',
                     'employe',
                     'position',
                     'position.id = employe.position_id',
@@ -917,6 +927,8 @@ class Survey extends CI_Controller {
 
                 // counter
                 $counter_f360 = 0; $counter_exc = 0; $counter_eng = 0;
+                // counter total employee
+                $counter_total_f360 = 0; $counter_total_exc = 0; $counter_total_eng = 0;
                 // ambil status dari masing-masing karyawan
                 foreach($data_karyawan as $nilai){
                     // ambil data survey f360
@@ -931,16 +943,21 @@ class Survey extends CI_Controller {
                         } else {
                             $temp_status_f360 = 0; // jika dia belum selesai
                         }
-                    } else {
+                        $counter_total_f360 = $counter_total_f360 + 1; // totla karyawan yang bisa isi f360
+                    } else { // jika dia tidak punya hak buat ngisi f360
                         $temp_status_f360 = 0;
                     }
                     
                     // cek status survey service excellence
-                    // cek apa survey excellence sudah diisi
-                    if($this->_general_m->getRow('survey_exc_hasil', array('nik' => $nilai['nik'])) < 1){
-                        $temp_status_exc = 0; // jika belum selesai
-                    } else {
-                        $temp_status_exc = 1; // jika sudah selesai
+                    // cek untuk karyawan yang tidak bisa akses excellence
+                    if($nilai['position_id'] != 184){
+                        // cek apa survey excellence sudah diisi
+                        if($this->_general_m->getRow('survey_exc_hasil', array('nik' => $nilai['nik'])) < 1){
+                            $temp_status_exc = 0; // jika belum selesai
+                        } else {
+                            $temp_status_exc = 1; // jika sudah selesai
+                        }
+                        $counter_total_exc = $counter_total_exc + 1; // total karyaawn yang bisa isi excellence
                     }
                     // cek apa survey engagement sudah diisi
                     if($this->_general_m->getRow('survey_eng_hasil', array('nik' => $nilai['nik'])) < 1){
@@ -948,6 +965,7 @@ class Survey extends CI_Controller {
                     } else {
                         $temp_status_eng = 1; // jika sudah selesai
                     }
+                    $counter_total_eng = $counter_total_eng + 1; // total karyawan yang bisa isi engagement
 
                     // tambah ke counter
                     $counter_f360 = $counter_f360 + $temp_status_f360;
@@ -958,29 +976,74 @@ class Survey extends CI_Controller {
                 // kosongkan penanda count departemen
                 if($key === array_key_first($data_survey[$k]['departemen'])){
                     $data_survey[$k]['count_departemen'] = 0;
+
+                    $data_survey[$k]['total_exc'] = 0;
+                    $data_survey[$k]['total_done_exc'] = 0;
+
+                    $data_survey[$k]['total_eng'] = 0;
+                    $data_survey[$k]['total_done_eng'] = 0;
+
+                    $data_survey[$k]['total_f360'] = 0;
+                    $data_survey[$k]['total_done_f360'] = 0;
                 }
 
                 // tambah ke data survey
                 if(!empty(count($data_karyawan))){
                     $data_survey[$k]['departemen'][$key]['total_employee'] = count($data_karyawan);
                     $data_survey[$k]['departemen'][$key]['exc']['done'] = $counter_exc;
-                    $data_survey[$k]['departemen'][$key]['exc']['rasio'] = ($counter_exc / count($data_karyawan)) * 100;
+                    $data_survey[$k]['departemen'][$key]['exc']['rasio'] = ($counter_exc / $counter_total_exc) * 100;
+                    $data_survey[$k]['departemen'][$key]['exc']['total'] = $counter_total_exc;
 
                     $data_survey[$k]['departemen'][$key]['eng']['done'] = $counter_eng;
-                    $data_survey[$k]['departemen'][$key]['eng']['rasio'] = ($counter_eng / count($data_karyawan)) * 100;
+                    $data_survey[$k]['departemen'][$key]['eng']['rasio'] = ($counter_eng / $counter_total_eng) * 100;
+                    $data_survey[$k]['departemen'][$key]['eng']['total'] = $counter_total_eng;
+
 
                     $data_survey[$k]['departemen'][$key]['f360']['done'] = $counter_f360;
-                    $data_survey[$k]['departemen'][$key]['f360']['rasio'] = ($counter_f360 / count($data_karyawan)) * 100;
+                    $data_survey[$k]['departemen'][$key]['f360']['rasio'] = ($counter_f360 / $counter_total_f360) * 100;
+                    $data_survey[$k]['departemen'][$key]['f360']['total'] = $counter_total_f360;
 
                     // jumlahkan departemen
                     $data_survey[$k]['count_departemen'] = $data_survey[$k]['count_departemen'] + 1;
+
+                    // jumlahkan total masing-masing per departemen
+                    $data_survey[$k]['total_exc'] = $data_survey[$k]['total_exc'] + $counter_total_exc;
+                    $data_survey[$k]['total_done_exc'] = $data_survey[$k]['total_done_exc'] + $counter_exc;
+
+                    $data_survey[$k]['total_eng'] = $data_survey[$k]['total_eng'] + $counter_total_eng;
+                    $data_survey[$k]['total_done_eng'] = $data_survey[$k]['total_done_eng'] + $counter_eng;
+
+                    $data_survey[$k]['total_f360'] = $data_survey[$k]['total_f360'] + $counter_total_f360;
+                    $data_survey[$k]['total_done_f360'] = $data_survey[$k]['total_done_f360'] + $counter_f360;
                 } else { // hapus array jika tidak ada karyawannya
                     unset($data_survey[$k]['departemen'][$key]);
                 }
-            }   
+            }
+
+            // buat rasio total masing-masing per departemen
+            if(!empty(count($data_karyawan))){
+                $data_survey[$k]['total_rasio_exc'] = ($data_survey[$k]['total_done_exc'] / $data_survey[$k]['total_exc']) * 100;
+                $data_survey[$k]['total_rasio_eng'] = ($data_survey[$k]['total_done_eng'] / $data_survey[$k]['total_eng']) * 100;
+                $data_survey[$k]['total_rasio_f360'] = ($data_survey[$k]['total_done_f360'] / $data_survey[$k]['total_f360']) * 100;
+            }
+
+            // buat total masing-masing departemen
+            $counter_data_survey['total_eng'] = $counter_data_survey['total_eng'] + $data_survey[$k]['total_eng']; 
+            $counter_data_survey['total_exc'] = $counter_data_survey['total_exc'] + $data_survey[$k]['total_exc']; 
+            $counter_data_survey['total_f360'] = $counter_data_survey['total_f360'] + $data_survey[$k]['total_f360']; 
+
+            $counter_data_survey['total_done_eng'] = $counter_data_survey['total_done_eng'] + $data_survey[$k]['total_done_eng']; 
+            $counter_data_survey['total_done_exc'] = $counter_data_survey['total_done_exc'] + $data_survey[$k]['total_done_exc']; 
+            $counter_data_survey['total_done_f360'] = $counter_data_survey['total_done_f360'] + $data_survey[$k]['total_done_f360']; 
         }
+        // buat rasio masing-masing survey
+        $counter_data_survey['total_rasio_eng'] = ($counter_data_survey['total_done_eng'] / $counter_data_survey['total_eng']) * 100; 
+        $counter_data_survey['total_rasio_exc'] = ($counter_data_survey['total_done_exc'] / $counter_data_survey['total_exc']) * 100; 
+        $counter_data_survey['total_rasio_f360'] = ($counter_data_survey['total_done_f360'] / $counter_data_survey['total_f360']) * 100; 
+
         // survey data
         $data['data_survey'] = $data_survey;
+        $data['counter_data_survey'] = $counter_data_survey;
 
         // main data
         $data['sidebar'] = getMenu(); // ambil menu

@@ -60,31 +60,31 @@
                                 <td><?= $v['position']; ?></td>
                                 <td class="text-center">
                                     <?php if($this->session->userdata('survey_status') == 1): ?>
-                                        <?php if($v['eng'] == TRUE): ?>
+                                        <?php if($v['eng'] == 1): ?>
                                             <i class="fas fa-check-circle fa-2x text-success"></i>
-                                        <?php else: ?>
+                                        <?php elseif($v['eng'] == 0): ?>
                                             <i class="fas fa-times-circle fa-2x text-danger"></i>
-                                        <?php endif; ?>  
-                                    <?php else: ?>
-                                        <?php if($v['eng'] == TRUE): ?>
-                                            1
                                         <?php else: ?>
-                                            0
-                                        <?php endif; ?>  
+                                            <i class="fas fa-minus-circle fa-2x text-gray"></i>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <?php if($v['eng'] != 2): ?>
+                                            <?= $v['eng']; ?>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center">
                                     <?php if($this->session->userdata('survey_status') == 1): ?>
-                                        <?php if($v['exc'] == TRUE): ?>
+                                        <?php if($v['exc'] == 1): ?>
                                             <i class="fas fa-check-circle fa-2x text-success"></i>
-                                        <?php else: ?>
+                                        <?php elseif($v['exc'] == 0): ?>
                                             <i class="fas fa-times-circle fa-2x text-danger"></i>
+                                        <?php else: ?>
+                                            <i class="fas fa-minus-circle fa-2x text-gray"></i>
                                         <?php endif; ?>
                                     <?php else: ?>
-                                        <?php if($v['exc'] == TRUE): ?>
-                                            1
-                                        <?php else: ?>
-                                            0
+                                        <?php if($v['exc'] != 2): ?>
+                                            <?= $v['exc']; ?>
                                         <?php endif; ?>
                                     <?php endif; ?>
                                 </td>
@@ -107,7 +107,7 @@
                         <?php endforeach;?>
                     </tbody>
                 </table>
-            </><!-- /.card-body -->
+            </div><!-- /.card-body -->
         </div><!-- /.card -->
     </div>
 </div>

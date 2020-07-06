@@ -32,19 +32,22 @@
             <div class="card-body table-responsive p-0 border-top">
                 <table class="table table-bordered table-hover text-nowrap">
                     <thead>
-                        <tr>
+                        <tr class="bg-blue">
                             <th rowspan="2">Division</th>
                             <th rowspan="2">Department</th>
-                            <th rowspan="2">Total</th>
-                            <th colspan="2">Engagement</th>
-                            <th colspan="2">Service</th>
-                            <th colspan="2">360°</th>
+                            <!-- <th rowspan="2">Total</th> -->
+                            <th colspan="3">Engagement</th>
+                            <th colspan="3">Service</th>
+                            <th colspan="3">360°</th>
                         </tr>
-                        <tr>
+                        <tr class="bg-blue">
+                            <th>Total</th>
                             <th>Done</th>
                             <th>%</th>
+                            <th>Total</th>
                             <th>Done</th>
                             <th>%</th>
+                            <th>Total</th>
                             <th>Done</th>
                             <th>%</th>
                         </tr>
@@ -58,29 +61,61 @@
                             <?php foreach($value['departemen'] as $k => $v): ?>
                                 <?php if($x == 0): ?>
                                         <td><?= $v['nama_departemen']; ?></td>
-                                        <td><?= $v['total_employee']; ?></td>
-                                        <td><?= $v['exc']['done']; ?></td>
-                                        <td><?= substr($v['exc']['rasio'], 0, 4); ?></td>
+                                        <!-- <td><?= $v['total_employee']; ?></td> -->
+                                        <td><?= $v['eng']['total']; ?></td>
                                         <td><?= $v['eng']['done']; ?></td>
                                         <td><?= substr($v['eng']['rasio'], 0, 4); ?></td>
+                                        <td><?= $v['exc']['total']; ?></td>
+                                        <td><?= $v['exc']['done']; ?></td>
+                                        <td><?= substr($v['exc']['rasio'], 0, 4); ?></td>
+                                        <td><?= $v['f360']['total']; ?></td>
                                         <td><?= $v['f360']['done']; ?></td>
                                         <td><?= substr($v['f360']['rasio'], 0, 4); ?></td>
                                     </tr>
                                 <?php else: ?>
                                     <tr>
-                                        <td><?= $v['nama_departemen']; ?></td>
-                                        <td><?= $v['total_employee']; ?></td>
-                                        <td><?= $v['exc']['done']; ?></td>
-                                        <td><?= substr($v['exc']['rasio'], 0, 4); ?></td>
+                                    <td><?= $v['nama_departemen']; ?></td>
+                                        <!-- <td><?= $v['total_employee']; ?></td> -->
+                                        <td><?= $v['eng']['total']; ?></td>
                                         <td><?= $v['eng']['done']; ?></td>
                                         <td><?= substr($v['eng']['rasio'], 0, 4); ?></td>
+                                        <td><?= $v['exc']['total']; ?></td>
+                                        <td><?= $v['exc']['done']; ?></td>
+                                        <td><?= substr($v['exc']['rasio'], 0, 4); ?></td>
+                                        <td><?= $v['f360']['total']; ?></td>
                                         <td><?= $v['f360']['done']; ?></td>
                                         <td><?= substr($v['f360']['rasio'], 0, 4); ?></td>
                                     </tr>    
                                 <?php endif; ?>
                                 <?php $x++; ?>
                             <?php endforeach;?>
+                            <!-- subtotal -->
+                            <tr class="bg-blue">
+                                <td colspan="2"><?= $value['division']; ?> Total</td>
+                                <td><?= $value['total_eng']; ?></td>
+                                <td><?= $value['total_done_eng']; ?></td>
+                                <td><?= substr($value['total_rasio_eng'], 0, 4); ?></td>
+                                <td><?= $value['total_exc']; ?></td>
+                                <td><?= $value['total_done_exc']; ?></td>
+                                <td><?= substr($value['total_rasio_exc'], 0, 4); ?></td>
+                                <td><?= $value['total_f360']; ?></td>
+                                <td><?= $value['total_done_f360']; ?></td>
+                                <td><?= substr($value['total_rasio_f360'], 0, 4); ?></td>
+                            </tr>
                         <?php endforeach;?>
+                        <!-- grandtotal -->
+                        <tr>
+                            <td colspan="2">Grand Total</td>
+                            <td><?= $counter_data_survey['total_eng']; ?></td>
+                            <td><?= $counter_data_survey['total_done_eng']; ?></td>
+                            <td><?= substr($counter_data_survey['total_rasio_eng'], 0, 4); ?></td>
+                            <td><?= $counter_data_survey['total_exc']; ?></td>
+                            <td><?= $counter_data_survey['total_done_exc']; ?></td>
+                            <td><?= substr($counter_data_survey['total_rasio_exc'], 0, 4); ?></td>
+                            <td><?= $counter_data_survey['total_f360']; ?></td>
+                            <td><?= $counter_data_survey['total_done_f360']; ?></td>
+                            <td><?= substr($counter_data_survey['total_rasio_f360'], 0, 4); ?></td>
+                        </tr>
                     </tbody>
 
                     <tfoot>
