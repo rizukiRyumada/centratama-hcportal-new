@@ -19,6 +19,8 @@
 <link rel="stylesheet" href="<?= base_url('/assets/vendor/node_modules/admin-lte/dist/css/adminlte.min.css'); ?>">
 <!-- toastr -->
 <link rel="stylesheet" href="<?= base_url('/assets/vendor/node_modules/toastr/build/toastr.min.css'); ?>">
+<!-- select2 -->
+<link rel="stylesheet" href="<?= base_url('assets/vendor/node_modules/admin-lte/plugins/select2/css/select2.min.css'); ?>">
 <!-- custom css style -->
 <link rel="stylesheet" href="<?= base_url('/assets/css/main_styles.css'); ?>">
 

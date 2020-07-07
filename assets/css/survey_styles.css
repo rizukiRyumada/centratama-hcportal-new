@@ -1,0 +1,134 @@
+/* ---------------------------- f360 index styles --------------------------- */
+table.table.table-hover thead tr th.th-f360-wider{
+    width: 27.5%
+}
+table.table.table-hover thead tr th.th-f360{
+    width: 20.5%
+}
+table.table.table-hover thead tr th.th-f360-btn{
+    width: 5%;
+}
+table.table.table-hover thead tr th.th-f360-80{
+    width: 80%;
+}
+.f360-desktop-wrapper{
+    display: block;
+}
+.f360-mobile-wrapper{
+    display: none;
+}
+
+/* survey badge tag */
+.badge-survey-tag{
+    width: 100%;
+}
+.badge-survey-tag-keterangan{
+    font-size: 0.8em;
+}
+
+/* row survey */
+.row-survey-striped{
+    background-color: #eee;
+}
+.row-survey{
+    min-height: 3em;
+    max-height: 8em;
+}
+.min-width-50px{
+    min-width: 50px;
+}
+
+@media screen and (max-width: 1080px) {
+    .form-survey{
+        font-size: 0.90em;
+    }
+
+    .f360-desktop-wrapper{
+        display: none;
+    }
+    .f360-mobile-wrapper{
+        display: block;
+    }
+
+    /* .col-6.departemen-name.d-flex.align-items-center{
+        flex: 0 0 40%;
+        max-width: 40%;
+    }
+
+    .col-1.departemen-nilai.d-flex.align-items-center.m-0.p-0.justify-content-center{
+        flex: 0 0 12%;
+        max-width: 12%;
+    }
+
+    .col-6.tombol-aksi{
+        width: 100%;
+    } */
+
+    /* 0 0 40% ||| 0 0 60% */
+    /* 0 0 40% ||| 0 0 15%% */
+    
+    h1{
+        font-size: 30px;
+    }
+
+    h5{
+        font-size: 18px;
+    }
+
+    body{
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .col-1.pertanyaan-index-wrapper{
+        -ms-flex: 0 0 0%;
+        flex: 0 0 0%;
+        max-width: 60px;
+        width: 50px;
+    }
+    .col-11.pertanyaan-text-wrapper{
+        -ms-flex: 0 0 0%;
+        flex: 0 0 0%;
+        max-width: 93%;
+        flex-grow: 1;
+        padding-left: 0.5em !important;
+    }
+    div.row.justify-content-center.d-flex div.align-self-center.col-1.text-center{
+        padding: 0;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .keterangan-penilaian{
+        font-size: 0.92em;
+    }
+
+    /* p{
+        font-size: 0.92em;
+    } */
+    
+    p.counter-text{
+        font-size: 0.80em;
+    }
+
+    p.text-center.m-0.badge{
+        font-size: 9px;
+    }
+
+    button{
+        font-size: 15px !important;
+    }
+}
+
+@media screen and (max-height: 500px){
+    h5{
+        font-size: 12px;
+    }
+
+    /* p{
+        font-size: 10px;
+    } */
+
+    
+}

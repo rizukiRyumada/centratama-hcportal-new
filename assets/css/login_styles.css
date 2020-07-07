@@ -1,0 +1,248 @@
+/* custom font */
+@font-face {
+	font-family: 'BRLNSR';
+	src: url('./BRLNSR.eot');
+	src: local('BRLNSR'), url('../font/berlin-sans/BRLNSR.woff') format('woff'), url('../font/berlin-sans/BRLNSR.ttf') format('truetype');
+}
+/* use this class to attach this font to any element i.e. <p class="fontsforweb_fontid_12421">Text with this font applied</p> */
+.font-berlinsans {
+	font-family: 'BRLNSR' !important;
+}
+
+/* --------------------------------- wrapper -------------------------------- */
+.portal-header{
+    /* background-color: yellow !important; */
+    height: 15%;
+}
+.portal-body{
+    height: 11%;
+}
+.portal-application{
+    height: 71%;
+}
+.portal-footer{
+    height: 3%;
+}
+.portal-footer-text{
+    font-size: 0.80em;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-right: 1em;
+}
+
+/* --------------------------------- banner SVG --------------------------------- */
+div.banner-wrapper{
+    /* position: relative; */
+    height: 100%;
+    float: left;
+    z-index:-9999;
+}
+div.banner-wrapper .banner-tema{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    max-width: 115vh;
+    height: auto;
+    z-index:-9999;
+}
+div.banner-wrapper .banner-pengumuman{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 80vh;
+    max-height: 90vw;
+    height: auto;
+    z-index:-9999;
+}
+/* ----------------------------- application bar ---------------------------- */
+.app-circle{
+    border-radius: 10em;
+    height: 75px;
+    width: 75px;
+    font-weight: bold;
+    vertical-align: middle;
+    display: table-cell;
+    background-color: #0072C6;
+    border-radius: 60px;
+    transition: 0.5s;
+}
+.app-circle:hover{
+    border-radius: 10em;
+    height: 75px;
+    width: 75px;
+    font-weight: bold;
+    vertical-align: middle;
+    display: table-cell;
+    background-color: rgb(0, 82, 141);
+	border-radius: 60px;
+}
+.app-circle p{
+    vertical-align: middle;
+    display: table-cell;
+    color: #fff;
+}
+.app-more{
+    color: #0072C6;
+    background-color: rgb(255,255,255);
+    border-radius: 0px;
+    transition: 0.5s;
+}
+.app-more:hover{
+    color: #fff;
+    background-color: rgb(0, 82, 141);
+    /* transition: 0.5s; */
+    border-radius: 18px;
+}
+.app-more svg{
+    fill: #0072C6;
+    height: 50px;
+    width: 50px;
+    transition: 0.5s;
+}
+.app-more:hover svg{
+    fill: #fff;
+    height: 50px;
+    width: 50px;
+}
+.app-more p{
+    vertical-align: middle;
+    display: table-cell;
+}
+/* portal application card */
+div#content-aplikasi.content div.container-fluid.align-items-end.justify-content-end.d-flex.h-100 div.row div.col div.card.bg-transparent.mb-0{
+    box-shadow: none;
+}
+/* portal application card title */
+div.card.bg-transparent.mb-0 h4.card-title.text-right.text-dark{
+    font-size: 1.5em;
+}
+
+/* ------------------------------- form login ------------------------------- */
+.form-login-wrapper{
+    width: 100%;
+}
+
+/* --------------------------------- Navbar --------------------------------- */
+.navbar-logo{
+    width: 9em;
+    height: auto !important;
+}
+/* navbar button */
+nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.order-1.order-md-3.navbar-nav.navbar-no-expand.ml-auto li.nav-item a.btn.btn-primary{
+    border-radius: 2em;
+    background-color: #0072C6;
+    border-color: #0072C6;
+    width: 9em;
+}
+nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.order-1.order-md-3.navbar-nav.navbar-no-expand.ml-auto li.nav-item a.btn.btn-primary:hover{
+    border-radius: 2em;
+    background-color: rgb(0, 82, 141);
+    border-color: rgb(0, 82, 141);
+    width: 9em;
+}
+/* navbar brand-text */
+.navbar-text-leftbordered{
+    border-left: 6px solid #0072C6;
+    color: #0072C6;
+    font-size: 1.5em;
+    padding-left: 0.5em;
+    height: 100%;
+    margin: 0px;
+    align-items: center;
+}
+/* konten wrapper on smaller screen */
+#content-wrap-smallscrenn{
+    display: none;
+}
+/* FIXME hapus property ini */
+.layout-top-nav .wrapper .main-header .brand-image{
+    height: 72.5px !important;
+}
+
+/* ------------------------ set style for screen size ----------------------- */
+@media screen and (max-width: 1080px) {
+    /* konten wrapper on smaller screen */
+    #content-wrap-smallscrenn{
+        display: block;
+    }
+    /* Navbar */
+    .navbar-logo{
+        width: 6em;
+        height: auto !important;
+    }
+    div#content-wrap-smallscrenn.content-wrapper.bg-transparent.h-100 div.content div.container-fluid div.row div.col-6.text-center a.btn.btn-primary{
+        width: 9em;
+    }
+    .navbar-text-leftbordered{
+        border-left: 6px solid #0072C6;
+        color: #0072C6;
+        font-size: 1em;
+        padding-left: 0.5em;
+        height: 100%;
+        margin: 0px;
+        align-items: center;
+    }
+
+    nav.main-header.navbar.navbar-expand-lg.border-bottom-0 div.container-fluid ul.order-1.order-md-3.navbar-nav.navbar-no-expand.ml-auto{
+        display: none;
+    }
+
+    /* hide banner */
+    .banner-wrapper{
+        display: none;
+    }
+
+    /* content wrapper */
+    div.wrapper.h-100 div#content-wrap.content-wrapper.bg-transparent{
+        display:none;
+    }
+
+    /* responsive styles */
+    .responsive-image{
+        max-width: 80%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 80%;
+    }
+
+    /* FIXME hapus property ini */
+    .layout-top-nav .wrapper .main-header .brand-image{
+        height: 52.5px !important;
+    }
+
+    /* -------------------- other app card on smaller screen -------------------- */
+    div#content-wrap-smallscrenn.content-wrapper.bg-transparent div.content div.container div.row div.col div.card.bg-transparent.mb-0{
+        box-shadow: none;
+    }
+    div.card.bg-transparent.mb-0 h4.card-title.text-right.text-dark{
+        font-size: 1em;
+    }
+    .app-circle p{
+        font-size: 0.75em;
+    }
+    .app-circle{
+        border-radius: 10em;
+        height: 60px;
+        width: 60px;
+        font-weight: bold;
+        vertical-align: middle;
+        display: table-cell;
+        background-color: #0072C6;
+        border-radius: 60px;
+        transition: 0.5s;
+    }
+    .app-circle:hover{
+        border-radius: 10em;
+        height: 60px;
+        width: 60px;
+        font-weight: bold;
+        vertical-align: middle;
+        display: table-cell;
+        background-color: rgb(0, 82, 141);
+        border-radius: 60px;
+    }
+    
+}
