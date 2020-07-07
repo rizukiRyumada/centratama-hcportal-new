@@ -3,7 +3,7 @@
 // TODO buat halaman setting survey buat admin
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Survey extends CI_Controller {
+class Survey extends MainController {
     protected $title_excellence = 'Service Excellence';
     protected $title_engagement = 'Employee Engagement';
     protected $title_f360 = '360° Feedback';
@@ -14,9 +14,7 @@ class Survey extends CI_Controller {
         // show_error('error dah', 404, 'ada errrrororororororo');
         // exit;
         parent::__construct();
-        // main helper
-        is_logged_in(); //Cek Login
-        date_default_timezone_set('Asia/Jakarta'); // set timezone
+        
     }
 
     public function index(){
@@ -875,7 +873,7 @@ class Survey extends CI_Controller {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = 'Survey Status';
-        $data['load_view'] = 'settings/survey_status_settings_v';
+        $data['load_view'] = 'appsettings/survey_status_settings_v';
 
         // custom styles and script
         if($this->session->userdata('survey_status') == 1){ // jika lagi ga print mode sembunyikan tombol export
@@ -1048,7 +1046,7 @@ class Survey extends CI_Controller {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = 'Survey Status';
-        $data['load_view'] = 'settings/survey_statusDepartemen_settings_v';
+        $data['load_view'] = 'appsettings/survey_statusDepartemen_settings_v';
 
         // custom styles and script
         $data['additional_styles'] = array('plugins/tableexport/styles_tableexport');

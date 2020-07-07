@@ -6,7 +6,7 @@
             </div><!-- /.card-header -->
             <div class="card-body">
                 <nav class="navbar navbar-expand-md navbar-light bg-light mb-3">
-                    <a href="<?= base_url('settings/survey'); ?>" class="btn btn-primary"><i class="fa fa-chevron-left text-white"></i></a>
+                    <a href="<?= base_url('appSettings/survey'); ?>" class="btn btn-primary"><i class="fa fa-chevron-left text-white"></i></a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
                         <span class="navbar-toggler-icon"></span>
                     </button>

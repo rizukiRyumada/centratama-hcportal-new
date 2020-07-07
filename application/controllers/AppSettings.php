@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Settings extends CI_Controller {
+class AppSettings extends MainController {
 
     public function __construct(){
         // show_error($message, $status_code, $heading = 'An Error Was Encountered')
@@ -8,9 +8,6 @@ class Settings extends CI_Controller {
         // show_error('error dah', 404, 'ada errrrororororororo');
         // exit;
         parent::__construct();
-        // main helper
-        is_logged_in(); //Cek Login
-        date_default_timezone_set('Asia/Jakarta'); // set timezone
 
         // cek apa dia punya role maintenance
         if($this->session->userdata('role_id') != 1){
@@ -25,7 +22,7 @@ class Settings extends CI_Controller {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
-        $data['load_view'] = 'settings/settings_v';
+        $data['load_view'] = 'appsettings/settings_v';
         // $data['custom_styles'] = array('survey_styles');
         // $data['custom_script'] = array('survey/script_survey');
         
@@ -38,7 +35,7 @@ class Settings extends CI_Controller {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->uri_string()))['title'];
-        $data['load_view'] = 'settings/survey_settings_v';
+        $data['load_view'] = 'appsettings/survey_settings_v';
         // $data['custom_styles'] = array('survey_styles');
         // $data['custom_script'] = array('survey/script_survey');
         
