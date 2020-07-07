@@ -403,7 +403,9 @@ $config['sess_regenerate_destroy'] = FALSE;
 $config['cookie_prefix']	= '';
 $config['cookie_domain']	= '';
 $config['cookie_path']		= '/; SameSite=None';
-$config['cookie_secure']	= TRUE;
+// TODO Change this to TRUE
+$config['cookie_secure']	= FALSE;
+// $config['cookie_secure']	= TRUE;
 $config['cookie_httponly'] 	= FALSE;
 
 /*

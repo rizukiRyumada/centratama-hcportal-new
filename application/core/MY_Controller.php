@@ -32,4 +32,18 @@ class MainController extends MY_Controller {
     
 }
 
+class AdminController extends MainController {
+    
+    public function __construct()
+    {
+        parent::__construct();
+        
+        // cek apa dia punya role maintenance
+        if($this->session->userdata('role_id') != 1){
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        }
+    }
+    
+}
+
 /* End of file MY_Controller.php */

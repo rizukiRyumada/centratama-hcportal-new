@@ -10,25 +10,30 @@ html {
 
 /* ------------------------------ button styles ----------------------------- */
 .btn{
-    border-radius: 2em !important;
+    border-radius: 2em;
 }
 .btn-primary{
-    background-color: #0072C6 !important;
-    border-color: #0072C6 !important;
+    background-color: #0072C6;
+    border-color: #0072C6;
     transition: 0.25s;
 }
 .btn-primary:hover{
-    background-color: rgb(0, 82, 141) !important;
-    border-color: rgb(0, 82, 141) !important;
+    background-color: rgb(0, 82, 141);
+    border-color: rgb(0, 82, 141);
 }
 
 /* custom color and hover */
 .link-primary{
-    color: #0072C6 !important;
+    color: #0072C6;
     transition: 0.25s;
 }
 .link-primary:hover{
-    color: rgb(0, 82, 141) !important;
+    color: rgb(0, 82, 141);
+}
+
+/* form control styles */
+.form-control{
+    border-radius: 1.5rem;
 }
 
 /* Table style */

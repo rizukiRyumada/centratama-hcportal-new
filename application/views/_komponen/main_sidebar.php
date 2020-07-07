@@ -87,6 +87,7 @@
                         <hr class="m-0" />
                     </li>
                     
+                    <!-- menu application setting -->
                     <?php $sidebar['settings'] = $this->_general_m->getOnce('*', 'survey_user_menu', array('id_menu' => '5')) ?>
                     <li class="nav-item has-treeview">
                         <a href="#" class="nav-link">
@@ -98,6 +99,29 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <?php $sidebar['settings']['submenu'] = $this->_general_m->getAll('id_menu_sub, title, url', 'survey_user_menu_sub', array('id_menu' => '5')); ?>
+                            <?php foreach($sidebar['settings']['submenu'] as $value): ?>
+                                <li class="nav-item">
+                                    <a href="<?= base_url().$value['url']; ?>" id="<?= $value['id_menu_sub']; ?>" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p><?= $value['title']; ?></p>
+                                    </a>
+                                </li>
+                            <?php endforeach;?>
+                        </ul>
+                    </li>
+
+                    <!-- menu general setting -->
+                    <?php $sidebar['settings'] = $this->_general_m->getOnce('*', 'survey_user_menu', array('id_menu' => '7')) ?>
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon <?= $sidebar['settings']['icon']; ?>"></i>
+                            <p>
+                                <?= $sidebar['settings']['title']; ?>
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <?php $sidebar['settings']['submenu'] = $this->_general_m->getAll('id_menu_sub, title, url', 'survey_user_menu_sub', array('id_menu' => '7')); ?>
                             <?php foreach($sidebar['settings']['submenu'] as $value): ?>
                                 <li class="nav-item">
                                     <a href="<?= base_url().$value['url']; ?>" id="<?= $value['id_menu_sub']; ?>" class="nav-link">

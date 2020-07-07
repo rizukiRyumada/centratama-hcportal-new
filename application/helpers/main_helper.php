@@ -165,8 +165,12 @@ function getMenu(){
         'survey_user_menu.id_menu = survey_user_menu_access.id_menu', 
         'id_user = '.$CI->session->userdata('role_id').
         // this is for special menu
-        ' AND survey_user_menu.id_menu != 5 AND survey_user_menu.id_menu != 7'
+        ' AND survey_user_menu.id_menu != 5 
+          AND survey_user_menu.id_menu != 7
+          AND survey_user_menu.id_menu != 2'
     );
+
+    // TODO khusus buat role_id = 2
 
     // ambil submenu
     $x = 0; $sub_menu = array();

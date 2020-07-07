@@ -879,11 +879,11 @@ class Survey extends MainController {
         if($this->session->userdata('survey_status') == 1){ // jika lagi ga print mode sembunyikan tombol export
             $data['additional_styles'] = array('plugins/datatables/styles_datatables');
             // $data['custom_styles'] = array();
-            $data['custom_script'] = array('plugins/datatables/script_datatables');
+            $data['custom_script'] = array('survey/script_survey', 'plugins/datatables/script_datatables');
         } else {
             $data['additional_styles'] = array('plugins/tableexport/styles_tableexport', 'plugins/datatables/styles_datatables');
             // $data['custom_styles'] = array();
-            $data['custom_script'] = array('plugins/tableexport/script_tableexport', 'plugins/datatables/script_datatables');
+            $data['custom_script'] = array('survey/script_survey', 'plugins/tableexport/script_tableexport', 'plugins/datatables/script_datatables');
         }
         
         
@@ -1051,7 +1051,7 @@ class Survey extends MainController {
         // custom styles and script
         $data['additional_styles'] = array('plugins/tableexport/styles_tableexport');
         // $data['custom_styles'] = array();
-        $data['custom_script'] = array('plugins/tableexport/script_tableexport');
+        $data['custom_script'] = array('survey/script_survey', 'plugins/tableexport/script_tableexport');
         
         $this->load->view('main_v', $data);
     }

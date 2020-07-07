@@ -26,7 +26,7 @@
         <li class="nav-item dropdown">
             <a id="userDropDown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="nav-link dropdown-toggle"><?= $user['emp_name'] ?></a>
             <ul aria-labelledby="userDropDown" class="dropdown-menu border-0 shadow" style="left: 0px; right: inherit;">
-                <li><a href="#" class="dropdown-item"><i class="fa fa-user"></i> <span class="ml-1">My Profile</span></a></li>
+                <li><a href="<?= base_url('profile'); ?>" class="dropdown-item"><i class="fa fa-user"></i> <span class="ml-1">My Profile</span></a></li>
                 <li class="dropdown-divider"></li>
                 <li><a href="<?= base_url('login/logout') ?>" class="dropdown-item text-danger"><i class="fa fa-sign-out-alt"></i> <span class="ml-1">Logout</span></a></li>
             </ul>

@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class AppSettings extends MainController {
+class AppSettings extends AdminController {
 
     public function __construct(){
         // show_error($message, $status_code, $heading = 'An Error Was Encountered')
@@ -8,11 +8,6 @@ class AppSettings extends MainController {
         // show_error('error dah', 404, 'ada errrrororororororo');
         // exit;
         parent::__construct();
-
-        // cek apa dia punya role maintenance
-        if($this->session->userdata('role_id') != 1){
-            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
-        }
     }
 
     public function index()

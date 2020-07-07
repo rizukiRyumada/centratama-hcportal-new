@@ -10,6 +10,8 @@
 <link rel="shortcut icon" href="<?= base_url('assets/img/logo3.png'); ?>">
 <!-- icons -->
 <link rel="stylesheet" href="<?= base_url('assets/vendor/node_modules/@fortawesome/fontawesome-free/css/all.min.css') ?>">
+<!-- iCheck -->
+<link rel="stylesheet" href="<?= base_url('/assets/vendor/node_modules/icheck-bootstrap/icheck-bootstrap.min.css'); ?>">
 <!-- Overlay Scrollbar -->
 <link rel="stylesheet" href="<?= base_url('/assets/vendor/node_modules/overlayscrollbars/css/OverlayScrollbars.min.css'); ?>">
 <!-- font -->

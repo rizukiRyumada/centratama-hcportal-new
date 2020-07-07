@@ -34,8 +34,7 @@
     "hideMethod": "fadeOut"
     }
     
-    <?= $this->session->flashdata('all_survey'); ?>
-    <?= $this->session->flashdata('one_survey'); ?>
+    <?= $this->session->flashdata('msg'); ?>
 
     $(document).ready(function(){
         // $("body").overlayScrollbars({ 
