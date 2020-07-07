@@ -14,36 +14,37 @@
                 <p class="text-muted text-center"><?= $data_karyawan['position_name']; ?></p>
 
                 <ul class="list-group list-group-unbordered mb-3">
-                  <li class="list-group-item">
-                    <b>Division</b> <a class="float-right"><?= $data_karyawan['divisi']; ?></a>
-                  </li>
-                  <li class="list-group-item">
-                    <b>Department</b> <a class="float-right"><?= $data_karyawan['departemen']; ?></a>
-                  </li>
-                  <li class="list-group-item">
-                    <b>Hierarchy</b> <a class="float-right">
-                        <span class="badge 
-                            <?php switch ($data_karyawan['hirarki_org']){
-                                case "N":
-                                    echo "badge-danger";
-                                    break;
-                                case "N-1":
-                                    echo "badge-warning";
-                                    break;
-                                case "N-2":
-                                    echo "badge-success";
-                                    break;
-                                case "N-3":
-                                    echo "badge-info";
-                                    break;
-                                default:
-                                    echo "badge-primary";
-                            } ?>
-                        ">
-                            <?= $data_karyawan['hirarki_org']; ?>
-                        </span>
-                    </a>
-                  </li>
+                    <li class="list-group-item">
+                        <b>Hierarchy</b>
+                        <a class="float-right">
+                            <span class="badge 
+                                <?php switch ($data_karyawan['hirarki_org']){
+                                    case "N":
+                                        echo "badge-danger";
+                                        break;
+                                    case "N-1":
+                                        echo "badge-warning";
+                                        break;
+                                    case "N-2":
+                                        echo "badge-success";
+                                        break;
+                                    case "N-3":
+                                        echo "badge-info";
+                                        break;
+                                    default:
+                                        echo "badge-primary";
+                                } ?>
+                            ">
+                                <?= $data_karyawan['hirarki_org']; ?>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Department</b> <a class="float-right"><?= $data_karyawan['departemen']; ?></a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Division</b> <a class="float-right"><?= $data_karyawan['divisi']; ?></a>
+                    </li>
                 </ul>
             </div>
         </div>
