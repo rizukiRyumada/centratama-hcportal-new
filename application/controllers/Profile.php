@@ -9,7 +9,6 @@ class Profile extends MainController {
         parent::__construct();
         //Do your magic here
     }
-    
 
     public function index() {
         // ambil data karyawan

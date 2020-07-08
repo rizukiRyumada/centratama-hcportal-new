@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class AppSettings extends AdminController {
+class AppSettings extends SuperAdminController {
 
     public function __construct(){
         // show_error($message, $status_code, $heading = 'An Error Was Encountered')

@@ -2,6 +2,9 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/**
+ * MY_Controller
+ */
 class MY_Controller extends CI_Controller {
     
     public function __construct()
@@ -18,6 +21,9 @@ class MY_Controller extends CI_Controller {
 
 }
 
+/**
+ * MainController
+ */
 class MainController extends MY_Controller {
     
     public function __construct()
@@ -32,7 +38,23 @@ class MainController extends MY_Controller {
     
 }
 
+/**
+ * AdminController
+ */
 class AdminController extends MainController {
+    
+    public function __construct(){
+        parent::__construct();
+        // load model
+        $this->load->library('form_validation');
+    }
+}
+
+/**
+ * SuperAdminController
+ * This controller for admin function with user role 1
+ */
+class SuperAdminController extends MainController {
     
     public function __construct()
     {

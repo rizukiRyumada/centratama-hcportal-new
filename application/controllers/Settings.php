@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Settings extends AdminController {
+class Settings extends SuperAdminController {
 
     public function index() {
         echo"adminsApp";
@@ -13,8 +13,11 @@ class Settings extends AdminController {
         $data['adminsapp'] = $this->_general_m->getAll('*', 'survey_user_admins', array());
         // ambil detail icon menu
         foreach($data['adminsapp'] as $k => $v){
-            $data['adminsapp'][$k]['icon'] = $this->_general_m->getOnce('icon', survey_)
+            $data['adminsapp'][$k]['icon'] = $this->_general_m->getOnce('icon', 'survey_user_menu', array());
         }
+
+        echo(json_encode($data));
+        exit;
 
         // main data
         $data['sidebar'] = getMenu(); // ambil menu

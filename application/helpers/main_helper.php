@@ -157,28 +157,91 @@ function getMenu(){
     $CI->load->model('_general_m');
 
     // $menu = $CI->_general_m->getJoin2tables('*', 'survey_user_menu', 'survey_user_menu_access', 'survey_user_menu.id_menu = survey_user_menu_access.id_menu', array('id_user' => $CI->session->userdata('role_id')));
-    // ambil list menu tanpa setting
-    $menu = $CI->_general_m->getJoin2tables(
-        '*', 
-        'survey_user_menu', 
-        'survey_user_menu_access', 
-        'survey_user_menu.id_menu = survey_user_menu_access.id_menu', 
-        'id_user = '.$CI->session->userdata('role_id').
-        // this is for special menu
-        ' AND survey_user_menu.id_menu != 5 
-          AND survey_user_menu.id_menu != 7
-          AND survey_user_menu.id_menu != 2'
-    );
+    if($CI->session->userdata('role_id') == 2){
+        // ambil menu dari admins menu
+        $menu = $CI->_general_m->getJoin2tables(
+            '*', 
+            'survey_user_menu', 
+            'survey_user_menu_access', 
+            'survey_user_menu.id_menu = survey_user_menu_access.id_menu', 
+            'id_user = '.$CI->session->userdata('role_id').
+            // this is for special menu
+            ' AND survey_user_menu.id_menu != 5 
+            AND survey_user_menu.id_menu != 7
+            AND survey_user_menu.id_menu != 2'
+        );
 
-    // TODO khusus buat role_id = 2
+        // cari menu jenisnya yang admin
+        $x = 0; 
+        foreach($menu as $k => $v){
+            if($CI->_general_m->getRow('survey_user_menu_sub_admins', array('id_menu' => $v['id_menu'])) >= 1){
+                $menu_admin[$x] = $v; // masukkan menu ke variable menu admin
+                unset($menu[$k]); // hapus menu dari variabel menu
+                $x++;
+            }
+        }
+        // cek akses menu admin
+        if(!empty($menu_admin)){
+            foreach($menu_admin as $k => $v){
+                if($CI->_general_m->getRow('survey_user_menu_sub_admins', array('id_menu' => $v['id_menu'], 'nik' => $CI->session->userdata('nik'))) < 1){
+                    unset($menu_admin[$k]); // hapus menu admin
+                }
+            }
+            // gabungkan menu
+            $menu = array_merge($menu, $menu_admin);
+        }
 
-    // ambil submenu
-    $x = 0; $sub_menu = array();
-    foreach($menu as $v){
-        $temp_sub_menu = $CI->_general_m->getJoin2tables('*', 'survey_user_menu_sub', 'survey_user_menu_sub_access', 'survey_user_menu_sub.id_menu_sub = survey_user_menu_sub_access.id_menu_sub', array('id_menu' => $v['id_menu'], 'id_user' => $CI->session->userdata('role_id')));
-        foreach($temp_sub_menu as $v){
-            $sub_menu[$x] = $v;
-            $x++;
+        // ambil submenu
+        $x = 0; $sub_menu = array();
+        foreach($menu as $v){
+            $temp_sub_menu = $CI->_general_m->getJoin2tables('*', 'survey_user_menu_sub', 'survey_user_menu_sub_access', 'survey_user_menu_sub.id_menu_sub = survey_user_menu_sub_access.id_menu_sub', array('id_menu' => $v['id_menu'], 'id_user' => $CI->session->userdata('role_id')));
+            foreach($temp_sub_menu as $v){
+                $sub_menu[$x] = $v;
+                $x++;
+            }
+        }
+
+        // cari menu jenisnya yang admin
+        $x = 0; 
+        foreach($sub_menu as $k => $v){
+            if($CI->_general_m->getRow('survey_user_menu_sub_admins', array('id_menu_sub' => $v['id_menu_sub'])) >= 1){
+                $sub_menu_admin[$x] = $v; // masukkan menu ke variable menu admin
+                unset($sub_menu[$k]); // hapus menu dari variabel menu
+                $x++;
+            }
+        }
+        // cek akses menu admin
+        if(!empty($sub_menu_admin)){
+            foreach($sub_menu_admin as $k => $v){
+                if($CI->_general_m->getRow('survey_user_menu_sub_admins', array('id_menu_sub' => $v['id_menu_sub'], 'nik' => $CI->session->userdata('nik'))) < 1){
+                    unset($sub_menu_admin[$k]); // hapus menu admin
+                }
+            }
+            // gabungkan sub menu
+            $sub_menu = array_merge($sub_menu, $sub_menu_admin);
+        }
+    } else {
+        // ambil list menu tanpa setting
+        $menu = $CI->_general_m->getJoin2tables(
+            '*', 
+            'survey_user_menu', 
+            'survey_user_menu_access', 
+            'survey_user_menu.id_menu = survey_user_menu_access.id_menu', 
+            'id_user = '.$CI->session->userdata('role_id').
+            // this is for special menu
+            ' AND survey_user_menu.id_menu != 5 
+            AND survey_user_menu.id_menu != 7
+            AND survey_user_menu.id_menu != 2'
+        );
+
+        // ambil submenu
+        $x = 0; $sub_menu = array();
+        foreach($menu as $v){
+            $temp_sub_menu = $CI->_general_m->getJoin2tables('*', 'survey_user_menu_sub', 'survey_user_menu_sub_access', 'survey_user_menu_sub.id_menu_sub = survey_user_menu_sub_access.id_menu_sub', array('id_menu' => $v['id_menu'], 'id_user' => $CI->session->userdata('role_id')));
+            foreach($temp_sub_menu as $v){
+                $sub_menu[$x] = $v;
+                $x++;
+            }
         }
     }
     

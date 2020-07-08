@@ -20,6 +20,22 @@
         ]
     });
     
+    $("#basicTable").DataTable({
+      responsive: true,
+      autoWidth: false,
+      searching: false,
+      paging: false,
+      info: false,
+      buttons: [
+            {
+              text: '<?php if($this->session->userdata('survey_status') == 1){echo"Activate Export Mode";}else{echo"Deactivate Export Mode";} ?>',
+              action: function ( e, dt, button, config ) {
+                window.location = '<?= base_url('survey/settings_printModeTable'); ?>?url=survey/settings_status';
+              }        
+            }
+        ]
+    });
+
     table.buttons().container()
     .appendTo( $('.col-sm-6:eq(0)', table.table().container() ) );
 </script>
