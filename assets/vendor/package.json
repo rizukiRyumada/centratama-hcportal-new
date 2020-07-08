@@ -14,6 +14,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "admin-lte": "^3.0.5",
+    "orgchart": "^2.1.10",
     "tableexport": "^5.2.0"
   }
 }

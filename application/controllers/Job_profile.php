@@ -73,11 +73,24 @@ class Job_profile extends MainController {
         
         $data['my_task'] = $this->getApprovalDetails($my_task); //get Approval Details
 
-        $this->load->view('templates/user_header', $data);
-		$this->load->view('templates/user_sidebar', $data);
-		$this->load->view('templates/user_topbar', $data);
-		$this->load->view('job_profile/indexjp', $data);
-        $this->load->view('templates/indexjp_footer');
+        // $this->load->view('templates/user_header', $data);
+		// $this->load->view('templates/user_sidebar', $data);
+		// $this->load->view('templates/user_topbar', $data);
+		// $this->load->view('job_profile/indexjp', $data);
+        // $this->load->view('templates/indexjp_footer');
+
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+		$data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+		$data['load_view'] = 'job_profile/index_jobprofile_v';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+		// $data['custom_styles'] = array('survey_styles');
+        $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_index_jobprofile');
+        
+		$this->load->view('main_v', $data);
     }
 
     // function untuk menampilkan JP karyawan yang login
@@ -94,19 +107,43 @@ class Job_profile extends MainController {
         $approval = $this->db->get_where('job_approval', ['id_posisi' => $data['posisi']['id']])->row_array(); //get status approval
         
         if ($approval['status_approval'] == 0 || $approval['status_approval'] == 3) {
-            $this->load->view('templates/user_header', $data);
-            $this->load->view('templates/user_sidebar', $data);
-            $this->load->view('templates/user_topbar', $data);
-            $this->load->view('job_profile/myjp', $data);
-            $this->load->view('templates/jobs_footer_editor');
+            // $this->load->view('templates/user_header', $data);
+            // $this->load->view('templates/user_sidebar', $data);
+            // $this->load->view('templates/user_topbar', $data);
+            // $this->load->view('job_profile/myjp_editor_jobprofile_v', $data);
+            // $this->load->view('templates/jobs_footer_editor');
+
+            // main data
+		    // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
+            $data['load_view'] = 'job_profile/myjp_editor_jobprofile_v';
+            // additional styles and custom script
+            // $data['custom_styles'] = array('survey_styles');
+            $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
         } else {
             $data['approval'] = $approval;
-            $this->load->view('templates/user_header', $data);
-            $this->load->view('templates/user_sidebar', $data);
-            $this->load->view('templates/user_topbar', $data);
-            $this->load->view('job_profile/myjp_view', $data);
-            $this->load->view('templates/jobs_footer_view');
+            // $this->load->view('templates/user_header', $data);
+            // $this->load->view('templates/user_sidebar', $data);
+            // $this->load->view('templates/user_topbar', $data);
+            // $this->load->view('job_profile/myjp_view', $data);
+            // $this->load->view('templates/jobs_footer_view');
+
+            // main data
+		    // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
+            $data['load_view'] = 'job_profile/myjp_viewer_jobprofile_v';
+            // additional styles and custom script
+            // $data['custom_styles'] = array('survey_styles');
+            $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_view_jobprofile');            
         }
+
+        // main data
+        $data['sidebar'] = getMenu(); // ambil menu
+        $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+        $data['user'] = getDetailUser(); //ambil informasi user
+        $data['page_title'] = "My Job Profile";
+        //additional styles and custom script
+        $data['additional_styles'] = array('job_profile/styles_jobprofile.php', 'plugins/datatables/styles_datatables');
+
+        $this->load->view('main_v', $data);
     }
 
     // function untuk menampilkan JP karyawan bawahan task
