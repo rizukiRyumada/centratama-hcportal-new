@@ -117,7 +117,6 @@ class Job_profile extends MainController {
 		    // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
             $data['load_view'] = 'job_profile/myjp_editor_jobprofile_v';
             // additional styles and custom script
-            // $data['custom_styles'] = array('survey_styles');
             $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
         } else {
             $data['approval'] = $approval;
@@ -131,7 +130,6 @@ class Job_profile extends MainController {
 		    // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
             $data['load_view'] = 'job_profile/myjp_viewer_jobprofile_v';
             // additional styles and custom script
-            // $data['custom_styles'] = array('survey_styles');
             $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_view_jobprofile');            
         }
 
@@ -141,6 +139,7 @@ class Job_profile extends MainController {
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = "My Job Profile";
         //additional styles and custom script
+        $data['custom_styles'] = array('jobprofile_styles');
         $data['additional_styles'] = array('job_profile/styles_jobprofile.php', 'plugins/datatables/styles_datatables');
 
         $this->load->view('main_v', $data);

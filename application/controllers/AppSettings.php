@@ -17,7 +17,7 @@ class AppSettings extends SuperAdminController {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
-        $data['load_view'] = 'appsettings/settings_v';
+        $data['load_view'] = 'appsettings/appsettings_v';
         // $data['custom_styles'] = array('survey_styles');
         // $data['custom_script'] = array('survey/script_survey');
         
@@ -30,7 +30,7 @@ class AppSettings extends SuperAdminController {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->uri_string()))['title'];
-        $data['load_view'] = 'appsettings/survey_settings_v';
+        $data['load_view'] = 'appsettings/survey_appsettings_v';
         // $data['custom_styles'] = array('survey_styles');
         // $data['custom_script'] = array('survey/script_survey');
         

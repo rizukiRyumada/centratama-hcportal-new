@@ -15,19 +15,28 @@
 ?>
 
                 <div class="card-body">
-					<div class="row" style="background-color: #e6e6e6;">
-						<div class="col-12 pt-2">
-							<div class="row mb-2">
-								<div class="col-lg-3 font-weight-bold">Divisi</div>
-								<div class="col-lg-7"> : <?= $mydiv['division']; ?></div>
-								<div class="col-lg-2"><?= date("d  M  Y") ?></div>
-							</div>
-							<div class="row mb-2">
-								<div class="col-lg-3 font-weight-bold">Departemen</div>
-								<div class="col-lg-8"> : <?= $mydept['nama_departemen']; ?></div>
+					<div class="row pt-2" style="background-color: #e6e6e6;">
+						<div class="col-8">
+							<div class="row">
+								<div class="col">
+									<div class="row">
+									<div class="col-md-3 font-weight-semibold"><b>Divisi</b></div>
+									<div class="col-md-9">: <?= $mydiv['division']; ?></div>
+								</div>
+								<div class="row mb-2">
+									<div class="col-md-3 font-weight-semibold"><b>Departemen</b></div>
+									<div class="col-md-9">: <?= $mydept['nama_departemen']; ?></div>
+								</div>
+								</div>
 							</div>
 						</div>
+						<div class="col-4">
+							<div class="row">
+								<div class="col text-right"><?= date("d  M  Y") ?></div>
+							</div>		
+						</div>
 					</div>
+					
                 	<hr />
 
                 	<!-- start identifikasi jabatan -->
@@ -37,29 +46,15 @@
                 		</div>
                 	</div>
                 	<div class="row mb-2">
-                		<div class="col-lg-3 font-weight-bold">Nama Jabatan</div>
-                		<div class="col-lg-8"> : <?= $posisi['position_name']; ?></div>
+                		<div class="col-md-3 font-weight-semibold">Nama Jabatan</div>
+                		<div class="col-md-9">: <?= $posisi['position_name']; ?></div>
                 	</div>
                 	<div class="row mb-2">
-                		<div class="col-lg-3 font-weight-bold">Bertanggung Jawab Kepada</div>
+                		<div class="col-lg-3 font-weight-semibold">Bertanggung Jawab Kepada</div>
                 		<?php if (empty($posisi['id_atasan1'])) : ?>
-                		<form action="<?= base_url('job_profile/insatasan'); ?>" method="post">
-                			<input type="hidden" value="<?= $posisi['position_id'] ?>" name="id">
-                			<div class="col mb-1">
-                				<select name="position" class="form-control form-control-sm  border border-danger">
-                					<?php foreach ($pos as $p) : ?>
-                					<option value="<?= $p['id']; ?>"><?= $p['position_name']; ?></option>
-                					<?php endforeach; ?>
-                				</select>
-                			</div>
-                			<div class="col mb-1"><span class="badge badge-danger font-weight-bold">Pilih Posisi Atasan
-                					Anda</span></div>
-                			<div class="col mb-1">
-                				<button type="submit" class="btn btn-sm btn-primary">Save</button>
-                			</div>
-                		</form>
+                			<div class="col-lg-9"><span class="badge badge-danger">: Data Kosong</span></div>
                 		<?php else : ?>
-                		<div class="col-lg-8"> : <?= $atasan['position_name']; ?></div>
+                			<div class="col-lg-9": >: <?= $atasan['position_name']; ?></div>
                 		<?php endif; ?>
                 	</div>
 
@@ -86,9 +81,10 @@
 
                 	<!-- start tanggung jawab utama -->
                 	<hr>
-                	<div class="row align-items-end mb-2 bg-secondary text-white">
+                	<div class="row align-items-end my-3 bg-gray py-2">
                 		<div class="col">
-                			<h5 class="font-weight-bold pt-2">Tanggung Jawab Utama, Aktivitas Utama & Indikator Kinerja:</h5>
+							<h5 class="font-weight-bold">Tanggung Jawab Utama, Aktivitas Utama & Indikator Kinerja:</h5>
+                			<h6 class="font-weight-light mt-2"><em>Uraian Tanggung Jawab Utama dilengkapi dengan penjelasan aktivitas utama serta indikator pengukuran keberhasilan :</em></h6>
                 		</div>
                 	</div>
 
@@ -99,13 +95,13 @@
 									<i>Karyawan belum mengisi Tanggung Jawab Utama, Aktivitas Utama & Indikator Kinerja</i>
 								</div>
 							<?php else: ?>
-                				<table id="tanggung-jawab" class="table">
-									<thead>
+                				<table id="tanggung-jawab" class="table table-bordered table-hover">
+									<thead class="font-weight-semibold">
 										<tr>
 											<!-- <td>No</td> -->
 											<th>Tanggung Jawab Utama</th>
-											<th>Aktivitas Utama</th>
-											<th>Pengukuran</th>
+											<th class="text-center">Aktivitas Utama</th>
+											<th class="text-center">Pengukuran</th>
 										</tr>
 									</thead>
 									<tbody id="table-body">
@@ -128,12 +124,10 @@
 
                 	<!-- start ruang lingkup -->
                 	<hr>
-                	<div class="row align-items-end mt-auto mb-2" id="hal6">
+                	<div class="row my-3 bg-gray py-2" id="hal6">
                 		<div class="col-12">
                 			<h5 class="font-weight-bold">Ruang Lingkup Jabatan</h5>
-                			<h6 class="font-weight-light mt-2"><em>(Ruang lingkup dan skala kegiatan yang berhubungan
-                					dengan
-                					pekerjaan)</em></h6>
+                			<h6 class="font-weight-light mt-2"><em>Ruang lingkup dan skala kegiatan yang berhubungan dengan pekerjaan :</em></h6>
                 		</div>
                 	</div>
                 	<div class="row">
@@ -150,12 +144,10 @@
                 	
                 	<!-- start wewenang -->
                 	<hr>
-                	<div class="row mt-auto mb-2 bg-secondary text-white">
-                		<div class="col pt-2">
+                	<div class="row my-3 bg-gray py-2">
+                		<div class="col">
                 			<h5 class="font-weight-bold">Wewenang Pengambilan Keputusan Dan Pengawasan</h5>
-                			<h6 class="font-weight-light mt-2"><em>Uraian jenis wewenang yang diperlukan dalam
-                					menjalankan
-                					aktivitas pekerjaan :</em></h6>
+                			<h6 class="font-weight-light mt-2"><em>Uraian jenis wewenang yang diperlukan dalam menjalankan aktivitas pekerjaan :</em></h6>
                 		</div>
                 	</div>
                 	<div class="col-lg table-responsive">
@@ -166,37 +158,37 @@
 								</div>
 							</div>
 						<?php else: ?>
-							<table class="table">
-								<thead class="font-weight-bold">
+							<table class="table table-bordered table-hover">
+								<thead class="font-weight-semibold">
 									<tr>
 										<td>Kewenangan</td>
-										<td>Anda</td>
-										<td>Atasan 1</td>
-										<td>Atasan 2</td>
+										<td class="text-center">Anda</td>
+										<td class="text-center">Atasan 1</td>
+										<td class="text-center">Atasan 2</td>
 									</tr>
 								</thead>
 								<tbody>
 									<?php foreach ($wen as $w) : ?>
 									<tr>
 										<td><?= $w['kewenangan']; ?></td>
-										<td><?= $w['wen_sendiri']; ?></td>
-										<td><?= $w['wen_atasan1']; ?></td>
-										<td><?= $w['wen_atasan2']; ?></td>
+										<td class="text-center"><?= $w['wen_sendiri']; ?></td>
+										<td class="text-center"><?= $w['wen_atasan1']; ?></td>
+										<td class="text-center"><?= $w['wen_atasan2']; ?></td>
 									</tr>
 									<?php endforeach; ?>
 								</tbody>
 							</table>
-							<div class="note py-2">
+							<div class="py-4 bg-gray-light border-radius-3 px-3">
 								<ul class="ml-2 mb-0">
-									<li>R : Responsibility = Memiliki tanggung jawab dan wewenang untuk mengambil keputusan
+									<li><b class="font-weight-semibold">R</b> : Responsibility = Memiliki tanggung jawab dan wewenang untuk mengambil keputusan
 									</li>
-									<li>A : Accountability = tidak dapat mengambil keputusan tetapi bertanggung jawab dalam
+									<li><b class="font-weight-semibold">A</b> : Accountability = tidak dapat mengambil keputusan tetapi bertanggung jawab dalam
 										pelaksanaan dan hasilnya</li>
-									<li>V : Veto = dapat meng-anulir atau mem-blok suatu keputusan</li>
-									<li>C : Consult= sebelum mengambil keputusan harus memberi masukan dan mengkonsultasikan
+									<li><b class="font-weight-semibold">V</b> : Veto = dapat meng-anulir atau mem-blok suatu keputusan</li>
+									<li><b class="font-weight-semibold">C</b> : Consult= sebelum mengambil keputusan harus memberi masukan dan mengkonsultasikan
 										lebih
 										dahulu dengan atasan</li>
-									<li>I : Informed = harus diberi informasi setelah keputusan diambil</li>
+									<li><b class="font-weight-semibold">I</b> : Informed = harus diberi informasi setelah keputusan diambil</li>
 								</ul>
 							</div>
 						<?php endif; ?>
@@ -204,7 +196,7 @@
 
                 	<!-- start hubungan kerja -->
                 	<hr>
-                	<div class="row mt-4" id="hal5">
+                	<div class="row my-3 bg-gray py-2" id="hal5">
                 		<div class="col">
                 			<h5 class="font-weight-bold">Hubungan Kerja</h5>
                 			<h6 class="font-weight-light mt-2"><em>Uraian tujuan dan hubungan jabatan dengan pihak luar
@@ -220,12 +212,12 @@
 								<i>Karyawan belum mengisi Hubungan Kerja</i>
 							</div>
 						<?php else: ?>
-							<div class="col-6">
-								<h5><strong>Hubungan Internal</strong></h5>
+							<div class="col-sm-6">
+								<p class="font-weight-semibold"><strong>Hubungan Internal</strong></p>
 								<div class="hubIntData"><?= $hub['hubungan_int']; ?></div>
 							</div>
-							<div class="col-6">
-								<h5><strong>Hubungan Ekternal</strong></h5>
+							<div class="col-sm-6">
+								<p class="font-weight-semibold"><strong>Hubungan Ekternal</strong></p>
 								<div class="hubEksData"> <?= $hub['hubungan_eks']; ?>
 								</div>
 							</div>
@@ -237,22 +229,29 @@
 					$dataStaff = [$staff['manager'], $staff['supervisor'], $staff['staff']];
 					?>
                 	<hr>
-                	<div class="row align-items-end mt-2">
+                	<div class="row align-items-end my-2 bg-gray py-2">
                 		<div class="col">
                 			<h5 class="font-weight-bold">Jumlah Dan Level Staf Yang Dibawahi</h5>
                 			<h6 class="font-weight-light mt-2"><em>Jumlah dan level staf yang memiliki garis
                 					pertanggungjawaban ke jabatan :</em></h6>
                 		</div>
-                	</div>
-                	<dl class="row mt-2">
-                		<dt class="col-2">Jumlah Staff</dt>
-                		<dd class="col-1">
-                			<p class="jumTotStaff"><?= array_sum($dataStaff); ?></p>
+					</div>
+					<dl class="row justify-content-start mb-0">
+						<dt class="col-sm-2">Jumlah Staff</dt>
+						<dd class="col-sm-3 mb-0">
+                			<div class="input-group input-group-sm mb-3">
+                				<div type="text" id="totMgr" class="form-control form-control-sm">
+									<?= array_sum($dataStaff); ?>
+								</div>
+                				<div class="input-group-append">
+                					<span class="input-group-text" id="basic-addon2">Orang</span>
+                				</div>
+                			</div>
                 		</dd>
-                		<dd class="col-9">Orang</dd>
-
-                		<dt class="col-2">Manager</dt>
-                		<dd class="col-2">
+					</dl>
+					<dl class="row justify-content-start mb-0">
+						<dt class="col-sm-2">Manager</dt>
+                		<dd class="col-sm-3 mb-0">
                 			<div class="input-group input-group-sm mb-3">
                 				<div type="text" id="totMgr" class="form-control form-control-sm">
 									<?= $staff['manager']; ?>
@@ -262,10 +261,10 @@
                 				</div>
                 			</div>
                 		</dd>
-                		<dd class="col-8"></dd>
-
-                		<dt class="col-2">Supervisor</dt>
-                		<dd class="col-2">
+					</dl>
+					<dl class="row justify-content-start mb-0">
+						<dt class="col-sm-2">Supervisor</dt>
+                		<dd class="col-sm-3 mb-0">
                 			<div class="input-group input-group-sm mb-3">
                 				<div type="text" id="totSpvr" class="form-control form-control-sm">
 									<?= $staff['supervisor']; ?>
@@ -275,11 +274,10 @@
                 				</div>
                 			</div>
                 		</dd>
-                		<dd class="col-8"></dd>
-
-
-                		<dt class="col-2">Staff</dt>
-                		<dd class="col-2">
+					</dl>
+					<dl class="row justify-content-start mb-0">
+						<dt class="col-sm-2">Staff</dt>
+                		<dd class="col-sm-3 mb-0">
                 			<div class="input-group input-group-sm mb-3">
                 				<div type="text" id="totStaf" class="form-control form-control-sm">
 									<?= $staff['staff']; ?>
@@ -289,11 +287,11 @@
                 				</div>
                 			</div>
                 		</dd>
-                	</dl>
+					</dl>
 
-                	<!-- start tantangan dan maslah utama -->
+                	<!-- start tantangan dan masalah utama -->
                 	<hr>
-                	<div class="row mt-2">
+                	<div class="row my-2 bg-gray py-2">
                 		<div class="col-12">
                 			<h5 class="font-weight-bold">Tantangan Dan Masalah Utama</h5>
                 			<h6 class="font-weight-light mt-2"><em>Tantangan yang melekat pada jabatan dan masalah yang
@@ -316,7 +314,7 @@
 
                 	<!-- start kualifikasi dan pengalaman -->
                 	<hr>
-                	<div class="row mt-4">
+                	<div class="row my-3 bg-gray py-2">
                 		<div class="col-12">
                 			<h5 class="font-weight-bold">Kualifikasi dan Pengalaman </h5>
                 			<h6 class="font-weight-light mt-2"><em>Persyaratan minimum yang harus dipenuhi : pendidikan,
@@ -333,19 +331,19 @@
 							<table id="tableK" class="table table-borderless tableK" width="25%">
 								<tbody>
 									<tr>
-										<th class="head-kualifikasi">Pendidikan Formal</th>
+										<th class="font-weight-semibold head-kualifikasi">Pendidikan Formal</th>
 										<td id="pendidikan">: <?= $kualifikasi['pendidikan']; ?></td>
 									</tr>
 									<tr>
-										<th class="head-kualifikasi">Pengalaman Kerja</th>
+										<th class="font-weight-semibold head-kualifikasi">Pengalaman Kerja</th>
 										<td id="pengalaman">: <?= $kualifikasi['pengalaman']; ?></td>
 									</tr>
 									<tr>
-										<th class="head-kualifikasi">Pengetahuan</th>
+										<th class="font-weight-semibold head-kualifikasi">Pengetahuan</th>
 										<td id="pengetahuan">: <?= $kualifikasi['pengetahuan']; ?></td>
 									</tr>
 									<tr>
-										<th class="head-kualifikasi">Kompetensi & Keterampilan</th>
+										<th class="font-weight-semibold head-kualifikasi">Kompetensi & Keterampilan</th>
 										<td id="kompetensi">: <?= $kualifikasi['kompetensi']; ?></td>
 									</tr>
 								</tbody>
@@ -355,11 +353,11 @@
 
                 	<!-- start jenjang karir / karir berikutnya di masa depan-->
                 	<hr>
-                	<div class="row mt-3">
+                	<div class="row my-3 bg-gray py-2">
                 		<div class="col-12">
                 			<h5 class="font-weight-bold">Jabatan Berikutnya Di Masa Depan</h5>
                 			<h6 class="font-weight-light mt-2"><em>Pergerakan karir yang memungkinkan setelah memegang
-                					jabatan ini? (baik yang utama/ primary maupun yang secondary):</em></h6>
+                					jabatan ini? (baik yang utama/ primary maupun yang secondary) :</em></h6>
                 		</div>
                 	</div>
                 	<div class="row">
@@ -379,16 +377,17 @@
                 	<!-- start Struktur Organisasi -->
                 	<?php if($atasan != 0): ?>
                 	<hr />
-                	<div class="row mt-3">
-                		<div class="col-12">
-                			<h5 class="font-weight-bold mb-3">Struktur Organisasi</h5>
-                		</div>
-                	</div>
-                	<div class="row">
-                		<div class="col-12">
-                			<div id="chart-container"></div>
-                		</div>
-                	</div>
+						<div class="row my-3 bg-gray py-2">
+							<div class="col-12">
+								<h5 class="font-weight-bold">Struktur Organisasi</h5>
+								<h6 class="font-weight-light mt-2"><em>Menggambarkan posisi anda di struktur organisasi :</em></h6>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<div id="chart-container"></div>
+							</div>
+						</div>
                 	<?php endif; ?>
 
                 </div>

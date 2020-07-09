@@ -873,7 +873,7 @@ class Survey extends MainController {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = 'Survey Status';
-        $data['load_view'] = 'appsettings/survey_status_settings_v';
+        $data['load_view'] = 'appsettings/survey_status_appsettings_v';
 
         // custom styles and script
         if($this->session->userdata('survey_status') == 1){ // jika lagi ga print mode sembunyikan tombol export
@@ -1046,7 +1046,7 @@ class Survey extends MainController {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = 'Survey Status';
-        $data['load_view'] = 'appsettings/survey_statusDepartemen_settings_v';
+        $data['load_view'] = 'appsettings/survey_statusDepartemen_appsettings_v';
 
         // custom styles and script
         $data['additional_styles'] = array('plugins/tableexport/styles_tableexport');
