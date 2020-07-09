@@ -100,9 +100,8 @@ class Job_profile extends MainController {
 
         $data = $this->getDataJP($nik, $id_posisi);
 
+        $data['jp_user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
         $data['pos'] = $this->Jobpro_model->getAllPosition();
-        $data['title'] = 'My Task';
-        $data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
         
         $approval = $this->db->get_where('job_approval', ['id_posisi' => $data['posisi']['id']])->row_array(); //get status approval
         
@@ -252,10 +251,10 @@ class Job_profile extends MainController {
 /*                                another code                                */
 /* -------------------------------------------------------------------------- */
     public function getDataJP($nik, $id_posisi){
-        $data['posisi'] = $this->Jobpro_model->getDetail('*', 'position', array('id' => $id_posisi));
-        $data['mydiv'] = $this->Jobpro_model->getDetail("*", 'divisi', array('id' => $data['posisi']['div_id']));
-        $data['mydept'] = $this->Jobpro_model->getDetail('*', 'departemen', array('id' => $data['posisi']['dept_id']));
-        $data['staff'] = $this->Jobpro_model->getStaff($data['posisi']['id']);
+        $data['posisi']        = $this->Jobpro_model->getDetail('*', 'position', array('id' => $id_posisi));
+        $data['mydiv']         = $this->Jobpro_model->getDetail("*", 'divisi', array('id' => $data['posisi']['div_id']));
+        $data['mydept']        = $this->Jobpro_model->getDetail('*', 'departemen', array('id' => $data['posisi']['dept_id']));
+        $data['staff']         = $this->Jobpro_model->getStaff($data['posisi']['id']);
         $data['tujuanjabatan'] = $this->Jobpro_model->getProfileJabatan($data['posisi']['id']);
 
         if(!empty($nik)){

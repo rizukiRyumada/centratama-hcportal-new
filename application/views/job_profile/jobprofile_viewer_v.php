@@ -158,7 +158,7 @@
 								</div>
 							</div>
 						<?php else: ?>
-							<table class="table table-bordered table-hover">
+							<table class="table">
 								<thead class="font-weight-semibold">
 									<tr>
 										<td>Kewenangan</td>
@@ -240,7 +240,7 @@
 						<dt class="col-sm-2">Jumlah Staff</dt>
 						<dd class="col-sm-3 mb-0">
                 			<div class="input-group input-group-sm mb-3">
-                				<div type="text" id="totMgr" class="form-control form-control-sm">
+                				<div type="text" id="totMgr" class="jumTotStaff form-control form-control-sm">
 									<?= array_sum($dataStaff); ?>
 								</div>
                 				<div class="input-group-append">

@@ -10,8 +10,10 @@ var datasource_assistant2 = <?php echo($orgchart_data_assistant2); ?>;
 </script>
 
 <script>
-
 	$(document).ready(function() {
+		// hide semua elemen editor
+		$('.editor-tujuan, .editor-ruang, .editor-tantangan, .editor-jenkar, .editor-hubEks, .editor-hubInt').hide();
+		
 		$('.hapusJobs').click(function(e) {
 			// e.preventDefault();
 			const href = $(this).attr("href");
@@ -375,12 +377,14 @@ var datasource_assistant2 = <?php echo($orgchart_data_assistant2); ?>;
 			});
 		}
 
-
+		// Hubungan Internal Script
 		$('.edit-hubInt').on('click', function() {
+			$(this).hide();
 			$("div[class~='hubIntData']").hide();
 			$('#cke_hubInt').fadeIn().focus();
 			$('.simpanhubInt').fadeIn();
 			$('.batalhubInt').fadeIn();
+			$('.editor-hubInt').fadeIn();
 		});
 		// ------------------------------aksi hub int ----------------//
 		$('.simpanhubInt').on('click', function() {
@@ -414,14 +418,18 @@ var datasource_assistant2 = <?php echo($orgchart_data_assistant2); ?>;
 			$('#cke_hubInt').hide();
 			$('.simpanhubInt').hide();
 			$('.batalhubInt').hide();
+			$('.edit-hubInt').fadeIn();
+			$('.editor-hubInt').fadeOut();
 		});
 		//endhubint
 
 		$('.edit-hubEks').on('click', function() {
+			$(this).hide();
 			$("div[class~='hubEksData']").hide();
 			$('#cke_hubEks').fadeIn().focus();
 			$('.simpanhubEks').fadeIn();
 			$('.batalhubEks').fadeIn();
+			$('.editor-hubEks').fadeIn();
 		});
 
 		//////////////////////////////// aksi hub eks //////////////////////////////////
@@ -456,6 +464,8 @@ var datasource_assistant2 = <?php echo($orgchart_data_assistant2); ?>;
 			$('#cke_hubEks').hide();
 			$('.simpanhubEks').hide();
 			$('.batalhubEks').hide();
+			$('.edit-hubEks').fadeIn();
+			$('.editor-hubEks').fadeOut();
 		});
 
 		/* aksi untuk tambah hubungan eksternal dan internal baru */
@@ -842,20 +852,22 @@ var datasource_assistant2 = <?php echo($orgchart_data_assistant2); ?>;
 		} ); 
 		*/
 		CKEDITOR.replace('tujuan_jabatan', {
-			width: 800
+			enterMode: CKEDITOR.ENTER_BR
 		});
 		CKEDITOR.replace('hubInt', {
-			width: 400,
-			height: 100
+			enterMode: CKEDITOR.ENTER_BR
 		});
 		CKEDITOR.replace('hubEks', {
-			width: 400,
-			height: 100
+			enterMode: CKEDITOR.ENTER_BR
 		});
-		CKEDITOR.replace('aUtm-text');
-		CKEDITOR.replace('pgkrn-text');
+		CKEDITOR.replace('aUtm-text', {
+			enterMode: CKEDITOR.ENTER_BR
+		});
+		CKEDITOR.replace('pgkrn-text', {
+			enterMode: CKEDITOR.ENTER_BR
+		});
 		CKEDITOR.replace('tantangan', {
-			width: 500
+			enterMode: CKEDITOR.ENTER_BR
 		});
 		CKEDITOR.replace('jenkar', {
 			enterMode: CKEDITOR.ENTER_BR
@@ -870,9 +882,11 @@ var datasource_assistant2 = <?php echo($orgchart_data_assistant2); ?>;
 			enterMode: CKEDITOR.ENTER_BR
 		});
 		CKEDITOR.replace('ruang', {
-			width: 500
+			enterMode: CKEDITOR.ENTER_BR
 		});
-		CKEDITOR.replace('tujuan');
+		CKEDITOR.replace('tujuan', {
+			enterMode: CKEDITOR.ENTER_BR
+		});
 		CKEDITOR.replace('tujuanbaru', {
 			enterMode: CKEDITOR.ENTER_BR
 		});

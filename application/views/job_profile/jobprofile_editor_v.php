@@ -15,20 +15,28 @@
 ?>
 
                 <div class="card-body">
-					<div class="row" style="background-color: #e6e6e6;">
-						<div class="col-12 pt-2">
-							<div class="row mb-2">
-								<div class="col-lg-3 font-weight-bold">Divisi</div>
-								<div class="col-lg-7"> : <?= $mydiv['division']; ?></div>
-								<div class="col-lg-2"><?= date("d  M  Y") ?></div>
-							</div>
-							<div class="row mb-2">
-								<div class="col-lg-3 font-weight-bold">Departemen</div>
-								<div class="col-lg-8"> : <?= $mydept['nama_departemen']; ?></div>
+					<div class="row pt-2" style="background-color: #e6e6e6;">
+						<div class="col-8">
+							<div class="row">
+								<div class="col">
+									<div class="row">
+									<div class="col-md-3 font-weight-semibold"><b>Divisi</b></div>
+									<div class="col-md-9">: <?= $mydiv['division']; ?></div>
+								</div>
+								<div class="row mb-2">
+									<div class="col-md-3 font-weight-semibold"><b>Departemen</b></div>
+									<div class="col-md-9">: <?= $mydept['nama_departemen']; ?></div>
+								</div>
+								</div>
 							</div>
 						</div>
+						<div class="col-4">
+							<div class="row">
+								<div class="col text-right"><?= date("d  M  Y") ?></div>
+							</div>		
+						</div>
 					</div>
-                	
+
                 	<hr />
 
                 	<!-- start identifikasi jabatan -->
@@ -38,30 +46,15 @@
                 		</div>
                 	</div>
                 	<div class="row mb-2">
-                		<div class="col-lg-3 font-weight-bold">Nama Jabatan</div>
-                		<div class="col-lg-8"> : <?= $posisi['position_name']; ?></div>
+                		<div class="col-md-3 font-weight-semibold">Nama Jabatan</div>
+                		<div class="col-md-9">: <?= $posisi['position_name']; ?></div>
                 	</div>
                 	<div class="row mb-2">
-                		<?php //if (empty($my['posnameatasan1'])) : ?>
-                		<?php if ($posisi['id_atasan1'] < 1) : ?>
-                		<!-- <form action="<?= base_url('job_profile/insatasan'); ?>" method="post">
-                			<input type="hidden" value="<?= $posisi['id'] ?>" name="id">
-                			<div class="col mb-1">
-                				<select name="position" class="form-control form-control-sm  border border-danger">
-                					<?php foreach ($pos as $p) : ?>
-                						<option value="<?= $p['id']; ?>"><?= $p['position_name']; ?></option>
-                					<?php endforeach; ?>
-                				</select>
-                			</div>
-                			<div class="col mb-1"><span class="badge badge-danger font-weight-bold">Pilih Posisi Atasan
-                					Anda</span></div>
-                			<div class="col mb-1">
-                				<button type="submit" class="btn btn-sm btn-primary">Save</button>
-                			</div>
-                		</form> -->
-						<?php else : ?>
-						<div class="col-lg-3 font-weight-bold">Bertanggung Jawab Kepada</div>
-                		<div class="col-lg-8"> : <?= $atasan['position_name']; ?></div>
+                		<div class="col-lg-3 font-weight-semibold">Bertanggung Jawab Kepada</div>
+                		<?php if (empty($posisi['id_atasan1'])) : ?>
+                			<div class="col-lg-9"><span class="badge badge-danger">: Data Kosong</span></div>
+                		<?php else : ?>
+                			<div class="col-lg-9": >: <?= $atasan['position_name']; ?></div>
                 		<?php endif; ?>
                 	</div>
 
@@ -74,68 +67,63 @@
                 	</div>
                 	<div class="row ml-1 mb-2">
                 		<?php if (empty($tujuanjabatan)) : ?>
-                		<div class="col-lg-11 view-tujuan d-none">
+							<div class="col-lg-11 view-tujuan d-none">
 
-                		</div>
-                		<div id="add-tujuan_jabatan" class="col-12">
-                			<!-- <input type="hidden" name="id_posisi"> -->
-                			<div class="form-group">
-                				<textarea class="form-control" name="tujuanbaru" id="tujuanbaru"></textarea>
-                			</div>
-                			<button id="simpan-tujuan-baru" type="submit" class="btn btn-primary btn-sm"
-                				data-id="<?= $posisi['id']; ?>">Save</button>
-                		</div>
-                		<div class="col justify-content-center edit-tujuan d-none">
-                			<button type="button" class="btn btn-circle btn-sm btn-success" data-toggle="tooltip"
-                				data-placement="top" title="Edit">
-                				<i class="fas fa-1x fa-pencil-alt"></i>
-                			</button>
-                		</div>
+							</div>
+							<div id="add-tujuan_jabatan" class="col-11">
+								<!-- <input type="hidden" name="id_posisi"> -->
+								<div class="form-group">
+									<textarea class="form-control" name="tujuanbaru" id="tujuanbaru"></textarea>
+								</div>
+								<button id="simpan-tujuan-baru" type="submit" class="btn btn-primary"
+									data-id="<?= $posisi['id']; ?>">Save</button>
+							</div>
+							<div class="col-md-1 justify-content-center edit-tujuan d-none">
+								<!-- nothing -->
+							</div>
                 		<?php else : ?>
-
-                		<div class="col-lg-11 view-tujuan">
-                			<?= $tujuanjabatan['tujuan_jabatan']; ?>
-                		</div>
-                		<div class="col-10 editor-tujuan">
-                			<textarea name="tujuan" id="tujuan"><?= $tujuanjabatan['tujuan_jabatan']; ?></textarea>
-                			<button type="submit" class="mt-2 btn btn-primary btn-sm"
-                				data-id="<?= $tujuanjabatan['id']; ?>" id="simpan-tujuan">Save</button>
-                			<button class="batal-edit-tujuan mt-2 btn btn-danger btn-sm">Cancel</button>
-                			<br>
-                		</div>
-                		<div class="col justify-content-center">
-                			<button type="button" class="btn btn-circle btn-sm btn-success edit-tujuan"
-                				data-toggle="tooltip" data-placement="top" title="Edit">
-                				<i class="fas fa-1x fa-pencil-alt"></i>
-                			</button>
-                		</div>
+							<div class="col-md-10 view-tujuan">
+								<?= $tujuanjabatan['tujuan_jabatan']; ?>
+							</div>
+							<div class="col-12 editor-tujuan">
+								<textarea name="tujuan" id="tujuan"><?= $tujuanjabatan['tujuan_jabatan']; ?></textarea>
+								<div class="btn-group">
+									<button type="submit" class="mt-2 btn btn-primary"
+										data-id="<?= $tujuanjabatan['id']; ?>" id="simpan-tujuan">Save</button>
+									<button class="batal-edit-tujuan mt-2 btn btn-danger">Cancel</button>
+								</div>
+								<br>
+							</div>
+							<div class="col-md-2 justify-content-center">
+								<button type="button" class="w-100 btn btn-circle btn-success edit-tujuan"
+									data-toggle="tooltip" data-placement="top" title="Edit">
+									<i class="fas fa-1x fa-pencil-alt"></i>
+								</button>
+							</div>
                 		<?php endif; ?>
                 	</div>
 
                 	<!-- start tanggung jawab utama -->
                 	<hr>
-                	<div class="row align-items-end mb-2 bg-secondary text-white">
+                	<div class="row align-items-end my-3 bg-gray py-2">
                 		<div class="col">
-                			<h5 class="font-weight-bold pt-2">Tanggung Jawab Utama, Aktivitas Utama & Indikator Kinerja:</h5>
+							<h5 class="font-weight-bold">Tanggung Jawab Utama, Aktivitas Utama & Indikator Kinerja:</h5>
+                			<h6 class="font-weight-light mt-2"><em>Uraian Tanggung Jawab Utama dilengkapi dengan penjelasan aktivitas utama serta indikator pengukuran keberhasilan :</em></h6>
                 		</div>
                 	</div>
 
                 	<div class="row">
                 		<div class="table-responsive">
-
-                			<table id="tanggung-jawab" class="table">
-                				<thead>
-                					<tr>
-                						<!-- <td>No</td> -->
-                						<th>Tanggung Jawab Utama</th>
-                						<th>Aktivitas Utama</th>
-                						<th>Pengukuran</th>
-                						<th class="" width="8%"><a class="nTgjwb" data-toggle="modal"
-                								data-target="#modalTanggungJwb" data-placement="auto" title="Add New"><i
-                									class="fas fa-plus-square fa-2x text-primary"
-                									style="cursor: pointer;"></i></a></th>
-                					</tr>
-                				</thead>
+							<table id="tanggung-jawab" class="table table-bordered table-hover">
+									<thead class="font-weight-semibold">
+										<tr>
+											<!-- <td>No</td> -->
+											<th>Tanggung Jawab Utama</th>
+											<th class="text-center">Aktivitas Utama</th>
+											<th class="text-center">Pengukuran</th>
+											<th></th>
+										</tr>
+									</thead>
                 				<tbody id="table-body">
                 					<?php foreach ($tgjwb as $t) : ?>
                 					<tr id="<?= $t['id_tgjwb']; ?>">
@@ -147,16 +135,18 @@
                 							<?= $t['list_pengukuran']; ?>
                 						</td>
                 						<td>
-                							<a href="#" data-id="<?= $t['id_tgjwb']; ?>" data-toggle="modal"
-                								data-target="#modalTanggungJwb"
-                								class="eTgjwb btn btn-sm btn-circle btn-success" data-placement="bottom"
-                								title="Edit"><i class="fas fa-pencil-alt"></i></a>
-                							<!-- <button data-id="<?= $t['id_tgjwb']; ?>"  class=" btn btn-sm btn-circle btn-danger" data-placement="top" title="Delete"><i class="fas fa-trash-alt"></i></button> -->
-                							<button
-                								href="<?= base_url('job_profile/hapusTanggungJawab/')  .  $t['id_tgjwb']; ?>"
-                								class="hapusJobs btn btn-sm btn-circle btn-danger"
-                								data-placement="bottom" title="Delete"><i
-                									class="fas fa-trash-alt"></i></button>
+                							<div class="btn-group">
+												<button type="button" data-id="<?= $t['id_tgjwb']; ?>" data-toggle="modal"
+													data-target="#modalTanggungJwb"
+													class="eTgjwb btn btn-circle btn-success" data-placement="bottom"
+													title="Edit"><i class="fas fa-pencil-alt"></i></button>
+												<!-- <button data-id="<?= $t['id_tgjwb']; ?>"  class=" btn btn-circle btn-danger" data-placement="top" title="Delete"><i class="fas fa-trash-alt"></i></button> -->
+												<button
+													href="<?= base_url('job_profile/hapusTanggungJawab/')  .  $t['id_tgjwb']; ?>"
+													class="hapusJobs btn btn-circle btn-danger"
+													data-placement="bottom" title="Delete"><i
+														class="fas fa-trash-alt"></i></button>
+											</div>
                 						</td>
                 					</tr>
                 					<?php endforeach; ?>
@@ -166,71 +156,63 @@
                 	</div>
 
                 	<!-- start ruang lingkup -->
-                	<hr>
-                	<div class="row align-items-end mt-auto mb-2" id="hal6">
-                		<div class="col-11">
+					<hr>
+					<div class="row my-3 bg-gray py-2" id="hal6">
+                		<div class="col-12">
                 			<h5 class="font-weight-bold">Ruang Lingkup Jabatan</h5>
-                			<h6 class="font-weight-light mt-2"><em>(Ruang lingkup dan skala kegiatan yang berhubungan
-                					dengan
-                					pekerjaan)</em></h6>
+                			<h6 class="font-weight-light mt-2"><em>Ruang lingkup dan skala kegiatan yang berhubungan dengan pekerjaan :</em></h6>
                 		</div>
-                		<?php if(empty($ruangl)): ?>
-                		<div class="col d-flex justify-content-center">
-                			<!-- nothing -->
-                		</div>
-                		<?php else: ?>
-                		<div class="col d-flex justify-content-center">
-                			<button type="button" class="btn btn-circle btn-sm btn-success edit-ruang"
-                				data-toggle="tooltip" data-placement="top" title="Edit"><i
-                					class="fas fa-1x fa-pencil-alt"></i></button>
-                		</div>
-                		<?php endif;?>
-
                 	</div>
                 	<?php if (empty($ruangl)) : ?>
-                	<div class="col-12 mb-3">
-                		<!-- <form action="<?= base_url('job_profile/addruanglingkup'); ?>" method="post"> -->
-                		<div class="form-group">
-                			<textarea class="form-control" name="add-ruangl" id="add-ruangl" rows="2"></textarea>
-                		</div>
-                		<button id="simpan-ruangl-baru" type="submit" class="btn btn-primary btn-sm"
-                			data-id="<?= $posisi['id']; ?>">Save</button>
-                		<!-- </form> -->
-                	</div>
+						<div class="col-12 mb-3">
+							<!-- <form action="<?= base_url('job_profile/addruanglingkup'); ?>" method="post"> -->
+							<div class="form-group">
+								<textarea class="form-control" name="add-ruangl" id="add-ruangl" rows="2"></textarea>
+							</div>
+							<button id="simpan-ruangl-baru" type="submit" class="btn btn-primary"
+								data-id="<?= $posisi['id']; ?>">Save</button>
+							<!-- </form> -->
+						</div>
                 	<?php else : ?>
                 	<div class="row">
-                		<div class="col-11 view-ruang">
+                		<div class="col-md-10 view-ruang">
                 			<?= $ruangl['r_lingkup']; ?>
-                		</div>
-                	</div>
-                	<div class="editor-ruang mb-3">
-                		<textarea name="ruang" id="ruang"><?= $ruangl['r_lingkup']; ?></textarea>
-                		<button type="submit" class="mt-2 btn btn-primary btn-sm" data-id="<?= $ruangl['id']; ?>"
-                			id="simpan-ruang">Save</button>
-                		<button class="batal-edit-ruang mt-2 btn btn-danger btn-sm">Cancel</button>
+						</div>
+						<div class="col-md-2 justify-content-center">
+							<button type="button" class="w-100 btn btn-circle btn-success edit-ruang" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa fa-pencil-alt"></i></button>
+						</div>
+
+						<!-- editor ruang lingkup default:hide() by javascript -->
+						<div class="col-md-12 editor-ruang mb-3">
+							<textarea name="ruang" id="ruang"><?= $ruangl['r_lingkup']; ?></textarea>
+							<div class="btn-group">
+								<button type="submit" class="mt-2 btn btn-primary" data-id="<?= $ruangl['id']; ?>"
+									id="simpan-ruang">Save</button>
+								<button class="batal-edit-ruang mt-2 btn btn-danger">Cancel</button>
+							</div>
+						</div>
                 	</div>
                 	<?php endif; ?>
 
                 	<!-- start wewenang -->
                 	<hr>
-                	<div class="row mt-auto mb-2 bg-secondary text-white">
-                		<div class="col pt-2">
+                	<div class="row my-3 bg-gray py-2">
+                		<div class="col">
                 			<h5 class="font-weight-bold">Wewenang Pengambilan Keputusan Dan Pengawasan</h5>
-                			<h6 class="font-weight-light mt-2"><em>Uraian jenis wewenang yang diperlukan dalam
-                					menjalankan
-                					aktivitas pekerjaan :</em></h6>
+                			<h6 class="font-weight-light mt-2"><em>Uraian jenis wewenang yang diperlukan dalam menjalankan aktivitas pekerjaan :</em></h6>
                 		</div>
                 	</div>
                 	<div class="col-lg table-responsive">
-                		<table class="table" id="wewenang">
-                			<thead class="font-weight-bold">
-                				<tr>
-                					<td>Kewenangan</td>
-                					<td>Anda</td>
-                					<td>Atasan 1</td>
-                					<td>Atasan 2</td>
-                					<td><a id="addwen" class="ml-n1"><i class="fas fa-plus-square fa-2x text-primary"
-                								style="color: dodgerblue; cursor: pointer;" data-toggle="tooltip" data-placement="auto" title="Add New"></i></a></td>
+                		<table class="table table-bordered table-hover" id="wewenang">
+							<thead class="font-weight-semibold">
+								<tr>
+									<td>Kewenangan</td>
+									<td class="text-center">Anda</td>
+									<td class="text-center">Atasan 1</td>
+									<td class="text-center">Atasan 2</td>
+            						<td class="text-center"><a id="addwen" class="ml-n1"><i class="fas fa-plus-square fa-2x text-success"
+											style="color: dodgerblue; cursor: pointer;" data-toggle="tooltip" data-placement="auto" title="Add New"></i></a>
+									</td>
                 				</tr>
                 			</thead>
                 			<tbody>
@@ -238,9 +220,9 @@
                 				<tr>
                 					<td><?= $w['id']; ?></td>
                 					<td><?= $w['kewenangan']; ?></td>
-                					<td><?= $w['wen_sendiri']; ?></td>
-                					<td><?= $w['wen_atasan1']; ?></td>
-                					<td><?= $w['wen_atasan2']; ?></td>
+                					<td class="text-center"><?= $w['wen_sendiri']; ?></td>
+                					<td class="text-center"><?= $w['wen_atasan1']; ?></td>
+                					<td class="text-center"><?= $w['wen_atasan2']; ?></td>
                 				</tr>
                 				<?php endforeach; ?>
                 			</tbody>
@@ -248,9 +230,10 @@
                 				<tr>
                 					<!-- <form action="<?= base_url('job_profile/addwen'); ?>" method="post"> -->
                 					<td class="ml-0"><input type="text" name="wewenang" class="form-control" required
-                							placeholder="Masukkan Kewenangan"></td>
+											placeholder="Masukkan Kewenangan">
+									</td>
                 					<td>
-                						<select id="wen_sendiri" name="wen_sendiri" class="form-control" required>
+                						<select id="wen_sendiri" name="wen_sendiri" class="custom-select form-control" required>
                 							<option value="">Wewenang Anda</option>
                 							<option value="-">-</option>
                 							<option value="R">R : Responsibility</option>
@@ -261,7 +244,7 @@
                 						</select>
                 					</td>
                 					<td>
-                						<select id="wen_atasan1" name="wen_atasan1" class="form-control" required>
+                						<select id="wen_atasan1" name="wen_atasan1" class="custom-select form-control" required>
                 							<option value="">Wewenang Atasan Pertama</option>
                 							<option value="-">-</option>
                 							<option value="R">R : Responsibility</option>
@@ -272,7 +255,7 @@
                 						</select>
                 					</td>
                 					<td>
-                						<select id="wen_atasan2" name="wen_atasan2" class="form-control" required>
+                						<select id="wen_atasan2" name="wen_atasan2" class="custom-select form-control" required>
                 							<option value="">Wewenang Atasan Kedua</option>
                 							<option value="-">-</option>
                 							<option value="R">R : Responsibility</option>
@@ -283,30 +266,30 @@
                 						</select>
                 					</td>
                 					<td><button id="add-wewenang-baru"
-                							class="btn btn-primary btn-sm mr-n3" data-id="<?= $posisi['id']; ?>">Save</button>
+                							class="btn btn-primary mr-n3" data-id="<?= $posisi['id']; ?>"><i class="fa fa-save"></i> Save</button>
                 					</td>
                 					<!-- </form> -->
                 				</tr>
                 			</table>
                 		</table>
-                		<div class="note py-2">
-                			<ul class="ml-2 mb-0">
-                				<li>R : Responsibility = Memiliki tanggung jawab dan wewenang untuk mengambil keputusan
-                				</li>
-                				<li>A : Accountability = tidak dapat mengambil keputusan tetapi bertanggung jawab dalam
-                					pelaksanaan dan hasilnya</li>
-                				<li>V : Veto = dapat meng-anulir atau mem-blok suatu keputusan</li>
-                				<li>C : Consult= sebelum mengambil keputusan harus memberi masukan dan mengkonsultasikan
-                					lebih
-                					dahulu dengan atasan</li>
-                				<li>I : Informed = harus diberi informasi setelah keputusan diambil</li>
-                			</ul>
-                		</div>
+                			<div class="py-4 bg-gray-light border-radius-3 px-3">
+								<ul class="ml-2 mb-0">
+									<li><b class="font-weight-semibold">R</b> : Responsibility = Memiliki tanggung jawab dan wewenang untuk mengambil keputusan
+									</li>
+									<li><b class="font-weight-semibold">A</b> : Accountability = tidak dapat mengambil keputusan tetapi bertanggung jawab dalam
+										pelaksanaan dan hasilnya</li>
+									<li><b class="font-weight-semibold">V</b> : Veto = dapat meng-anulir atau mem-blok suatu keputusan</li>
+									<li><b class="font-weight-semibold">C</b> : Consult= sebelum mengambil keputusan harus memberi masukan dan mengkonsultasikan
+										lebih
+										dahulu dengan atasan</li>
+									<li><b class="font-weight-semibold">I</b> : Informed = harus diberi informasi setelah keputusan diambil</li>
+								</ul>
+							</div>
                 	</div>
 
                 	<!-- start hubungan kerja -->
                 	<hr>
-                	<div class="row mt-4" id="hal5">
+                	<div class="row mt-3 bg-gray py-2" id="hal5">
                 		<div class="col">
                 			<h5 class="font-weight-bold">Hubungan Kerja</h5>
                 			<h6 class="font-weight-light mt-2"><em>Uraian tujuan dan hubungan jabatan dengan pihak luar
@@ -315,54 +298,62 @@
                 					dalam melakukan pekerjaan :</em></h6>
                 		</div>
                 	</div>
-
                 	<?php if (empty($hub)) : ?>
-                	<div class="row">
-                		<div class="col-12">
-                			<!-- <form method="post" action="<?= base_url('job_profile/addHubungan'); ?>"> -->
-                			<div class="form-group">
-                				<label for="internal">Hubungan Internal</label>
-                				<textarea class="form-control" name="internal" id="internal"></textarea>
-                			</div>
-                			<div class="form-group">
-                				<label for="eksternal">Hubungan Eksternal</label>
-                				<textarea class="form-control" name="eksternal" id="eksternal"></textarea>
-                			</div>
-                			<button id="simpan-hubungan-baru" class="btn btn-primary btn-sm"
-                				data-id="<?= $posisi['id'] ?>">Save</button>
-                			<!-- </form> -->
-                		</div>
-                	</div>
+						<div class="row">
+							<div class="col-12 mt-3">
+								<!-- <form method="post" action="<?= base_url('job_profile/addHubungan'); ?>"> -->
+								<div class="form-group">
+									<label for="internal">Hubungan Internal</label>
+									<textarea class="form-control" name="internal" id="internal"></textarea>
+								</div>
+								<div class="form-group">
+									<label for="eksternal">Hubungan Eksternal</label>
+									<textarea class="form-control" name="eksternal" id="eksternal"></textarea>
+								</div>
+								<button id="simpan-hubungan-baru" class="btn btn-primary"
+									data-id="<?= $posisi['id'] ?>">Save</button>
+								<!-- </form> -->
+							</div>
+						</div>
                 	<?php else : ?>
-
-                	<div class="row ml-2">
-                		<div class="col-5">
-                			<h5><strong>Hubungan Internal</strong></h5>
-                			<div class="hubIntData"><?= $hub['hubungan_int']; ?></div>
-                			<textarea id="hubInt"><?= $hub['hubungan_int']; ?></textarea>
-                			<button data-id="<?= $hub['id']; ?>"
-                				class="btn btn-primary btn-sm simpanhubInt mt-1 mb-2">Save</button>
-                			<button class="btn btn-danger btn-sm batalhubInt mt-1 mb-2">Cancel</button>
-                		</div>
-                		<div class="col-sm-1 d-flex justify-content-center">
-                			<span class="edit-hubInt btn btn-sm btn-circle btn-success" data-toggle="tooltip"
-                				data-placement="top" title="Edit"><i class="fas fa-pencil-alt"></i></span>
-                		</div>
-                		<div class="col-5">
-                			<h5><strong>Hubungan Ekternal</strong></h5>
-                			<div class="hubEksData"> <?= $hub['hubungan_eks']; ?>
-                			</div>
-                			<textarea id="hubEks"><?= $hub['hubungan_eks']; ?></textarea>
-                			<button data-id="<?= $hub['id']; ?>"
-                				class="btn btn-primary btn-sm simpanhubEks mt-1">Save</button>
-                			<button class="btn btn-danger btn-sm batalhubEks mt-1">Cancel</button>
-                		</div>
-                		<div class="col-sm-1 d-flex justify-content-center">
-                			<span class="edit-hubEks btn btn-sm btn-circle btn-success" data-toggle="tooltip"
-                				data-placement="top" title="Edit"><i class="fas fa-pencil-alt"></i></span>
-                		</div>
-                	</div>
-
+						<div class="row ml-2">
+							<div class="col-lg-6 mt-3">
+								<div class="row">
+									<div class="col-md-10">
+										<p class="font-weight-semibold"><strong>Hubungan Internal</strong></p>
+										<div class="hubIntData"><?= $hub['hubungan_int']; ?></div>
+									</div>
+									<div class="col-md-2">
+										<span class="w-100 edit-hubInt btn btn-circle btn-success" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-pencil-alt"></i></span>
+									</div>
+									<div class="col-12 editor-hubInt">
+										<textarea id="hubInt"><?= $hub['hubungan_int']; ?></textarea>
+										<div class="btn-group">
+											<button data-id="<?= $hub['id']; ?>" class="btn btn-primary simpanhubInt mt-1 mb-2">Save</button>
+											<button class="btn btn-danger batalhubInt mt-1 mb-2">Cancel</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6 mt-3">
+								<div class="row">
+									<div class="col-md-10">
+										<p class="font-weight-semibold"><strong>Hubungan Ekternal</strong></p>
+										<div class="hubEksData"> <?= $hub['hubungan_eks']; ?></div>
+									</div>
+									<div class="col-md-2">
+										<span class="w-100 edit-hubEks btn btn-circle btn-success" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-pencil-alt"></i></span>
+									</div>
+									<div class="col-12 editor-hubEks">
+										<textarea id="hubEks"><?= $hub['hubungan_eks']; ?></textarea>
+										<div class="btn-group">
+											<button data-id="<?= $hub['id']; ?>" class="btn btn-primary simpanhubEks mt-1">Save</button>
+											<button class="btn btn-danger batalhubEks mt-1">Cancel</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
                 	<?php endif; ?>
 
 					<!-- start jumlah staff -->
@@ -371,22 +362,29 @@
 						$dataStaff = [$staff['manager'], $staff['supervisor'], $staff['staff']];
 						?>
 						<hr>
-						<div class="row align-items-end mt-2">
+						<div class="row align-items-end my-2 bg-gray py-2">
 							<div class="col">
 								<h5 class="font-weight-bold">Jumlah Dan Level Staf Yang Dibawahi</h5>
 								<h6 class="font-weight-light mt-2"><em>Jumlah dan level staf yang memiliki garis
 										pertanggungjawaban ke jabatan :</em></h6>
 							</div>
 						</div>
-						<dl class="row mt-2">
-							<dt class="col-2">Jumlah Staff</dt>
-							<dd class="col-1">
-								<p class="jumTotStaff"><?= array_sum($dataStaff); ?></p>
+						<dl class="row justify-content-start mb-0">
+							<dt class="col-sm-2 font-weight-semibold">Jumlah Staff</dt>
+							<dd class="col-sm-3 mb-0">
+								<div class="input-group input-group-sm mb-3">
+									<div type="text" class=" form-control form-control-sm">
+										<p class="jumTotStaff"><?= array_sum($dataStaff); ?></p>
+									</div>
+									<div class="input-group-append">
+										<span class="input-group-text" id="basic-addon2">Orang</span>
+									</div>
+								</div>
 							</dd>
-							<dd class="col-9">Orang</dd>
-
-							<dt class="col-2">Manager</dt>
-							<dd class="col-2">
+						</dl>
+						<dl class="row justify-content-start mb-0">
+							<dt class="col-sm-2 font-weight-semibold">Manager</dt>
+							<dd class="col-sm-3 mb-0">
 								<div class="input-group input-group-sm mb-3">
 									<input type="text" id="totMgr" class="form-control form-control-sm"
 										value="<?= $staff['manager']; ?>">
@@ -395,10 +393,10 @@
 									</div>
 								</div>
 							</dd>
-							<dd class="col-8"></dd>
-
-							<dt class="col-2">Supervisor</dt>
-							<dd class="col-2">
+						</dl>
+						<dl class="row justify-content-start mb-0">
+							<dt class="col-sm-2 font-weight-semibold">Supervisor</dt>
+							<dd class="col-sm-3 mb-0">
 								<div class="input-group input-group-sm mb-3">
 									<input type="text" id="totSpvr" class="form-control form-control-sm"
 										value="<?= $staff['supervisor']; ?>">
@@ -407,11 +405,10 @@
 									</div>
 								</div>
 							</dd>
-							<dd class="col-8"></dd>
-
-
-							<dt class="col-2">Staff</dt>
-							<dd class="col-2">
+						</dl>
+						<dl class="row justify-content-start mb-0">
+							<dt class="col-sm-2 font-weight-semibold">Staff</dt>
+							<dd class="col-sm-3 mb-0">
 								<div class="input-group input-group-sm mb-3">
 									<input type="text" id="totStaf" class="form-control form-control-sm"
 										value="<?= $staff['staff']; ?>">
@@ -421,6 +418,7 @@
 								</div>
 							</dd>
 						</dl>
+
 					<?php else: ?>
 					<?php 
 						if(empty($this->Jobpro_model->getDetail('*', 'jumlah_staff', array('id_posisi' => $posisi['id'])))){ //cek apa jumlah staff sudah ada
@@ -442,133 +440,127 @@
 
                 	<!-- start tantangan dan maslah utama -->
                 	<hr>
-                	<div class="row mt-2">
-                		<div class="col-11">
+                	<div class="row my-2 bg-gray py-2">
+                		<div class="col-12">
                 			<h5 class="font-weight-bold">Tantangan Dan Masalah Utama</h5>
                 			<h6 class="font-weight-light mt-2"><em>Tantangan yang melekat pada jabatan dan masalah yang
                 					sulit/ rumit yang dihadapi dalam kurun waktu cukup panjang :</em></h6>
                 		</div>
-                		<div class="col-sm-1 d-flex justify-content-center">
-                			<?php if(!empty($tu_mu)): ?>
-                			<button type="button" class="btn btn-circle btn-sm btn-success edit-tantangan"
-                				data-toggle="tooltip" data-placement="top" title="Edit">
-                				<i class="fas fa-1x fa-pencil-alt"></i>
-                			</button>
-                			<?php endif; ?>
-                		</div>
                 	</div>
                 	<?php if (empty($tu_mu)) : ?>
-                	<div class="row">
-                		<div class="col-12">
-                			<!-- <form method="post" action="<?= base_url('job_profile/addtantangan/'); ?>"> -->
-                			<div class="form-group">
-                				<textarea name="tantangan-baru" id="tantangan-baru"></textarea>
-                			</div>
-                			<button id="simpan-tantangan_baru" class="btn btn-primary btn-sm"
-                				data-id="<?= $posisi['id']; ?>">Save</button>
-                			<!-- </form> -->
-                		</div>
-                	</div>
+						<div class="row">
+							<div class="col-12">
+								<!-- <form method="post" action="<?= base_url('job_profile/addtantangan/'); ?>"> -->
+								<div class="form-group">
+									<textarea name="tantangan-baru" id="tantangan-baru"></textarea>
+								</div>
+								<button id="simpan-tantangan_baru" class="btn btn-primary" data-id="<?= $posisi['id']; ?>">Save</button>
+								<!-- </form> -->
+							</div>
+						</div>
                 	<?php else : ?>
                 	<div class="row">
-                		<div class="col-12">
+                		<div class="col-md-10">
                 			<div class="view-tantangan">
                 				<?= $tu_mu['text']; ?>
                 			</div>
-                			<div class="editor-tantangan">
+						</div>
+						<div class="col-md-2">
+							<button type="button" class="w-100 btn btn-circle btn-success edit-tantangan" data-toggle="tooltip" data-placement="top" title="Edit">
+								<i class="fas fa-1x fa-pencil-alt"></i>
+							</button>
+						</div>
+						<div class="col-12">
+							<div class="editor-tantangan">
                 				<textarea name="tantangan" id="tantangan"><?= $tu_mu['text']; ?></textarea>
-                				<button id="simpan-tantangan" data-id="<?= $tu_mu['id']; ?>"
-                					class="mt-2 btn btn-primary btn-sm">Save</button>
-                				<button class="batal-edit-tantangan mt-2 btn btn-danger btn-sm">Batal</button>
-                			</div>
-                		</div>
+                				<div class="btn-group">
+									<button id="simpan-tantangan" data-id="<?= $tu_mu['id']; ?>"
+										class="mt-2 btn btn-primary">Save</button>
+									<button class="batal-edit-tantangan mt-2 btn btn-danger">Batal</button>
+								</div>
+							</div>
+						</div>
                 	</div>
                 	<?php endif; ?>
 
                 	<!-- start kualifikasi dan pengalaman -->
                 	<hr>
-                	<div class="row mt-4">
-                		<div class="col-11">
+                	<div class="row my-3 bg-gray py-2">
+                		<div class="col-12">
                 			<h5 class="font-weight-bold">Kualifikasi dan Pengalaman </h5>
                 			<h6 class="font-weight-light mt-2"><em>Persyaratan minimum yang harus dipenuhi : pendidikan,
                 					lama pengalaman kerja yang relevan, kompetensi (soft dan technical skill), atau
                 					kualifikasi personal maupun profesional lainnya :</em></h6>
                 		</div>
-                		<div class="col-sm-1 d-flex justify-content-center">
-                			<?php if(!empty($kualifikasi)): ?>
-                			<button type="button" class="btn btn-circle btn-sm btn-success edit-kualifikasi"
-                				data-id="<?= $posisi['id']; ?>" data-toggle="modal"
-                				data-target="#modalKualifikasi" data-placement="top" title="Edit">
-                				<i class="fas fa-1x fa-pencil-alt"></i>
-                			</button>
-                			<?php endif; ?>
-                		</div>
                 	</div>
                 	<?php if(empty($kualifikasi)) : ?>
-                	<div class="row">
-                		<div class="col-6 ml-2 mt-2">
-                			<!-- <form action="<?= base_url('job_profile/addkualifikasi'); ?>" method="post"> -->
-                			<input type="hidden" name="id" value="<?= $posisi['id']; ?>">
-                			<div class="form-group">
-                				<label for="pend">Pendidikan Formal</label>
-                				<textarea class="form-control" name="pend" id="pend" rows="2"></textarea>
-                			</div>
-                			<div class="form-group">
-                				<label for="pengalmn">Pengalaman Kerja</label>
-                				<textarea class="form-control" name="pengalmn" id="pengalmn" rows="2"></textarea>
-                			</div>
-                			<div class="form-group">
-                				<label for="pengtahu">Pengetahuan</label>
-                				<textarea class="form-control" name="pengtahu" id="pengtahu" rows="2"></textarea>
-                			</div>
-                			<div class="form-group">
-                				<label for="kptnsi">Kompetensi & Keterampilan</label>
-                				<textarea class="form-control" name="kptnsi" id="kptnsi" rows="2"></textarea>
-                			</div>
-                			<button id="simpan-kualifikasi-baru" class="btn btn-primary btn-sm">Save</button>
-                			<!-- </form> -->
-                		</div>
-                	</div>
-                	<?php else : ?>
-                	<div class="table-responsive">
-                		<table id="tableK" class="table table-borderless tableK" width="25%">
-                			<tbody>
-                				<tr>
-                					<th class="head-kualifikasi">Pendidikan Formal</th>
-                					<td id="pendidikan">: <?= $kualifikasi['pendidikan']; ?></td>
-                				</tr>
-                				<tr>
-                					<th class="head-kualifikasi">Pengalaman Kerja</th>
-                					<td id="pengalaman">: <?= $kualifikasi['pengalaman']; ?></td>
-                				</tr>
-                				<tr>
-                					<th class="head-kualifikasi">Pengetahuan</th>
-                					<td id="pengetahuan">: <?= $kualifikasi['pengetahuan']; ?></td>
-                				</tr>
-                				<tr>
-                					<th class="head-kualifikasi">Kompetensi & Keterampilan</th>
-                					<td id="kompetensi">: <?= $kualifikasi['kompetensi']; ?></td>
-                				</tr>
-                			</tbody>
-                		</table>
-                	</div>
-                	<?php endif; ?>
+						<div class="row">
+							<div class="col ml-2 mt-2">
+								<!-- <form action="<?= base_url('job_profile/addkualifikasi'); ?>" method="post"> -->
+								<input type="hidden" name="id" value="<?= $posisi['id']; ?>">
+								<div class="form-group">
+									<label class="font-weight-semibold" for="pend">Pendidikan Formal</label>
+									<textarea class="form-control" name="pend" id="pend" rows="2"></textarea>
+								</div>
+								<div class="form-group">
+									<label class="font-weight-semibold" for="pengalmn">Pengalaman Kerja</label>
+									<textarea class="form-control" name="pengalmn" id="pengalmn" rows="2"></textarea>
+								</div>
+								<div class="form-group">
+									<label class="font-weight-semibold" for="pengtahu">Pengetahuan</label>
+									<textarea class="form-control" name="pengtahu" id="pengtahu" rows="2"></textarea>
+								</div>
+								<div class="form-group">
+									<label class="font-weight-semibold" for="kptnsi">Kompetensi & Keterampilan</label>
+									<textarea class="form-control" name="kptnsi" id="kptnsi" rows="2"></textarea>
+								</div>
+								<button id="simpan-kualifikasi-baru" class="btn btn-primary">Save</button>
+								<!-- </form> -->
+							</div>
+						</div>
+					<?php else : ?>
+						
+					<div class="row">
+						<div class="col-md-10">
+							<div class="table-responsive">
+								<table id="tableK" class="table table-borderless tableK" width="25%">
+									<tbody>
+										<tr>
+											<th class="head-kualifikasi">Pendidikan Formal</th>
+											<td id="pendidikan">: <?= $kualifikasi['pendidikan']; ?></td>
+										</tr>
+										<tr>
+											<th class="head-kualifikasi">Pengalaman Kerja</th>
+											<td id="pengalaman">: <?= $kualifikasi['pengalaman']; ?></td>
+										</tr>
+										<tr>
+											<th class="head-kualifikasi">Pengetahuan</th>
+											<td id="pengetahuan">: <?= $kualifikasi['pengetahuan']; ?></td>
+										</tr>
+										<tr>
+											<th class="head-kualifikasi">Kompetensi & Keterampilan</th>
+											<td id="kompetensi">: <?= $kualifikasi['kompetensi']; ?></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<button type="button" class="w-100 btn btn-circle btn-success edit-kualifikasi" data-id="<?= $posisi['id']; ?>" data-toggle="modal" data-target="#modalKualifikasi" data-placement="top" title="Edit">
+								<i class="fas fa-1x fa-pencil-alt"></i>
+							</button>
+						</div>
+					</div>
+					
+					<?php endif; ?>
 
                 	<!-- start jenjang karir / karir berikutnya di masa depan-->
                 	<hr>
-                	<div class="row mt-3">
-                		<div class="col-11">
+                	<div class="row my-3 bg-gray py-2">
+                		<div class="col-12">
                 			<h5 class="font-weight-bold">Jabatan Berikutnya Di Masa Depan</h5>
                 			<h6 class="font-weight-light mt-2"><em>Pergerakan karir yang memungkinkan setelah memegang
-                					jabatan ini? (baik yang utama/ primary maupun yang secondary):</em></h6>
-                		</div>
-                		<div class="col-sm-1 d-flex justify-content-center">
-                			<?php if(!empty($jenk)): ?>
-                			<button type="button" class="btn btn-circle btn-sm btn-success edit-jenjang"
-                				data-toggle="tooltip" data-placement="top" title="Edit">
-                				<i class="fas fa-1x fa-pencil-alt"></i>
-                			</button>
-                			<?php endif; ?>
+                					jabatan ini? (baik yang utama/ primary maupun yang secondary) :</em></h6>
                 		</div>
                 	</div>
                 	<?php if (empty($jenk)) : ?>
@@ -579,24 +571,33 @@
                 				<label for="jenkar">Jabatan Di Masa Depan :</label>
                 				<textarea class="form-control" name="jenkar" id="jenkar" rows="2"></textarea>
                 			</div>
-                			<button id="simpan-jenk-baru" class="btn btn-primary btn-sm"
+                			<button id="simpan-jenk-baru" class="btn btn-primary"
                 				data-id="<?= $posisi['id']; ?>">Save</button>
                 			<!-- </form> -->
                 		</div>
                 	</div>
                 	<?php else : ?>
                 	<div class="row">
-                		<div class="col-12">
+                		<div class="col-md-10">
                 			<div class="view-jenjang">
                 				<?= $jenk['text']; ?>
                 			</div>
-                			<div class="editor-jenkar">
+						</div>
+						<div class="col-md-2">
+							<button type="button" class="w-100 btn btn-circle btn-success edit-jenjang" data-toggle="tooltip" data-placement="top" title="Edit">
+                				<i class="fas fa-1x fa-pencil-alt"></i>
+                			</button>
+						</div>
+						<div class="col-12">
+							<div class="editor-jenkar">
                 				<textarea name="jenkar" id="jenkar"><?= $jenk['text']; ?></textarea>
-                				<button type="submit" class="mt-2 btn btn-primary btn-sm" data-id="<?= $jenk['id']; ?>"
-                					id="simpan-jenjang">Save</button>
-                				<button class="batal-edit-jenjang mt-2 btn btn-danger btn-sm">Cancel</button>
+                				<div class="btn-group">
+									<button type="submit" class="mt-2 btn btn-primary" data-id="<?= $jenk['id']; ?>"
+										id="simpan-jenjang">Save</button>
+									<button class="batal-edit-jenjang mt-2 btn btn-danger">Cancel</button>
+								</div>
                 			</div>
-                		</div>
+						</div>
                 	</div>
                 	<?php endif; ?>
 
@@ -604,11 +605,12 @@
                 	<?php // if($atasan != 0 && $posisi['id_atasan1'] != 1): ?>
                 	<?php if($atasan != 0): ?>
                 	<hr />
-                	<div class="row mt-3">
-                		<div class="col-12">
-                			<h5 class="font-weight-bold mb-3">Struktur Organisasi</h5>
-                		</div>
-                	</div>
+                	<div class="row my-3 bg-gray py-2">
+						<div class="col-12">
+							<h5 class="font-weight-bold">Struktur Organisasi</h5>
+							<h6 class="font-weight-light mt-2"><em>Menggambarkan posisi anda di struktur organisasi :</em></h6>
+						</div>
+					</div>
                 	<div class="row">
                 		<div class="col-12">
                 			<div id="chart-container"></div>
@@ -644,8 +646,8 @@
 					</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button id="submit-tgjwb" class="btn btn-primary" data-id_posisi="<?= $posisi['id']; ?>">Save</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+				<button id="submit-tgjwb" class="btn btn-primary" data-id_posisi="<?= $posisi['id']; ?>"><i class="fa fa-save"></i> Save</button>
 			</div>
 		</div>
 	</div>
@@ -680,7 +682,7 @@
 					<label for="kptnsi">Kompetensi & Keterampilan</label>
 					<textarea class="form-control" name="kptnsi" id="kptnsi" rows="2"></textarea>
 				</div>
-				<button type="submit" class="btn btn-primary btn-sm" id="save-kualifikasi">Save</button>
+				<button type="submit" class="btn btn-primary" id="save-kualifikasi"><i class="fa fa-save"></i> Save</button>
 				<!-- </form> -->
 			</div>
 		</div>

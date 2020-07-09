@@ -82,9 +82,15 @@
                 <div class="row h-100">
                     <div class="col align-self-center text-center">
                         <?php if($statusApproval['status_approval'] == 0 || $statusApproval['status_approval'] == 3): ?>
-                            <a class="btn btn-primary w-100" href="<?= base_url('job_profile/myjp')?>"><i class="align-middle fa fa-pencil-alt fa-2x"></i></a>
+                            <a class="btn btn-danger w-100" href="<?= base_url('job_profile/myjp')?>"><i class="align-middle fa fa-pencil-alt fa-2x"></i></a>
                         <?php else: ?>
-                            <a class="btn btn-secondary w-100" href="<?= base_url('job_profile/myjp')?>"><i class="align-middle fa fa-search fa-2x"></i></a>
+                            <a class="btn 
+                            <?php if($statusApproval['status_approval'] == 1 || $statusApproval['status_approval'] == 2): ?>
+                                btn-warning
+                            <?php elseif($statusApproval['status_approval'] == 4): ?>
+                                btn-success
+                            <?php endif; ?>
+                            w-100" href="<?= base_url('job_profile/myjp')?>"><i class="align-middle fa fa-search fa-2x"></i></a>
                         <?php endif; ?>
                     </div>
                 </div>
