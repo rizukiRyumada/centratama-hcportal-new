@@ -23,18 +23,19 @@ class Job_profile extends MainController {
         $nik = $this->session->userdata('nik');
         $data['posisi'] = $this->Jobpro_model->getPosisi($nik);
 
+        // cek jika tidak ada data job_approval
         $job_approval = $this->Jobpro_model->getDetail("*", "job_approval", array('id_posisi' => $data['posisi']['position_id']));
-        // if(empty($job_approval)){ // jika table job approval kosong
-        //     $data = [
-        //         'id_posisi' => $data['posisi']['position_id'],
-        //         'diperbarui' => time(),
-        //         'status_approval' => 0,
-        //         'pesan_revisi' => "null"
-        //     ];
-        //     $this->db->insert('job_approval', $data);
-        // }else{
-        //     //do nothing
-        // }
+        if(empty($job_approval)){ // jika table job approval kosong
+            $data = [
+                'id_posisi' => $data['posisi']['position_id'],
+                'diperbarui' => time(),
+                'status_approval' => 0,
+                'pesan_revisi' => "null"
+            ];
+            $this->db->insert('job_approval', $data);
+        }else{
+            //do nothing
+        }
 
         if(empty($this->Jobpro_model->getDetail('*', 'jumlah_staff', array('id_posisi' => $data['posisi']['position_id'])))){ //cek apa jumlah staff sudah ada
             $this->Jobpro_model->insert('jumlah_staff', array(
@@ -46,7 +47,6 @@ class Job_profile extends MainController {
         }
 
         //get back this variable, it is gone after I using the if.. else.. above
-        $data['title'] = 'My Task';
         $data['pos'] = $this->Jobpro_model->getAllPosition();
         $data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
         $data['posisi'] = $this->Jobpro_model->getPosisi($nik);
@@ -72,12 +72,6 @@ class Job_profile extends MainController {
         }
         
         $data['my_task'] = $this->getApprovalDetails($my_task); //get Approval Details
-
-        // $this->load->view('templates/user_header', $data);
-		// $this->load->view('templates/user_sidebar', $data);
-		// $this->load->view('templates/user_topbar', $data);
-		// $this->load->view('job_profile/indexjp', $data);
-        // $this->load->view('templates/indexjp_footer');
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
@@ -106,12 +100,6 @@ class Job_profile extends MainController {
         $approval = $this->db->get_where('job_approval', ['id_posisi' => $data['posisi']['id']])->row_array(); //get status approval
         
         if ($approval['status_approval'] == 0 || $approval['status_approval'] == 3) {
-            // $this->load->view('templates/user_header', $data);
-            // $this->load->view('templates/user_sidebar', $data);
-            // $this->load->view('templates/user_topbar', $data);
-            // $this->load->view('job_profile/myjp_editor_jobprofile_v', $data);
-            // $this->load->view('templates/jobs_footer_editor');
-
             // main data
 		    // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
             $data['load_view'] = 'job_profile/myjp_editor_jobprofile_v';
@@ -119,11 +107,6 @@ class Job_profile extends MainController {
             $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
         } else {
             $data['approval'] = $approval;
-            // $this->load->view('templates/user_header', $data);
-            // $this->load->view('templates/user_sidebar', $data);
-            // $this->load->view('templates/user_topbar', $data);
-            // $this->load->view('job_profile/myjp_view', $data);
-            // $this->load->view('templates/jobs_footer_view');
 
             // main data
 		    // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
@@ -137,7 +120,7 @@ class Job_profile extends MainController {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = "My Job Profile";
-        //additional styles and custom script
+        //additional styles and custom script   
         $data['custom_styles'] = array('jobprofile_styles');
         $data['additional_styles'] = array('job_profile/styles_jobprofile.php', 'plugins/datatables/styles_datatables');
 
@@ -145,6 +128,7 @@ class Job_profile extends MainController {
     }
 
     // function untuk menampilkan JP karyawan bawahan task
+    // NOW
     public function taskJp(){
         // prepare the data
         $nik = $this->input->get('task');
@@ -154,13 +138,21 @@ class Job_profile extends MainController {
         
         $data['pos'] = $this->Jobpro_model->getAllPosition();
         $data['title'] = 'My Task';
-        $data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['jp_user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
 
-        $this->load->view('templates/user_header', $data);
-        $this->load->view('templates/user_sidebar', $data);
-        $this->load->view('templates/user_topbar', $data);
-        $this->load->view('job_profile/taskjp', $data);
-        $this->load->view('templates/jobs_footer_editor');
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+		// $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+		$data['page_title'] = 'Task Job Profile';
+		$data['load_view'] = 'job_profile/taskjp_jobprofile_v';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables', 'job_profile/styles_jobprofile.php');
+		$data['custom_styles'] = array('jobprofile_styles');
+        $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile', 'job_profile/script_edit_jobprofile');
+        
+		$this->load->view('main_v', $data);
     }
 
     // function untuk menampilakn JP karyawan melalui halaman report
@@ -195,21 +187,44 @@ class Job_profile extends MainController {
         
         $data['pos'] = $this->Jobpro_model->getAllPosition();
         $data['title'] = 'Report';
-        $data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['jp_user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
 
         if($role_id == 1){ //cek jika dia admin
-            $this->load->view('templates/user_header', $data);
-            $this->load->view('templates/user_sidebar', $data);
-            $this->load->view('templates/user_topbar', $data);
-            $this->load->view('job_profile/reportjp_v', $data);
-            $this->load->view('templates/jobs_footer_editor');
+            // main data
+            // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+            $data['load_view'] = 'job_profile/reportjp_editor_jobprofile_v';
+            // additional styles and custom script
+            $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
+
+            // $this->load->view('templates/user_header', $data);
+            // $this->load->view('templates/user_sidebar', $data);
+            // $this->load->view('templates/user_topbar', $data);
+            // $this->load->view('job_profile/reportjp_v', $data);
+            // $this->load->view('templates/jobs_footer_editor');
         } else {
-            $this->load->view('templates/user_header', $data);
-            $this->load->view('templates/user_sidebar', $data);
-            $this->load->view('templates/user_topbar', $data);
-            $this->load->view('job_profile/reportjp_view_v', $data);
-            $this->load->view('templates/jobs_footer_editor');
+            // main data
+            // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+            $data['load_view'] = 'job_profile/reportjp_viewer_jobprofile_v';
+            // additional styles and custom script
+            $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_view_jobprofile');
+
+            // $this->load->view('templates/user_header', $data);
+            // $this->load->view('templates/user_sidebar', $data);
+            // $this->load->view('templates/user_topbar', $data);
+            // $this->load->view('job_profile/reportjp_view_v', $data);
+            // $this->load->view('templates/jobs_footer_editor');
         }
+
+        // main data
+        $data['sidebar'] = getMenu(); // ambil menu
+        $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+        $data['user'] = getDetailUser(); //ambil informasi user
+        $data['page_title'] = "Report Job Profile";
+        //additional styles and custom script
+        $data['custom_styles'] = array('jobprofile_styles');
+        $data['additional_styles'] = array('job_profile/styles_jobprofile.php', 'plugins/datatables/styles_datatables');
+
+        $this->load->view('main_v', $data);
     }
 
 /* -------------------------------------------------------------------------- */
@@ -234,15 +249,29 @@ class Job_profile extends MainController {
         }
 
         $data['title'] = 'Report';
-        $data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
-        $data['hirarki_org'] = $this->Jobpro_model->getDetail('hirarki_org', 'position', array('id' => $data['user']['position_id']))['hirarki_org'];
+        $data['jp_user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['hirarki_org'] = $this->Jobpro_model->getDetail('hirarki_org', 'position', array('id' => $data['jp_user']['position_id']))['hirarki_org'];
         $data['approval_data'] = $this->getApprovalDetails($task);
 
-        $this->load->view('templates/user_header', $data);
-        $this->load->view('templates/user_sidebar', $data);
-        $this->load->view('templates/user_topbar', $data);
-        $this->load->view('job_profile/report_v', $data);
-        $this->load->view('templates/report_footer');
+        // $this->load->view('templates/user_header', $data);
+        // $this->load->view('templates/user_sidebar', $data);
+        // $this->load->view('templates/user_topbar', $data);
+        // $this->load->view('job_profile/report_v', $data);
+        // $this->load->view('templates/report_footer');
+
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+		// $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+		$data['page_title'] = 'Report Profile';
+		$data['load_view'] = 'job_profile/report_jobprofile_v';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+		// $data['custom_styles'] = array('jobprofile_styles');
+        $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_report_jobprofile');
+        
+		$this->load->view('main_v', $data);
     }
 /* -------------------------------------------------------------------------- */
 
@@ -542,7 +571,8 @@ class Job_profile extends MainController {
                     $karyawan_email[$key] = $value['email'];
                 }
                 
-                if(!empty($value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver1']))['email'])){
+                $value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver1']))['email'];
+                if(!empty($value)){
                     $email_cc = $value;
                 } else {
                     $email_cc = "";
@@ -1134,7 +1164,25 @@ class Job_profile extends MainController {
         exit;
     }
 
-    public function getDepartement(){
+    public function getDate(){
+        echo(date('d-m-Y, H:i', time()));
+    }
+
+    public function setStatusApproval(){
+        $id_posisi = $this->input->post('id');
+        // $status_approval = $this->input->post('value');
+
+        $data = [
+            'status_approval' => $this->input->post('status_approval')
+        ];
+        $this->Jobpro_model->updateApproval($data, $id_posisi);
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                                AJAX REQUESTS                               */
+    /* -------------------------------------------------------------------------- */
+
+    public function ajax_getDepartement(){
         if(!empty($div = $this->input->post('divisi'))){
             //get id divisi
             $div = explode('-', $div);
@@ -1154,20 +1202,6 @@ class Job_profile extends MainController {
         print_r(json_encode($data));
 
         //bawa balik ke ajax
-    }
-
-    public function getDate(){
-        echo(date('d-m-Y, H:i', time()));
-    }
-
-    public function setStatusApproval(){
-        $id_posisi = $this->input->post('id');
-        // $status_approval = $this->input->post('value');
-
-        $data = [
-            'status_approval' => $this->input->post('status_approval')
-        ];
-        $this->Jobpro_model->updateApproval($data, $id_posisi);
     }
 
 /* -------------------------------------------------------------------------- */

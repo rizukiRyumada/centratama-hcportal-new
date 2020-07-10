@@ -52,7 +52,7 @@
                 	<div class="row mb-2">
                 		<div class="col-lg-3 font-weight-semibold">Bertanggung Jawab Kepada</div>
                 		<?php if (empty($posisi['id_atasan1'])) : ?>
-                			<div class="col-lg-9"><span class="badge badge-danger">: Data Kosong</span></div>
+                			<div class="col-lg-9">: <span class="badge badge-danger">Data Kosong</span></div>
                 		<?php else : ?>
                 			<div class="col-lg-9": >: <?= $atasan['position_name']; ?></div>
                 		<?php endif; ?>
@@ -70,7 +70,7 @@
 							<div class="col-lg-11 view-tujuan d-none">
 
 							</div>
-							<div id="add-tujuan_jabatan" class="col-11">
+							<div id="add-tujuan_jabatan" class="col">
 								<!-- <input type="hidden" name="id_posisi"> -->
 								<div class="form-group">
 									<textarea class="form-control" name="tujuanbaru" id="tujuanbaru"></textarea>
@@ -115,15 +115,18 @@
                 	<div class="row">
                 		<div class="table-responsive">
 							<table id="tanggung-jawab" class="table table-bordered table-hover">
-									<thead class="font-weight-semibold">
-										<tr>
-											<!-- <td>No</td> -->
-											<th>Tanggung Jawab Utama</th>
-											<th class="text-center">Aktivitas Utama</th>
-											<th class="text-center">Pengukuran</th>
-											<th></th>
-										</tr>
-									</thead>
+								<thead class="font-weight-semibold">
+									<tr>
+										<!-- <td>No</td> -->
+										<th>Tanggung Jawab Utama</th>
+										<th class="text-center">Aktivitas Utama</th>
+										<th class="text-center">Pengukuran</th>
+										<th class="text-center" width="8%"><a class="nTgjwb" data-toggle="modal"
+                								data-target="#modalTanggungJwb" data-placement="auto" title="Add New"><i
+                									class="fas fa-plus-square fa-2x text-success"
+                									style="cursor: pointer;"></i></a></th>
+									</tr>
+								</thead>
                 				<tbody id="table-body">
                 					<?php foreach ($tgjwb as $t) : ?>
                 					<tr id="<?= $t['id_tgjwb']; ?>">
@@ -164,14 +167,16 @@
                 		</div>
                 	</div>
                 	<?php if (empty($ruangl)) : ?>
-						<div class="col-12 mb-3">
-							<!-- <form action="<?= base_url('job_profile/addruanglingkup'); ?>" method="post"> -->
-							<div class="form-group">
-								<textarea class="form-control" name="add-ruangl" id="add-ruangl" rows="2"></textarea>
+						<div class="row">
+							<div class="col-12 mb-3">
+								<!-- <form action="<?= base_url('job_profile/addruanglingkup'); ?>" method="post"> -->
+								<div class="form-group">
+									<textarea class="form-control" name="add-ruangl" id="add-ruangl" rows="2"></textarea>
+								</div>
+								<button id="simpan-ruangl-baru" type="submit" class="btn btn-primary"
+									data-id="<?= $posisi['id']; ?>">Save</button>
+								<!-- </form> -->
 							</div>
-							<button id="simpan-ruangl-baru" type="submit" class="btn btn-primary"
-								data-id="<?= $posisi['id']; ?>">Save</button>
-							<!-- </form> -->
 						</div>
                 	<?php else : ?>
                 	<div class="row">
