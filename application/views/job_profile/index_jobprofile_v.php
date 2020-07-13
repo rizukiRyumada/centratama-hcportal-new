@@ -1,3 +1,9 @@
+<div class="row">
+	<div class="col-lg">
+		<?= $this->session->flashdata('message'); ?>
+	</div>
+</div>
+
 <div class="card shadow mb-2" id="print"> <!-- Profil Jabatan anda -->
 	<!-- Card Header - Accordion -->
 	<div class="card-header">
