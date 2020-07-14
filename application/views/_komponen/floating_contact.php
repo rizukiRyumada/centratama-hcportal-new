@@ -1,4 +1,4 @@
-<div class="float-kontak">
+<div class="float-kontak d-print-none">
     <div class="row fl-fl float-wa">
         <!-- <div class="col-2 container d-flex h-100 m-0 p-0">
             <div class="row justify-content-center align-self-center p-0 m-0">
@@ -15,7 +15,7 @@
         <div class="col-8">
             <div class="container d-flex h-100 m-0 p-0">
                 <div class="row justify-content-center align-self-center p-0 m-0">
-                    <a href="https://wa.me/6281384740074/?text=*%5BHC%20Portal%5D*" target="_blank" >HC Care</a>
+                    <a class="font-weight-bold" href="https://wa.me/6281384740074/?text=*%5BHC%20Portal%5D*" target="_blank" >HC Care</a>
                 </div>
             </div>
         </div>

@@ -793,11 +793,11 @@ class Job_profile extends MainController {
         $this->form_validation->set_rules('tujuan_jabatan', 'Form', 'trim|required');
 
         if ($this->form_validation->run() == FALSE) {
-            $this->load->view('templates/user_header', $data);
-            $this->load->view('templates/user_sidebar', $data);
-            $this->load->view('templates/user_topbar', $data);
-            $this->load->view('job_profile/edittujab', $data);
-            $this->load->view('templates/jobs_footer_editor');
+            // $this->load->view('templates/user_header', $data);
+            // $this->load->view('templates/user_sidebar', $data);
+            // $this->load->view('templates/user_topbar', $data);
+            // $this->load->view('job_profile/edittujab', $data);
+            // $this->load->view('templates/jobs_footer_editor');
         } else {
             $this->Jobpro_model->updateTuJab();
             $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
@@ -1160,8 +1160,7 @@ class Job_profile extends MainController {
         }
         
         $this->session->set_userdata( array('msgapproval' => '1'));
-        header('location: ' . base_url('report/settings'));
-        exit;
+        header('location: ' . base_url('job_profile/settingApproval'));
     }
 
     public function getDate(){
@@ -1225,12 +1224,24 @@ class Job_profile extends MainController {
         $data['hirarki_org'] = $this->Jobpro_model->getDetail('hirarki_org', 'position', array('id' => $data['user']['position_id']))['hirarki_org'];
         $data['approval_data'] = $this->getApprovalDetails($task);
         
-        $this->load->view('templates/user_header', $data);
-        $this->load->view('templates/user_sidebar', $data);
-        $this->load->view('templates/user_topbar', $data);
-        $this->load->view('job_profile/setting_approval_v', $data);
-        $this->load->view('templates/report_footer');
-        // tampilkan
+        // $this->load->view('templates/user_header', $data);
+        // $this->load->view('templates/user_sidebar', $data);
+        // $this->load->view('templates/user_topbar', $data);
+        // $this->load->view('job_profile/setting_approval_v', $data);
+        // $this->load->view('templates/report_footer');
+
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+		$data['page_title'] = "Approval Settings";
+		$data['load_view'] = 'job_profile/approval_settings_jobprofile_v';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+		// $data['custom_styles'] = array('survey_styles');
+        $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_approvalsettings_jobprofile');
+        
+		$this->load->view('main_v', $data);
     }
 
     //kirim notifikasi ketika tombol kirim email di pencet
@@ -1865,7 +1876,7 @@ class Job_profile extends MainController {
         } else { //if orgchart data doesn't exist
             // $data['orgchart_data_assistant'] = json_encode("");
             // $data['orgchart_data'] = json_encode("");
-            print_r('gaada bro');
+            // print_r('gaada bro');
             exit;
         }
         // End of Pengolahan data orgchart ==============================================================================

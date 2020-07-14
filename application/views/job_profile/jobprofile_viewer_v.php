@@ -50,11 +50,11 @@
                 		<div class="col-md-9">: <?= $posisi['position_name']; ?></div>
                 	</div>
                 	<div class="row mb-2">
-                		<div class="col-lg-3 font-weight-semibold">Bertanggung Jawab Kepada</div>
+                		<div class="col-md-3 font-weight-semibold">Bertanggung Jawab Kepada</div>
                 		<?php if (empty($posisi['id_atasan1'])) : ?>
-                			<div class="col-lg-9"><span class="badge badge-danger">: Data Kosong</span></div>
+                			<div class="col-md-9"><span class="badge badge-danger">: Data Kosong</span></div>
                 		<?php else : ?>
-                			<div class="col-lg-9": >: <?= $atasan['position_name']; ?></div>
+                			<div class="col-md-9": >: <?= $atasan['position_name']; ?></div>
                 		<?php endif; ?>
                 	</div>
 
@@ -383,7 +383,16 @@
 								<h6 class="font-weight-light mt-2"><em>Menggambarkan posisi anda di struktur organisasi :</em></h6>
 							</div>
 						</div>
-						<div class="row">
+						<div class="row justify-content-end my-2 d-print-none">
+							<div class="col-2 text-center">
+								<span>Zoom :</span>
+								<div class="btn-group">
+									<button id="zoomIn" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+									<button id="zoomOut" class="btn btn-primary"><i class="fa fa-minus"></i></button>
+								</div>
+							</div>
+						</div>
+						<div class="row d-print-block">
 							<div class="col-12">
 								<div id="chart-container"></div>
 							</div>

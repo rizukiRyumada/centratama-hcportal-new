@@ -22,6 +22,11 @@ html {
     border-color: rgb(0, 82, 141);
 }
 
+/* form control styles */
+.form-control, .custom-select{
+    border-radius: 1.5rem;
+}
+
 /* custom color and hover */
 .link-primary{
     color: #0072C6;
@@ -29,11 +34,6 @@ html {
 }
 .link-primary:hover{
     color: rgb(0, 82, 141);
-}
-
-/* form control styles */
-.form-control{
-    border-radius: 1.5rem;
 }
 
 /* Table style */
@@ -288,3 +288,12 @@ html {
 
 /* Extra large devices (large desktops) */
 /* No media query since the extra-large breakpoint has no upper bound on its width */
+
+/* -------------------------------------------------------------------------- */
+/*                                PRINT STYLES                                */
+/* -------------------------------------------------------------------------- */
+@media print {
+    body > div.wrapper > div.content-wrapper{
+        background-color: #fff;
+    }
+}

@@ -14,7 +14,7 @@
     <!-- custom styles -->
     <?php if(!empty($custom_styles)): ?>
         <?php foreach($custom_styles as $v): ?>
-            <link rel="stylesheet" href="<?= base_url('assets/css/').$v.'.css'; ?>">
+            <link rel="stylesheet" media="screen, print" href="<?= base_url('assets/css/').$v.'.css'; ?>">
         <?php endforeach; ?>
     <?php endif; ?>
 </head>

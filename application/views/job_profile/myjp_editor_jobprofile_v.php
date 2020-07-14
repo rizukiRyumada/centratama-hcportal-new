@@ -1,5 +1,5 @@
 	<!-- card start -->
-	<div class="card shadow mb-2" id="print">
+	<div class="card mb-2" id="print">
 		<!-- Card Header - Accordion -->
 		<!-- <div class="d-block card-header py-3">
 			<h5 class="m-0 font-weight-bold text-black-50">Profil Jabatan Anda</h5>

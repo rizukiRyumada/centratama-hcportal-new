@@ -1,5 +1,5 @@
 <!-- main footer -->
-<footer class="main-footer text-sm text-center">
+<footer class="main-footer text-sm text-center d-print-none">
     <!-- To the right -->
     <!-- <div class="float-right d-none d-sm-inline">
         Anything you want

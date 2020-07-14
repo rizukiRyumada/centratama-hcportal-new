@@ -156,12 +156,14 @@
 		if(assistant_atasan1 == 1){ //jika punya atasan 1 tampilkan horizontal
 			var oc = $('#chart-container').orgchart({
 				data : datasource,
+				zoom: true,
+				pan: true,
 				// chartClass: 'edit-state',
 				// 'exportButton': true,
 				// 'exportFilename': 'OrgChart',
 				// verticalLevel: 3, // this method cannot compatible with the edit-state
 				// draggable: true,
-				parentNodeSymbol: 'fa-th-large',
+				// parentNodeSymbol: 'fa-th',
 				nodeTitle: 'position_name',
 				createNode: function($node, data) {
 					$.each(datasource_assistant1, function(i, item) {
@@ -239,6 +241,8 @@
 		} else { //ika ga punya atasan 1 level 3nya tampilkan vertikal
 			var oc = $('#chart-container').orgchart({
 				data : datasource,
+				zoom: true,
+				pan: true,
 				// chartClass: 'edit-state',
 				// 'exportButton': true,
 				// 'exportFilename': 'OrgChart',
@@ -293,6 +297,8 @@
 	} else if(atasan == 1) { //buat yang punya 1 atasan
 		var oc = $('#chart-container').orgchart({
 			data : datasource,
+			zoom: true,
+			pan: true,
 			// chartClass: 'edit-state',
 			// 'exportButton': true,
 			// 'exportFilename': 'OrgChart',
