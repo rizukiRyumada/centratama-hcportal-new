@@ -65,6 +65,12 @@ input[type="checkbox"]  {
     display: none;
 }
 
+.label-alternate{
+  font-weight: 700;
+  margin-bottom: .5em;
+  display: inline-block;
+}
+
 /* ul {
     list-style-type: none;
   }

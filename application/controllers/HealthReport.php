@@ -16,6 +16,9 @@ class HealthReport extends MainController {
         // cek apa dia sudah check kesehatan atau belum dengan nik dan tanggal
         // jika ada datanya ambil, dan buat pengaturan buat tombolnya ga bisa dicek
 
+        // health data
+        $data['sick_categories'] = $this->_general_m->getAll('*', 'healthReport_category', array()); // ambil kategori sakit
+
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
@@ -25,13 +28,28 @@ class HealthReport extends MainController {
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
 		$data['custom_styles'] = array('healthreport_styles');
-        $data['custom_script'] = array('plugins/datatables/script_datatables');
+        $data['custom_script'] = array('plugins/datatables/script_datatables', 'healthreport/script_index_healthreport');
         
 		$this->load->view('main_v', $data);
     }
 
     public function report(){
 
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                                MAIN METHODS                                */
+    /* -------------------------------------------------------------------------- */
+    public function submitCheckIn(){
+        if($this->input->post('checkIn') == '1'){
+            
+        }
+    }
+
+    public function test(){
+        echo(date("j M o" ,time()));
+        // echo(date('j M o', 1594892256))
+                        //    9999999999
     }
 
 }

@@ -79,28 +79,25 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_healthyLabel">Modal title</h5>
+                <h5 class="modal-title" id="modal_healthyLabel"><?= date("l, j M o"); ?> <span id="checkTime"></span></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form role="form" action="">
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                
-                            </div>
-                            <div class="col-sm-6">
-
-                            </div>
+                <form id="CheckInHealthy" role="form" action="<?= base_url('healthReport/submitCheckIn'); ?>" method="POST">
+                    <input type="hidden" name="checkIn" value="1">
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-3">
+                            <img src="<?= base_url('assets/img/healthReport/_healthy.svg'); ?>" alt="Healthy" class="responsive-image">
                         </div>
                     </div>
+                    <p class="text-center m-0">Apa anda yakin merasa sehat?</p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="submit" form="CheckInHealthy" class="btn btn-primary">Ya</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
             </div>
         </div>
     </div>
@@ -111,116 +108,51 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_sickLabel">Anda sakit apa?</h5>
+                <h5 class="modal-title" id="modal_sickLabel"><?= date("l, j M o"); ?> <span id="checkTime"></span></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form role="form" action="">
+                <form id="checkInSick" role="form" action="<?= base_url('healthReport/submitCheckIn'); ?>" method="POST">
+                    <input type="hidden" name="checkIn" value="0">
                     <!-- checkbox kategori sakit -->
                     <div class="form-group">
                         <div class="row m-0 p-0">
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="flu" />
-                                    <label class="text-center" for="flu">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/flu.svg'); ?>" /> <br>
-                                        <small class="m-0">Flu</small>
-                                    </label>
+                            <?php foreach($sick_categories as $v): ?>
+                                <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                    <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                        <input type="checkbox" name="<?= $v['input_name']; ?>" id="<?= $v['input_name']; ?>" />
+                                        <label class="text-center" for="<?= $v['input_name']; ?>">
+                                            <img src="<?= base_url('assets/img/healthReport/sick categories/').$v['icon']; ?>" /> <br>
+                                            <small class="m-0"><?= $v['name']; ?></small>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="batuk" />
-                                    <label class="text-center" for="batuk">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/batuk.svg'); ?>" /> <br>
-                                        <small class="m-0">Batuk</small>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="demam" />
-                                    <label class="text-center" for="demam">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/demam.svg'); ?>" /> <br>
-                                        <small class="m-0">Demam</small>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="diare" />
-                                    <label class="text-center" for="diare">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/diare.svg'); ?>" /> <br>
-                                        <small class="m-0">Diare</small>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="ispa" />
-                                    <label class="text-center" for="ispa">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/ispa.svg'); ?>" /> <br>
-                                        <small class="m-0">ISPA</small>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="sakit_mata" />
-                                    <label class="text-center" for="sakit_mata">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/sakit-mata.svg'); ?>" /> <br>
-                                        <small class="m-0">Mata</small>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="magh" />
-                                    <label class="text-center" for="magh">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/magh.svg'); ?>" /> <br>
-                                        <small class="m-0">Magh</small>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="sakit_gigi" />
-                                    <label class="ml-2" for="sakit_gigi">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/sakit-gigi.svg'); ?>" /> <br>
-                                        <small class="m-0">Gigi</small>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="pusing" />
-                                    <label class="text-center" for="pusing">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/pusing.svg'); ?>" /> <br>
-                                        <small class="m-0">Pusing</small>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
-                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" id="migrain" />
-                                    <label class="text-center" for="migrain">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/migrain.svg'); ?>" /> <br>
-                                        <small class="m-0">Migrain</small>
-                                    </label>
-                                </div>
-                            </div>
+                            <?php endforeach;?>
                         </div>
                     </div><!-- /checkbox kategori sakit -->
                     <div class="form-group">
-
+                        <span class="label-alternate">Penyakit Lainnya?</span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <img src="<?= base_url('assets/img/healthReport/sick categories/lainnya.svg'); ?>" alt="lainnya" style="width: 1em; height: 1em">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" name="lainnya" placeholder="Lainnya">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group mb-0">
+                        <span class="label-alternate">Notes</span>
+                        <textarea class="form-control" name="notes" rows="5" placeholder="Masukkan catatan penyakit anda..."></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="submit" form="checkInSick" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
