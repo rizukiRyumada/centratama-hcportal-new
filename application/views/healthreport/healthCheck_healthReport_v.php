@@ -59,6 +59,13 @@
                         </button>
                     </div>
                 </div>
+                <div class="row mt-2">
+                    <div class="col text-center">
+                        <small>
+                            Icons made by <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat Icons</a>
+                        </small>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -111,95 +118,103 @@
             </div>
             <div class="modal-body">
                 <form role="form" action="">
+                    <!-- checkbox kategori sakit -->
                     <div class="form-group">
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <div class="row">
-                                    <div class="col-6 text-center">
-                                        <div class="form-check">
-                                            <input type="checkbox" id="flu" />
-                                            <label class="ml-2" for="flu">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/flu.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">Flu</p>
-                                            </label>
-                                        </div>
-                                        <div class="form-check mt-3">
-                                            <input type="checkbox" id="batuk" />
-                                            <label class="ml-2" for="batuk">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/batuk.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">Batuk</p>
-                                            </label>
-                                        </div>
-                                        <div class="form-check mt-3">
-                                            <input type="checkbox" id="demam" />
-                                            <label class="ml-2" for="demam">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/demam.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">Demam</p>
-                                            </label>
-                                        </div>
-                                        <div class="form-check mt-3">
-                                            <input type="checkbox" id="diare" />
-                                            <label class="ml-2" for="diare">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/diare.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">Diare</p>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <div class="form-check">
-                                            <input type="checkbox" id="ispa" />
-                                            <label class="ml-2" for="ispa">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/ispa.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">ISPA</p>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input type="checkbox" id="sakit_mata" />
-                                            <label class="ml-2" for="sakit_mata">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/sakit-mata.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">Sakit Mata</p>
-                                            </label>
-                                        </div>
-                                        <div class="form-check mt-3">
-                                            <input type="checkbox" id="magh" />
-                                            <label class="ml-2" for="magh">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/magh.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">Magh</p>
-                                            </label>
-                                        </div>
-                                        <div class="form-check mt-3">
-                                            <input type="checkbox" id="sakit_gigi" />
-                                            <label class="ml-2" for="sakit_gigi">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/sakit-gigi.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">Sakit Gigi</p>
-                                            </label>
-                                        </div>
-                                    </div>
+                        <div class="row m-0 p-0">
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="flu" />
+                                    <label class="text-center" for="flu">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/flu.svg'); ?>" /> <br>
+                                        <small class="m-0">Flu</small>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="col-sm-4 text-center">
-                                <div class="row">
-                                    <div class="col-sm-12 col-6">
-                                        <div class="form-check mt-3">
-                                            <input type="checkbox" id="pusing" />
-                                            <label class="ml-2" for="pusing">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/pusing.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">Pusing</p>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-6">
-                                        <div class="form-check">
-                                            <input type="checkbox" id="migrain" />
-                                            <label class="ml-2" for="migrain">
-                                                <img src="<?= base_url('assets/img/healthReport/sick categories/migrain.svg'); ?>" /> <br>
-                                                <p class="m-0 text-sm-center">Migrain</p>
-                                            </label>
-                                        </div>
-                                    </div>
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="batuk" />
+                                    <label class="text-center" for="batuk">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/batuk.svg'); ?>" /> <br>
+                                        <small class="m-0">Batuk</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="demam" />
+                                    <label class="text-center" for="demam">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/demam.svg'); ?>" /> <br>
+                                        <small class="m-0">Demam</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="diare" />
+                                    <label class="text-center" for="diare">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/diare.svg'); ?>" /> <br>
+                                        <small class="m-0">Diare</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="ispa" />
+                                    <label class="text-center" for="ispa">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/ispa.svg'); ?>" /> <br>
+                                        <small class="m-0">ISPA</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="sakit_mata" />
+                                    <label class="text-center" for="sakit_mata">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/sakit-mata.svg'); ?>" /> <br>
+                                        <small class="m-0">Mata</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="magh" />
+                                    <label class="text-center" for="magh">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/magh.svg'); ?>" /> <br>
+                                        <small class="m-0">Magh</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="sakit_gigi" />
+                                    <label class="ml-2" for="sakit_gigi">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/sakit-gigi.svg'); ?>" /> <br>
+                                        <small class="m-0">Gigi</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="pusing" />
+                                    <label class="text-center" for="pusing">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/pusing.svg'); ?>" /> <br>
+                                        <small class="m-0">Pusing</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" id="migrain" />
+                                    <label class="text-center" for="migrain">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/migrain.svg'); ?>" /> <br>
+                                        <small class="m-0">Migrain</small>
+                                    </label>
                                 </div>
                             </div>
                         </div>
+                    </div><!-- /checkbox kategori sakit -->
+                    <div class="form-group">
+
                     </div>
                 </form>
             </div>
