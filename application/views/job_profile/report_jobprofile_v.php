@@ -2,7 +2,7 @@
         <div class="card-header bg-gray-light">
             <?php if($jp_user['role_id']==1 || $jp_user['position_id']==1): ?>
                 <div class="row">
-                    <div class="col">
+                    <div class="col-lg-4 col-sm-6">
                         <div class="form-group">
                             <label for="divisi">Division:</label>
                             <select id="divisi" class="custom-select form-control form-control-sm">
@@ -13,7 +13,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-lg-4 col-sm-6">
                         <div class="form-group">
                             <label for="departement">Departement:</label>
                             <select id="departement" class="custom-select form-control form-control-sm">
@@ -24,7 +24,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-lg-4 col-sm-6">
                         <div class="form-group">
                             <label for="status">Status:</label>
                             <select id="status" class="custom-select form-control form-control-sm">
@@ -40,12 +40,7 @@
                 </div>
             <?php elseif($hirarki_org=="N"): ?>
                 <div class="row">
-                    <div class="col-4">
-                        <div class="form-group">
-                            <!-- nothing -->
-                        </div>
-                    </div>
-                    <div class="col-4">
+                    <div class="col-lg-4 col-sm-6">
                         <div class="form-group">
                             <label for="departement">Departement :</label>
                             <select id="departement" class="custom-select form-control form-control-sm">
@@ -56,7 +51,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-lg-4 col-sm-6">
                         <div class="form-group">
                             <label for="status">Status :</label>
                             <select id="status" class="custom-select form-control form-control-sm">
@@ -72,17 +67,7 @@
                 </div>
             <?php else: ?>
                 <div class="row">
-                    <div class="col-4">
-                        <div class="form-group">
-                            <!-- nothing -->
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="form-group">
-                            <!-- nothing -->
-                        </div>
-                    </div>
-                    <div class="col-4">
+                    <div class="col-lg-4 col-sm-6">
                         <div class="form-group">
                             <label for="status">Status :</label>
                             <select id="status" class="custom-select form-control form-control-sm">
