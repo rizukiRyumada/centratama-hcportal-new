@@ -6,7 +6,7 @@
 <!-- adminlte -->
 <script src="<?= base_url('/assets/vendor/node_modules/admin-lte/dist/js/adminlte.min.js') ?>"></script>
 
-<?= $this->load->view('_komponen/plugins/jqueryValidation/script_jqueryValidation'); ?>
+<?php $this->load->view('_komponen/plugins/jqueryValidation/script_jqueryValidation'); ?>
 
 <!-- custom script -->
 <script>
@@ -56,6 +56,28 @@
                 $(element).removeClass('is-invalid');
             }
         });
+
+        // dapatkan lebar browser
+        function getWidth() {
+            return Math.max(
+                document.body.scrollWidth,
+                document.documentElement.scrollWidth,
+                document.body.offsetWidth,
+                document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+            );
+        }
+
+        // dapatkan tinggi browser
+        function getHeight() {
+            return Math.max(
+                document.body.scrollHeight,
+                document.documentElement.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.offsetHeight,
+                document.documentElement.clientHeight
+            );
+        }
 
         // tampilkan modal login apabila ada error
         if(<?= $this->session->userdata('error'); ?> == 1){

@@ -14,11 +14,9 @@
 
 </body>
 
-<!-- main script file -->
-<?php $this->load->view('_komponen/main_script'); ?>
-<!-- load preloader -->
-<?php $this->load->view('_komponen/preloader_script'); ?>
 <!-- login script file -->
 <?php $this->load->view('_komponen/login/script_login'); ?>
+<!-- load preloader -->
+<?php $this->load->view('_komponen/preloader_script'); ?>
 
 </html>
