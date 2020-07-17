@@ -58,10 +58,8 @@ $(document).ready(function () {
                 $.each(JSON.parse(data), function(i, v) {
                     $('#departement').append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                 });
-                }
-            })
-        
-        
+            }
+        })
     });
 
     // $('#riwayat-nomor').DataTable({

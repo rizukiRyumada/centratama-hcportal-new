@@ -61,14 +61,18 @@ class HealthReport extends MainController {
 		$data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title'];
 		$data['load_view'] = 'healthreport/healthCheck_healthReport_v';
 		// additional styles and custom script
-        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+        // $data['additional_styles'] = array();
 		$data['custom_styles'] = array('healthreport_styles');
-        $data['custom_script'] = array('plugins/datatables/script_datatables', 'plugins/jqueryValidation/script_jqueryValidation', 'healthreport/script_index_healthreport');
+        $data['custom_script'] = array('plugins/jqueryValidation/script_jqueryValidation', 'healthreport/script_index_healthreport');
         
 		$this->load->view('main_v', $data);
     }
 
     public function report(){
+        // ambil data divisi dan departemen
+        $this->load->model('Jobpro_model');
+        $data['dept'] = $this->Jobpro_model->getAllAndOrder('nama_departemen', 'departemen');
+        $data['divisi'] = $this->Jobpro_model->getAllAndOrder('division', 'divisi');
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
@@ -78,8 +82,8 @@ class HealthReport extends MainController {
 		$data['load_view'] = 'healthreport/report_healthReport_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
-		$data['custom_styles'] = array('healthreport_styles');
-        $data['custom_script'] = array('plugins/datatables/script_datatables', 'plugins/jqueryValidation/script_jqueryValidation', 'healthreport/script_index_healthreport');
+		// $data['custom_styles'] = array();
+        $data['custom_script'] = array('plugins/datatables/script_datatables', 'healthreport/script_report_healthreport');
         
 		$this->load->view('main_v', $data);
     }
