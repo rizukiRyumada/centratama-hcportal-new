@@ -21,7 +21,7 @@ class HealthReport extends MainController {
             $data['checkedIn'] = true;
             // set notifikasi swal
             if($checkedIn['status'] == 1){ // cek jika sehat
-                $this->session->set_flashdata('msg_swal',
+                $this->session->set_userdata('msg_swal',
                     array(
                         'icon' => 'success',
                         'title' => 'Success Checkin',
@@ -32,7 +32,7 @@ class HealthReport extends MainController {
                 $data['btn_healthy'] = 'bg-success';
                 $data['btn_sick']    = 'bg-gray-light';
             } else { // cek jika engga
-                $this->session->set_flashdata('msg_swal',
+                $this->session->set_userdata('msg_swal',
                     array(
                         'icon' => 'success',
                         'title' => 'Success Checkin',
@@ -70,6 +70,18 @@ class HealthReport extends MainController {
 
     public function report(){
 
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+		$data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title'];
+		$data['load_view'] = 'healthreport/report_healthReport_v';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+		$data['custom_styles'] = array('healthreport_styles');
+        $data['custom_script'] = array('plugins/datatables/script_datatables', 'plugins/jqueryValidation/script_jqueryValidation', 'healthreport/script_index_healthreport');
+        
+		$this->load->view('main_v', $data);
     }
 
     /* -------------------------------------------------------------------------- */
