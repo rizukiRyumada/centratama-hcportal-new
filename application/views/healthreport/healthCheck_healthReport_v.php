@@ -144,9 +144,19 @@
                                     </div>
                                 </div>
                             <?php endforeach;?>
+                            <!-- Sakit lainnya -->
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
+                                <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
+                                    <input type="checkbox" name="lainnyaTrigger" id="lainnyaTrigger" />
+                                    <label class="text-center" for="lainnyaTrigger">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/lainnya.svg'); ?>" /> <br>
+                                        <small class="m-0">Others</small>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div><!-- /checkbox kategori sakit -->
-                    <div class="form-group">
+                    <div id="othersForm" class="form-group" style="display: none;">
                         <span class="label-alternate">Others</span>
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -157,7 +167,7 @@
                             <input type="text" class="form-control" name="lainnya" placeholder="Others">
                         </div>
                     </div>
-                    <hr>
+                    <hr class="mt-3">
                     <div class="form-group mb-0">
                         <span class="label-alternate">Notes</span>
                         <textarea class="form-control" name="notes" rows="5" placeholder="Please enter the notes of your sickness..." required></textarea>

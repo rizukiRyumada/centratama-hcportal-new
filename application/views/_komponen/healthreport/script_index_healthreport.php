@@ -47,4 +47,13 @@ $('#checkInSick').validate({
     $(element).removeClass('is-invalid');
   }
 });
+
+// form Other sickness trigger
+$('input[name="lainnyaTrigger"]').on('change', () => {
+  if($('input[name="lainnyaTrigger"]').prop("checked") == true) {
+    $('#othersForm').fadeIn();
+  } else if($('input[name="lainnyaTrigger"]').prop("checked") == false) {
+    $('#othersForm').fadeOut();
+  }
+})
 </script>
