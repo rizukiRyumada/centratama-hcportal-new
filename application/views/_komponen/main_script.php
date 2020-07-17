@@ -39,12 +39,12 @@
     <?= $this->session->flashdata('msg'); ?>
 
     // swal notification
-    <?php if(!empty($this->session->flashdata('msg_swal'))): ?>
+    <?php if(!empty($this->session->userdata('msg_swal'))): ?>
         $(document).ready(() => {
             Swal.fire({
-                title: '<?= $this->session->flashdata('msg_swal')['title']; ?>',
-                icon: '<?= $this->session->flashdata('msg_swal')['icon']; ?>',
-                html: '<?= $this->session->flashdata('msg_swal')['msg']; ?>',
+                title: '<?= $this->session->userdata('msg_swal')['title']; ?>',
+                icon: '<?= $this->session->userdata('msg_swal')['icon']; ?>',
+                html: '<?= $this->session->userdata('msg_swal')['msg']; ?>',
                 showCloseButton: false,
                 showCancelButton: false,
                 focusConfirm: true,
@@ -54,6 +54,8 @@
             });
         });
     <?php endif; ?>
+    // unset flashdata
+    <?php $this->session->unset_userdata('msg_swal'); ?>
 
     $(document).ready(function(){
         // $("body").overlayScrollbars({ 
