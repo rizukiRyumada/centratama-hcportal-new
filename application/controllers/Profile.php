@@ -30,7 +30,7 @@ class Profile extends MainController {
         $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
         $data['load_view'] = 'profile/profile_index_v';
         // $data['custom_styles'] = array('survey_styles');
-        $data['custom_script'] = array('profile/script_profile');
+        $data['custom_script'] = array('profile/script_profile', 'plugins/jqueryValidation/script_jqueryValidation');
         
         $this->load->view('main_v', $data);
     }

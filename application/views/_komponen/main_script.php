@@ -35,15 +35,32 @@
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
     }
-    
+    // show the toastr notification
     <?= $this->session->flashdata('msg'); ?>
+
+    // swal notification
+    <?php if(!empty($this->session->flashdata('msg_swal'))): ?>
+        $(document).ready(() => {
+            Swal.fire({
+                title: '<?= $this->session->flashdata('msg_swal')['title']; ?>',
+                icon: '<?= $this->session->flashdata('msg_swal')['icon']; ?>',
+                html: '<?= $this->session->flashdata('msg_swal')['msg']; ?>',
+                showCloseButton: false,
+                showCancelButton: false,
+                focusConfirm: true,
+                confirmButtonText: 'Ok',
+                    // '<i class="fa fa-thumbs-up"></i> Great!',
+                confirmButtonAriaLabel: 'Ok',
+            });
+        });
+    <?php endif; ?>
 
     $(document).ready(function(){
         // $("body").overlayScrollbars({ 
-        //     // className : 'os-theme-dark'
+        //     className : 'os-theme-dark'
         // }); // set overlay scrollbar to body tag html
         $(".sidebar").overlayScrollbars({
-            className : "os-theme-light"
+            className : "os-theme-dark"
         }); // set overlay sidebar scrollbar color to dark
     });
 

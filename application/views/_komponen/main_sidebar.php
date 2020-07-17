@@ -83,9 +83,7 @@
                     <?php endif; ?>
                 <?php endforeach; ?>
                 <?php if($this->session->userdata('role_id') == 1): ?>
-                    <li class="nav-header">
-                        <hr class="m-0" />
-                    </li>
+                    <li class="nav-header">MAINTENANCE MENU</li>
                     
                     <!-- menu application setting -->
                     <?php $sidebar['settings'] = $this->_general_m->getOnce('*', 'survey_user_menu', array('id_menu' => '5')) ?>

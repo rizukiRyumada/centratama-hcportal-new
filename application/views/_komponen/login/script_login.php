@@ -5,9 +5,8 @@
 <script src="<?= base_url('/assets/vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'); ?>"></script>
 <!-- adminlte -->
 <script src="<?= base_url('/assets/vendor/node_modules/admin-lte/dist/js/adminlte.min.js') ?>"></script>
-<!-- jquery-validation -->
-<script src="/assets/vendor/node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="/assets/vendor/node_modules/jquery-validation/dist/additional-methods.min.js"></script>
+
+<?= $this->load->view('_komponen/plugins/jqueryValidation/script_jqueryValidation'); ?>
 
 <!-- custom script -->
 <script>

@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <div class="row mt-3">
-                    <div class="col text-center">
+                    <!-- <div class="col text-center">
                         <a data-toggle="modal" data-target="#modal_healthy" class="btn bg-gray-light text-center">
                             <div class="row">
                                 <div class="col">
@@ -51,12 +51,26 @@
                             </div>
                             Healty
                         </a>
+                    </div> -->
+                    <div class="col text-center">
+                        <<?php if($checkedIn){echo('div class="btn '.$btn_healthy);} else {echo('button type="submit" form="CheckInHealthy" class="btn bg-gray-light');}    
+                        ?> text-center">
+                            <div class="row">
+                                <div class="col">
+                                    <img class="img-md" src="<?= base_url('assets/img/healthReport/_healthy.svg'); ?>" alt="healthy" > <br/>
+                                </div>
+                            </div>
+                            Healty
+                        </<?php if($checkedIn){echo('div');} else {echo('button');}    
+                        ?>>
                     </div>
                     <div class="col text-center">
-                        <button data-toggle="modal" data-target="#modal_sick" class="btn bg-gray-light text-center">
+                        <<?php if($checkedIn){echo('div class="btn '.$btn_sick);} else {echo('button data-toggle="modal" data-target="#modal_sick" class="btn bg-gray-light');}    
+                        ?> text-center">
                             <img class="img-md" src="<?= base_url('assets/img/healthReport/_sick.svg'); ?>" alt="sick" srcset=""> <br/>
                             Sick
-                        </button>
+                        </<?php if($checkedIn){echo('div');} else {echo('button');}    
+                        ?>>
                     </div>
                 </div>
                 <div class="row mt-2">
@@ -133,20 +147,20 @@
                         </div>
                     </div><!-- /checkbox kategori sakit -->
                     <div class="form-group">
-                        <span class="label-alternate">Penyakit Lainnya?</span>
+                        <span class="label-alternate">Others</span>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <img src="<?= base_url('assets/img/healthReport/sick categories/lainnya.svg'); ?>" alt="lainnya" style="width: 1em; height: 1em">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" name="lainnya" placeholder="Lainnya">
+                            <input type="text" class="form-control" name="lainnya" placeholder="Others">
                         </div>
                     </div>
                     <hr>
                     <div class="form-group mb-0">
                         <span class="label-alternate">Notes</span>
-                        <textarea class="form-control" name="notes" rows="5" placeholder="Masukkan catatan penyakit anda..."></textarea>
+                        <textarea class="form-control" name="notes" rows="5" placeholder="Please enter the notes of your sickness..." required></textarea>
                     </div>
                 </form>
             </div>
