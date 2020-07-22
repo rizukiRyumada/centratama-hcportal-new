@@ -45,9 +45,29 @@
                 <?php else: ?>
                     <h3 class="card-title">Your Health Checked In</h3>
                 <?php endif; ?>
+                <div class="row">
+                    <button id="adsa" class="btn btn-primary">Click</button>
+                </div>
             </div>
             <div class="card-body">
-                ajhbekjwhqfew
+                <?php if($this->session->userdata('role_id') == 1): ?>
+                    <div class="row my-2">
+                        <h3 class="card-title"><code>employe name</code></h3>
+                    </div>
+                <?php endif; ?>
+                <table id="report_healthCheckIn" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Division</th>
+                            <th>Health Status</th>
+                            <th>Sick Type</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>

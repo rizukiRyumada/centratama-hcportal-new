@@ -48,6 +48,40 @@ class _general_m extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+    // SELECT more row and order
+    /**
+     * getAllOrderAscend
+     *
+     * @param  mixed $select
+     * @param  mixed $table
+     * @param  mixed $where
+     * @return void
+     */
+    public function getAllOrderAscend($select, $table, $where, $order){
+        $this->db->select($select);
+        $this->db->from($table);
+        $this->db->where($where);
+        $this->db->order_by($order);
+        return $this->db->get()->result_array();
+    }
+
+    // SELECT more row and order
+    /**
+     * getAllOrderDescend
+     *
+     * @param  mixed $select
+     * @param  mixed $table
+     * @param  mixed $where
+     * @return void
+     */
+    public function getAllOrderDescend($select, $table, $where, $order){
+        $this->db->select($select);
+        $this->db->from($table);
+        $this->db->where($where);
+        $this->db->order_by($order, 'desc');
+        return $this->db->get()->result_array();
+    }
+
     // SELECT with join 2 tables    
     /**
      * getJoin2tables
@@ -134,8 +168,6 @@ class _general_m extends CI_Model {
         $this->db->update($table, $data);
     }
     
-    
-
 }
 
 /* End of file _general_m.php */

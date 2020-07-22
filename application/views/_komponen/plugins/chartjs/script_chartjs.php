@@ -1,0 +1,1 @@
+<script src="<?= base_url('/assets/vendor/node_modules/chart.js/dist/Chart.bundle.min.js'); ?>"></script>

@@ -46,6 +46,26 @@ html {
     padding-left: .75rem;
 }
 
+/* Datatables button styles */
+/* export to excel buttons */
+div.dt-buttons.btn-group.flex-wrap button.btn.btn-secondary.buttons-excel.buttons-html5{
+    background-color: #28a745;
+    border-color: #28a745;
+}
+div.dt-buttons.btn-group.flex-wrap button.btn.btn-secondary.buttons-excel.buttons-html5:hover{
+    background-color: #1e8035;
+    border-color: #1e8035;
+}
+/* page Length */
+div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.buttons-page-length{
+    background-color: #0072C6;
+    border-color: #0072C6;
+}
+div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.buttons-page-length:hover{                      
+    background-color: #013c66;
+    border-color: #013c66;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                              responsive style                              */
 /* -------------------------------------------------------------------------- */

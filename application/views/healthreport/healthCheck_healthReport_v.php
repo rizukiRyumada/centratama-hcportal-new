@@ -60,7 +60,7 @@
                                     <img class="img-md" src="<?= base_url('assets/img/healthReport/_healthy.svg'); ?>" alt="healthy" > <br/>
                                 </div>
                             </div>
-                            Healty
+                            Healthy
                         </<?php if($checkedIn){echo('div');} else {echo('button');}    
                         ?>>
                     </div>
