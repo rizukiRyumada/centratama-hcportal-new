@@ -1,6 +1,8 @@
 <!-- script file -->
 <!-- jquery -->
 <script src="<?= base_url('/assets/vendor/node_modules/jquery/dist/jquery.min.js') ?>"></script>
+<!-- Moment js -->
+<script src="<?= base_url('/assets/vendor/node_modules/moment/min/moment.min.js'); ?>"></script>
 <!-- bootstrap -->
 <script src="<?= base_url('/assets/vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'); ?>"></script>
 <!-- adminlte -->

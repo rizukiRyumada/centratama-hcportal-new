@@ -50,14 +50,14 @@ class _general_m extends CI_Model {
 
     // SELECT more row and order
     /**
-     * getAllOrderAscend
+     * getAllOrder
      *
      * @param  mixed $select
      * @param  mixed $table
      * @param  mixed $where
      * @return void
      */
-    public function getAllOrderAscend($select, $table, $where, $order){
+    public function getAllOrder($select, $table, $where, $order){
         $this->db->select($select);
         $this->db->from($table);
         $this->db->where($where);
@@ -114,6 +114,25 @@ class _general_m extends CI_Model {
         $this->db->select($select);
         $this->db->join($joinTable, $joinIndex, 'left');
         $this->db->order_by($order);
+        return $this->db->get_where($table, $where)->result_array();
+    }
+    
+    /**
+     * getJoin2tablesOrderDescend
+     *
+     * @param  mixed $select
+     * @param  mixed $table
+     * @param  mixed $joinTable
+     * @param  mixed $joinIndex
+     * @param  mixed $where
+     * @param  mixed $order
+     * @return void
+     */
+    public function getJoin2tablesOrderDescend($select, $table, $joinTable, $joinIndex, $where, $order){
+        $this->db->select($select);
+        $this->db->join($joinTable, $joinIndex, 'left');
+        $this->db->order_by($order);
+        $this->db->order_by($order, 'desc');
         return $this->db->get_where($table, $where)->result_array();
     }
 

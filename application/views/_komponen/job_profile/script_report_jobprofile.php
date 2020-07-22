@@ -31,8 +31,8 @@ $(document).ready(function () {
     });
     $('#departement').change(function(){
         mTable.column(1).search(this.value).order([1, 'asc']).draw();
-        mTable.column(4).search('').order([4, 'asc']).draw();
-        $('#status').prop('selectedIndex',0);
+        mTable.column(4).search('').order([4, 'asc']).draw(); // reset filter status
+        $('#status').prop('selectedIndex',0); // balikkan ke default
     });
     $('#status').change(function(){
         mTable.column(4).search(this.value).order([4, 'asc']).draw();
