@@ -152,7 +152,6 @@
                 </table>
             </div>
 
-            <!-- TODO TAMBAH KOLOM verivy OD tombol centang -->
             <!-- <div class="table-responsive">
                 <table class="table table-boredered" id="history" width="100%">
                     <thead>

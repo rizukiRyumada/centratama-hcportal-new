@@ -1,6 +1,5 @@
 <?php  
-// TODO tambah kolom penilaian N/A = "" = null = kosong
-// TODO buat halaman setting survey buat admin
+// TODO pindahkan setting survey ke menu survey jadi report yang bisa baca admin dan userapp admin
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Survey extends MainController {
@@ -499,7 +498,6 @@ class Survey extends MainController {
 
         // N-1 menilai functional di divisinya
         // N-1 di funtonal lain tidak muncul
-// NOW
     // get data Feedback 360°
     public function f360getData($data_employe) {
         // cek hirarki karyawan
@@ -908,7 +906,6 @@ class Survey extends MainController {
                 $counter_data_survey['total_done_eng'] = 0; $counter_data_survey['total_done_exc'] = 0; $counter_data_survey['total_done_f360'] = 0;
             }
 
-            // NOW add counter per survey type
             // ambil data 
             foreach($data_survey[$k]['departemen'] as $key => $value){
                 $data_karyawan = $this->_general_m->getJoin2tables(

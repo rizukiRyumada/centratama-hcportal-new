@@ -128,7 +128,6 @@ class Job_profile extends MainController {
     }
 
     // function untuk menampilkan JP karyawan bawahan task
-    // NOW
     public function taskJp(){
         // prepare the data
         $nik = $this->input->get('task');
