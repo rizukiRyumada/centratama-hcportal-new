@@ -41,7 +41,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="row mt-3">
+                <div class="row mt-5 pt-4">
                     <!-- <div class="col text-center">
                         <a data-toggle="modal" data-target="#modal_healthy" class="btn bg-gray-light text-center">
                             <div class="row">
@@ -52,30 +52,30 @@
                             Healty
                         </a>
                     </div> -->
-                    <div class="col text-center">
+                    <div class="col-6 text-center">
                         <<?php if($checkedIn){echo('div class="btn '.$btn_healthy);} else {echo('button type="submit" form="CheckInHealthy" class="btn bg-gray-light');}    
                         ?> text-center">
                             <div class="row">
                                 <div class="col">
-                                    <img class="img-md" src="<?= base_url('assets/img/healthReport/_healthy.svg'); ?>" alt="healthy" > <br/>
+                                    <img class="img-lg" src="<?= base_url('assets/img/healthReport/_healthy.svg'); ?>" alt="healthy" > <br/>
                                 </div>
                             </div>
                             Healthy
                         </<?php if($checkedIn){echo('div');} else {echo('button');}    
                         ?>>
                     </div>
-                    <div class="col text-center">
+                    <div class="col-6 text-center">
                         <<?php if($checkedIn){echo('div class="btn '.$btn_sick);} else {echo('button data-toggle="modal" data-target="#modal_sick" class="btn bg-gray-light');}    
                         ?> text-center">
-                            <img class="img-md" src="<?= base_url('assets/img/healthReport/_sick.svg'); ?>" alt="sick" srcset=""> <br/>
+                            <img class="img-lg" src="<?= base_url('assets/img/healthReport/_sick.svg'); ?>" alt="sick" srcset=""> <br/>
                             Sick
                         </<?php if($checkedIn){echo('div');} else {echo('button');}    
                         ?>>
                     </div>
                 </div>
-                <div class="row mt-2">
+                <div class="row mt-5">
                     <div class="col text-center">
-                        <small>
+                        <small style="font-size: 10px;">
                             Icons made by <a href="https://www.flaticon.com/authors/flat-icons" title="Flat Icons">Flat Icons</a>
                         </small>
                     </div>
