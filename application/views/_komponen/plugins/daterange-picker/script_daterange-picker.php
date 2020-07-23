@@ -18,8 +18,8 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
         "alwaysShowCalendars": true,
-        "startDate": "07/16/2020",
-        "endDate": "07/22/2020",
+        "startDate": "<?= date('m/d/o', strtotime("-1 Weeks")) ?>",
+        "endDate": "<?= date('m/d/o', time()); ?>",
         "minDate": "YYYY-MM-DD",
         "maxDate": "YYYY-MM-DD",
         "drops": "auto",

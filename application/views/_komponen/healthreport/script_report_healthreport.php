@@ -181,20 +181,26 @@ var kategorihealth_backgroundcolorData = Array();
         table.column(4).search(selection).order([4, 'asc']).draw(); //kosongkan filter dom departement
     });
 
+    // sick category select option
     $('#sickCategory_filter').change(() => {
         let selection = $('#sickCategory_filter').val();
         table.column(5).search(selection).order([5, 'asc']).draw(); //kosongkan filter dom departement
     });
 
+    // reset filter on datatable filter
     $('#reset_filter').on('click', () => {
-        // table.ajax.reload(); // reload table
-
         // balikkan ke default
-        table.column(5).search('').order([5, 'asc']).draw(); // reset filter status
-        table.column(4).search('').order([4, 'asc']).draw(); // reset filter status
+        table.column(5).search('').draw(); // reset filter status
+        table.column(4).search('').draw(); // reset filter status
+        table.order([0, 'desc']).draw();
         $('#healthStatus_filter').prop('selectedIndex',0);
         $('#sickCategory_filter').prop('selectedIndex',0);
     });
+
+    // ketika tomboll apply filter diklik di navbar apply button
+    $('#apply_table').on('click', () => {
+        table.ajax.reload(); // reload table
+    })
 </script>
 
 <?php 

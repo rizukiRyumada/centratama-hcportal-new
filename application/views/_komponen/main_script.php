@@ -44,9 +44,9 @@
     <?php if(!empty($this->session->userdata('msg_swal'))): ?>
         $(document).ready(() => {
             Swal.fire({
-                title: '<?= $this->session->userdata('msg_swal')['title']; ?>',
-                icon: '<?= $this->session->userdata('msg_swal')['icon']; ?>',
-                html: '<?= $this->session->userdata('msg_swal')['msg']; ?>',
+                title: "<?= $this->session->userdata('msg_swal')['title']; ?>",
+                icon: "<?= $this->session->userdata('msg_swal')['icon']; ?>",
+                html: "<?= $this->session->userdata('msg_swal')['msg']; ?>",
                 showCloseButton: false,
                 showCancelButton: false,
                 focusConfirm: true,

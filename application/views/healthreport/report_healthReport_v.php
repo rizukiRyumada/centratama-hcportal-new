@@ -43,7 +43,7 @@
                         <div class="col-lg-1 col-sm-6">
                             <div class="row h-100">
                                 <div class="col align-self-center text-right pt-3">
-                                    <button id="adsa" class="btn btn-primary w-100"><i class="fa fa-filter"></i> Apply</button>
+                                    <button id="apply_table" class="btn btn-primary w-100"><i class="fa fa-filter"></i> Apply</button>
                                 </div>
                             </div>
                         </div>

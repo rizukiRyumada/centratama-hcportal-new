@@ -17,9 +17,10 @@ class HealthReport extends MainController {
         // cek apa user udh isi pada tanggal segini
         $checkedIn = $this->_general_m->getOnce('*', 'healthReport_reports', array('date' => date('o-m-d', time()), 'nik' => $this->session->userdata('nik')));
 
-        if(!empty($checkedIn)){
+        if(!empty($checkedIn) && date('N', time()) != 6 && date('N', time()) != 7){
             // beri penanda dia sudah checkedin
             $data['checkedIn'] = true;
+
             // set notifikasi swal
             if($checkedIn['status'] == 1){ // cek jika sehat
                 $this->session->set_userdata('msg_swal',
@@ -44,6 +45,21 @@ class HealthReport extends MainController {
                 $data['btn_healthy'] = 'bg-gray-light';
                 $data['btn_sick']    = 'bg-danger';
             }
+        } elseif(date('N', time()) == 6 || date('N', time()) == 7){
+            // beri penanda dia sudah checkedin tidak tersedia
+            $data['checkedIn'] = true;
+            
+            // swal notifikasi
+            $this->session->set_userdata('msg_swal',
+                array(
+                    'icon' => 'info',
+                    'title' => "It's Weekend",
+                    'msg' => "Hi, Thank You for your participation to checkin your health status, but it is weekend now. we don't take health checkin on weekend."
+                )
+            );
+            // beri warna button
+            $data['btn_healthy'] = 'bg-gray';
+            $data['btn_sick']    = 'bg-gray';
         } else {
             // beri penanda dia belum checkedin
             $data['checkedIn'] = false;
