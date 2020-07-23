@@ -5,16 +5,29 @@
                 <li data-target="#healthCarousel" data-slide-to="0" class="active"></li>
                 <li data-target="#healthCarousel" data-slide-to="1"></li>
                 <li data-target="#healthCarousel" data-slide-to="2"></li>
+                <li data-target="#healthCarousel" data-slide-to="3"></li>
+                <li data-target="#healthCarousel" data-slide-to="4"></li>
+                <li data-target="#healthCarousel" data-slide-to="5"></li>
+                <li data-target="#healthCarousel" data-slide-to="6"></li>
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <img src="<?= base_url('assets/img/healthReport/banners/'); ?>1.jpeg" class="d-block w-100" alt="Gerakan hidup sehat">
                 </div>
                 <div class="carousel-item">
-                    <img src="<?= base_url('assets/img/healthReport/banners/'); ?>2.jpeg" class="d-block w-100" alt="Konsumsi makanan">
+                    <img src="<?= base_url('assets/img/healthReport/banners/'); ?>2.jpeg" class="d-block w-100" alt="Cuci Tangan">
                 </div>
                 <div class="carousel-item">
-                    <img src="<?= base_url('assets/img/healthReport/banners/'); ?>3.jpeg" class="d-block w-100" alt="Jaga jarak">
+                    <img src="<?= base_url('assets/img/healthReport/banners/'); ?>3.jpeg" class="d-block w-100" alt="Gunakan Siku saat batuk">
+                </div>
+                <div class="carousel-item">
+                    <img src="<?= base_url('assets/img/healthReport/banners/'); ?>4.jpeg" class="d-block w-100" alt="Pakai masker">
+                </div>
+                <div class="carousel-item">
+                    <img src="<?= base_url('assets/img/healthReport/banners/'); ?>5.jpeg" class="d-block w-100" alt="Makan makanan sehat">
+                </div>
+                <div class="carousel-item">
+                    <img src="<?= base_url('assets/img/healthReport/banners/'); ?>6.jpeg" class="d-block w-100" alt="Jaga jarak">
                 </div>
             </div>
             <a class="carousel-control-prev" href="#healthCarousel" role="button" data-slide="prev">
@@ -30,7 +43,7 @@
     <div class="col-md-4 mt-2">
         <div class="card card-danger card-outline">
             <div class="card-header">
-                <p class="card-title">How are you today?</p>
+                <p class="card-title">Are you healthy today?</p>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -89,7 +102,7 @@
      /*                                   MODALS                                   */
      /* -------------------------------------------------------------------------- */ -->
 <!-- Modal Healthy -->
-<div class="modal fade" id="modal_healthy" tabindex="-1" role="dialog" aria-labelledby="modal_healthyLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="modal_healthy" tabindex="-1" role="dialog" aria-labelledby="modal_healthyLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -115,7 +128,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Modal Sick -->
 <div class="modal fade" id="modal_sick" tabindex="-1" role="dialog" aria-labelledby="modal_sickLabel" aria-hidden="true">
@@ -128,6 +141,11 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <p class="text-center text-danger m-0">Please choose your sick category.</p>
+                    </div>
+                </div>
                 <form id="checkInSick" role="form" action="<?= base_url('healthReport/submitCheckIn'); ?>" method="POST">
                     <input type="hidden" name="checkIn" value="0">
                     <!-- checkbox kategori sakit -->

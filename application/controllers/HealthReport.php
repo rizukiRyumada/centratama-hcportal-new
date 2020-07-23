@@ -4,6 +4,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class HealthReport extends MainController {
 
+    
+    public function __construct()
+    {
+        parent::__construct();
+        // load library
+        $this->load->library('form_validation');
+    }
+    
+
     public function index()
     {
         redirect('healthReport/healthStatus'); // redirect ke healthStatus
@@ -100,7 +109,7 @@ class HealthReport extends MainController {
 		$data['load_view'] = 'healthreport/report_healthReport_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
-		// $data['custom_styles'] = array();
+		$data['custom_styles'] = array('healthreport_report_styles');
         $data['custom_script'] = array(
             'plugins/datatables/script_datatables', 
             'plugins/chartjs/script_chartjs.php', 
@@ -158,6 +167,20 @@ class HealthReport extends MainController {
                         'icon' => 'error',
                         'title' => 'Failed Checkin',
                         'msg' => 'Please choose at least one of your sickness or type on other.'
+                    )
+                );
+                redirect('healthReport/healthStatus');
+            }
+
+
+            $this->form_validation->set_rules('notes', 'Notes', 'required');
+            if ($this->form_validation->run() == FALSE){
+                 // set notifikasi swal
+                 $this->session->set_flashdata('msg_swal',
+                    array(
+                        'icon'  => 'error',
+                        'title' => 'Failed Checkin',
+                        'msg'   => 'Please write your sick notes.'
                     )
                 );
                 redirect('healthReport/healthStatus');
@@ -270,11 +293,11 @@ class HealthReport extends MainController {
                 foreach($sickness as $key => $value){
                     // ambil info kategori sakit terdaftar
                     if($value['name'] != 'lainnya'){
-                        $what_sickness = $this->_general_m->getOnce('name', 'healthReport_category', array('input_name' => $value['name']))['name'];
+                        $what_sickness = $this->_general_m->getOnce('name', 'healthReport_category', array('input_name' => $value['name']));
                     }
                     // untuk nama kategori sakit yang terdaftar
-                    if(!empty($value['status']) && $value['name'] != 'lainnya'){
-                        $sicked[$x] = $what_sickness;
+                    if(!empty($value['status']) && $value['name'] != 'lainnya' && !empty($what_sickness)){
+                        $sicked[$x] = $what_sickness['name'];
                         $x++;
 
                         // counter jenis sakit

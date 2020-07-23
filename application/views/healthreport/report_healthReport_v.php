@@ -31,7 +31,7 @@
                         </div>
                         <div class="col-lg-4 col-sm-6">
                             <div class="form-group">
-                                <label for="departement">Departement:</label>
+                                <label for="departement">Department:</label>
                                 <select id="departement" class="custom-select form-control form-control-sm">
                                     <option value="">All</option>
                                     <?php foreach($dept as $v): ?>
@@ -94,20 +94,24 @@
                                 </div>
                             </div>
                         </div><!-- /Table Toolbox -->
-                        <!-- Tabel -->
-                        <table id="report_healthCheckIn" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Name</th>
-                                    <th>Department</th>
-                                    <th>Division</th>
-                                    <th>Health Status</th>
-                                    <th>Sick Type</th>
-                                    <th>Notes</th>
-                                </tr>
-                            </thead>
-                        </table><!-- /Tabel -->
+                        <div class="row">
+                            <div class="col table-responsive">
+                                <!-- Tabel -->
+                                <table id="report_healthCheckIn" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Name</th>
+                                            <th>Department</th>
+                                            <th>Division</th>
+                                            <th>Health Status</th>
+                                            <th>Sick Type</th>
+                                            <th>Notes</th>
+                                        </tr>
+                                    </thead>
+                                </table><!-- /Tabel -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
