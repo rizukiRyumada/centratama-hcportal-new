@@ -102,7 +102,7 @@
      /*                                   MODALS                                   */
      /* -------------------------------------------------------------------------- */ -->
 <!-- Modal Healthy -->
-<!-- <div class="modal fade" id="modal_healthy" tabindex="-1" role="dialog" aria-labelledby="modal_healthyLabel" aria-hidden="true">
+<div class="modal fade" id="modal_healthy" tabindex="-1" role="dialog" aria-labelledby="modal_healthyLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -128,7 +128,7 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <!-- Modal Sick -->
 <div class="modal fade" id="modal_sick" tabindex="-1" role="dialog" aria-labelledby="modal_sickLabel" aria-hidden="true">
@@ -162,12 +162,12 @@
                                     </div>
                                 </div>
                             <?php endforeach;?>
-                            <!-- Sakit lainnya -->
+                            <!-- Sakit other -->
                             <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 col-4 d-flex align-items-center m-0 p-0 justify-content-center">
                                 <div class="form-check d-flex align-items-center justify-content-center m-0 p-0">
-                                    <input type="checkbox" name="lainnyaTrigger" id="lainnyaTrigger" />
-                                    <label class="text-center" for="lainnyaTrigger">
-                                        <img src="<?= base_url('assets/img/healthReport/sick categories/lainnya.svg'); ?>" /> <br>
+                                    <input type="checkbox" name="otherTrigger" id="otherTrigger" />
+                                    <label class="text-center" for="otherTrigger">
+                                        <img src="<?= base_url('assets/img/healthReport/sick categories/other.svg'); ?>" /> <br>
                                         <small class="m-0">Others</small>
                                     </label>
                                 </div>
@@ -179,10 +179,10 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <img src="<?= base_url('assets/img/healthReport/sick categories/lainnya.svg'); ?>" alt="lainnya" style="width: 1em; height: 1em">
+                                    <img src="<?= base_url('assets/img/healthReport/sick categories/other.svg'); ?>" alt="other" style="width: 1em; height: 1em">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" name="lainnya" placeholder="Others">
+                            <input type="text" class="form-control" name="other" placeholder="Others">
                         </div>
                     </div>
                     <hr class="mt-3">

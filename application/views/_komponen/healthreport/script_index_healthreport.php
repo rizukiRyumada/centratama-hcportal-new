@@ -49,10 +49,10 @@ $('#checkInSick').validate({
 });
 
 // form Other sickness trigger
-$('input[name="lainnyaTrigger"]').on('change', () => {
-	if($('input[name="lainnyaTrigger"]').prop("checked") == true) {
+$('input[name="otherTrigger"]').on('change', () => {
+	if($('input[name="otherTrigger"]').prop("checked") == true) {
 		$('#othersForm').fadeIn();
-	} else if($('input[name="lainnyaTrigger"]').prop("checked") == false) {
+	} else if($('input[name="otherTrigger"]').prop("checked") == false) {
 		$('#othersForm').fadeOut();
 	}
 });
@@ -73,10 +73,10 @@ function onSubmit() {
 		return false;
 	}
 
-	// cek jika checkbox lainnya dicek
-	if($('input[name="lainnyaTrigger"]').prop("checked") == true){
+	// cek jika checkbox other dicek
+	if($('input[name="otherTrigger"]').prop("checked") == true){
 		// cek kotak boxnya
-		if($('input[name="lainnya"]').val() == ""){
+		if($('input[name="other"]').val() == ""){
 			Swal.fire({
 				icon: 'error',
 				title: 'Error',

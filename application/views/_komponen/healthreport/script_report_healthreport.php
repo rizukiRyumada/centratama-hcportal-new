@@ -12,6 +12,8 @@ var kategorihealth_chartData = Array();
 var kategorihealth_labelData = Array();
 var kategorihealth_colorData = Array();
 var kategorihealth_backgroundcolorData = Array();
+var dailyhealth_labelData = Array();
+var dailyhealth_chartData = Array(Array(), Array(), Array());
 
     // Filter Divisi
     $('#divisi').change(function(){
@@ -34,26 +36,35 @@ var kategorihealth_backgroundcolorData = Array();
                     $('#departement').append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                 });
             }
-        })
+        });
+
+        table.ajax.reload(); // reload table
     });
 
     // Filter Departemen
-    // $('#departement').change(() => {
-    //     let divisi = $('#divisi').val();
-    //     let departemen = $('#departement').val();
+    $('#departement').change(() => {
+        // let divisi = $('#divisi').val();
+        // let departemen = $('#departement').val();
 
-    //     $.ajax({
-    //         url: "<?= base_url('healthReport/ajaxGetEmployee'); ?>",
-    //         data: {
-    //             divisi: divisi,
-    //             departemen: departemen
-    //         },
-    //         method: "POST",
-    //         success: (data) => {
-    //             console.log(data);
-    //         }
-    //     });
-    // });
+        // $.ajax({
+        //     url: "<?= base_url('healthReport/ajaxGetEmployee'); ?>",
+        //     data: {
+        //         divisi: divisi,
+        //         departemen: departemen
+        //     },
+        //     method: "POST",
+        //     success: (data) => {
+        //         console.log(data);
+        //     }
+        // });
+
+        table.ajax.reload(); // reload table
+    });
+
+    // filter date
+    $('#daterange').on('change', () => {
+        table.ajax.reload(); // reload table
+    });
 
     <?php
     /* -------------------------------------------------------------------------- */
@@ -120,13 +131,18 @@ var kategorihealth_backgroundcolorData = Array();
                 data.daterange = $('input[name="daterange"]').val();
             },
             complete: (data) => { // run function when ajax complete
-                table.columns.adjust()
+                table.columns.adjust();
 
-                // place to chart data variable
-                statushealth_chartData[0] = data.responseJSON.counter_sakit;
-                statushealth_chartData[1] = data.responseJSON.counter_sehat;
+                console.log(data.responseJSON);
 
-                $.each( data.responseJSON.counter_kategori, function( key, value ) {
+                // // place to chart data variable
+                statushealth_chartData[0] = data.responseJSON.hs_pie['sehat'];
+                statushealth_chartData[1] = data.responseJSON.hs_pie['sakit'];
+                statushealth_chartData[2] = data.responseJSON.hs_pie['kosong'];
+                // statushealth_chartData[1] = data.responseJSON.counter_sehat;
+
+                // data chart kategori pie
+                $.each( data.responseJSON.sc_pie, function( key, value ) {
                     // data chart
                     kategorihealth_chartData[key] = value.counter
                     kategorihealth_labelData[key] = value.name
@@ -136,6 +152,17 @@ var kategorihealth_backgroundcolorData = Array();
                     kategorihealth_colorData[key] = color[1];
                     kategorihealth_backgroundcolorData[key] = color[0];
                 });
+
+                // data chart diagram batang
+                $.each(data.responseJSON.hd_bar, (key, value) => {
+                    // data chart
+                    dailyhealth_labelData[key] = value.date;
+                    dailyhealth_chartData[0][key] = value.data_sehat;
+                    dailyhealth_chartData[1][key] = value.data_sakit;
+                    dailyhealth_chartData[2][key] = value.data_kosong;
+                });
+
+                console.log(dailyhealth_chartData);
 
                 refreshChart(); // refresh chart
             }
@@ -208,23 +235,24 @@ var kategorihealth_backgroundcolorData = Array();
 /*                               CHART JS SCRIPT                              */
 /* -------------------------------------------------------------------------- */
 ?>
-<!-- Health Rasio Chart -->
+<!-- Health Status Chart -->
 <script>
 var statusHealth_ctx = $('#healthRasio');
 var statusHealth_chart = new Chart(statusHealth_ctx, {
     type: 'pie',
     data: {
-        labels: ['Sakit', 'Sehat'],
+        labels: ['Sehat', 'Sakit', 'N/A'],
         datasets: [{
-            label: '# of Votes',
             data: statushealth_chartData,
             backgroundColor: [
+                'rgba(16, 227, 0, 0.2)',
                 'rgba(218, 0, 3, 0.2)',
-                'rgba(16, 227, 0, 0.2)'
+                'rgba(111, 111, 111, 0.2)'
             ],
             borderColor: [
+                'rgba(16, 227, 0, 1)',
                 'rgba(218, 0, 3, 1)',
-                'rgba(16, 227, 0, 1)'
+                'rgba(111, 111, 111, 1)'
             ],
             borderWidth: 1
         }]
@@ -235,10 +263,8 @@ var statusHealth_chart = new Chart(statusHealth_ctx, {
         }
     }
 });
-</script>
 
-<!-- Health Category Rasio -->
-<script>
+// Health Category Chart
 var categorySick_ctx = $('#healthcategoryRasio');
 var categorySick_chart = new Chart(categorySick_ctx, {
     type: 'pie',
@@ -274,6 +300,172 @@ var categorySick_chart = new Chart(categorySick_ctx, {
         // src: https://jsfiddle.net/u1szh96g/208/
     }
 });
+
+var periodeChart = new Chart($('#periodeChart'), {
+    type: 'bar',
+    data: {
+        labels: dailyhealth_labelData,
+        datasets: [
+        {
+            label: '# of Votes',
+            data: dailyhealth_chartData[0],
+            backgroundColor: [
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)'
+            ],
+            borderColor: [
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)'
+            ],
+            borderWidth: 1
+        },
+        {
+            label: '# of Votes',
+            data: dailyhealth_chartData[1],
+            backgroundColor: [
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)'
+            ],
+            borderColor: [
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)'
+            ],
+            borderWidth: 1
+        },
+        {
+            label: '# of Votes',
+            data: dailyhealth_chartData[2],
+            backgroundColor: [
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)'
+
+            ],
+            borderColor: [
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        legend: {
+            position: 'bottom'
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
+var periodeChart_more = new Chart($('#periodeChart_more'), {
+    type: 'bar',
+    data: {
+        labels: dailyhealth_labelData,
+        datasets: [
+        {
+            label: '# of Votes',
+            data: dailyhealth_chartData[0],
+            backgroundColor: [
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)',
+                'rgba(16, 227, 0, 0.2)'
+            ],
+            borderColor: [
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)',
+                'rgba(16, 227, 0, 1)'
+            ],
+            borderWidth: 1
+        },
+        {
+            label: '# of Votes',
+            data: dailyhealth_chartData[1],
+            backgroundColor: [
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)',
+                'rgba(218, 0, 3, 0.2)'
+            ],
+            borderColor: [
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)',
+                'rgba(218, 0, 3, 1)'
+            ],
+            borderWidth: 1
+        },
+        {
+            label: '# of Votes',
+            data: dailyhealth_chartData[2],
+            backgroundColor: [
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)',
+                'rgba(111, 111, 111, 0.2)'
+
+            ],
+            borderColor: [
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)',
+                'rgba(111, 111, 111, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
 <?php 
 /* -------------------------------------------------------------------------- */
 /*                                  FUNCTIONS                                 */
@@ -282,6 +474,8 @@ var categorySick_chart = new Chart(categorySick_ctx, {
 function refreshChart() { // refresh chart
     categorySick_chart.update();
     statusHealth_chart.update();
+    periodeChart.update();
+    periodeChart_more.update();
 }
 
 function random_colors() {
@@ -291,13 +485,4 @@ function random_colors() {
 }
 
 // src: https://jsfiddle.net/GP3z8/2/
-
-<?php 
-/* -------------------------------------------------------------------------- */
-/*                                filter script                               */
-/* -------------------------------------------------------------------------- */
-?>
-
-
-
 </script>

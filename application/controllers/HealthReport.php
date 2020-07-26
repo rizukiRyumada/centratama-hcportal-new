@@ -149,12 +149,12 @@ class HealthReport extends MainController {
                 $sickness_status[$k]['status'] = filter_var($this->input->post($v['input_name']), FILTER_VALIDATE_BOOLEAN);
 
                 if(array_key_last($sickness) == $k){
-                    $sickness_status[$k+1]['name'] = 'lainnya';
-                    $sickness_status[$k+1]['status'] = $this->input->post('lainnya');
+                    $sickness_status[$k+1]['name'] = 'other';
+                    $sickness_status[$k+1]['status'] = $this->input->post('other');
                 }
             }
 
-            // cek apa user tidak mengisi satupun sickness card ataupun yang lainnya
+            // cek apa user tidak mengisi satupun sickness card ataupun yang other
             foreach($sickness_status as $v){
                 if(!empty($v['status'])){
                     $validate_sickness = 1;
@@ -221,6 +221,36 @@ class HealthReport extends MainController {
 
     //     print_r($employee);
     // }
+
+    public function ajax_getChartData() {
+        print_r(($this->getDatesFromRange('2010-07-01', '2010-10-05')));
+
+        
+    }
+
+    function getDatesFromRange($start, $end, $format = 'Y-m-d') { 
+      
+        // Declare an empty array 
+        $array = array(); 
+          
+        // Variable that store the date interval 
+        // of period 1 day 
+        $interval = new DateInterval('P1D'); 
+      
+        $realEnd = new DateTime($end); 
+        $realEnd->add($interval); 
+      
+        $period = new DatePeriod(new DateTime($start), $interval, $realEnd); 
+      
+        // Use loop to store date into array 
+        foreach($period as $date) {                  
+            $array[] = $date->format($format);  
+        } 
+      
+        // Return the array elements 
+        return $array; 
+    } 
+      
     // TODO tambah penanda buat nampilin data dia doang kalo dia bukan admin dan userapp admin
     public function ajax_getReportData(){
         // siapkan variable where
@@ -234,23 +264,293 @@ class HealthReport extends MainController {
         if(!empty($this->input->post('departemen'))){
             $where .= 'dept_id = "'.explode('-', $this->input->post('departemen'))[1].'" AND ';
         }
+
         // ambil date range
         $daterange = explode(' - ', $this->input->post('daterange'));
         foreach($daterange as $k => $v){
             $daterange[$k] = date('Y-m-d', strtotime($v));
         }
+        // ambil tanggal di setiap hari
+        $daterange_days = $this->getDatesFromRange($daterange[0], $daterange[1]);
 
-        $where .= 'date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
+        // langkah khusus bukan admin dan admin
+        if($this->session->userdata('role_id') != 1){
+            // ambil data nik dianya
+            $data_nik[0]['nik'] = $this->session->userdata('nik');
 
-        // ambil data health
-        $data_health = $this->_general_m->getJoin2tablesOrderDescend(
-            'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
-            'healthReport_reports',
-            'position',
-            'healthReport_reports.id_posisi = position.id',
-            $where,
-            'date'
+            // siapkan where
+            $where_hs = ' AND nik = "'.$this->session->userdata('nik').'" AND date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
+            // $where_sc = 'nik = "'.$this->session->userdata('nik').'" AND date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
+            
+            // ambil data health
+            $data_health = $this->getDataHealth(
+                '',
+                [$this->session->userdata('nik')],
+                $daterange_days
+            );
+
+            // ambil data chart buat diagram pie health sick
+            $data_chart = $this->getChartData($where_hs, $data_health);
+        } else {
+            // ambil data semua nik jika admin
+            $data_nik = $this->_general_m->getAll('nik', 'employe', array());
+            
+            // ambil data chart buat diagram pie health sick
+            $where_hs = ' AND '.$where.'date = "'.$daterange[1].'"';
+            // $where_sc = 'date = "'.$daterange[1].'"';
+
+            // ambil data health
+            $data_health = $this->getDataHealth(
+                '',
+                $data_nik,
+                [$daterange[1]]
+            );
+
+            // ambil data diagram pie
+            $data_chart = $this->getChartData($where_hs, $data_health);
+
+            // AMBIL DATA buat chart batang per hari
+            $data_health_daily = $daterange_days;
+            // ambil data health untuk per hari
+            foreach($data_health_daily as $k => $v){
+                // declare array
+                $data_health_daily[$k] = array();
+                $data_health_daily[$k]['date'] = $v;
+                // ambil data
+                $data_health_daily[$k]['data_sakit'] = $this->_general_m->getRow('healthReport_reports', array('status' => 0, 'date' => $v));
+                $data_health_daily[$k]['data_sehat'] = $this->_general_m->getRow('healthReport_reports', array('status' => 1, 'date' => $v));
+                $data_health_daily[$k]['data_kosong'] = $this->_general_m->getRow('employe', array()) - ($data_health_daily[$k]['data_sakit'] + $data_health_daily[$k]['data_sehat']);
+            }
+        }
+
+        // masukkan ke dalam variabel dan kosongkan bila bukan admin
+        if(!empty($data_health_daily)){
+            $hd_bar = $data_health_daily;
+        } else {
+            $hd_bar = "";
+        }
+
+        // $where .= 'date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
+
+        // $data_health = $this->getDataHealth($where);
+
+        // siapkan array penampung
+        // $data_health = array();
+        // foreach($data_nik as $k => $v){
+        //     $where = 'nik = "'.$v['nik'].'"';
+
+        //     // $data_health[$k]['data_health'] = $this->getDataHealth($where);
+        //     // $data_health[$k]['nik'] = $v;
+
+        //     // ambil data health buat masing-masing karyawan
+        //     $data_health[$k]['data_health'] = $this->_general_m->getAll(
+        //         'date, nik, time, status, sickness, notes',
+        //         'healthReport_reports',
+        //         $where
+        //     );
+        // }
+        
+        // // siapkan variabel data nik
+        // $data_health = array(); $x = 0;
+        // // tiap nik
+        // foreach($data_nik as $k => $v){
+        //     // tiap hari
+        //     foreach($daterange_days as $key => $value){
+        //         $where = $where.'nik = "'.$v['nik'].'" AND date = "'.$value.'"'; // gabungkan dengan where sebelumnya
+        //         // ambil hasilnya
+        //         $hasil = $this->_general_m->getJoin2tablesOrderDescend(
+        //             'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
+        //             'healthReport_reports',
+        //             'position',
+        //             'healthReport_reports.id_posisi = position.id',
+        //             $where,
+        //             'date'
+        //         );
+        //         // jika ada datanya simpan dalam variabel
+        //         if(!empty($hasil)){
+        //             $data_health[$x] = $hasil;
+        //             $x++;
+        //         }
+        //     }
+        // }
+
+        // $data_health = $this->getDataHealth($where, $data_nik, $daterange_days);
+
+        echo(json_encode(array(
+            'data' => $data_health,
+            'hs_pie' => $data_chart['hs_pie'],
+            'sc_pie' => $data_chart['sc_pie'],
+            'hd_bar' => $hd_bar
+        )));
+        exit;
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   OTHERS                                   */
+    /* -------------------------------------------------------------------------- */
+    function getChartData($where_hs, $data_health){
+        // ambil jumlah row dari masing-masing status
+        $hs_pie['sakit'] = $this->_general_m->getRow('healthReport_reports', 'status = 0 '.$where_hs);
+        $hs_pie['sehat'] = $this->_general_m->getRow('healthReport_reports', 'status = 1 '.$where_hs);
+        // ambil jumlah semua employe kemudian kurangi dengan data sakit+data sehat
+        $hs_pie['kosong'] = $this->_general_m->getRow('employe', array()) - ($hs_pie['sakit'] + $hs_pie['sehat']);
+        
+        // ambil semua kategori sakit
+        $sc_pie = $this->_general_m->getAll('input_name, name', 'healthReport_category', array());
+        // inisialisasi dengan angka nol di setiap kategorinya
+        foreach($sc_pie as $k => $v){
+            $sc_pie[$k]['counter'] = 0;
+        }
+        // tambah kategori other
+        $sc_pie[array_key_last($sc_pie) + 1] = array(
+            'name' => 'other',
+            'input_name' => 'other',
+            'counter' => 0
         );
+        
+        // cari di setiap data health data kategori sakit
+        foreach($data_health as $k => $v){            
+            // untuk nama kategori sakit yang terdaftar
+            if(!empty($v['sickness'])){
+                // pecahkan date dan ambil nik bawa sickness dari database
+                $date = explode(' ', $v['date']);
+                //decode sickness
+                $sickness = json_decode($this->_general_m->getOnce('sickness', 'healthReport_reports', array('nik' => $v['nik'], 'date' => $date[0]))['sickness'], true);
+                // count sickness di tiap sick category
+                foreach($sickness as $key => $value){
+                    // ambil info kategori sakit terdaftar
+                    // if($value['name'] != 'other'){
+                    //     $what_sickness = $this->_general_m->getOnce('name', 'healthReport_category', array('input_name' => $value['name']));
+                    // }
+                    // untuk nama kategori sakit yang terdaftar
+                    if(!empty($value['status']) && $value['name'] != 'other'){
+                        // $sicked[$x] = $what_sickness['name'];
+                        // $x++;
+
+                        // counter jenis sakit
+                        foreach($sc_pie as $k_kategori => $v_kategori){
+                            if($v_kategori['input_name'] == $value['name']){
+                                $sc_pie[$k_kategori]['counter']++;
+                            }  
+                        }
+                    // kategori sakit other
+                    } elseif(!empty($value['status']) && $value['name'] == 'other'){
+                        // $sicked[$x] = $value['status'] ;
+                        // $x++;
+
+                        // counter jenis sakit
+                        foreach($sc_pie as $k_kategori => $v_kategori){
+                            if($v_kategori['input_name'] == $value['name']){
+                                $sc_pie[$k_kategori]['counter']++;
+                            }  
+                        }
+                    }
+                }
+                // gabungkan dan beri koma antara nama sakit
+                // $sicked = implode(', ', $sicked);
+                // $data_health[$k]['sickness'] = $sicked; // replace data sickness
+
+                // count sakit
+                // $counter_sakit++;
+            } else {
+                // count sehat
+                // $counter_sehat++;
+            }
+        }
+
+        // balikkan nilai
+        return array(
+            'hs_pie' => $hs_pie,
+            'sc_pie' => $sc_pie
+        );
+    }
+
+    function getDataHealth($where, $data_nik, $daterange_days){
+        // ambil data health untuk periode data
+        // $data_health = $this->_general_m->getJoin2tablesOrderDescend(
+        //     'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
+        //     'healthReport_reports',
+        //     'position',
+        //     'healthReport_reports.id_posisi = position.id',
+        //     $where,
+        //     'date'
+        // );
+
+        // siapkan variabel data nik
+        $data_health = array(); $y = 0;
+        // tiap hari
+        foreach($daterange_days as $v){
+            // tiap nik
+            foreach($data_nik as $key => $value){
+                $where_data_health = $where.'nik = "'.$value['nik'].'" AND date = "'.$v.'"'; // gabungkan dengan where sebelumnya
+                // ambil hasilnya
+
+                $hasil = $this->_general_m->getJoin2tablesOrderDescend(
+                    'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
+                    'healthReport_reports',
+                    'position',
+                    'healthReport_reports.id_posisi = position.id',
+                    $where_data_health,
+                    'date'
+                );
+
+                // jika ada datanya simpan dalam variabel
+                if(!empty($hasil)){
+                    foreach($hasil as $kunci => $nilai){
+                        $employe = $this->_general_m->getOnce('position_id, emp_name', 'employe', array('nik' => $nilai['nik']));
+                        $hasil[$kunci]['detail_position'] = $this->getPositionDetails($employe['position_id']);
+                        $hasil[$kunci]['emp_name'] = $employe['emp_name'];
+
+                        // gabungkan date dan time
+                        $hasil[$kunci]['date'] = $nilai['date']." ".$nilai['time'];
+
+                        // ubah status jadi text healthy dan sick
+                        if($nilai['status'] == 0){
+                            $hasil[$kunci]['status'] = 'Sick';
+                        } else {
+                            $hasil[$kunci]['status'] = 'Healthy';
+                        }
+
+                        // hapus array kategori sakit kalo dia tidak ada statusnya dan berarti dia tidak sehat
+                        if(!empty($nilai['sickness'])){                
+                            //decode sickness
+                            $sickness = json_decode($nilai['sickness'], true);
+                            // siapkan variable penampung sickness
+                            $sicked = array(); $x = 0;
+                            foreach($sickness as $sicknesess){
+                                // ambil info kategori sakit terdaftar
+                                if($sicknesess['name'] != 'other'){
+                                    $what_sickness = $this->_general_m->getOnce('name', 'healthReport_category', array('input_name' => $sicknesess['name']));
+                                }
+                                // untuk nama kategori sakit yang terdaftar
+                                if(!empty($sicknesess['status']) && $sicknesess['name'] != 'other' && !empty($what_sickness)){
+                                    $sicked[$x] = $what_sickness['name'];
+                                    $x++;
+
+                                // kategori sakit other
+                                } elseif(!empty($sicknesess['status']) && $sicknesess['name'] == 'other'){
+                                    $sicked[$x] = $sicknesess['status'] ;
+                                    $x++;
+                                }
+                            }
+                            // gabungkan dan beri koma antara nama sakit
+                            $sicked = implode(', ', $sicked);
+                            $hasil[$kunci]['sickness'] = $sicked; // replace data sickness
+                        } else {
+                            // nothing
+                        }
+
+                        $data_health[$y] = $hasil[$kunci];
+                        $y++;
+                    }
+                }
+            }
+        }
+
+        // masukkan jadi satu bentuk array dimensi
+
+        return ($data_health);
+        exit;
 
         // $nik_employee = $this->session->userdata('nik');
 
@@ -267,9 +567,10 @@ class HealthReport extends MainController {
         foreach($counter_kategori as $k => $v){
             $counter_kategori[$k]['counter'] = 0;
         }
-        $counter_kategori[array_key_last($counter_kategori)+1] = array(
+        // tambah kategori other
+        $counter_kategori[array_key_last($counter_kategori) + 1] = array(
             'name' => 'Lainnya',
-            'input_name' => 'lainnya',
+            'input_name' => 'other',
             'counter' => 0
         );
 
@@ -292,11 +593,11 @@ class HealthReport extends MainController {
                 $sicked = array(); $x = 0;
                 foreach($sickness as $key => $value){
                     // ambil info kategori sakit terdaftar
-                    if($value['name'] != 'lainnya'){
+                    if($value['name'] != 'other'){
                         $what_sickness = $this->_general_m->getOnce('name', 'healthReport_category', array('input_name' => $value['name']));
                     }
                     // untuk nama kategori sakit yang terdaftar
-                    if(!empty($value['status']) && $value['name'] != 'lainnya' && !empty($what_sickness)){
+                    if(!empty($value['status']) && $value['name'] != 'other' && !empty($what_sickness)){
                         $sicked[$x] = $what_sickness['name'];
                         $x++;
 
@@ -306,8 +607,8 @@ class HealthReport extends MainController {
                                 $counter_kategori[$k_kategori]['counter']++;
                             }  
                         }
-                    // kategori sakit lainnya
-                    } elseif(!empty($value['status']) && $value['name'] == 'lainnya'){
+                    // kategori sakit other
+                    } elseif(!empty($value['status']) && $value['name'] == 'other'){
                         $sicked[$x] = $value['status'] ;
                         $x++;
 
@@ -341,17 +642,14 @@ class HealthReport extends MainController {
         }
         
         // bentuk jadi json dan tampilkan
-        echo(json_encode(array(
+        return array(
             'data' => $data_health,
             'counter_sakit' => $counter_sakit,
             'counter_sehat' => $counter_sehat,
             'counter_kategori' => $counter_kategori
-        )));
+        );
     }
 
-    /* -------------------------------------------------------------------------- */
-    /*                                   OTHERS                                   */
-    /* -------------------------------------------------------------------------- */
     function getPositionDetails($id_posisi){
         // load model Job Profile
         $this->load->model('Jobpro_model');

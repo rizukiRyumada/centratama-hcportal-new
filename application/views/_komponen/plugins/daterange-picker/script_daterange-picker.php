@@ -18,7 +18,7 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
         "alwaysShowCalendars": true,
-        "startDate": "<?= date('m/d/o', strtotime("-1 Weeks")) ?>",
+        "startDate": "<?= date('m/d/o', strtotime("-6 Days")) ?>",
         "endDate": "<?= date('m/d/o', time()); ?>",
         "minDate": "YYYY-MM-DD",
         "maxDate": "YYYY-MM-DD",
