@@ -222,10 +222,36 @@ class HealthReport extends MainController {
     //     print_r($employee);
     // }
 
-    public function ajax_getChartData() {
-        print_r(($this->getDatesFromRange('2010-07-01', '2010-10-05')));
+    public function ajax_getPieChartData() {
+        if($this->session->userdata('role_id') != 1){
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        }
 
+        // siapkan variable where
+        $where = '';
         
+        // ambil divisi
+        if(!empty($this->input->post('divisi'))){
+            $where .= 'div_id = "'.explode('-', $this->input->post('divisi'))[1].'" AND ';
+        }
+        // ambil departemen
+        if(!empty($this->input->post('departemen'))){
+            $where .= 'dept_id = "'.explode('-', $this->input->post('departemen'))[1].'" AND ';
+        }
+
+        // kumpulkan semua where
+        $where_hs = ' AND '.$where.'date = "'.$this->input->post('date').'"';
+
+        // ambil semua nik karyawan
+        $data_nik = $this->_general_m->getAll('nik', 'employe', array());
+
+        // ambil data health buat ngitung kategori sakit
+        $data_health = $this->getDataHealth(
+            '',
+            $data_nik,
+            [$this->input->post('date')]
+        );
+        echo(json_encode($this->getChartData($where_hs, $data_health)));
     }
 
     function getDatesFromRange($start, $end, $format = 'Y-m-d') { 
@@ -303,11 +329,17 @@ class HealthReport extends MainController {
             $data_health = $this->getDataHealth(
                 '',
                 $data_nik,
+                $daterange_days
+            );
+            // ambil data health buat chart
+            $data_health_chart = $this->getDataHealth(
+                '',
+                $data_nik,
                 [$daterange[1]]
             );
 
             // ambil data diagram pie
-            $data_chart = $this->getChartData($where_hs, $data_health);
+            $data_chart = $this->getChartData($where_hs, $data_health_chart);
 
             // AMBIL DATA buat chart batang per hari
             $data_health_daily = $daterange_days;

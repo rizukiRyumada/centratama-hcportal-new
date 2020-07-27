@@ -27,9 +27,9 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
     // Tabel HealthReport
     var table = $('#report_healthCheckIn').DataTable({
         responsive: true,
-        processing: true,
+        // processing: true,
         language : { 
-            processing: '<div class="spinner-grow text-primary" role="status"><span class="sr-only">Loading...</span></div>',
+            // processing: '<div class="spinner-grow text-primary" role="status"><span class="sr-only">Loading...</span></div>',
             zeroRecords: '<p class="m-0 text-danger font-weight-bold">No Data.</p>'
         },
         pagingType: 'full_numbers',
@@ -83,12 +83,16 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
                 data.departemen = $('#departement').val(),
                 data.daterange = $('input[name="daterange"]').val();
             },
+            beforeSend: () => {
+                // $('.overlay').removeClass('d-none'); // hapus class d-none
+                $('.overlay').fadeIn(); // hapus overlay chart
+            },
             complete: (data) => { // run function when ajax complete
                 table.columns.adjust();
 
                 console.log(data.responseJSON);
 
-                // // place to chart data variable
+                // place to chart data variable
                 statushealth_chartData[0] = data.responseJSON.hs_pie['sehat'];
                 statushealth_chartData[1] = data.responseJSON.hs_pie['sakit'];
                 statushealth_chartData[2] = data.responseJSON.hs_pie['kosong'];
@@ -106,6 +110,8 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
                     kategorihealth_backgroundcolorData[key] = color[0];
                 });
 
+                // inisiasi variabel dropdown
+                let dates_so = Array();
                 // data chart diagram batang
                 $.each(data.responseJSON.hd_bar, (key, value) => {
                     // data chart
@@ -121,11 +127,23 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
                     dailyhealth_borderColor[1][key] = 'rgba(218, 0, 3, 1)';
                     dailyhealth_backgroundColor[2][key] = 'rgba(111, 111, 111, 0.2)';
                     dailyhealth_borderColor[2][key] = 'rgba(111, 111, 111, 1)';
-                });
 
+                    // ambil date buat ditaruh di dropdown
+                    dates_so[key] = value.date;
+                });
+                
+                // kosongkan dropdown dulu
+                $('#showOn').empty()
+                // .append('<option value="">Select Dates...</option>'); //kosongkan selection value dan tambahkan satu selection option
+                // tambahkan dates ke dropdown
+                $.each(dates_so.reverse(), (key, value) => {
+                    $('#showOn').append('<option value="' + value + '">' + value + '</option>'); //tambahkan 1 per 1 option yang didapatkan
+                });
+                
                 console.log(dailyhealth_chartData);
 
                 refreshChart(); // refresh chart
+                $('.overlay').fadeOut(); // hapus overlay chart
             }
         },
         columns: [
@@ -241,6 +259,50 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
     $('#apply_table').on('click', () => {
         table.ajax.reload(); // reload table
     })
+
+    $('#showOn').on('change', () => {
+        dipilih = $('#showOn').val();
+
+        $.ajax({
+            url: "<?= base_url('healthReport/ajax_getPieChartData'); ?>",
+            data: {
+                date: dipilih,
+                divisi: $('#divisi').val(),
+                departemen: $('#departement').val()
+            },
+            method: "POST",
+            beforeSend: (data) => {
+                $('#overlayPie').fadeIn(); // tampilin overlay
+            },
+            success: (data) => {
+                console.log(data);
+
+                let parsed_data = JSON.parse(data);
+
+                // place to chart data variable
+                statushealth_chartData[0] = parsed_data.hs_pie['sehat'];
+                statushealth_chartData[1] = parsed_data.hs_pie['sakit'];
+                statushealth_chartData[2] = parsed_data.hs_pie['kosong'];
+                // statushealth_chartData[1] = parsed_data.counter_sehat;
+
+                // parsed_data chart kategori pie
+                $.each( parsed_data.sc_pie, function( key, value ) {
+                    // parsed_data chart
+                    kategorihealth_chartData[key] = value.counter
+                    kategorihealth_labelData[key] = value.name
+                    
+                    // color for chart
+                    color = random_colors();
+                    kategorihealth_colorData[key] = color[1];
+                    kategorihealth_backgroundcolorData[key] = color[0];
+                });
+
+                refreshChart(); // refresh chart
+
+                $('#overlayPie').fadeOut(); // tampilin overlay
+            }
+        });
+    });
 </script>
 
 <?php 
