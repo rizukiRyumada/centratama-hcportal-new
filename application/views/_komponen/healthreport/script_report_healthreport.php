@@ -12,59 +12,12 @@ var kategorihealth_chartData = Array();
 var kategorihealth_labelData = Array();
 var kategorihealth_colorData = Array();
 var kategorihealth_backgroundcolorData = Array();
+
+// variabel buat dailyhealth chart
 var dailyhealth_labelData = Array();
 var dailyhealth_chartData = Array(Array(), Array(), Array());
-
-    // Filter Divisi
-    $('#divisi').change(function(){
-        var dipilih = $(this).val(); //ambil value dari yang terpilih
-
-        if(dipilih == ""){
-            // mTable.column(1).search(dipilih).order([1, 'asc']).draw(); //kosongkan filter dom departement
-        }
-
-        $.ajax({
-            url: "<?php echo base_url('job_profile/ajax_getdepartement'); ?>",
-            data: {
-                divisi: dipilih //kirim ke server php
-            },
-            method: "POST",
-            success: function(data) { //jadi nanti dia balikin datanya dengan variable data
-                $('#departement').empty().append('<option value="">All</option>'); //kosongkan selection value dan tambahkan satu selection option
-
-                $.each(JSON.parse(data), function(i, v) {
-                    $('#departement').append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
-                });
-            }
-        });
-
-        table.ajax.reload(); // reload table
-    });
-
-    // Filter Departemen
-    $('#departement').change(() => {
-        // let divisi = $('#divisi').val();
-        // let departemen = $('#departement').val();
-
-        // $.ajax({
-        //     url: "<?= base_url('healthReport/ajaxGetEmployee'); ?>",
-        //     data: {
-        //         divisi: divisi,
-        //         departemen: departemen
-        //     },
-        //     method: "POST",
-        //     success: (data) => {
-        //         console.log(data);
-        //     }
-        // });
-
-        table.ajax.reload(); // reload table
-    });
-
-    // filter date
-    $('#daterange').on('change', () => {
-        table.ajax.reload(); // reload table
-    });
+var dailyhealth_backgroundColor = Array(Array(), Array(), Array());
+var dailyhealth_borderColor = Array(Array(), Array(), Array());
 
     <?php
     /* -------------------------------------------------------------------------- */
@@ -160,6 +113,14 @@ var dailyhealth_chartData = Array(Array(), Array(), Array());
                     dailyhealth_chartData[0][key] = value.data_sehat;
                     dailyhealth_chartData[1][key] = value.data_sakit;
                     dailyhealth_chartData[2][key] = value.data_kosong;
+
+                    // color for chart
+                    dailyhealth_backgroundColor[0][key] = 'rgba(16, 227, 0, 0.2)';
+                    dailyhealth_borderColor[0][key] = 'rgba(16, 227, 0, 1)';
+                    dailyhealth_backgroundColor[1][key] = 'rgba(218, 0, 3, 0.2)';
+                    dailyhealth_borderColor[1][key] = 'rgba(218, 0, 3, 1)';
+                    dailyhealth_backgroundColor[2][key] = 'rgba(111, 111, 111, 0.2)';
+                    dailyhealth_borderColor[2][key] = 'rgba(111, 111, 111, 1)';
                 });
 
                 console.log(dailyhealth_chartData);
@@ -200,6 +161,58 @@ var dailyhealth_chartData = Array(Array(), Array(), Array());
             {data: 'sickness'},
             {data: 'notes'}
         ]
+    });
+
+    // FILTER SCRIPT
+    // Filter Divisi
+    $('#divisi').change(function(){
+        var dipilih = $(this).val(); //ambil value dari yang terpilih
+
+        if(dipilih == ""){
+            // mTable.column(1).search(dipilih).order([1, 'asc']).draw(); //kosongkan filter dom departement
+        }
+
+        $.ajax({
+            url: "<?php echo base_url('job_profile/ajax_getdepartement'); ?>",
+            data: {
+                divisi: dipilih //kirim ke server php
+            },
+            method: "POST",
+            success: function(data) { //jadi nanti dia balikin datanya dengan variable data
+                $('#departement').empty().append('<option value="">All</option>'); //kosongkan selection value dan tambahkan satu selection option
+
+                $.each(JSON.parse(data), function(i, v) {
+                    $('#departement').append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
+                });
+            }
+        });
+
+        table.ajax.reload(); // reload table
+    });
+
+    // Filter Departemen
+    $('#departement').change(() => {
+        // let divisi = $('#divisi').val();
+        // let departemen = $('#departement').val();
+
+        // $.ajax({
+        //     url: "<?= base_url('healthReport/ajaxGetEmployee'); ?>",
+        //     data: {
+        //         divisi: divisi,
+        //         departemen: departemen
+        //     },
+        //     method: "POST",
+        //     success: (data) => {
+        //         console.log(data);
+        //     }
+        // });
+
+        table.ajax.reload(); // reload table
+    });
+
+    // filter date
+    $('#daterange').on('change', () => {
+        table.ajax.reload(); // reload table
     });
 
     // sick category filter
@@ -307,67 +320,24 @@ var periodeChart = new Chart($('#periodeChart'), {
         labels: dailyhealth_labelData,
         datasets: [
         {
-            label: '# of Votes',
+            label: 'Health',
             data: dailyhealth_chartData[0],
-            backgroundColor: [
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)'
-            ],
-            borderColor: [
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)'
-            ],
+            backgroundColor: dailyhealth_backgroundColor[0],
+            borderColor: dailyhealth_borderColor[0],
             borderWidth: 1
         },
         {
-            label: '# of Votes',
+            label: 'Sick',
             data: dailyhealth_chartData[1],
-            backgroundColor: [
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)'
-            ],
-            borderColor: [
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)'
-            ],
+            backgroundColor: dailyhealth_backgroundColor[1],
+            borderColor: dailyhealth_borderColor[1],
             borderWidth: 1
         },
         {
-            label: '# of Votes',
+            label: 'N/A',
             data: dailyhealth_chartData[2],
-            backgroundColor: [
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)'
-
-            ],
-            borderColor: [
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)'
-            ],
+            backgroundColor: dailyhealth_backgroundColor[2],
+            borderColor: dailyhealth_borderColor[2],
             borderWidth: 1
         }]
     },
@@ -391,67 +361,24 @@ var periodeChart_more = new Chart($('#periodeChart_more'), {
         labels: dailyhealth_labelData,
         datasets: [
         {
-            label: '# of Votes',
+            label: 'Health',
             data: dailyhealth_chartData[0],
-            backgroundColor: [
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)',
-                'rgba(16, 227, 0, 0.2)'
-            ],
-            borderColor: [
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)',
-                'rgba(16, 227, 0, 1)'
-            ],
+            backgroundColor: dailyhealth_backgroundColor[0],
+            borderColor: dailyhealth_borderColor[0],
             borderWidth: 1
         },
         {
-            label: '# of Votes',
+            label: 'Sick',
             data: dailyhealth_chartData[1],
-            backgroundColor: [
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)',
-                'rgba(218, 0, 3, 0.2)'
-            ],
-            borderColor: [
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)',
-                'rgba(218, 0, 3, 1)'
-            ],
+            backgroundColor: dailyhealth_backgroundColor[1],
+            borderColor: dailyhealth_borderColor[1],
             borderWidth: 1
         },
         {
-            label: '# of Votes',
+            label: 'N/A',
             data: dailyhealth_chartData[2],
-            backgroundColor: [
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)',
-                'rgba(111, 111, 111, 0.2)'
-
-            ],
-            borderColor: [
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)',
-                'rgba(111, 111, 111, 1)'
-            ],
+            backgroundColor: dailyhealth_backgroundColor[2],
+            borderColor: dailyhealth_borderColor[2],
             borderWidth: 1
         }]
     },
