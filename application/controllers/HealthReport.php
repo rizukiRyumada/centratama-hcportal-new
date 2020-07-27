@@ -251,11 +251,10 @@ class HealthReport extends MainController {
             $data_nik,
             [$this->input->post('date')]
         );
-        echo(json_encode($this->getChartData($where_hs, $data_health)));
+        echo(json_encode($this->getChartData($where_hs, $data_health, $this->_general_m->getRow('employe', array()))));
     }
 
     function getDatesFromRange($start, $end, $format = 'Y-m-d') { 
-      
         // Declare an empty array 
         $array = array(); 
           
@@ -302,21 +301,27 @@ class HealthReport extends MainController {
         // langkah khusus bukan admin dan admin
         if($this->session->userdata('role_id') != 1){
             // ambil data nik dianya
-            $data_nik[0]['nik'] = $this->session->userdata('nik');
+            $data_nik[0] = array(
+                'nik' => $this->session->userdata('nik')
+            );
 
             // siapkan where
             $where_hs = ' AND nik = "'.$this->session->userdata('nik').'" AND date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
             // $where_sc = 'nik = "'.$this->session->userdata('nik').'" AND date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
             
+            $populasi_hs = count($daterange_days);
             // ambil data health
             $data_health = $this->getDataHealth(
                 '',
-                [$this->session->userdata('nik')],
+                $data_nik,
                 $daterange_days
             );
-
-            // ambil data chart buat diagram pie health sick
-            $data_chart = $this->getChartData($where_hs, $data_health);
+            // ambil data health buat chart
+            $data_health_chart = $this->getDataHealth(
+                '',
+                $data_nik,
+                $daterange_days
+            );
         } else {
             // ambil data semua nik jika admin
             $data_nik = $this->_general_m->getAll('nik', 'employe', array());
@@ -324,7 +329,8 @@ class HealthReport extends MainController {
             // ambil data chart buat diagram pie health sick
             $where_hs = ' AND '.$where.'date = "'.$daterange[1].'"';
             // $where_sc = 'date = "'.$daterange[1].'"';
-
+            
+            $populasi_hs = $this->_general_m->getRow('employe', array());
             // ambil data health
             $data_health = $this->getDataHealth(
                 '',
@@ -337,9 +343,6 @@ class HealthReport extends MainController {
                 $data_nik,
                 [$daterange[1]]
             );
-
-            // ambil data diagram pie
-            $data_chart = $this->getChartData($where_hs, $data_health_chart);
 
             // AMBIL DATA buat chart batang per hari
             $data_health_daily = $daterange_days;
@@ -361,6 +364,9 @@ class HealthReport extends MainController {
         } else {
             $hd_bar = "";
         }
+
+        // ambil data diagram pie
+        $data_chart = $this->getChartData($where_hs, $data_health_chart, $populasi_hs);
 
         // $where .= 'date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
 
@@ -420,12 +426,12 @@ class HealthReport extends MainController {
     /* -------------------------------------------------------------------------- */
     /*                                   OTHERS                                   */
     /* -------------------------------------------------------------------------- */
-    function getChartData($where_hs, $data_health){
+    function getChartData($where_hs, $data_health, $populasi_hs){
         // ambil jumlah row dari masing-masing status
         $hs_pie['sakit'] = $this->_general_m->getRow('healthReport_reports', 'status = 0 '.$where_hs);
         $hs_pie['sehat'] = $this->_general_m->getRow('healthReport_reports', 'status = 1 '.$where_hs);
         // ambil jumlah semua employe kemudian kurangi dengan data sakit+data sehat
-        $hs_pie['kosong'] = $this->_general_m->getRow('employe', array()) - ($hs_pie['sakit'] + $hs_pie['sehat']);
+        $hs_pie['kosong'] = $populasi_hs - ($hs_pie['sakit'] + $hs_pie['sehat']);
         
         // ambil semua kategori sakit
         $sc_pie = $this->_general_m->getAll('input_name, name', 'healthReport_category', array());
@@ -516,7 +522,6 @@ class HealthReport extends MainController {
             foreach($data_nik as $key => $value){
                 $where_data_health = $where.'nik = "'.$value['nik'].'" AND date = "'.$v.'"'; // gabungkan dengan where sebelumnya
                 // ambil hasilnya
-
                 $hasil = $this->_general_m->getJoin2tablesOrderDescend(
                     'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
                     'healthReport_reports',

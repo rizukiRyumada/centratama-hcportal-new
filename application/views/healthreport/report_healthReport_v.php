@@ -7,9 +7,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
-                    <div class="card <?php if($this->session->userdata('role_id') == 1): ?>
-                        card-gray
-                    <?php endif; ?>">
+                    <div class="card card-gray">
                         <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
 
                         <div class="card-header">
@@ -51,7 +49,18 @@
                                     </div>
                                 </div>
                             <?php else: ?>
-                                <h3 class="card-title">Your Health Checked In</h3>
+                                <div class="col-lg-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="daterange">Dates:</label>
+                                        <div class="input-group" id="daterange">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                            </div>
+                                            <input type="text" name="daterange" class="form-control" value="" />
+                                            <!-- <input type="text" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="mm/dd/yyyy" data-mask=""> -->
+                                        </div><!-- /.input group -->
+                                    </div>
+                                </div>
                             <?php endif; ?>
                         </div>
                         <div class="card-body">
@@ -97,27 +106,29 @@
                 </div>
             </div>
         </div>
+        <?php if($this->session->userdata('role_id') == 1): ?>
+            <!-- Diagram Batang -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="card card-primary">
-                        <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
-
-                        <div class="card-header">
-                            <p class="card-title">All Periods</p>
-                            <!-- card tools -->
-                            <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#periodeModel"><i class="fas fa-expand"></i></button>
+                            <div class="card-header">
+                                <p class="card-title">All Periods</p>
+                                <!-- card tools -->
+                                <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#periodeModel"><i class="fas fa-expand"></i></button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="periodeChart" width="400" height="250">Your browser does not support the canvas element.</canvas>
+                            <div class="card-body">
+                                <canvas id="periodeChart" width="400" height="250">Your browser does not support the canvas element.</canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
     <div class="col-lg-3">
         <div class="card card-primary">
@@ -130,12 +141,16 @@
                         <option value="">All</option>
                     </select>
                 </div> -->
-                <div class="form-group">
-                    <label for="showOn">Show on:</label>
-                    <select id="showOn" class="custom-select form-control form-control-sm">
-                        <option value="">Select a Date...</option>
-                    </select>
-                </div>
+                <?php if($this->session->userdata('role_id') == 1): ?>
+                    <div class="form-group">
+                        <label for="showOn">Show on:</label>
+                        <select id="showOn" class="custom-select form-control form-control-sm">
+                            <option value="">Select a Date...</option>
+                        </select>
+                    </div>
+                <?php else: ?>
+                    <p class="card-title">Diagram</p>    
+                <?php endif; ?>
             </div>
             <div class="card-body">
                 <div class="row">
