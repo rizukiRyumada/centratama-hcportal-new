@@ -54,4 +54,4 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // custim route
-$route['checkhealth'] = 'direct/checkhealth';
+$route['healthreport'] = 'direct/checkhealth';
