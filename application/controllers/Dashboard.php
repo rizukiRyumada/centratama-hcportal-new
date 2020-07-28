@@ -30,7 +30,7 @@ class Dashboard extends MainController {
         // $data['load_view'] = 'dashboard/main_dashboard_v';
         
         // $this->load->view('main_v', $data);
-        header('location: ' . base_url('survey'));
+        header('location: ' . base_url('job_profile'));
     }
 
 }

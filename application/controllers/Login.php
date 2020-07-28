@@ -13,18 +13,28 @@ class Login extends CI_Controller {
         if(empty($this->session->userdata('error'))){ // cek error message
             $this->session->set_userdata(array('error' => 0));
         }
+
+        // BUG cek status login dengan nik aja vurnerable
         if ($this->session->userdata('nik')) { // cek apa sudah login
             if(empty($this->session->userdata('token'))){ // cek apa ada token
                 // TODO tambah fitur buat ganti arah redirect sehabis login
-                redirect('dashboard', 'refresh'); // target to home job profile
+                // redirect
+                $this->redirect();
             } else {
                 //targetkan sesuai token
-                header('location: '. base_url('direct/arahkan'));
+                header('location: '. base_url('direct/arahkanFromEmail'));
             }
         }
         $this->form_validation->set_rules('nik', 'NIK', 'trim|required');
         $this->form_validation->set_rules('password', 'Password', 'trim|required');
         if ($this->form_validation->run() == false){
+            // tampilkan pesan login dan buka popup login
+            if($this->session->userdata('redirect')){
+                // set pesan login
+                $this->session->set_flashdata('message', '<div class="alert alert-warning" role="alert">Please login to continue.</div>');
+                // set buat tampilkan otomatis popup login
+                $this->session->set_userdata(array('error' => 1));
+            }
             // prepare data
             $data['page_title'] = "HC Portal";
             $data['load_view'] = 'login/index_login_v';
@@ -59,10 +69,11 @@ class Login extends CI_Controller {
 
                     if(empty($this->session->userdata('token'))){ // cek apa ada token
                         // TODO tambahkan fitur buat mengganti arah redirect sehabis login
-					    redirect('dashboard', 'refresh'); // target to home job profile
+                        // redirect
+                        $this->redirect();
                     } else {
                         //targetkan sesuai token
-                        header('location: '. base_url('direct/arahkan'));
+                        header('location: '. base_url('direct/arahkanFromEmail'));
                     }
                 } else {
                     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
@@ -83,7 +94,31 @@ class Login extends CI_Controller {
             redirect('login');
         }
     }
-
+    
+    /**
+     * redirect
+     *
+     * @return void
+     */
+    public function redirect(){
+        if(!empty($this->session->userdata('redirect'))){
+            $redirect = $this->session->userdata('redirect');
+            // hapus session redirect
+            $this->session->unset_userdata('redirect');
+            // hapus session buat nampilin otomatis popup login
+            $this->session->set_userdata(array('error' => 1));
+            
+            redirect($redirect, 'refresh');
+        } else {
+            redirect('dashboard', 'refresh');
+        }
+    }
+    
+    /**
+     * logout
+     *
+     * @return void
+     */
     public function logout(){
         $this->session->unset_userdata('nik');
         $this->session->unset_userdata('role_id');

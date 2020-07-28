@@ -54,7 +54,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="row mt-5 pt-4">
+                <div class="row mt-lg-5 pt-4">
                     <!-- <div class="col text-center">
                         <a data-toggle="modal" data-target="#modal_healthy" class="btn bg-gray-light text-center">
                             <div class="row">
@@ -70,7 +70,8 @@
                         ?> text-center">
                             <div class="row">
                                 <div class="col">
-                                    <img class="img-lg" src="<?= base_url('assets/img/healthReport/_healthy.svg'); ?>" alt="healthy" > <br/>
+                                    <img class="img-lg d-lg-block d-none" src="<?= base_url('assets/img/healthReport/_healthy.svg'); ?>" alt="healthy" >
+                                    <img class="img-md d-lg-none" src="<?= base_url('assets/img/healthReport/_healthy.svg'); ?>" alt="healthy" > <br/>
                                 </div>
                             </div>
                             Healthy
@@ -80,8 +81,9 @@
                     <div class="col-6 text-center">
                         <<?php if($checkedIn){echo('div class="btn '.$btn_sick);} else {echo('button data-toggle="modal" data-target="#modal_sick" class="btn bg-gray-light');}    
                         ?> text-center">
-                            <img class="img-lg" src="<?= base_url('assets/img/healthReport/_sick.svg'); ?>" alt="sick" srcset=""> <br/>
-                            Sick
+                            <img class="img-lg d-lg-block d-none" src="<?= base_url('assets/img/healthReport/_sick.svg'); ?>" alt="sick" srcset="">
+                            <img class="img-md d-lg-none" src="<?= base_url('assets/img/healthReport/_sick.svg'); ?>" alt="sick" srcset=""> <br/>
+                            Unwell
                         </<?php if($checkedIn){echo('div');} else {echo('button');}    
                         ?>>
                     </div>
@@ -193,8 +195,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" form="checkInSick" class="btn btn-primary">Submit</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" form="checkInSick" class="btn btn-primary"><i class="fa fa-paper-plane"></i> Send</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
             </div>
         </div>
     </div>

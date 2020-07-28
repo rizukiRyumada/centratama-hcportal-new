@@ -37,8 +37,17 @@
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
     }
-    // show the toastr notification
-    <?= $this->session->flashdata('msg'); ?>
+
+    // toastr notification
+    <?php if(!empty($this->session->userdata('msg'))): ?>
+        <?php if(!empty($this->session->userdata('msg')['title'])): ?>
+            toastr["<?= $this->session->userdata('msg')['icon']; ?>"]("<?= $this->session->userdata('msg')['title']; ?>", "<?= $this->session->userdata('msg')['msg']; ?>");
+        <?php else: ?>
+            toastr["<?= $this->session->userdata('msg')['icon']; ?>"]("<?= $this->session->userdata('msg')['msg']; ?>");
+        <?php endif; ?>
+    <?php endif; ?>
+    // unset toastr Notification
+    <?= $this->session->unset_userdata('msg'); ?>
 
     // swal notification
     <?php if(!empty($this->session->userdata('msg_swal'))): ?>
@@ -56,7 +65,7 @@
             });
         });
     <?php endif; ?>
-    // unset flashdata
+    // unset swal notification
     <?php $this->session->unset_userdata('msg_swal'); ?>
 
     $(document).ready(function(){

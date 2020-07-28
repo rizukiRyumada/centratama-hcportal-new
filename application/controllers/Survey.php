@@ -190,7 +190,6 @@ class Survey extends MainController {
         //ubah is_done karyawan kalau dia sudah selesai mengisi
         // $this->_general_m->updateOnce('employe', array('nik' => $nik) , array('is_done' => 1));
 
-        $this->session->set_flashdata('one_survey', 'toastr["success"]("Thank You for completing '.$this->title_excellence.' Survey.", "'.$this->title_excellence.' Survey Complete");');
         header('location: ' . base_url('survey'));
     }
 

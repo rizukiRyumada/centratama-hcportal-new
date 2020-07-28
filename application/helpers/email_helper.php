@@ -101,7 +101,7 @@ function sendEmail($data_penerima_email, $emailText, $subject_email){
     $CI =& get_instance();
 
     // configuration for send email
-    // FIXME tambahkan pengaturan smtp_crypto = tls
+    // NOW ubah jadi 1 saat production
     $config = $CI->Jobpro_model->getDetail(
         'useragent, protocol, smtp_host, smtp_port, smtp_user, smtp_pass, charset, wordwrap, mailtype', 
         'setting_email', 
@@ -134,7 +134,7 @@ function sendEmail($data_penerima_email, $emailText, $subject_email){
     // emailText($name_atasan, $name_karyawan, $date, $status){
     $CI->email->message($emailText);
     
-    // TODO ubah nama jadi email -> cek email apa dia punya email
+    // cek email apa dia punya email
     if(!empty($data_penerima_email['nama'])){
         //cek apa email kosong
         if($CI->email->send()){

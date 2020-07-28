@@ -27,7 +27,7 @@
 	<!-- Card Content - Collapse -->
 	
 	<div class="card-body py-0">
-        <div class="row  mb-3">
+        <div class="row mb-3">
             <div class="col-md-10 status-text mt-3"> <!-- status text -->
                     <div class="row">
                         <div class="col-xl-7">
@@ -129,41 +129,38 @@
 </div> <!-- /Profil Jabatan anda -->
 
 <div class="card shadow mb-2" id=""> <!-- My Task -->
-	<!-- Card Content - Collapse -->
-	<div>
-		<div class="card-body">
-            <table id="basicTable" class="table table-striped table-hover"  style="display: table;width:100%">
-                <thead class="text-center">
-                    <th class="align-middle" >Division</th>
-                    <th class="align-middle" >Departement</th>
-                    <th class="align-middle" >Position</th>
-                    <th class="align-middle" >Employee Name</th>
-                    <th class="align-middle" >Date</th>
-                    <!-- <th class="align-middle"  style="min-width: 60px;">View Details</th> -->
-                    <th class="align-middle" >View Details</th>
-                </thead>
-                <tbody>
-                    <?php foreach($my_task as $v): ?>
-                        <tr id="myTask-list">
-                            <td><?= $v['divisi'] ?></td>
-                            <td><?= $v['departement'] ?></td>
-                            <td><?= $v['posisi'] ?></td>
-                            <td><?= $v['emp_name'] ?></td>
-                            <td><?= date('d F Y, H:i', $v['diperbarui']); ?></td>
-                            <td class="align-middle">
-                                <div class="container h-100 m-0 px-auto"> <!-- this container make the element to vertically and horizontally centered -->
-                                    <div class="row justify-content-center align-self-center w-100 m-0">
-                                        <a class="btn btn-primary w-100" id="myTask-button" href="<?= base_url('job_profile/taskJp'); ?>?task=<?= $v['nik']; ?>&id=<?= $v['id_posisi']; ?>&status=<?= $v['status_approval'] ?>"><i class="fa fa-search mx-auto"></i></a>
-                                    </div>
+    <div class="card-header">
+        <h3 class="my-1 card-title">My Task</h3>
+    </div>
+	<div class="card-body">
+        <table id="basicTable" class="table table-striped table-hover"  style="display: table;width:100%">
+            <thead class="text-center">
+                <th class="align-middle" >Division</th>
+                <th class="align-middle" >Departement</th>
+                <th class="align-middle" >Position</th>
+                <th class="align-middle" >Employee Name</th>
+                <th class="align-middle" >Date</th>
+                <!-- <th class="align-middle"  style="min-width: 60px;">View Details</th> -->
+                <th class="align-middle" >View Details</th>
+            </thead>
+            <tbody>
+                <?php foreach($my_task as $v): ?>
+                    <tr id="myTask-list">
+                        <td><?= $v['divisi'] ?></td>
+                        <td><?= $v['departement'] ?></td>
+                        <td><?= $v['posisi'] ?></td>
+                        <td><?= $v['emp_name'] ?></td>
+                        <td><?= date('d F Y, H:i', $v['diperbarui']); ?></td>
+                        <td class="align-middle">
+                            <div class="container h-100 m-0 px-auto"> <!-- this container make the element to vertically and horizontally centered -->
+                                <div class="row justify-content-center align-self-center w-100 m-0">
+                                    <a class="btn btn-primary w-100" id="myTask-button" href="<?= base_url('job_profile/taskJp'); ?>?task=<?= $v['nik']; ?>&id=<?= $v['id_posisi']; ?>&status=<?= $v['status_approval'] ?>"><i class="fa fa-search mx-auto"></i></a>
                                 </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-		</div>
-		<!-- <div class="card-footer">
-			This Is Footer
-		</div> -->
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 	</div>
 </div> <!-- /My Task -->

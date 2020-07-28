@@ -32,8 +32,37 @@ class MainController extends MY_Controller {
 
         // main helper
         is_logged_in(); //Cek Login
+        $this->checkToken();
         
         date_default_timezone_set('Asia/Jakarta'); // set timezone
+    }
+    public function checkToken() {
+        // Token Checker
+        if(!empty($this->session->userdata('token'))){
+            // cek data token
+            if(!empty($data = $this->Jobpro_model->getDetail('data', 'user_token', array('token' => $this->session->userdata('token')))['data'])){
+                $data = json_decode($data, true);
+    
+                if($this->session->userdata('position_id') == $data['id_posisi']){
+                    // hapus token dari database
+                    $this->Jobpro_model->delete('user_token', array('index' => 'token', 'data' => $this->session->userdata('token')));
+    
+                    $this->session->set_userdata('msg', array(
+                        'icon' => 'warning',
+                        'msg' => $data['msg']
+                    ));
+                } else {
+                    // set toastr notification
+                    $this->session->set_userdata('msg', array(
+                        'icon' => 'error',
+                        'msg' => 'The link token is not yours!'
+                    ));
+                }
+            }
+
+            // hapus session token
+            $this->session->unset_userdata('token');            
+        }
     }
     
 }
