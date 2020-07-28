@@ -17,6 +17,7 @@
                 minlength: 8
             },
             password2:{
+                minlength: 8,
                 equalTo: '[name="password"]'
             }
         },
@@ -37,6 +38,7 @@
                 minlength: "Your new Password must be at least 8 characters long."
             },
             password2:{
+                minlength: "Your new Password must be at least 8 characters long.",
                 equalTo: "Password doesn't match with the first one."
             }
         },

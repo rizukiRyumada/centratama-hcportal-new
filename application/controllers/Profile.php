@@ -30,64 +30,83 @@ class Profile extends MainController {
         $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
         $data['load_view'] = 'profile/profile_index_v';
         // $data['custom_styles'] = array('survey_styles');
-        $data['custom_script'] = array('profile/script_profile', 'plugins/jqueryValidation/script_jqueryValidation');
+        $data['custom_script'] = array('plugins/jqueryValidation/script_jqueryValidation', 'profile/script_profile');
         
         $this->load->view('main_v', $data);
     }
 
     public function saveProfile(){
-        // ambil password dari database
-        $user_password = $this->_general_m->getOnce('password', 'employe', array('nik' => $this->session->userdata('nik')))['password'];
+        // load form validation library
+        $this->load->library('form_validation');
 
-        // simpan data
-        $data = array(
-            'emp_name' => $this->input->post('name'),
-            'email' => $this->input->post('email'),
-        );
+        // set rules
+        $this->form_validation->set_rules('name', 'Name', 'required|min_length[5]');
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        $this->form_validation->set_rules('password_current', 'Existing Password', 'required|min_length[8]');
+        $this->form_validation->set_rules('password', 'Existing Password', 'min_length[8]');
+        $this->form_validation->set_rules('password2', 'Existing Password', 'min_length[8]|matches[password]');
 
-        // set session biar gausah input lagi si user
-        if($this->session->userdata('form_profile')){
-            $this->session->unset_userdata('form_profile');
-        }
-        $this->session->set_userdata('form_profile', $data);
-        
-        // cek password
-        if(password_verify($this->input->post('password_current'), $user_password)){
-            // cek apa karyawan ganti password
-            if($this->input->post('password')){
-            // $password = password_hash($password_string, PASSWORD_ARGON2I);
-            $data['password'] = password_hash($this->input->post('password'), PASSWORD_BCRYPT);
-            }
+        // cek validasi form
+        if($this->form_validation->run() == FALSE){
+            // set pesan error
+            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">'.validation_errors().'</div>');
+
+            // arahkan kembali ke profile
+            redirect('profile');
         } else {
-            // siapkan pesan error pakai alert
-            // $this->session->set_flashdata(
-            //     'msg',
-            //     '<div class="alert alert-danger alert-dismissible">
-            //         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            //         <h5><i class="icon fas fa-ban"></i> Wrong Password!</h5>
-            //         You typed the wrong Password, please try again
-            //     </div>'
-            // );
+            // ambil password dari database
+            $user_password = $this->_general_m->getOnce('password', 'employe', array('nik' => $this->session->userdata('nik')))['password'];
 
-            // siapkan pesan error dengan toastr
-            $this->session->set_flashdata(
-                'msg', 
-                'toastr["error"]("You typed the wrong Password, please try again.", 
-                "Wrong Password!");'
+            // simpan data
+            $data = array(
+                'emp_name' => $this->input->post('name'),
+                'email' => $this->input->post('email'),
             );
+
+            // set session biar gausah input lagi si user
+            if($this->session->userdata('form_profile')){
+                $this->session->unset_userdata('form_profile');
+            }
+            $this->session->set_userdata('form_profile', $data);
+            
+            // cek password
+            if(password_verify($this->input->post('password_current'), $user_password)){
+                // cek apa karyawan ganti password
+                if($this->input->post('password')){
+                // $password = password_hash($password_string, PASSWORD_ARGON2I);
+                $data['password'] = password_hash($this->input->post('password'), PASSWORD_BCRYPT);
+                }
+            } else {
+                // siapkan pesan error pakai alert
+                // $this->session->set_flashdata(
+                //     'msg',
+                //     '<div class="alert alert-danger alert-dismissible">
+                //         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                //         <h5><i class="icon fas fa-ban"></i> Wrong Password!</h5>
+                //         You typed the wrong Password, please try again
+                //     </div>'
+                // );
+
+                // set toastr notification
+                $this->session->set_userdata('msg', array(
+                    'icon'  => 'error',
+                    'title' => 'Wrong Password',
+                    'msg'   => 'You typed the wrong Password, please try again.'
+                ));
+                redirect('profile'); // arahkan kembali ke halaman profile
+            }
+
+            // simpan perubahan ke database
+            $this->_general_m->update('employe', 'nik', $this->session->userdata('nik'), $data);
+
+            // set toastr notification
+            $this->session->set_userdata('msg', array(
+                'icon'  => 'success',
+                'title' => 'Saved',
+                'msg'   => 'Your changes was saved.'
+            ));
             redirect('profile'); // arahkan kembali ke halaman profile
         }
-
-        // simpan perubahan ke database
-        $this->_general_m->update('employe', 'nik', $this->session->userdata('nik'), $data);
-
-        // siapkan pesan
-        $this->session->set_flashdata(
-            'msg', 
-            'toastr["success"]("Your changes was saved.", 
-            "Saved");'
-        );
-        redirect('profile'); // arahkan kembali ke halaman profile
     }
 
 }

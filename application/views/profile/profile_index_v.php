@@ -57,6 +57,11 @@
             <div class="card-body">
                 <form id="profileForm" action="<?= base_url('profile/saveprofile'); ?>" class="form-horizontal" method="POST">
                     <div class="form-group row">
+                        <div class="col">
+                            <?= $this->session->flashdata('message'); ?>                    
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="inputNik" class="col-sm-3 col-form-label">NIK</label>
                         <div class="col-sm-9">
                             <input type="text" name="nik" class="form-control" id="inputNik" disabled value="<?= $data_karyawan['nik']; ?>" placeholder="nik">
@@ -65,13 +70,13 @@
                     <div class="form-group row">
                         <label for="inputName" class="col-sm-3 col-form-label">Name</label>
                         <div class="col-sm-9">
-                            <input type="text" name="name" class="form-control" id="inputName" value="<?php if($this->session->userdata('form_profile')){echo($this->session->userdata('form_profile')['emp_name']);}else{echo($data_karyawan['emp_name']);} ?>" placeholder="Change Name">
+                            <input type="text" name="name" class="form-control" id="inputName" value="<?php if($this->session->userdata('form_profile')){echo($this->session->userdata('form_profile')['emp_name']);}else{echo($data_karyawan['emp_name']);} ?>" placeholder="Change Name" required>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="inputEmail" class="col-sm-3 col-form-label">Email</label>
                         <div class="col-sm-9">
-                            <input type="email" name="email" class="form-control" id="inputEmail" value="<?php if($this->session->userdata('form_profile')){echo($this->session->userdata('form_profile')['email']);}else{echo($data_karyawan['email']);} ?>" placeholder="Change Email">
+                            <input type="email" name="email" class="form-control" id="inputEmail" value="<?php if($this->session->userdata('form_profile')){echo($this->session->userdata('form_profile')['email']);}else{echo($data_karyawan['email']);} ?>" placeholder="Change Email" required>
                         </div>
                     </div>
                     <hr/>
@@ -79,7 +84,7 @@
                     <div class="form-group row">
                         <label for="currentPassword" class="col-sm-3 col-form-label">Password</label>
                         <div class="col-sm-9">
-                            <input type="password" name="password_current" class="form-control" id="currentPassword" placeholder="Type your existing password">
+                            <input type="password" name="password_current" class="form-control" id="currentPassword" placeholder="Type your existing password" required>
                         </div>
                     </div>
                     <hr/>

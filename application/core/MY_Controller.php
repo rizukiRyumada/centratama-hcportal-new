@@ -55,6 +55,7 @@ class MainController extends MY_Controller {
                     // set toastr notification
                     $this->session->set_userdata('msg', array(
                         'icon' => 'error',
+                        'title' => 'Error',
                         'msg' => 'The link token is not yours!'
                     ));
                 }
