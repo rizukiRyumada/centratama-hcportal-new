@@ -60,8 +60,8 @@
                                     <!-- /btn-group -->
                                     <select id="healthStatus_filter" class="custom-select">
                                         <option value="">Health Status</option>
-                                        <option value="Sick">Sick</option>
                                         <option value="Healthy">Healthy</option>
+                                        <option value="Unwell">Unwell</option>
                                     </select>
                                     <select id="sickCategory_filter" class="custom-select">
                                         <option value="">Sick Categories</option>
@@ -82,7 +82,7 @@
                                         <th>Department</th>
                                         <th>Division</th>
                                         <th>Health Status</th>
-                                        <th>Sick Type</th>
+                                        <th>Sick Category</th>
                                         <th>Notes</th>
                                     </tr>
                                 </thead>
