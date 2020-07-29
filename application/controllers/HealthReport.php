@@ -368,9 +368,23 @@ class HealthReport extends MainController {
                 $data_health_daily[$k] = array();
                 $data_health_daily[$k]['date'] = $v;
                 // ambil data
-                $data_health_daily[$k]['data_sakit'] = $this->_general_m->getRow('healthReport_reports', array('status' => 0, 'date' => $v));
-                $data_health_daily[$k]['data_sehat'] = $this->_general_m->getRow('healthReport_reports', array('status' => 1, 'date' => $v));
-                $data_health_daily[$k]['data_kosong'] = $this->_general_m->getRow('employe', array()) - ($data_health_daily[$k]['data_sakit'] + $data_health_daily[$k]['data_sehat']);
+                // $data_health_daily[$k]['data_sakit'] = $this->_general_m->getRow('healthReport_reports', array('status' => 0, 'date' => $v));
+                $data_health_daily[$k]['data_sakit'] = count($this->_general_m->getJoin2tables(
+                    'healthReport_reports.date, healthReport_reports.nik',
+                    'healthReport_reports',
+                    'position',
+                    'healthReport_reports.id_posisi = position.id',
+                    $where.'status = 0 AND date = "'.$v.'"',
+                ));
+                $data_health_daily[$k]['data_sehat'] = count($this->_general_m->getJoin2tables(
+                    'healthReport_reports.date, healthReport_reports.nik',
+                    'healthReport_reports',
+                    'position',
+                    'healthReport_reports.id_posisi = position.id',
+                    $where.'status = 1 AND date = "'.$v.'"',
+                ));
+                // $data_health_daily[$k]['data_sehat'] = $this->_general_m->getRow('healthReport_reports', array('status' => 1, 'date' => $v));
+                $data_health_daily[$k]['data_kosong'] = $populasi_hs - ($data_health_daily[$k]['data_sakit'] + $data_health_daily[$k]['data_sehat']);
             }
         }
 

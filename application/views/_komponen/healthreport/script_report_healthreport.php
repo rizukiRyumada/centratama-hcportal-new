@@ -110,6 +110,21 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
                 });
 
                 <?php if($this->session->userdata('role_id') == 1): ?>
+
+                    // reset isi array
+                    dailyhealth_labelData.length = 0;
+                    dailyhealth_chartData[0].length = 0;
+                    dailyhealth_chartData[1].length = 0;
+                    dailyhealth_chartData[2].length = 0;
+                    dailyhealth_backgroundColor[0].length = 0;
+                    dailyhealth_backgroundColor[1].length = 0;
+                    dailyhealth_backgroundColor[2].length = 0;
+                    dailyhealth_borderColor[0].length = 0;
+                    dailyhealth_borderColor[1].length = 0;
+                    dailyhealth_borderColor[2].length = 0;
+
+                    // variabel buat dailyhealth chart
+
                     // inisiasi variabel dropdown
                     let dates_so = Array();
                     // data chart diagram batang
@@ -139,6 +154,8 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
                     $.each(dates_so.reverse(), (key, value) => {
                         $('#showOn').append('<option value="' + value + '">' + value + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                     });
+
+                    console.log(dailyhealth_labelData);
                 <?php endif; ?>
                 
                 refreshChart(); // refresh chart
