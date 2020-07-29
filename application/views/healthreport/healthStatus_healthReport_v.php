@@ -43,7 +43,7 @@
     <div class="col-md-4 mt-2">
         <div class="card card-danger card-outline">
             <div class="card-header">
-                <p class="card-title">Are you healthy today?</p>
+                <p class="card-title text-center w-100">Are you healthy today?</p>
             </div>
             <div class="card-body">
                 <div class="row">
