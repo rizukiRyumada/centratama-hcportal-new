@@ -76,7 +76,7 @@ class Document extends AdminController {
 			$this->db->insert('surat_keluar', $data);
 			$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
             Success Added</div>');
-			redirect('document/buatnomor','refresh');
+			redirect('document','refresh');
 		}
 	}
 
@@ -171,7 +171,7 @@ class Document extends AdminController {
 		];
 
 		$this->db->insert('surat_keluar', $data);
-		redirect('document/buatnomor','refresh');
+		redirect('document','refresh');
 	}
 
 
