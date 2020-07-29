@@ -9,46 +9,8 @@
                 <div class="col">
                     <div class="card card-gray">
                         <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
-
                         <div class="card-header">
-                            <?php if($this->session->userdata('role_id') == 1): ?>
-                                <div class="row justify-content-end">
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="form-group">
-                                            <label for="daterange">Dates:</label>
-                                            <div class="input-group" id="daterange">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                                </div>
-                                                <input type="text" name="daterange" class="form-control" value="" />
-                                                <!-- <input type="text" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="mm/dd/yyyy" data-mask=""> -->
-                                            </div><!-- /.input group -->
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="form-group">
-                                            <label for="divisi">Division:</label>
-                                            <select id="divisi" class="custom-select form-control form-control-sm">
-                                                <option value="">All</option>
-                                                <?php foreach($divisi as $v): ?>
-                                                    <option value="div-<?= $v['id'] ?>"><?= $v['division'] ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-sm-6">
-                                        <div class="form-group">
-                                            <label for="departement">Department:</label>
-                                            <select id="departement" class="custom-select form-control form-control-sm">
-                                                <option value="">All</option>
-                                                <?php foreach($dept as $v): ?>
-                                                    <option value="dept-<?= $v['id'] ?>"><?= $v['nama_departemen'] ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php else: ?>
+                            <div class="row justify-content-end">
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="form-group">
                                         <label for="daterange">Dates:</label>
@@ -61,7 +23,31 @@
                                         </div><!-- /.input group -->
                                     </div>
                                 </div>
+                            <?php if($this->session->userdata('role_id') == 1): ?>
+                                <div class="col-lg-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="divisi">Division:</label>
+                                        <select id="divisi" class="custom-select form-control form-control-sm">
+                                            <option value="">All</option>
+                                            <?php foreach($divisi as $v): ?>
+                                                <option value="div-<?= $v['id'] ?>"><?= $v['division'] ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="departement">Department:</label>
+                                        <select id="departement" class="custom-select form-control form-control-sm">
+                                            <option value="">All</option>
+                                            <?php foreach($dept as $v): ?>
+                                                <option value="dept-<?= $v['id'] ?>"><?= $v['nama_departemen'] ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
                             <?php endif; ?>
+                            </div>
                         </div>
                         <div class="card-body">
                             <!-- Table Toolbox -->

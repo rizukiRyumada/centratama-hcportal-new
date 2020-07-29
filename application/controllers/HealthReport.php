@@ -232,10 +232,16 @@ class HealthReport extends MainController {
         // ambil divisi
         if(!empty($this->input->post('divisi'))){
             $where .= 'div_id = "'.explode('-', $this->input->post('divisi'))[1].'" AND ';
+            $divisi = explode('-', $this->input->post('divisi'))[1];        
+        } else {
+            $divisi = "";
         }
         // ambil departemen
         if(!empty($this->input->post('departemen'))){
             $where .= 'dept_id = "'.explode('-', $this->input->post('departemen'))[1].'" AND ';
+            $departemen = explode('-', $this->input->post('departemen'))[1];        
+        } else {
+            $departemen = "";
         }
 
         // kumpulkan semua where
@@ -246,11 +252,15 @@ class HealthReport extends MainController {
 
         // ambil data health buat ngitung kategori sakit
         $data_health = $this->getDataHealth(
-            '',
+            $where,
             $data_nik,
             [$this->input->post('date')]
         );
-        echo(json_encode($this->getChartData($where_hs, $data_health, $this->_general_m->getRow('employe', array()))));
+        
+        // get populasi chart
+        $populasi_hs = $this->getPopulasiHS("", $divisi, $departemen);
+
+        echo(json_encode($this->getChartData($where_hs, $data_health, $populasi_hs)));
     }
 
     function getDatesFromRange($start, $end, $format = 'Y-m-d') { 
@@ -284,11 +294,15 @@ class HealthReport extends MainController {
         if(!empty($this->input->post('divisi'))){
             $where .= 'div_id = "'.explode('-', $this->input->post('divisi'))[1].'" AND ';
             $divisi = explode('-', $this->input->post('divisi'))[1];
+        } else {
+            $divisi = "";
         }
         // ambil departemen
         if(!empty($this->input->post('departemen'))){
             $where .= 'dept_id = "'.explode('-', $this->input->post('departemen'))[1].'" AND ';
             $departemen = explode('-', $this->input->post('departemen'))[1];
+        } else {
+            $departemen = "";
         }
 
         // ambil date range
@@ -310,7 +324,7 @@ class HealthReport extends MainController {
             $where_hs = ' AND nik = "'.$this->session->userdata('nik').'" AND date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
             // $where_sc = 'nik = "'.$this->session->userdata('nik').'" AND date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
             
-            $populasi_hs = count($daterange_days);
+            $populasi_hs = $this->getPopulasiHS($daterange_days);
             // ambil data health
             $data_health = $this->getDataHealth(
                 '',
@@ -331,34 +345,11 @@ class HealthReport extends MainController {
             $where_hs = ' AND '.$where.'date = "'.$daterange[1].'"';
             // $where_sc = 'date = "'.$daterange[1].'"';
             
-            // TODO tambahkan filtering populasi jika milih divisi dan dept
-            // filtering divisi dan departemen checker
-            if(empty($divisi) && empty($departemen)){
-                $populasi_hs = $this->_general_m->getRow('employe', array());
-            } elseif(!empty($divisi) && empty($departemen)){
-                $populasi_hs = count($this->_general_m->getJoin2tables(
-                    'employe.nik',
-                    'position',
-                    'employe',
-                    'employe.position_id = position.id',
-                    array('div_id' => $divisi)
-                ));
-            } elseif(!empty($divisi) && !empty($departemen)){
-                $populasi_hs = count($this->_general_m->getJoin2tables(
-                    'employe.nik',
-                    'position',
-                    'employe',
-                    'employe.position_id = position.id',
-                    array(
-                        'div_id' => $divisi,
-                        'dept_id' => $departemen
-                    )
-                ));
-            }
+            $populasi_hs = $this->getPopulasiHS("", $divisi, $departemen);
 
             // ambil data health
             $data_health = $this->getDataHealth(
-                '',
+                $where,
                 $data_nik,
                 $daterange_days
             );
@@ -584,7 +575,7 @@ class HealthReport extends MainController {
 
                         // ubah status jadi text healthy dan sick
                         if($nilai['status'] == 0){
-                            $hasil[$kunci]['status'] = 'Sick';
+                            $hasil[$kunci]['status'] = 'Unwell';
                         } else {
                             $hasil[$kunci]['status'] = 'Healthy';
                         }
@@ -713,7 +704,7 @@ class HealthReport extends MainController {
         // ubah status jadi text healthy dan sick
         foreach($data_health as $k => $v){
             if($data_health[$k]['status'] == 0){
-                $data_health[$k]['status'] = 'Sick';
+                $data_health[$k]['status'] = 'Unwell';
             } else {
                 $data_health[$k]['status'] = 'Healthy';
             }
@@ -726,6 +717,40 @@ class HealthReport extends MainController {
             'counter_sehat' => $counter_sehat,
             'counter_kategori' => $counter_kategori
         );
+    }
+
+    // buat dapetin populasi health unwell status
+    function getPopulasiHS($daterange_days = "", $divisi = "", $departemen = ""){
+        // jika dia admin
+        if($this->session->userdata('role_id') == 1){
+            // filtering divisi dan departemen checker
+            if(empty($divisi) && empty($departemen)){
+                $populasi_hs = $this->_general_m->getRow('employe', array());
+            } elseif(!empty($divisi) && empty($departemen)){
+                $populasi_hs = count($this->_general_m->getJoin2tables(
+                    'employe.nik',
+                    'position',
+                    'employe',
+                    'employe.position_id = position.id',
+                    array('div_id' => $divisi)
+                ));
+            } elseif(!empty($divisi) && !empty($departemen)){
+                $populasi_hs = count($this->_general_m->getJoin2tables(
+                    'employe.nik',
+                    'position',
+                    'employe',
+                    'employe.position_id = position.id',
+                    array(
+                        'div_id' => $divisi,
+                        'dept_id' => $departemen
+                    )
+                ));
+            }
+        } else { // jika bukan admin
+            $populasi_hs = count($daterange_days);
+        }
+
+        return $populasi_hs;
     }
 
     function getPositionDetails($id_posisi){
