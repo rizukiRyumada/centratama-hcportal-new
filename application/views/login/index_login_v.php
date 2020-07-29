@@ -194,8 +194,8 @@
         <!-- konten tanggal -->
         <div class="content" id="content-tanggal">
             <div class="container-fluid">
-                <div class="row portal-body m-0 text-dark">
-                    <div class="col-1">
+                <div class="row portal-body m-0 text-dark justify-content-start">
+                    <div class="col-auto">
                         <div class="text-center align-middle">
                             <div class="container d-flex mx-0">
                                 <div class="row justify-content-center align-self-center">
@@ -204,7 +204,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-11 px-3">
+                    <div class="col-auto px-3">
                         <div class="container d-flex mx-0 px-2">
                             <div class="row justify-content-center align-self-center">
                                 <div class="col">
