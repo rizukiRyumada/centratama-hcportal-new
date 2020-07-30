@@ -66,6 +66,14 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
     border-color: #013c66;
 }
 
+/* user dropdown on navbar */
+.navbar-nav > .user-menu > .dropdown-menu {
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    padding: .5rem;
+    width: unset;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                              responsive style                              */
 /* -------------------------------------------------------------------------- */
@@ -128,7 +136,7 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
 }
 .float-wa {
     height: 55px;
-    top: 115px;
+    top: 160px;
 }
 
 /* -------------------------------------------------------------------------- */
