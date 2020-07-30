@@ -40,6 +40,7 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
             [ 10, 25, 50, 100, -1 ],
             [ '10 Rows', '25 Rows', '50 Rows', '100 Rows', 'All' ]
         ],
+        order: [[0, 'desc']],
         // buttons
         buttons: [
             'pageLength', // place custom length menu when add buttons
@@ -154,8 +155,6 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
                     $.each(dates_so.reverse(), (key, value) => {
                         $('#showOn').append('<option value="' + value + '">' + value + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                     });
-
-                    console.log(dailyhealth_labelData);
                 <?php endif; ?>
                 
                 refreshChart(); // refresh chart
@@ -330,7 +329,7 @@ var statusHealth_ctx = $('#healthRasio');
 var statusHealth_chart = new Chart(statusHealth_ctx, {
     type: 'pie',
     data: {
-        labels: ['Sehat', 'Sakit', 'N/A'],
+        labels: ['Healthy', 'Unwell', 'N/A'],
         datasets: [{
             data: statushealth_chartData,
             backgroundColor: [
@@ -360,7 +359,7 @@ var categorySick_chart = new Chart(categorySick_ctx, {
     data: {
         labels: kategorihealth_labelData,
         datasets: [{
-            label: '# of Votes',
+            // label: '# of Votes',
             data: kategorihealth_chartData,
             backgroundColor: kategorihealth_backgroundcolorData,
             borderColor: kategorihealth_colorData,
@@ -398,14 +397,14 @@ var categorySick_chart = new Chart(categorySick_ctx, {
             labels: dailyhealth_labelData,
             datasets: [
             {
-                label: 'Health',
+                label: 'Healthy',
                 data: dailyhealth_chartData[0],
                 backgroundColor: dailyhealth_backgroundColor[0],
                 borderColor: dailyhealth_borderColor[0],
                 borderWidth: 1
             },
             {
-                label: 'Sick',
+                label: 'Unwell',
                 data: dailyhealth_chartData[1],
                 backgroundColor: dailyhealth_backgroundColor[1],
                 borderColor: dailyhealth_borderColor[1],
@@ -439,14 +438,14 @@ var categorySick_chart = new Chart(categorySick_ctx, {
             labels: dailyhealth_labelData,
             datasets: [
             {
-                label: 'Health',
+                label: 'Healthy',
                 data: dailyhealth_chartData[0],
                 backgroundColor: dailyhealth_backgroundColor[0],
                 borderColor: dailyhealth_borderColor[0],
                 borderWidth: 1
             },
             {
-                label: 'Sick',
+                label: 'Unwell',
                 data: dailyhealth_chartData[1],
                 backgroundColor: dailyhealth_backgroundColor[1],
                 borderColor: dailyhealth_borderColor[1],
@@ -461,6 +460,9 @@ var categorySick_chart = new Chart(categorySick_ctx, {
             }]
         },
         options: {
+            legend: {
+                position: 'bottom'
+            },
             scales: {
                 yAxes: [{
                     ticks: {
