@@ -580,6 +580,7 @@ class HealthReport extends MainController {
                 // jika ada datanya simpan dalam variabel
                 if(!empty($hasil)){
                     foreach($hasil as $kunci => $nilai){
+                        // ambil detail employe
                         $employe = $this->_general_m->getOnce('position_id, emp_name', 'employe', array('nik' => $nilai['nik']));
                         $hasil[$kunci]['detail_position'] = $this->getPositionDetails($employe['position_id']);
                         $hasil[$kunci]['emp_name'] = $employe['emp_name'];
@@ -623,15 +624,30 @@ class HealthReport extends MainController {
                             // nothing
                         }
 
+                        // masukkan data
                         $data_health[$y] = $hasil[$kunci];
                         $y++;
                     }
+                } else {
+                    // ambil detail employe
+                    $employe = $this->_general_m->getOnce('position_id, emp_name', 'employe', array('nik' => $value['nik']));
+                    $hasil['detail_position'] = $this->getPositionDetails($employe['position_id']);
+                    $hasil['emp_name'] = $employe['emp_name'];
+
+                    // buat data kosong
+                    $hasil['date'] = $v;
+                    $hasil['status'] = '#N/A';
+                    $hasil['sickness'] = "";
+                    $hasil['notes'] = "";
+
+                    // masukkan data
+                    $data_health[$y] = $hasil;
+                    $y++;
                 }
             }
         }
 
         // masukkan jadi satu bentuk array dimensi
-
         return ($data_health);
         exit;
 
