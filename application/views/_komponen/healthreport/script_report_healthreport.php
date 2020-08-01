@@ -19,6 +19,9 @@ var dailyhealth_chartData = Array(Array(), Array(), Array());
 var dailyhealth_backgroundColor = Array(Array(), Array(), Array());
 var dailyhealth_borderColor = Array(Array(), Array(), Array());
 
+// variable for ajax stopwatch
+var ajax_start_time;
+
     <?php
     /* -------------------------------------------------------------------------- */
     /*                        DATATABLE SERVERSIDED SCRIPT                        */
@@ -35,10 +38,11 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
         pagingType: 'full_numbers',
         // serverSide: true,
         dom: 'Bfrtip',
+        deferRender: true,
         // custom length menu
         lengthMenu: [
-            [ 10, 25, 50, 100, -1 ],
-            [ '10 Rows', '25 Rows', '50 Rows', '100 Rows', 'All' ]
+            [5, 10, 25, 50, 100, -1 ],
+            ['5 Rows', '10 Rows', '25 Rows', '50 Rows', '100 Rows', 'All' ]
         ],
         order: [[0, 'desc']],
         // buttons
@@ -87,9 +91,13 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
             },
             beforeSend: () => {
                 // $('.overlay').removeClass('d-none'); // hapus class d-none
+                toastr["warning"]("This will take a few moments.", "Retrieving data...");
+                toastr["error"]("The longer the date range chosen, the longer the time for data to be retrieved. Please be patient.", "Caution!");
                 $('.overlay').fadeIn(); // hapus overlay chart
+
+                ajax_start_time = new Date().getTime();
             },
-            complete: (data) => { // run function when ajax complete
+            complete: (data, jqXHR) => { // run function when ajax complete
                 table.columns.adjust();
 
                 // place to chart data variable
@@ -155,6 +163,9 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
                     $.each(dates_so.reverse(), (key, value) => {
                         $('#showOn').append('<option value="' + value + '">' + value + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                     });
+
+                    var ajax_request_time = new Date().getTime() - ajax_start_time;
+                    toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
                 <?php endif; ?>
                 
                 refreshChart(); // refresh chart
