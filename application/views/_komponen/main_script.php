@@ -41,7 +41,7 @@
     // toastr notification
     <?php if(!empty($this->session->userdata('msg'))): ?>
         <?php if(!empty($this->session->userdata('msg')['title'])): ?>
-            toastr["<?= $this->session->userdata('msg')['icon']; ?>"]("<?= $this->session->userdata('msg')['title']; ?>", "<?= $this->session->userdata('msg')['msg']; ?>");
+            toastr["<?= $this->session->userdata('msg')['icon']; ?>"]("<?= $this->session->userdata('msg')['msg']; ?>", "<?= $this->session->userdata('msg')['title']; ?>");
         <?php else: ?>
             toastr["<?= $this->session->userdata('msg')['icon']; ?>"]("<?= $this->session->userdata('msg')['msg']; ?>");
         <?php endif; ?>
