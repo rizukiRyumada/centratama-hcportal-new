@@ -33,7 +33,9 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
             zeroRecords: '<p class="m-0 text-danger font-weight-bold">No Data.</p>'
         },
         pagingType: 'full_numbers',
-        // serverSide: true,
+        <?php if($this->session->userdata('role_id') == 1): ?>
+            serverSide: true,
+        <?php endif; ?>
         dom: 'Bfrtip',
         // custom length menu
         lengthMenu: [
@@ -164,8 +166,8 @@ var dailyhealth_borderColor = Array(Array(), Array(), Array());
         columns: [
             {data: 'date'},
             {data: 'emp_name'},
-            {data: 'detail_position.departement'},
-            {data: 'detail_position.divisi'},
+            {data: 'departement'},
+            {data: 'divisi'},
             {
                 // classNmae: "",
                 // data: 'status',
