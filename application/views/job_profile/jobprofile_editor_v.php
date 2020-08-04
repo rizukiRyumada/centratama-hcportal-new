@@ -46,15 +46,15 @@
                 		</div>
                 	</div>
                 	<div class="row mb-2">
-                		<div class="col-md-3 font-weight-semibold">Nama Jabatan</div>
-                		<div class="col-md-9">: <?= $posisi['position_name']; ?></div>
+                		<div class="col-sm-3 font-weight-semibold">Nama Jabatan</div>
+                		<div class="col-sm-9">: <?= $posisi['position_name']; ?></div>
                 	</div>
                 	<div class="row mb-2">
-                		<div class="col-lg-3 font-weight-semibold">Bertanggung Jawab Kepada</div>
+                		<div class="col-sm-3 font-weight-semibold">Bertanggung Jawab Kepada</div>
                 		<?php if (empty($posisi['id_atasan1'])) : ?>
-                			<div class="col-lg-9">: <span class="badge badge-danger">Data Kosong</span></div>
+                			<div class="col-sm-9">: <span class="badge badge-danger">Data Kosong</span></div>
                 		<?php else : ?>
-                			<div class="col-lg-9": >: <?= $atasan['position_name']; ?></div>
+                			<div class="col-sm-9": >: <?= $atasan['position_name']; ?></div>
                 		<?php endif; ?>
                 	</div>
 
@@ -94,7 +94,7 @@
 								</div>
 								<br>
 							</div>
-							<div class="col-md-2 justify-content-center">
+							<div class="col-md-2 justify-content-center d-print-none">
 								<button type="button" class="w-100 btn btn-circle btn-success edit-tujuan"
 									data-toggle="tooltip" data-placement="top" title="Edit">
 									<i class="fas fa-1x fa-pencil-alt"></i>
@@ -121,7 +121,7 @@
 										<th>Tanggung Jawab Utama</th>
 										<th class="text-center">Aktivitas Utama</th>
 										<th class="text-center">Pengukuran</th>
-										<th class="text-center" width="8%"><a class="nTgjwb" data-toggle="modal"
+										<th class="text-center d-print-none" width="8%"><a class="nTgjwb" data-toggle="modal"
                 								data-target="#modalTanggungJwb" data-placement="auto" title="Add New"><i
                 									class="fas fa-plus-square fa-2x text-success"
                 									style="cursor: pointer;"></i></a></th>
@@ -137,7 +137,7 @@
                 						<td>
                 							<?= $t['list_pengukuran']; ?>
                 						</td>
-                						<td>
+                						<td class="d-print-none">
                 							<div class="btn-group">
 												<button type="button" data-id="<?= $t['id_tgjwb']; ?>" data-toggle="modal"
 													data-target="#modalTanggungJwb"
@@ -183,7 +183,7 @@
                 		<div class="col-md-10 view-ruang">
                 			<?= $ruangl['r_lingkup']; ?>
 						</div>
-						<div class="col-md-2 justify-content-center">
+						<div class="col-md-2 justify-content-center d-print-none">
 							<button type="button" class="w-100 btn btn-circle btn-success edit-ruang" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa fa-pencil-alt"></i></button>
 						</div>
 
@@ -208,7 +208,27 @@
                 		</div>
                 	</div>
                 	<div class="col-lg table-responsive">
-                		<table class="table table-bordered table-hover" id="wewenang">
+                		<table class="table table-bordered table-hover d-none d-print-table w-100">
+							<thead class="font-weight-semibold">
+								<tr>
+									<td>Kewenangan</td>
+									<td class="text-center">Anda</td>
+									<td class="text-center">Atasan 1</td>
+									<td class="text-center">Atasan 2</td>
+                				</tr>
+                			</thead>
+                			<tbody>
+                				<?php foreach ($wen as $w) : ?>
+                				<tr>
+                					<td><?= $w['kewenangan']; ?></td>
+                					<td class="text-center"><?= $w['wen_sendiri']; ?></td>
+                					<td class="text-center"><?= $w['wen_atasan1']; ?></td>
+                					<td class="text-center"><?= $w['wen_atasan2']; ?></td>
+                				</tr>
+                				<?php endforeach; ?>
+                			</tbody>
+						</table>
+						<table class="table table-bordered table-hover d-print-none" id="wewenang">
 							<thead class="font-weight-semibold">
 								<tr>
 									<td>Kewenangan</td>
@@ -277,19 +297,19 @@
                 				</tr>
                 			</table>
                 		</table>
-                			<div class="py-4 bg-gray-light border-radius-3 px-3">
-								<ul class="ml-2 mb-0">
-									<li><b class="font-weight-semibold">R</b> : Responsibility = Memiliki tanggung jawab dan wewenang untuk mengambil keputusan
-									</li>
-									<li><b class="font-weight-semibold">A</b> : Accountability = tidak dapat mengambil keputusan tetapi bertanggung jawab dalam
-										pelaksanaan dan hasilnya</li>
-									<li><b class="font-weight-semibold">V</b> : Veto = dapat meng-anulir atau mem-blok suatu keputusan</li>
-									<li><b class="font-weight-semibold">C</b> : Consult= sebelum mengambil keputusan harus memberi masukan dan mengkonsultasikan
-										lebih
-										dahulu dengan atasan</li>
-									<li><b class="font-weight-semibold">I</b> : Informed = harus diberi informasi setelah keputusan diambil</li>
-								</ul>
-							</div>
+                		<div class="py-4 bg-gray-light border-radius-3 px-3">
+							<ul class="ml-2 mb-0">
+								<li><b class="font-weight-semibold">R</b> : Responsibility = Memiliki tanggung jawab dan wewenang untuk mengambil keputusan
+								</li>
+								<li><b class="font-weight-semibold">A</b> : Accountability = tidak dapat mengambil keputusan tetapi bertanggung jawab dalam
+									pelaksanaan dan hasilnya</li>
+								<li><b class="font-weight-semibold">V</b> : Veto = dapat meng-anulir atau mem-blok suatu keputusan</li>
+								<li><b class="font-weight-semibold">C</b> : Consult= sebelum mengambil keputusan harus memberi masukan dan mengkonsultasikan
+									lebih
+									dahulu dengan atasan</li>
+								<li><b class="font-weight-semibold">I</b> : Informed = harus diberi informasi setelah keputusan diambil</li>
+							</ul>
+						</div>
                 	</div>
 
                 	<!-- start hubungan kerja -->
@@ -328,7 +348,7 @@
 										<p class="font-weight-semibold"><strong>Hubungan Internal</strong></p>
 										<div class="hubIntData"><?= $hub['hubungan_int']; ?></div>
 									</div>
-									<div class="col-md-2">
+									<div class="col-md-2 d-print-none">
 										<span class="w-100 edit-hubInt btn btn-circle btn-success" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-pencil-alt"></i></span>
 									</div>
 									<div class="col-12 editor-hubInt">
@@ -346,7 +366,7 @@
 										<p class="font-weight-semibold"><strong>Hubungan Ekternal</strong></p>
 										<div class="hubEksData"> <?= $hub['hubungan_eks']; ?></div>
 									</div>
-									<div class="col-md-2">
+									<div class="col-md-2 d-print-none">
 										<span class="w-100 edit-hubEks btn btn-circle btn-success" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-pencil-alt"></i></span>
 									</div>
 									<div class="col-12 editor-hubEks">
@@ -471,7 +491,7 @@
                 			</div>
 						</div>
 						<div class="col-md-2">
-							<button type="button" class="w-100 btn btn-circle btn-success edit-tantangan" data-toggle="tooltip" data-placement="top" title="Edit">
+							<button type="button" class="w-100 btn btn-circle btn-success edit-tantangan d-print-none" data-toggle="tooltip" data-placement="top" title="Edit">
 								<i class="fas fa-1x fa-pencil-alt"></i>
 							</button>
 						</div>
@@ -551,7 +571,7 @@
 							</div>
 						</div>
 						<div class="col-md-2">
-							<button type="button" class="w-100 btn btn-circle btn-success edit-kualifikasi" data-id="<?= $posisi['id']; ?>" data-toggle="modal" data-target="#modalKualifikasi" data-placement="top" title="Edit">
+							<button type="button" class="w-100 btn btn-circle btn-success edit-kualifikasi d-print-none" data-id="<?= $posisi['id']; ?>" data-toggle="modal" data-target="#modalKualifikasi" data-placement="top" title="Edit">
 								<i class="fas fa-1x fa-pencil-alt"></i>
 							</button>
 						</div>
@@ -589,7 +609,7 @@
                 			</div>
 						</div>
 						<div class="col-md-2">
-							<button type="button" class="w-100 btn btn-circle btn-success edit-jenjang" data-toggle="tooltip" data-placement="top" title="Edit">
+							<button type="button" class="w-100 btn btn-circle btn-success edit-jenjang d-print-none" data-toggle="tooltip" data-placement="top" title="Edit">
                 				<i class="fas fa-1x fa-pencil-alt"></i>
                 			</button>
 						</div>

@@ -2,7 +2,7 @@
     <div class="card shadow mb-2" id="print">
 		<!-- Card Header - Accordion -->
 		<div h class=" row card-header py-3">
-			<div class="col-sm-1 h-100 my-0">
+			<div class="col-sm-1 h-100 my-0 d-print-none">
 				<div class="h-100">
 					<div class="my-0">
 						<a class="w-100 btn btn-primary" href="<?= base_url('job_profile/'); ?>report" style="width: 50px;"><strong><i class="fa fa-chevron-left"></i></strong></a>

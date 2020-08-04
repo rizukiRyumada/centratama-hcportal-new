@@ -314,6 +314,7 @@ var datasource_assistant2 = <?php echo($orgchart_data_assistant2); ?>;
 					console.log("data : ", serialize);
 				}
 			});
+			$('.tabledit-toolbar-column').hide();
 		});
 
 		// add wewenang baru
