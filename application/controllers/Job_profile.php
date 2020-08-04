@@ -1,6 +1,8 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Job_profile extends MainController {
+    // set variabel buat userapp admin
+    protected $userApp_admin = 0;
     
     public function __construct()
     {
@@ -14,6 +16,20 @@ class Job_profile extends MainController {
         $this->load->helper('email');
         // $this->load->helper('encryption');
         $this->load->helper('random_string');
+
+        // cek buat userapp admin di menusub health report
+        if($this->session->userdata('role_id') == 2){
+            // get menu id sekaligus ini daftar aplikasi
+            $id_menu = $this->_general_m->getOnce('id_menu', 'survey_user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
+            $value = $this->_general_m->getRow('survey_user_userapp_admins', array(
+                'id_menu' => $id_menu,
+                'nik' => $this->session->userdata('nik')
+            ));
+
+            if($value > 0){
+                $this->userApp_admin = 1;
+            }
+        }
     }
 
 /* -------------------------------------------------------------------------- */
@@ -62,7 +78,7 @@ class Job_profile extends MainController {
         $my_task = array_merge($my_task, $this->Jobpro_model->getMyTask($data['posisi']['position_id'], 'id_approver2', '2'));
 
         //ambil data my task dengan approver 1 dan 2, vacant, jika admin
-        if($this->Jobpro_model->getDetail('role_id', 'employe', array('nik' => $nik))['role_id'] == 1){
+        if($this->Jobpro_model->getDetail('role_id', 'employe', array('nik' => $nik))['role_id'] == 1 || $this->userApp_admin == 1){
             if(!empty($my_vacant_task = $this->getMyTaskVacant())){ //ambil data vacant task
                 $my_task = array_merge($my_task, $my_vacant_task); // gabungkan task
             }
@@ -77,7 +93,8 @@ class Job_profile extends MainController {
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
-		$data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+        $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'job_profile/index_jobprofile_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
@@ -119,6 +136,7 @@ class Job_profile extends MainController {
         $data['sidebar'] = getMenu(); // ambil menu
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
+        $data['userApp_admin'] = $this->userApp_admin;
         $data['page_title'] = "My Job Profile";
         //additional styles and custom script   
         $data['custom_styles'] = array('jobprofile_styles');
@@ -144,7 +162,8 @@ class Job_profile extends MainController {
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
 		// $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
-		$data['page_title'] = 'Task Job Profile';
+        $data['page_title'] = 'Task Job Profile';
+        $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'job_profile/taskjp_jobprofile_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables', 'job_profile/styles_jobprofile.php');
@@ -168,16 +187,16 @@ class Job_profile extends MainController {
         // }
         //ambil position id
         $id_posisi =$this->input->get('id'); //ambil position id
-        
-        if($role_id != 1){
+
+        if($role_id == 1 || $this->userApp_admin == 1){
+            // nothing
+        } else {
             if(empty($this->db->query("SELECT * FROM position WHERE (id_approver1='".$my_position_id."' AND id='".$id_posisi."') OR (id_approver2='".$my_position_id."' AND id='".$id_posisi."')")->result())){ //cek kalo dia punya akses terhadap karyawan tersebut
-                show_404();
+                // show_404();
                 exit;
             } else {
                 //nothing
             };      
-        } else {
-            //nothing
         }
             
         // prepare the data
@@ -188,7 +207,7 @@ class Job_profile extends MainController {
         $data['title'] = 'Report';
         $data['jp_user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
 
-        if($role_id == 1){ //cek jika dia admin
+        if($role_id == 1 || $this->userApp_admin == 1){ //cek jika dia admin
             // main data
             // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
             $data['load_view'] = 'job_profile/reportjp_editor_jobprofile_v';
@@ -219,6 +238,7 @@ class Job_profile extends MainController {
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = "Report Job Profile";
+        $data['userApp_admin'] = $this->userApp_admin;
         //additional styles and custom script
         $data['custom_styles'] = array('jobprofile_styles');
         $data['additional_styles'] = array('job_profile/styles_jobprofile.php', 'plugins/datatables/styles_datatables');
@@ -234,7 +254,7 @@ class Job_profile extends MainController {
         $my_position = $this->Jobpro_model->getDetail('position_id', 'employe', array('nik' => $nik))['position_id']; //ambil my_position
         $role_id = $this->Jobpro_model->getDetail('role_id', 'employe', array('nik' => $nik))['role_id']; //ambil role_id
 
-        if($role_id == 1){ // cek role_id apakah punya hak akses admin
+        if($role_id == 1 || $this->userApp_admin == 1){ // cek role_id apakah punya hak akses admin atau userappadmin
             $task = $this->Jobpro_model->getAllAndOrder('id_posisi', 'job_approval');
             $data['dept'] = $this->Jobpro_model->getAllAndOrder('nama_departemen', 'departemen');
             $data['divisi'] = $this->Jobpro_model->getAllAndOrder('division', 'divisi');
@@ -263,7 +283,8 @@ class Job_profile extends MainController {
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
 		// $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
-		$data['page_title'] = 'Report Profile';
+        $data['page_title'] = 'Report Profile';
+        $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'job_profile/report_jobprofile_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
@@ -1233,7 +1254,8 @@ class Job_profile extends MainController {
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
-		$data['page_title'] = "Approval Settings";
+        $data['page_title'] = "Approval Settings";
+        $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'job_profile/approval_settings_jobprofile_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');

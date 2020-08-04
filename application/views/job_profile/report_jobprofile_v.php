@@ -1,6 +1,6 @@
     <div class="card shadow mb-4">
         <div class="card-header bg-gray-light">
-            <?php if($jp_user['role_id']==1 || $jp_user['position_id']==1): ?>
+            <?php if($jp_user['role_id']==1 || $jp_user['position_id']==1 || $userApp_admin == 1): ?>
                 <div class="row">
                     <div class="col-lg-4 col-sm-6">
                         <div class="form-group">

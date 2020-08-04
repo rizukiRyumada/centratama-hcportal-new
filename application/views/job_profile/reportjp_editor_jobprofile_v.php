@@ -9,16 +9,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-11">
-				<div class="h-100">
-					<div class="my-2">
-						<?php if(!empty($emp_name['emp_name'])): ?>
-							<h5 class="m-0 font-weight-bold text-black-50"><?= $emp_name['emp_name']; ?></h5>
-						<?php else: ?>
-							<h5 class="m-0 font-weight-bold text-black-50">No Employe</h5>
-						<?php endif; ?>
-					</div>
-				</div>
+			<div class="col-sm-11 align-self-center">
+				<?php if(!empty($emp_name['emp_name'])): ?>
+					<h5 class="m-0 font-weight-bold text-black-50"><?= $emp_name['emp_name']; ?></h5>
+				<?php else: ?>
+					<h5 class="m-0 font-weight-bold text-black-50">No Employe</h5>
+				<?php endif; ?>
 			</div>
 		</div>
 		

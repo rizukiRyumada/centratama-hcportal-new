@@ -1,11 +1,13 @@
 <?php
 
+// TODO upload document dalam pdf, doc, excel
+// TODO tambah status upload doc
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Document extends AdminController {
     
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
 
         // load model

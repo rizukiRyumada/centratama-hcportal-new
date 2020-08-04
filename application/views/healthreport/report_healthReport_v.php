@@ -10,7 +10,7 @@
                     <div class="card card-gray">
                         <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
                         <div class="card-header">
-                            <div class="row justify-content-end">
+                            <div class="row justify-content-start">
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="form-group">
                                         <label for="daterange">Dates:</label>
@@ -23,7 +23,7 @@
                                         </div><!-- /.input group -->
                                     </div>
                                 </div>
-                            <?php if($this->session->userdata('role_id') == 1): ?>
+                            <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="form-group">
                                         <label for="divisi">Division:</label>
@@ -50,6 +50,12 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <!-- hidden form to download data -->
+                            <form id="downloadForm" action="<?= base_url('healthReport/ajax_export2Excel'); ?>" method="post">
+                                <input type="hidden" value="" name="daterangeSelected">
+                                <input type="hidden" value="" name="divisiSelected">
+                                <input type="hidden" value="" name="departemenSelected">
+                            </form>
                             <!-- Table Toolbox -->
                             <div><label for="">Table Filter:</label></div>
                             <div class="form-group">
@@ -92,7 +98,7 @@
                 </div>
             </div>
         </div>
-        <?php if($this->session->userdata('role_id') == 1): ?>
+        <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
             <!-- Diagram Batang -->
             <div class="container-fluid">
                 <div class="row">
@@ -127,7 +133,7 @@
                         <option value="">All</option>
                     </select>
                 </div> -->
-                <?php if($this->session->userdata('role_id') == 1): ?>
+                <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
                     <div class="form-group">
                         <label for="showOn">Show on:</label>
                         <select id="showOn" class="custom-select form-control form-control-sm">

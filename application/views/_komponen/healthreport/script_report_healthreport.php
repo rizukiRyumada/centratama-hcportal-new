@@ -50,7 +50,7 @@ var ajax_start_time;
             'pageLength', // place custom length menu when add buttons
             {
                 extend: 'excel',
-                text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to EXCEL',
+                text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to Excel',
                 title: '',
                 filename: 'Health Report-<?= date("dmo-Hi"); ?>',
                 exportOptions: {
@@ -61,6 +61,51 @@ var ajax_start_time;
                         search: 'none'
                     }
                     // ,columns: [0,1,2,3,4]
+                }
+            },
+            {
+                text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to Excel (All)',
+                action: ( e, dt, node, config ) => {
+                    // $.ajax({
+                    //     url: "<?= base_url('healthReport/ajax_export2Excel'); ?>",
+                    //     data: {
+                    //         daterange: $('input[name="daterange"]').val(),
+                    //         divisi: $('#divisi').val(),
+                    //         departemen: $('#departement').val()
+                    //     },
+                    //     method: "POST",
+                    //     beforeSend: (data) => {
+                    //         Swal.fire({
+                    //             icon: 'info',
+                    //             title: 'Please Wait...',
+                    //             text: 'Preparing the Health Reports data!',
+                    //             showConfirmButton: false
+                    //         });
+                    //     },
+                    //     success: () => {
+                    //         Swal.fire({
+                    //             icon: 'success',
+                    //             title: 'Completed',
+                    //             text: 'The data is prepared and being downloaded automatically!'
+                    //         });
+                    //     },
+                    //     error: () => {
+                    //         Swal.fire({
+                    //             icon: 'error',
+                    //             title: 'Error',
+                    //             text: 'There was an error while processing the data, please contact HC Care!'
+                    //         });
+                    //     }
+                    // });
+
+                    let daterange = $('input[name="daterange"]').val();
+                    let divisi = $('#divisi').val();
+                    let departement = $('#departement').val();
+
+                    $('input[name="daterangeSelected"]').val(daterange);
+                    $('input[name="divisiSelected"]').val(divisi);
+                    $('input[name="departemenSelected"]').val(departement);
+                    $("#downloadForm").submit();
                 }
             }
             // ,
@@ -118,7 +163,7 @@ var ajax_start_time;
                     kategorihealth_backgroundcolorData[key] = color[0];
                 });
 
-                <?php if($this->session->userdata('role_id') == 1): ?>
+                <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
 
                     // reset isi array
                     dailyhealth_labelData.length = 0;
@@ -401,7 +446,7 @@ var categorySick_chart = new Chart(categorySick_ctx, {
 });
 
 // bar diagram buat admin
-<?php if($this->session->userdata('role_id') == 1): ?>
+<?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
     var periodeChart = new Chart($('#periodeChart'), {
         type: 'bar',
         data: {
@@ -493,7 +538,7 @@ var categorySick_chart = new Chart(categorySick_ctx, {
 function refreshChart() { // refresh chart
     categorySick_chart.update();
     statusHealth_chart.update();
-    <?php if($this->session->userdata('role_id') == 1): ?>
+    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
         periodeChart.update();
         periodeChart_more.update();
     <?php endif; ?>
