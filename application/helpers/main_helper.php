@@ -37,24 +37,26 @@ function is_logged_in(){
         //     //do nothing
         // }
 
-        // cek akses terhadap menu
-        $userAccess = $CI->db->get_where('survey_user_menu_access', ['id_user' => $id_user, 'id_menu' => $queryMenu['id_menu']]);
-        if($userAccess->num_rows() < 1){ // jika tidak punya akses terhadap menu
-            // show_error($message, $status_code, $heading = 'An Error Was Encountered')
-            //show_404; // for notfound
-            show_error('Sorry you are not allowed to access this menu.', 403, 'Forbidden');
-        }
+        if(!empty($queryMenu)){
+            // cek akses terhadap menu
+            $userAccess = $CI->db->get_where('survey_user_menu_access', ['id_user' => $id_user, 'id_menu' => $queryMenu['id_menu']]);
+            if($userAccess->num_rows() < 1){ // jika tidak punya akses terhadap menu
+                // show_error($message, $status_code, $heading = 'An Error Was Encountered')
+                //show_404; // for notfound
+                show_error('Sorry you are not allowed to access this menu.', 403, 'Forbidden');
+            }
 
-        //cek di suburl apa dia mengakses fungsi dari controller
-        if(!empty($suburl)){
-            //cek apakag dia submenu dilihat dari hasil query sub menu dari database
-            if(!empty($queryMenuSub)){
-                //cek akses terhadap submenu
-                $userAccessSub = $CI->db->get_where('survey_user_menu_sub_access', array('id_user' => $id_user, 'id_menu_sub' => $queryMenuSub['id_menu_sub']));
-                if($userAccessSub->num_rows() < 1){ // jika tidak punya akses terhadap sub menu
-                    // show_error($message, $status_code, $heading = 'An Error Was Encountered')
-                    //show_404; // for notfound
-                    show_error('Sorry you are not allowed to access this submenu.', 403, 'Forbidden');
+            //cek di suburl apa dia mengakses fungsi dari controller
+            if(!empty($suburl)){
+                //cek apakag dia submenu dilihat dari hasil query sub menu dari database
+                if(!empty($queryMenuSub)){
+                    //cek akses terhadap submenu
+                    $userAccessSub = $CI->db->get_where('survey_user_menu_sub_access', array('id_user' => $id_user, 'id_menu_sub' => $queryMenuSub['id_menu_sub']));
+                    if($userAccessSub->num_rows() < 1){ // jika tidak punya akses terhadap sub menu
+                        // show_error($message, $status_code, $heading = 'An Error Was Encountered')
+                        //show_404; // for notfound
+                        show_error('Sorry you are not allowed to access this submenu.', 403, 'Forbidden');
+                    }
                 }
             }
         }
