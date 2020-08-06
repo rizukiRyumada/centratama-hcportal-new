@@ -103,7 +103,7 @@ class Document extends AdminController {
 	
 	public function ajax_no()
     {
-        $list = $this->M_nomor->getListDataTables();
+		$list = $this->M_nomor->getListDataTables();
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $noSur) {
@@ -114,7 +114,8 @@ class Document extends AdminController {
             $row[] = $noSur->pic;
             $row[] = date("d F Y", strtotime($noSur->tanggal));
             $row[] = $noSur->note;
-            $row[] = $noSur->jns_surat;
+			$row[] = $noSur->jns_surat;
+			$row[] = $noSur->file;
 
             $data[]= $row;
         } 

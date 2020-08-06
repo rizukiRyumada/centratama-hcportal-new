@@ -13,15 +13,45 @@
                 "type": "post",
                 "data": function(data){
                     data.jenis_surat = $('#jenis-surat').val();
+                },
+                complete: (data) => {
+                    console.log(data.responseJSON);
                 }
             },
             "columnDefs": [
-                { "width": "185px", "targets": [0], "orderable": true },
-                { "width": "185px", "targets": [1], "orderable": true },
-                { "width": "100px", "targets": [2], "orderable": true },
-                { "width": "120px", "targets": [3], "orderable": true },
-                { "width": "185px", "targets": [4], "orderable": true },
-                { "width": "150px", "targets": [5], "orderable": true }
+                { "targets": [0], "orderable": true },
+                { "targets": [1], "orderable": true },
+                { "targets": [2], "orderable": true },
+                { "targets": [3], "orderable": true },
+                { "targets": [4], "orderable": true },
+                { "targets": [5], "orderable": true },
+                {
+                    classNmae: "",
+                    // data: 'status',
+                    targets: [6],
+                    render: (data, type) => {
+                        // if(type === 'display'){
+                        //     var status = ''; // status name
+                        //     var cssClass = ''; // class name
+
+                        //     switch(data) {
+                        //         case '0':
+                        //             status = 'Sick';
+                        //             cssClass = 'text-danger';
+                        //             break;
+                        //         case '1':
+                        //             status = "Healthy";
+                        //             cssClass = 'text-success';
+                        //             break;
+                        //     }
+                        //     return '<p class="m-0 font-weight-bold text-center '+cssClass+'">'+status+'</p>';
+                        //     // return status;
+                        // }
+                        // return data;
+                        return '<button id="openFile" class="btn btn-primary w-100" data-file="'+data+'" ><i class="fa fa-paperclip" ></i></button>';
+                    }
+                    
+                }
             ]
         });
 
