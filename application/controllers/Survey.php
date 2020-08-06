@@ -794,7 +794,8 @@ class Survey extends MainController {
     public function settings_status(){
         // cek apa dia punya role maintenance
         if($this->session->userdata('role_id') != 1){
-            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+            // show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+            redirect('maintenance');
         }
         // ambil data karyawan
         $data_karyawan = $this->_general_m->getAll('nik, emp_name, position_id', 'employe', array());
