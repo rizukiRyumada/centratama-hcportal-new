@@ -163,7 +163,8 @@ var ajax_start_time;
                     kategorihealth_backgroundcolorData[key] = color[0];
                 });
 
-                <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                // diagram btang
+                <?php //if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
 
                     // reset isi array
                     dailyhealth_labelData.length = 0;
@@ -201,17 +202,20 @@ var ajax_start_time;
                         dates_so[key] = value.date;
                     });
                     
-                    // kosongkan dropdown dulu
-                    $('#showOn').empty()
-                    // .append('<option value="">Select Dates...</option>'); //kosongkan selection value dan tambahkan satu selection option
-                    // tambahkan dates ke dropdown
-                    $.each(dates_so.reverse(), (key, value) => {
-                        $('#showOn').append('<option value="' + value + '">' + value + '</option>'); //tambahkan 1 per 1 option yang didapatkan
-                    });
+                    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                        // kosongkan dropdown dulu
+                        $('#showOn').empty()
+                        // .append('<option value="">Select Dates...</option>'); //kosongkan selection value dan tambahkan satu selection option
+                        // tambahkan dates ke dropdown
+                        $.each(dates_so.reverse(), (key, value) => {
+                            $('#showOn').append('<option value="' + value + '">' + value + '</option>'); //tambahkan 1 per 1 option yang didapatkan
+                        });
+                    <?php endif; ?>
+                <?php //endif; ?>
 
-                    var ajax_request_time = new Date().getTime() - ajax_start_time;
-                    toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
-                <?php endif; ?>
+                // ajax data counter
+                var ajax_request_time = new Date().getTime() - ajax_start_time;
+                toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
                 
                 refreshChart(); // refresh chart
                 $('.overlay').fadeOut(); // hapus overlay chart
@@ -446,7 +450,7 @@ var categorySick_chart = new Chart(categorySick_ctx, {
 });
 
 // bar diagram buat admin
-<?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+<?php //if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
     var periodeChart = new Chart($('#periodeChart'), {
         type: 'bar',
         data: {
@@ -528,7 +532,7 @@ var categorySick_chart = new Chart(categorySick_ctx, {
             }
         }
     });
-<?php endif; ?>
+<?php //endif; ?>
 
 <?php 
 /* -------------------------------------------------------------------------- */
@@ -538,10 +542,10 @@ var categorySick_chart = new Chart(categorySick_ctx, {
 function refreshChart() { // refresh chart
     categorySick_chart.update();
     statusHealth_chart.update();
-    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+    <?php //if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
         periodeChart.update();
         periodeChart_more.update();
-    <?php endif; ?>
+    <?php //endif; ?>
 
 }
 

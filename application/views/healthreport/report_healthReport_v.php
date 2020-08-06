@@ -1,6 +1,4 @@
-<!-- TODO buat halaman periode view tabel dan diagram batang -->
 <!-- TODO tampilkan persen di diagram pie -->
-<!-- TODO Export to excel all -->
 <!-- TODO sick categories tampilkan nama si sakitnya, tapi bisa difilter others -->
 <div class="row">
     <div class="col-lg-9">
@@ -51,7 +49,7 @@
                         </div>
                         <div class="card-body">
                             <!-- hidden form to download data -->
-                            <form id="downloadForm" action="<?= base_url('healthReport/ajax_export2Excel'); ?>" method="post">
+                            <form id="downloadForm" action="<?= base_url('healthReport/export2Excel'); ?>" method="post">
                                 <input type="hidden" value="" name="daterangeSelected">
                                 <input type="hidden" value="" name="divisiSelected">
                                 <input type="hidden" value="" name="departemenSelected">
@@ -98,7 +96,7 @@
                 </div>
             </div>
         </div>
-        <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+        <?php //if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
             <!-- Diagram Batang -->
             <div class="container-fluid">
                 <div class="row">
@@ -107,7 +105,7 @@
                             <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
 
                             <div class="card-header">
-                                <p class="card-title">All Periods</p>
+                                <p class="card-title">Periods Data</p>
                                 <!-- card tools -->
                                 <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#periodeModel"><i class="fas fa-expand"></i></button>
@@ -120,7 +118,7 @@
                     </div>
                 </div>
             </div>
-        <?php endif; ?>
+        <?php //endif; ?>
     </div>
     <div class="col-lg-3">
         <div class="card card-primary">
@@ -141,7 +139,7 @@
                         </select>
                     </div>
                 <?php else: ?>
-                    <p class="card-title">Diagram</p>    
+                    <p class="card-title">Your Health Status (daterange)</p>    
                 <?php endif; ?>
             </div>
             <div class="card-body">

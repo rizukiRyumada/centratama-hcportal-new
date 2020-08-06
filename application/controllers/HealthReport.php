@@ -382,10 +382,8 @@ class HealthReport extends MainController {
                 $data_health_daily[$k]['data_kosong'] = $populasi_hs - ($data_health_daily[$k]['data_sakit'] + $data_health_daily[$k]['data_sehat']);
             }
         } else {
-            // ambil data nik dianya
-            $data_nik[0] = array(
-                'nik' => $this->session->userdata('nik')
-            );
+            // data nik
+            $data_nik = $this->getDataNik();
 
             // siapkan where
             $where_hs = ' AND nik = "'.$this->session->userdata('nik').'" AND date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
@@ -404,6 +402,44 @@ class HealthReport extends MainController {
                 $data_nik,
                 $daterange_days
             );
+
+            // AMBIL DATA buat chart batang per hari
+            $data_health_daily = $daterange_days;
+            // ambil data health untuk per hari
+            foreach($data_health_daily as $k => $v){
+                // declare array
+                $data_health_daily[$k] = array();
+                $data_health_daily[$k]['date'] = $v;
+
+                // cari di setiap nik yang didapat
+                $data_health_daily[$k]['data_sakit'] = $data_health_daily[$k]['data_sehat'] = 0;
+                foreach($data_nik as $value){
+                    $data_sakit = $this->_general_m->getJoin2tables(
+                        'healthReport_reports.date, healthReport_reports.nik',
+                        'healthReport_reports',
+                        'position',
+                        'healthReport_reports.id_posisi = position.id',
+                        'status = 0 AND date = "'.$v.'" AND nik = "'.$value['nik'].'"'
+                    );
+                    if(!empty($data_sakit)){
+                        $data_health_daily[$k]['data_sakit']++;
+                    }
+
+                    $data_sehat = $this->_general_m->getJoin2tables(
+                        'healthReport_reports.date, healthReport_reports.nik',
+                        'healthReport_reports',
+                        'position',
+                        'healthReport_reports.id_posisi = position.id',
+                        'status = 1 AND date = "'.$v.'" AND nik = "'.$value['nik'].'"'
+                    );
+                    if(!empty($data_sehat)){
+                        $data_health_daily[$k]['data_sehat']++;
+                    }
+                }
+                
+                // $data_health_daily[$k]['data_sehat'] = $this->_general_m->getRow('healthReport_reports', array('status' => 1, 'date' => $v));
+                $data_health_daily[$k]['data_kosong'] = count($data_nik) - ($data_health_daily[$k]['data_sakit'] + $data_health_daily[$k]['data_sehat']);
+            }
         }
 
         // masukkan ke dalam variabel dan kosongkan bila bukan admin
@@ -417,50 +453,6 @@ class HealthReport extends MainController {
         $data_chart = $this->getChartData($where_hs, $data_health_chart, $populasi_hs);
 
         // $where .= 'date >= "'.$daterange[0].'" AND date <= "'.$daterange[1].'"';
-
-        // $data_health = $this->getDataHealth($where);
-
-        // siapkan array penampung
-        // $data_health = array();
-        // foreach($data_nik as $k => $v){
-        //     $where = 'nik = "'.$v['nik'].'"';
-
-        //     // $data_health[$k]['data_health'] = $this->getDataHealth($where);
-        //     // $data_health[$k]['nik'] = $v;
-
-        //     // ambil data health buat masing-masing karyawan
-        //     $data_health[$k]['data_health'] = $this->_general_m->getAll(
-        //         'date, nik, time, status, sickness, notes',
-        //         'healthReport_reports',
-        //         $where
-        //     );
-        // }
-        
-        // // siapkan variabel data nik
-        // $data_health = array(); $x = 0;
-        // // tiap nik
-        // foreach($data_nik as $k => $v){
-        //     // tiap hari
-        //     foreach($daterange_days as $key => $value){
-        //         $where = $where.'nik = "'.$v['nik'].'" AND date = "'.$value.'"'; // gabungkan dengan where sebelumnya
-        //         // ambil hasilnya
-        //         $hasil = $this->_general_m->getJoin2tablesOrderDescend(
-        //             'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
-        //             'healthReport_reports',
-        //             'position',
-        //             'healthReport_reports.id_posisi = position.id',
-        //             $where,
-        //             'date'
-        //         );
-        //         // jika ada datanya simpan dalam variabel
-        //         if(!empty($hasil)){
-        //             $data_health[$x] = $hasil;
-        //             $x++;
-        //         }
-        //     }
-        // }
-
-        // $data_health = $this->getDataHealth($where, $data_nik, $daterange_days);
 
         echo(json_encode(array(
             'data' => $data_health,
@@ -909,6 +901,48 @@ class HealthReport extends MainController {
         exit;
     }
 
+    function getDataNik(){
+        // cek apa dia hirarki N dan N-1
+        $is_divhead = $this->_general_m->getJoin2tables(
+            'employe.position_id, position.div_id',
+            'employe',
+            'position',
+            'employe.position_id = position.id',
+            'position.hirarki_org = "N" AND employe.nik = "'.$this->session->userdata('nik').'"'
+        );
+        $is_depthead = $this->_general_m->getJoin2tables(
+            'position.dept_id',
+            'employe',
+            'position',
+            'employe.position_id = position.id',
+            'position.hirarki_org = "N-1" AND employe.nik = "'.$this->session->userdata('nik').'"'
+        );
+        if(!empty($is_divhead)){
+            // ambil data dengan divisi id segitu
+            $data_nik = $this->_general_m->getJoin2tables(
+                'employe.nik',
+                'employe',
+                'position',
+                'employe.position_id = position.id',
+                'position.div_id = "'.$is_divhead[0]['div_id'].'"'
+            );
+        } elseif(!empty($is_depthead)){
+            $data_nik = $this->_general_m->getJoin2tables(
+                'employe.nik',
+                'employe',
+                'position',
+                'employe.position_id = position.id',
+                'position.dept_id = "'.$is_depthead[0]['dept_id'].'"'
+            );
+        } else { // get data nik dia sendiri
+            $data_nik[0] = array(
+                'nik' => $this->session->userdata('nik')
+            );
+        }
+
+        return $data_nik;
+    }
+
     // buat dapetin populasi health unwell status
     function getPopulasiHS($daterange_days = "", $divisi = "", $departemen = ""){
         // jika dia admin
@@ -967,13 +1001,7 @@ class HealthReport extends MainController {
         return $detail_posisi;
     }
 
-    public function test(){
-        // echo(date("j M o" ,time()));
-        // echo(date('j M o', 1594892256))
-                        //    9999999999
-    }
-
-    public function ajax_export2Excel() {
+    function export2Excel() {
         // siapkan variable where
         $where = '';
         
@@ -1005,10 +1033,8 @@ class HealthReport extends MainController {
             // ambil data semua nik jika admin
             $data_nik = $this->_general_m->getAll('nik', 'employe', array());
         } else {
-            // ambil data nik dianya
-            $data_nik[0] = array(
-                'nik' => $this->session->userdata('nik')
-            );
+            // get data nik
+            $data_nik = $this->getDataNik();
         }
 
         // ambil data health
