@@ -164,7 +164,7 @@ var ajax_start_time;
                 });
 
                 // diagram btang
-                <?php //if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1 || $is_divhead == true || $is_depthead == true): ?>
 
                     // reset isi array
                     dailyhealth_labelData.length = 0;
@@ -211,7 +211,7 @@ var ajax_start_time;
                             $('#showOn').append('<option value="' + value + '">' + value + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                         });
                     <?php endif; ?>
-                <?php //endif; ?>
+                <?php endif; ?>
 
                 // ajax data counter
                 var ajax_request_time = new Date().getTime() - ajax_start_time;
@@ -450,7 +450,7 @@ var categorySick_chart = new Chart(categorySick_ctx, {
 });
 
 // bar diagram buat admin
-<?php //if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+<?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1 || $is_divhead == true || $is_depthead == true): ?>
     var periodeChart = new Chart($('#periodeChart'), {
         type: 'bar',
         data: {
@@ -532,7 +532,7 @@ var categorySick_chart = new Chart(categorySick_ctx, {
             }
         }
     });
-<?php //endif; ?>
+<?php endif; ?>
 
 <?php 
 /* -------------------------------------------------------------------------- */
@@ -542,10 +542,10 @@ var categorySick_chart = new Chart(categorySick_ctx, {
 function refreshChart() { // refresh chart
     categorySick_chart.update();
     statusHealth_chart.update();
-    <?php //if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1 || $is_divhead == true || $is_depthead == true): ?>
         periodeChart.update();
         periodeChart_more.update();
-    <?php //endif; ?>
+    <?php endif; ?>
 
 }
 

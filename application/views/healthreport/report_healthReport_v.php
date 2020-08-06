@@ -96,7 +96,7 @@
                 </div>
             </div>
         </div>
-        <?php //if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+        <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1 || $is_divhead == true || $is_depthead == true): ?>
             <!-- Diagram Batang -->
             <div class="container-fluid">
                 <div class="row">
@@ -118,7 +118,7 @@
                     </div>
                 </div>
             </div>
-        <?php //endif; ?>
+        <?php endif; ?>
     </div>
     <div class="col-lg-3">
         <div class="card card-primary">

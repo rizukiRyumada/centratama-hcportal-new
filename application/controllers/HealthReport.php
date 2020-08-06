@@ -115,6 +115,32 @@ class HealthReport extends MainController {
         $data['divisi'] = $this->Jobpro_model->getAllAndOrder('division', 'divisi');
         $data['sick_categories'] = $this->_general_m->getAll('*', 'healthReport_category', array()); // get sick categories
 
+        // cek apa dia hirarki N dan N-1
+        $is_divhead = $this->_general_m->getJoin2tables(
+            'employe.position_id, position.div_id',
+            'employe',
+            'position',
+            'employe.position_id = position.id',
+            'position.hirarki_org = "N" AND employe.nik = "'.$this->session->userdata('nik').'"'
+        );
+        $is_depthead = $this->_general_m->getJoin2tables(
+            'position.dept_id',
+            'employe',
+            'position',
+            'employe.position_id = position.id',
+            'position.hirarki_org = "N-1" AND employe.nik = "'.$this->session->userdata('nik').'"'
+        );
+        if(!empty($is_divhead)){
+            $data['is_divhead'] = true;
+        } else {
+            $data['is_divhead'] = false;
+        }
+        if(!empty($is_depthead)){
+            $data['is_depthead'] = true;
+        } else {
+            $data['is_depthead'] = false;
+        }
+
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
