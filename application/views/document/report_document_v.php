@@ -43,11 +43,6 @@
     </div>
 </div>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#attachFile">
-  Launch demo modal
-</button>
-
 <!-- Modal -->
 <div class="modal fade" id="attachFile" tabindex="-1" role="dialog" aria-labelledby="attachFileLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
