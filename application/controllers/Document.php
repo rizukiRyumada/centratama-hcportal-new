@@ -96,7 +96,7 @@ class Document extends AdminController {
 		// additional styles and custom script
 		$data['additional_styles'] = array('plugins/datatables/styles_datatables');
 		// $data['custom_styles'] = array('survey_styles');
-		$data['custom_script'] = array('document/script_document', 'plugins/datatables/script_datatables');
+		$data['custom_script'] = array('plugins/pdfobject/script_pdfobject.php', 'plugins/datatables/script_datatables', 'document/script_document');
 
 		$this->load->view('main_v', $data);
 	}
@@ -115,7 +115,21 @@ class Document extends AdminController {
             $row[] = date("d F Y", strtotime($noSur->tanggal));
             $row[] = $noSur->note;
 			$row[] = $noSur->jns_surat;
-			$row[] = $noSur->file;
+			if(empty($noSur->file)){
+				$row[] = array(
+					'no_surat'	=> $noSur->no_surat,
+					'file_name'	=> "",
+					'file_type'	=> ""
+				);
+			} else {
+				$filename = explode('.', $noSur->file);
+
+				$row[] = array(
+					'no_surat'	=> $noSur->no_surat,
+					'file_name'	=> $filename[0],
+					'file_type'	=> $filename[1]
+				);
+			}
 
             $data[]= $row;
         } 
@@ -207,6 +221,56 @@ class Document extends AdminController {
 				echo "</tr>";
 			}
 		}
+	}
+
+/* -------------------------------------------------------------------------- */
+/*                                   OTHERS                                   */
+/* -------------------------------------------------------------------------- */
+
+	public function attachDocument()
+	{
+		$filetypes = array('pdf', 'doc', 'docx', 'jpg', 'jpeg');
+
+		$config['upload_path']          = './assets/document/surat/';
+		$config['allowed_types']        = implode('|', $filetypes);
+		$config['max_size']             = 1024;
+		$config['file_name']			= str_replace('/', '_', $this->input->post('no_surat'));
+		// $config['file_name']			= date('D, d M Y H:i:s');
+		$config['overwrite']			= TRUE;
+
+		$this->load->library('upload', $config);
+
+		// hapus semua file yg ada dulu di berbagai 
+		foreach($filetypes as $v){
+			unlink('./assets/document/surat/'.$config['file_name'].'.'.$v);
+		}
+
+		if ( ! $this->upload->do_upload('document_attach')) {
+			// set pesan error
+			$this->session->set_userdata('msg_swal', array(
+				'icon' => "error",
+				'title' => "Upload Error",
+				'msg' => $this->upload->display_errors()
+			));
+		} else {
+			// ambil status upload
+			$upload_status = $this->upload->data();
+			// $this->load->view('upload_success', $data);
+			
+			// set pesan sukses
+			$this->session->set_userdata('msg_swal', array(
+				'icon' => "success",
+				'title' => "Upload Success",
+				'msg' => '<table class="table text-left"><tr><td>File name</td><td>:</td><td>'.$upload_status['file_name'].'</td></tr><tr><td>File type</td><td>:</td><td>'.$upload_status['file_type'].'</td></tr><tr><td>File size</td><td>:</td><td>'.$upload_status['file_size'].'KB</td></tr></table>'
+			));
+
+			$this->_general_m->update('surat_keluar', 'no_surat', $this->input->post('no_surat'), array(
+				'file' => $upload_status['file_name']
+			));
+		}
+
+		// arahkan balik ke report document
+		redirect('document/report');
 	}
 }
 

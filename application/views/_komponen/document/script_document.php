@@ -48,15 +48,90 @@
                         //     // return status;
                         // }
                         // return data;
-                        return '<button id="openFile" class="btn btn-primary w-100" data-file="'+data+'" ><i class="fa fa-paperclip" ></i></button>';
+
+                        if(data.file_name != ""){
+                            return '<button class="btn btn-primary w-100 triggerOpenFile" data-no_surat="'+data.no_surat+'" data-file_name="'+data.file_name+'" data-file_type="'+data.file_type+'" ><i class="fas fa-file" ></i></button>';
+                        } else {
+                            return '<button class="btn btn-secondary w-100 triggerAttachFile" title="Attach file to this Document." data-no_surat="'+data.no_surat+'" ><i class="fa fa-file-upload" ></i></button>';
+                        }
+
+                        return data;
                     }
-                    
                 }
             ]
         });
 
+        // jenis surat filter
         $('#jenis-surat').change(function(){
             nTable.ajax.reload();
+        });
+
+        // submit form attachment
+        $('#submitAttachmentForm').on('click', function() {
+            Swal.fire({
+                icon: 'info',
+                title: 'Uploading files',
+                html: '<p>The files is being uploaded please wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            });
+
+            $('#AttachmentForm').submit();
+        });
+
+        // upload document file trigger
+        $('#tableNomor').DataTable().on('click', '.triggerAttachFile', function() {
+            let no_surat = $(this).data('no_surat');
+
+            // hapus semua elemen di dalem file viewer
+            let box = $('#fileViewer');
+            box.empty();
+
+            // set nomor surat dan tampilkan modal
+            $('#noSurat').val(no_surat);
+            $('#attachFile').modal('show');
+        });
+        // document viewer trigger
+        $('#tableNomor').DataTable().on('click', '.triggerOpenFile', function() {
+            let no_surat = $(this).data('no_surat');
+            // buat nama file dan ambil nama file
+            let file = $(this).data('file_name')+'.'+$(this).data('file_type');
+            let file_name = $(this).data('file_name');
+            let file_type = $(this).data('file_type');
+
+            // hapus semua elemen di dalem file viewer
+            let box = $('#fileViewer');
+            // while (box.firstChild) {box.removeChild(box.firstChild);}
+            box.empty();
+
+            if(file_type == 'pdf'){
+                // box.append('<object data="<?= base_url('assets/document/surat/'); ?>'+file+'" type="application/pdf" width="100%" style="height: 85vh"><p>This browser does not support inline PDFs. Please download the PDF to view it: <a href="<?= base_url('assets/document/surat/'); ?>'+file+'">Download PDF</a></p></object>');
+
+                let pdfURL = '<?= base_url('assets/document/surat/'); ?>'+file;
+
+                let options = {
+                    pdfOpenParams: {
+                        navpanes: 0,
+                        toolbar: 0,
+                        statusbar: 0,
+                        view: "FitV"
+                    }
+                };
+
+                box.append('<div id="pdfViewer" style="width: 100%; height: 85vh;"></div>');
+                PDFObject.embed(pdfURL, '#pdfViewer', options);
+            } else {
+                box.append('<img src="<?= base_url('assets/document/surat/'); ?>'+file+'" alt="'+file_name+' document file" style="width: 100%; height: auto;" >');
+            }
+
+            // set nomor surat dan tampilkan modal
+            $('#noSurat').val(no_surat);
+            $('#attachFile').modal('show');
+
+            console.log(file);
+            console.log(file_type);
         });
     });
 
@@ -159,4 +234,18 @@
             $(element).removeClass('is-invalid');
         }
     });
+
+    // javascript validator for document attach upload
+    // $('#formid').validate({
+    //     rules: { 
+    //         document_attach: { 
+    //             required: true, 
+    //             extension: "png|jpe?g|gif", 
+    //             filesize: 1048576  
+    //         }
+    //     },
+    //     messages: { 
+    //         document_attach: "File must be JPG, GIF or PNG, less than 1MB" }
+    // });
 </script>
+

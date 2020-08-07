@@ -5,6 +5,8 @@
 <script src="<?= base_url('/assets/vendor/node_modules/moment/min/moment.min.js'); ?>"></script>
 <!-- bootstrap -->
 <script src="<?= base_url('/assets/vendor/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'); ?>"></script>
+<!-- bs custom file input -->
+<script src="<?= base_url('/assets/vendor/node_modules/bs-custom-file-input/dist/bs-custom-file-input.min.js'); ?>"></script>
 <!-- adminlte -->
 <script src="<?= base_url('/assets/vendor/node_modules/admin-lte/dist/js/adminlte.min.js') ?>"></script>
 <!-- adminlte for demo -->
@@ -55,7 +57,7 @@
             Swal.fire({
                 title: "<?= $this->session->userdata('msg_swal')['title']; ?>",
                 icon: "<?= $this->session->userdata('msg_swal')['icon']; ?>",
-                html: "<?= $this->session->userdata('msg_swal')['msg']; ?>",
+                html: '<?= $this->session->userdata('msg_swal')['msg']; ?>',
                 showCloseButton: false,
                 showCancelButton: false,
                 focusConfirm: true,
@@ -75,7 +77,8 @@
         $(".sidebar").overlayScrollbars({
             className : "os-theme-dark"
         }); // set overlay sidebar scrollbar color to dark
+        // bs custom file input initiation
+        bsCustomFileInput.init();
     });
 
-    
 </script><!-- /general script -->
