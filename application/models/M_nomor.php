@@ -22,7 +22,9 @@ class M_nomor extends CI_Model {
 		
 		$this->db->join('user_access_surat', 'jenis_surat.id = user_access_surat.surat_id');
 		$this->db->where('user_access_surat.role_surat_id', $role_id);
-        $i = 0;
+		$i = 0;
+		
+		$this->db->order_by('surat_keluar.tanggal', 'DESC');
 
         foreach ($this->column_search as $item) // loop column 
         {
