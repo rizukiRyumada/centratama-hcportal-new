@@ -918,6 +918,7 @@ class HealthReport extends MainController {
     function getDataNik(){
         // cek apa dia hirarki N dan N-1
         $is_divhead = $this->is_divhead();
+        $is_depthead = $this->is_depthead();
         if(!empty($is_divhead)){
             // ambil data dengan divisi id segitu
             $data_nik = $this->_general_m->getJoin2tables(
@@ -927,7 +928,6 @@ class HealthReport extends MainController {
                 'employe.position_id = position.id',
                 'position.div_id = "'.$is_divhead[0]['div_id'].'"'
             );
-        $is_depthead = $this->is_depthead();
         } elseif(!empty($is_depthead)){
             $data_nik = $this->_general_m->getJoin2tables(
                 'employe.nik',
