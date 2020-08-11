@@ -4,14 +4,14 @@
 	$this->load->model('Jobpro_model');
 
 	$tujuanjabatan = $this->Jobpro_model->getProfileJabatan($posisi['id']);                                              //data tujuan jabatan
-	$ruangl        = $this->Jobpro_model->getDetail('*', 'ruang_lingkup', array('id_posisi' => $posisi['id']));          //data ruang lingkup
-	$tu_mu         = $this->Jobpro_model->getDetail('*', 'tantangan', array('id_posisi' => $posisi['id']));              // data tanggung jawab dan masalah utama
-	$kualifikasi   = $this->Jobpro_model->getDetail('*', 'kualifikasi', array('id_posisi' => $posisi['id']));
-	$jenk          = $this->Jobpro_model->getDetail('*', 'jenjang_kar', array('id_posisi' => $posisi['id']));
-	$hub           = $this->Jobpro_model->getDetail('*', 'hub_kerja', array('id_posisi' => $posisi['id']));
-	$tgjwb         = $this->Jobpro_model->getDetails('*', 'tanggung_jawab', array('id_posisi' => $posisi['id']));
-	$wen           = $this->Jobpro_model->getDetails('*', 'wewenang', array('id_posisi' => $posisi['id']));
-	$atasan        = $this->Jobpro_model->getDetail('position_name', 'position', array('id' => $posisi['id_atasan1']));
+	$ruangl        = $this->Jobpro_model->getDetail('*', 'jobprofile_ruanglingkup', array('id_posisi' => $posisi['id']));          //data ruang lingkup
+	$tu_mu         = $this->Jobpro_model->getDetail('*', 'jobprofile_tantangan', array('id_posisi' => $posisi['id']));              // data tanggung jawab dan masalah utama
+	$kualifikasi   = $this->Jobpro_model->getDetail('*', 'jobprofile_kualifikasi', array('id_posisi' => $posisi['id']));
+	$jenk          = $this->Jobpro_model->getDetail('*', 'jobprofile_jenjangkar', array('id_posisi' => $posisi['id']));
+	$hub           = $this->Jobpro_model->getDetail('*', 'jobprofile_hubkerja', array('id_posisi' => $posisi['id']));
+	$tgjwb         = $this->Jobpro_model->getDetails('*', 'jobprofile_tanggungjawab', array('id_posisi' => $posisi['id']));
+	$wen           = $this->Jobpro_model->getDetails('*', 'jobprofile_wewenang', array('id_posisi' => $posisi['id']));
+	$atasan        = $this->Jobpro_model->getDetail('position_name', 'master_position', array('id' => $posisi['id_atasan1']));
 ?>
 
                 <div class="card-body">

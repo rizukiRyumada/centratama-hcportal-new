@@ -15,8 +15,8 @@ class HealthReport extends MainController {
         // cek buat userapp admin di menusub health report
         if($this->session->userdata('role_id') == 2){
             // get menu id sekaligus ini daftar aplikasi
-            $id_menu = $this->_general_m->getOnce('id_menu', 'survey_user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
-            $value = $this->_general_m->getRow('survey_user_userapp_admins', array(
+            $id_menu = $this->_general_m->getOnce('id_menu', 'user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
+            $value = $this->_general_m->getRow('user_userapp_admins', array(
                 'id_menu' => $id_menu,
                 'nik' => $this->session->userdata('nik')
             ));
@@ -97,7 +97,7 @@ class HealthReport extends MainController {
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title'];
+        $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title'];
         $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'healthreport/healthStatus_healthReport_v';
 		// additional styles and custom script
@@ -111,8 +111,8 @@ class HealthReport extends MainController {
     public function report(){
         // ambil data divisi dan departemen
         $this->load->model('Jobpro_model');
-        $data['dept'] = $this->Jobpro_model->getAllAndOrder('nama_departemen', 'departemen');
-        $data['divisi'] = $this->Jobpro_model->getAllAndOrder('division', 'divisi');
+        $data['dept'] = $this->Jobpro_model->getAllAndOrder('nama_departemen', 'master_department');
+        $data['divisi'] = $this->Jobpro_model->getAllAndOrder('division', 'master_division');
         $data['sick_categories'] = $this->_general_m->getAll('*', 'healthReport_category', array()); // get sick categories
 
         // cek apa dia hirarki N dan N-1
@@ -131,7 +131,7 @@ class HealthReport extends MainController {
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title'];
+        $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title'];
         $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'healthreport/report_healthReport_v';
 		// additional styles and custom script
@@ -156,7 +156,7 @@ class HealthReport extends MainController {
             $data = array(
                 'date'     => date('o-m-d', time()),
                 'nik'      => $this->session->userdata('nik'),
-                'id_posisi'=> $this->_general_m->getOnce('position_id', 'employe', array('nik' => $this->session->userdata('nik')))['position_id'],
+                'id_posisi'=> $this->_general_m->getOnce('position_id', 'master_employee', array('nik' => $this->session->userdata('nik')))['position_id'],
                 'time'     => date('H:i:s', time()),
                 'status'   => $this->input->post('checkIn'),
                 'sickness' => null,
@@ -216,7 +216,7 @@ class HealthReport extends MainController {
             $data = array(
                 'date'     => date('o-m-d', time()),
                 'nik'      => $this->session->userdata('nik'),
-                'id_posisi'=> $this->_general_m->getOnce('position_id', 'employe', array('nik' => $this->session->userdata('nik')))['position_id'],
+                'id_posisi'=> $this->_general_m->getOnce('position_id', 'master_employee', array('nik' => $this->session->userdata('nik')))['position_id'],
                 'time'     => date('H:i:s', time()),
                 'status'   => $this->input->post('checkIn'),
                 'sickness' => json_encode($sickness_status),
@@ -238,12 +238,12 @@ class HealthReport extends MainController {
     //     $departemen = explode('-', $this->input->post('departemen'));
 
     //     // cari position id dengan id divisi dan departemen segitu di tabel posisi
-    //     $id_posisi = $this->_general_m->getAll('id', 'position', array('div_id' => $divisi[1], 'dept_id' => $departemen[1]));
+    //     $id_posisi = $this->_general_m->getAll('id', 'master_position', array('div_id' => $divisi[1], 'dept_id' => $departemen[1]));
 
-    //     // cari semua employee di setiap id posisi
+    //     // cari semua master_employeee di setiap id posisi
     //     $employee = [];
     //     foreach($id_posisi as $k => $v){
-    //         $employee[$k] = $this->_general_m->getAll('nik, emp_name', 'employe', array($v['id']));
+    //         $employee[$k] = $this->_general_m->getAll('nik, emp_name', 'master_employee', array($v['id']));
     //     }
 
     //     print_r($employee);
@@ -278,7 +278,7 @@ class HealthReport extends MainController {
         $where_hs = ' AND '.$where.'date = "'.$this->input->post('date').'"';
 
         // ambil semua nik karyawan
-        $data_nik = $this->_general_m->getAll('nik', 'employe', array());
+        $data_nik = $this->_general_m->getAll('nik', 'master_employee', array());
 
         // ambil data health buat ngitung kategori sakit
         $data_health = $this->getDataHealth(
@@ -346,7 +346,7 @@ class HealthReport extends MainController {
         // langkah khusus bukan admin dan admin
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
             // ambil data semua nik jika admin
-            $data_nik = $this->_general_m->getAll('nik', 'employe', array());
+            $data_nik = $this->_general_m->getAll('nik', 'master_employee', array());
             
             // ambil data chart buat diagram pie health sick
             $where_hs = ' AND '.$where.'date = "'.$daterange[1].'"';
@@ -379,15 +379,15 @@ class HealthReport extends MainController {
                 $data_health_daily[$k]['data_sakit'] = count($this->_general_m->getJoin2tables(
                     'healthReport_reports.date, healthReport_reports.nik',
                     'healthReport_reports',
-                    'position',
-                    'healthReport_reports.id_posisi = position.id',
+                    'master_position',
+                    'healthReport_reports.id_posisi = master_position.id',
                     $where.'status = 0 AND date = "'.$v.'"',
                 ));
                 $data_health_daily[$k]['data_sehat'] = count($this->_general_m->getJoin2tables(
                     'healthReport_reports.date, healthReport_reports.nik',
                     'healthReport_reports',
-                    'position',
-                    'healthReport_reports.id_posisi = position.id',
+                    'master_position',
+                    'healthReport_reports.id_posisi = master_position.id',
                     $where.'status = 1 AND date = "'.$v.'"',
                 ));
                 // $data_health_daily[$k]['data_sehat'] = $this->_general_m->getRow('healthReport_reports', array('status' => 1, 'date' => $v));
@@ -430,8 +430,8 @@ class HealthReport extends MainController {
                         $data_sakit = $this->_general_m->getJoin2tables(
                             'healthReport_reports.date, healthReport_reports.nik',
                             'healthReport_reports',
-                            'position',
-                            'healthReport_reports.id_posisi = position.id',
+                            'master_position',
+                            'healthReport_reports.id_posisi = master_position.id',
                             'status = 0 AND date = "'.$v.'" AND nik = "'.$value['nik'].'"'
                         );
                         if(!empty($data_sakit)){
@@ -441,8 +441,8 @@ class HealthReport extends MainController {
                         $data_sehat = $this->_general_m->getJoin2tables(
                             'healthReport_reports.date, healthReport_reports.nik',
                             'healthReport_reports',
-                            'position',
-                            'healthReport_reports.id_posisi = position.id',
+                            'master_position',
+                            'healthReport_reports.id_posisi = master_position.id',
                             'status = 1 AND date = "'.$v.'" AND nik = "'.$value['nik'].'"'
                         );
                         if(!empty($data_sehat)){
@@ -486,8 +486,8 @@ class HealthReport extends MainController {
         $hs_pie['sakit'] = count($this->_general_m->getJoin2tablesOrder(
             'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
             'healthReport_reports',
-            'position',
-            'healthReport_reports.id_posisi = position.id',
+            'master_position',
+            'healthReport_reports.id_posisi = master_position.id',
             'status = 0 '.$where_hs,
             'date'
         ));
@@ -495,8 +495,8 @@ class HealthReport extends MainController {
         $hs_pie['sehat'] = count($this->_general_m->getJoin2tablesOrder(
             'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
             'healthReport_reports',
-            'position',
-            'healthReport_reports.id_posisi = position.id',
+            'master_position',
+            'healthReport_reports.id_posisi = master_position.id',
             'status = 1 '.$where_hs,
             'date'
         ));
@@ -578,8 +578,8 @@ class HealthReport extends MainController {
         // $data_health = $this->_general_m->getJoin2tablesOrderDescend(
         //     'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
         //     'healthReport_reports',
-        //     'position',
-        //     'healthReport_reports.id_posisi = position.id',
+        //     'master_position',
+        //     'healthReport_reports.id_posisi = master_position.id',
         //     $where,
         //     'date'
         // );
@@ -596,8 +596,8 @@ class HealthReport extends MainController {
                 $hasil = $this->_general_m->getJoin2tablesOrderDescend(
                     'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
                     'healthReport_reports',
-                    'position',
-                    'healthReport_reports.id_posisi = position.id',
+                    'master_position',
+                    'healthReport_reports.id_posisi = master_position.id',
                     $where_data_health,
                     'date'
                 );
@@ -605,8 +605,8 @@ class HealthReport extends MainController {
                 // jika ada datanya simpan dalam variabel
                 if(!empty($hasil)){
                     foreach($hasil as $kunci => $nilai){
-                        // ambil detail employe
-                        $employe = $this->_general_m->getOnce('position_id, emp_name', 'employe', array('nik' => $nilai['nik']));
+                        // ambil detail master_employee
+                        $employe = $this->_general_m->getOnce('position_id, emp_name', 'master_employee', array('nik' => $nilai['nik']));
                         $hasil[$kunci]['detail_position'] = $this->getPositionDetails($employe['position_id']);
                         $hasil[$kunci]['emp_name'] = $employe['emp_name'];
 
@@ -656,15 +656,15 @@ class HealthReport extends MainController {
                 } else {
                     // // cek apa data karyawan dengan filter dipilih benar
                     // $cekdata = $this->_general_m->getJoin2tables(
-                    //     'employe.nik',
-                    //     'employe',
-                    //     'position',
-                    //     'employe.position_id = position.id',
+                    //     'master_employee.nik',
+                    //     'master_employee',
+                    //     'master_position',
+                    //     'master_employee.position_id = master_position.id',
                     //     $where.'nik = "'.$value['nik'].'"'
                     // );
                     // if(!empty($cekdata)){
-                    //     // ambil detail employe
-                    //     $employe = $this->_general_m->getOnce('position_id, emp_name', 'employe', array('nik' => $value['nik']));
+                    //     // ambil detail master_employee
+                    //     $employe = $this->_general_m->getOnce('position_id, emp_name', 'master_employee', array('nik' => $value['nik']));
                     //     $hasil['detail_position'] = $this->getPositionDetails($employe['position_id']);
                     //     $hasil['emp_name'] = $employe['emp_name'];
 
@@ -714,7 +714,7 @@ class HealthReport extends MainController {
         $counter_sehat = 0; $counter_sakit = 0; 
         foreach($data_health as $k => $v){
             // tambah informasi karyawan
-            $employe = $this->_general_m->getOnce('position_id, emp_name', 'employe', array('nik' => $v['nik']));
+            $employe = $this->_general_m->getOnce('position_id, emp_name', 'master_employee', array('nik' => $v['nik']));
             $data_health[$k]['detail_position'] = $this->getPositionDetails($employe['position_id']);
             $data_health[$k]['emp_name'] = $employe['emp_name'];
 
@@ -791,7 +791,7 @@ class HealthReport extends MainController {
         // $data_health = $this->_general_m->getJoin2tablesOrderDescend(
         //     'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
         //     'healthReport_reports',
-        //     'position',
+        //     'master_position',
         //     'healthReport_reports.id_posisi = position.id',
         //     $where,
         //     'date'
@@ -809,8 +809,8 @@ class HealthReport extends MainController {
                 $hasil = $this->_general_m->getJoin2tablesOrderDescend(
                     'healthReport_reports.date, healthReport_reports.nik, healthReport_reports.time, healthReport_reports.status, healthReport_reports.sickness, healthReport_reports.notes',
                     'healthReport_reports',
-                    'position',
-                    'healthReport_reports.id_posisi = position.id',
+                    'master_position',
+                    'healthReport_reports.id_posisi = master_position.id',
                     $where_data_health,
                     'date'
                 );
@@ -822,8 +822,8 @@ class HealthReport extends MainController {
                         // gabungkan date dan time
                         $hasil[$kunci]['Date'] = $nilai['date']." ".$nilai['time'];
                         $hasil[$kunci]['NIK'] = $value['nik'];
-                        // ambil detail employe
-                        $employe = $this->_general_m->getOnce('position_id, emp_name', 'employe', array('nik' => $nilai['nik']));
+                        // ambil detail master_employee
+                        $employe = $this->_general_m->getOnce('position_id, emp_name', 'master_employee', array('nik' => $nilai['nik']));
                         $detail_posisi = $this->getPositionDetails($employe['position_id']);
                         // $hasil[$kunci]['detail_position'] = $this->getPositionDetails($employe['position_id']);
                         $hasil[$kunci]['Name'] = $employe['emp_name'];
@@ -876,10 +876,10 @@ class HealthReport extends MainController {
                     }
                 } else {
                     $cekdata = $this->_general_m->getJoin2tables(
-                        'employe.nik',
-                        'employe',
-                        'position',
-                        'employe.position_id = position.id',
+                        'master_employee.nik',
+                        'master_employee',
+                        'master_position',
+                        'master_employee.position_id = master_position.id',
                         $where.'nik = "'.$value['nik'].'"'
                     );
                     if(!empty($cekdata)){
@@ -887,7 +887,7 @@ class HealthReport extends MainController {
                         $hasil['NIK'] = $value['nik'];
 
                         // ambil detail employe
-                        $employe = $this->_general_m->getOnce('position_id, emp_name', 'employe', array('nik' => $value['nik']));
+                        $employe = $this->_general_m->getOnce('position_id, emp_name', 'master_employee', array('nik' => $value['nik']));
                         $detail_posisi = $this->getPositionDetails($employe['position_id']);
                         // $hasil[$kunci]['detail_position'] = $this->getPositionDetails($employe['position_id']);
                         $hasil['Name'] = $employe['emp_name'];
@@ -922,19 +922,19 @@ class HealthReport extends MainController {
         if(!empty($is_divhead)){
             // ambil data dengan divisi id segitu
             $data_nik = $this->_general_m->getJoin2tables(
-                'employe.nik',
-                'employe',
-                'position',
-                'employe.position_id = position.id',
-                'position.div_id = "'.$is_divhead[0]['div_id'].'"'
+                'master_employee.nik',
+                'master_employee',
+                'master_position',
+                'master_employee.position_id = master_position.id',
+                'master_position.div_id = "'.$is_divhead[0]['div_id'].'"'
             );
         } elseif(!empty($is_depthead)){
             $data_nik = $this->_general_m->getJoin2tables(
-                'employe.nik',
-                'employe',
-                'position',
-                'employe.position_id = position.id',
-                'position.dept_id = "'.$is_depthead[0]['dept_id'].'"'
+                'master_employee.nik',
+                'master_employee',
+                'master_position',
+                'master_employee.position_id = master_position.id',
+                'master_position.dept_id = "'.$is_depthead[0]['dept_id'].'"'
             );
         } else { // get data nik dia sendiri
             $data_nik[0] = array(
@@ -951,21 +951,21 @@ class HealthReport extends MainController {
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
             // filtering divisi dan departemen checker
             if(empty($divisi) && empty($departemen)){
-                $populasi_hs = $this->_general_m->getRow('employe', array());
+                $populasi_hs = $this->_general_m->getRow('master_employee', array());
             } elseif(!empty($divisi) && empty($departemen)){
                 $populasi_hs = count($this->_general_m->getJoin2tables(
-                    'employe.nik',
-                    'position',
-                    'employe',
-                    'employe.position_id = position.id',
+                    'master_employee.nik',
+                    'master_position',
+                    'master_employee',
+                    'master_employee.position_id = master_position.id',
                     array('div_id' => $divisi)
                 ));
             } elseif(!empty($divisi) && !empty($departemen)){
                 $populasi_hs = count($this->_general_m->getJoin2tables(
-                    'employe.nik',
-                    'position',
-                    'employe',
-                    'employe.position_id = position.id',
+                    'master_employee.nik',
+                    'master_position',
+                    'master_employee',
+                    'master_employee.position_id = master_position.id',
                     array(
                         'div_id' => $divisi,
                         'dept_id' => $departemen
@@ -983,21 +983,21 @@ class HealthReport extends MainController {
         // load model Job Profile
         $this->load->model('Jobpro_model');
 
-        $temp_posisi = $this->Jobpro_model->getDetail("div_id, dept_id, id", "position", array('id' => $id_posisi));
+        $temp_posisi = $this->Jobpro_model->getDetail("div_id, dept_id, id", "master_position", array('id' => $id_posisi));
         // print_r($temp_posisi);
-        foreach ($this->Jobpro_model->getDetail("position_name", "position", array('id' => $temp_posisi['id'])) as $v){// tambahkan nama posisi
+        foreach ($this->Jobpro_model->getDetail("position_name", "master_position", array('id' => $temp_posisi['id'])) as $v){// tambahkan nama posisi
             $detail_posisi['posisi'] = $v;
         }
-        foreach($this->Jobpro_model->getDetail("nama_departemen", "departemen", array('id' => $temp_posisi['dept_id'])) as $v){// tambahkan nama departemen
+        foreach($this->Jobpro_model->getDetail("nama_departemen", "master_department", array('id' => $temp_posisi['dept_id'])) as $v){// tambahkan nama master_department
             $detail_posisi['departement'] = $v;
         }
-        foreach($this->Jobpro_model->getDetail("id", "departemen", array('id' => $temp_posisi['dept_id'])) as $v){// tambahkan id departemen
+        foreach($this->Jobpro_model->getDetail("id", "master_department", array('id' => $temp_posisi['dept_id'])) as $v){// tambahkan id master_department
             $detail_posisi['id_dept'] = $v;
         }
-        foreach($this->Jobpro_model->getDetail("division", "divisi", array('id' => $temp_posisi['div_id'])) as $v){// tambahkan nama divisi
+        foreach($this->Jobpro_model->getDetail("division", "master_division", array('id' => $temp_posisi['div_id'])) as $v){// tambahkan nama master_division
             $detail_posisi['divisi'] = $v;
         }
-        foreach($this->Jobpro_model->getDetail("id", "divisi", array('id' => $temp_posisi['div_id'])) as $v){// tambahkan id divisi
+        foreach($this->Jobpro_model->getDetail("id", "master_division", array('id' => $temp_posisi['div_id'])) as $v){// tambahkan id master_division
             $detail_posisi['id_div'] = $v;
         }
         return $detail_posisi;
@@ -1033,7 +1033,7 @@ class HealthReport extends MainController {
 
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
             // ambil data semua nik jika admin
-            $data_nik = $this->_general_m->getAll('nik', 'employe', array());
+            $data_nik = $this->_general_m->getAll('nik', 'master_employee', array());
         } else {
             // get data nik
             $data_nik = $this->getDataNik();
@@ -1054,21 +1054,21 @@ class HealthReport extends MainController {
     // function buat cek div head
     function is_divhead(){
         return $this->_general_m->getJoin2tables(
-            'employe.position_id, position.div_id',
-            'employe',
-            'position',
-            'employe.position_id = position.id',
-            'position.hirarki_org = "N" AND employe.nik = "'.$this->session->userdata('nik').'"'
+            'master_employee.position_id, master_position.div_id',
+            'master_employee',
+            'master_position',
+            'master_employee.position_id = master_position.id',
+            'master_position.hirarki_org = "N" AND master_employee.nik = "'.$this->session->userdata('nik').'"'
         );
     }
     // function buat cek dept head
     function is_depthead(){
         return $this->_general_m->getJoin2tables(
-            'position.dept_id',
-            'employe',
-            'position',
-            'employe.position_id = position.id',
-            'position.hirarki_org = "N-1" AND employe.nik = "'.$this->session->userdata('nik').'"'
+            'master_position.dept_id',
+            'master_employee',
+            'master_position',
+            'master_employee.position_id = master_position.id',
+            'master_position.hirarki_org = "N-1" AND master_employee.nik = "'.$this->session->userdata('nik').'"'
         );
     }
 

@@ -6,71 +6,71 @@ class Jobpro_model extends CI_Model {
 
     public function getMyprofile($nik)
     {
-        foreach($this->getDetail('position_id', 'employe', array('nik' => $nik)) as $v){
+        foreach($this->getDetail('position_id', 'master_employee', array('nik' => $nik)) as $v){
             $id_position = $v;
         }
             
-        $this->db->select('employe.*, divisi.division, departemen.nama_departemen, position.position_name, position.id_atasan1 as posnameatasan1,
-                            position.id_atasan2, profile_jabatan.tujuan_jabatan, profile_jabatan.id_posisi');
-        $this->db->from('position');
-		$this->db->join('divisi', 'divisi.id = position.div_id', 'left');
-		$this->db->join('employe', 'employe.position_id = position.id', 'left');
-		$this->db->join('departemen', 'departemen.id = position.dept_id', 'left');
-		$this->db->join('profile_jabatan', 'profile_jabatan.id_posisi = position.id', 'left');
+        $this->db->select('master_employee.*, master_division.division, master_department.nama_departemen, master_position.position_name, master_position.id_atasan1 as posnameatasan1,
+                            master_position.id_atasan2, jobprofile_profilejabatan.tujuan_jabatan, jobprofile_profilejabatan.id_posisi');
+        $this->db->from('master_position');
+		$this->db->join('master_division', 'master_division.id = master_position.div_id', 'left');
+		$this->db->join('master_employee', 'master_employee.position_id = master_position.id', 'left');
+		$this->db->join('master_department', 'master_department.id = master_position.dept_id', 'left');
+		$this->db->join('jobprofile_profilejabatan', 'jobprofile_profilejabatan.id_posisi = master_position.id', 'left');
         
-        $this->db->where('position.id', $id_position);
+        $this->db->where('master_position.id', $id_position);
         return $this->db->get()->row_array();
     }
 
     public function getMyDivisi($nik)
     {
         $this->db->select('*');
-        $this->db->from('divisi');
-        $this->db->join('position', 'position.div_id = divisi.id');
-        $this->db->join('employe', 'employe.position_id = position.id');
-        $this->db->where('employe.nik', $nik);
+        $this->db->from('master_division');
+        $this->db->join('master_position', 'master_position.div_id = master_division.id');
+        $this->db->join('master_employee', 'master_employee.position_id = master_position.id');
+        $this->db->where('master_employee.nik', $nik);
         return $this->db->get()->row_array();        
     }
     
     public function getMyDept($nik)
     {
         $this->db->select('*');
-        $this->db->from('departemen');
-        $this->db->join('position', 'position.dept_id = departemen.id');
-        $this->db->join('employe', 'employe.position_id = position.id');
-        $this->db->where('employe.nik', $nik);
+        $this->db->from('master_department');
+        $this->db->join('master_position', 'master_position.dept_id = master_department.id');
+        $this->db->join('master_employee', 'master_employee.position_id = master_position.id');
+        $this->db->where('master_employee.nik', $nik);
         return $this->db->get()->row_array();        
     }
 
     public function getPosisi($nik)
     {
         $this->db->select('*');
-        $this->db->from('position');
-        $this->db->join('employe', 'employe.position_id = position.id');
-        $this->db->where('employe.nik', $nik);
+        $this->db->from('master_position');
+        $this->db->join('master_employee', 'master_employee.position_id = master_position.id');
+        $this->db->where('master_employee.nik', $nik);
         return $this->db->get()->row_array();  
     }
 
     public function getProfileJabatan($id)
     {
-        return $this->db->get_where('profile_jabatan', ['id_posisi' => $id])->row_array();
+        return $this->db->get_where('jobprofile_profilejabatan', ['id_posisi' => $id])->row_array();
     }
 
     public function getAllPosition()
     {
         $this->db->order_by("position_name", "asc");
-        return $this->db->get('position')->result_array();
+        return $this->db->get('master_position')->result_array();
         
     }
 
     public function getTujabById($id)
     {
-        return $this->db->get_where('profile_jabatan', ['id_posisi' => $id])->row_array();
+        return $this->db->get_where('jobprofile_profilejabatan', ['id_posisi' => $id])->row_array();
     }
 
     public function getTjById($id)
     {
-        return $this->db->get_where('tanggung_jawab', ['id_tgjwb' => $id])->row_array();
+        return $this->db->get_where('jobprofile_tanggungjawab', ['id_tgjwb' => $id])->row_array();
     }
 
     public function updateJP()
@@ -81,7 +81,7 @@ class Jobpro_model extends CI_Model {
             'list_pengukuran' => $this->input->post('pengukuran')
         ];
         $this->db->where('id_tgjwb', $this->input->post('id'));
-        $this->db->update('tanggung_jawab', $data);
+        $this->db->update('jobprofile_tanggungjawab', $data);
     }
 
     public function updateTuJab()
@@ -90,28 +90,28 @@ class Jobpro_model extends CI_Model {
             'tujuan_jabatan' => $this->input->post('tujuan_jabatan')
         ];
         $this->db->where('id_posisi', $this->input->post('id'));
-        $this->db->update('profile_jabatan', $data);
+        $this->db->update('jobprofile_profilejabatan', $data);
     }
 
     public function upTuj($id, $tujuan)
     {
         $this->db->where('id_posisi', $id);
-        $this->db->update('profile_jabatan', ['tujuan_jabatan' => $tujuan]);
+        $this->db->update('jobprofile_profilejabatan', ['tujuan_jabatan' => $tujuan]);
     }
 
     public function updateWen($id, $value, $modul)
     {
         $this->db->where(array("id"=>$id));
-        $this->db->update("wewenang",array($modul=>$value));
+        $this->db->update("jobprofile_wewenang",array($modul=>$value));
     }
 
     public function getKualifikasiById($id)
     {
-        return $this->db->get_where('kualifikasi', ['id_posisi' => $id])->row_array();
+        return $this->db->get_where('jobprofile_kualifikasi', ['id_posisi' => $id])->row_array();
     }
 	public function getStaff($id)
 	{
-		return $this->db->get_where('jumlah_staff', ['id_posisi' => $id])->row_array();
+		return $this->db->get_where('jobprofile_jumlahstaff', ['id_posisi' => $id])->row_array();
     }
     
     
@@ -133,7 +133,7 @@ class Jobpro_model extends CI_Model {
 
     public function getAtasanAssistant($id_atasan1){
         $this->db->select('position_name');
-        $this->db->from('position');
+        $this->db->from('master_position');
         $this->db->where(array('id' => $id_atasan1));
         return $this->db->get()->row_array();
     }
@@ -153,26 +153,26 @@ class Jobpro_model extends CI_Model {
     public function getEmployeDetail($select, $table, $where){
         $this->db->select($select);
         $this->db->from($table);
-        $this->db->join('position', 'position.id = employe.position_id', 'left');
+        $this->db->join('master_position', 'master_position.id = master_employee.position_id', 'left');
         $this->db->where($where);
         return $this->db->get()->row_array();
     }
 
     public function getMyTask($id_position, $atasan, $status_approval){
-        $this->db->join('position', 'position.id = job_approval.id_posisi', 'left');
-        return $this->db->get_where('job_approval', [$atasan => $id_position, 'status_approval' => $status_approval])->result_array();
+        $this->db->join('master_position', 'master_position.id = jobprofile_approval.id_posisi', 'left');
+        return $this->db->get_where('jobprofile_approval', [$atasan => $id_position, 'status_approval' => $status_approval])->result_array();
     }
 
     public function getPositionDetail($id_posisi){
         $this->db->select('*');
-        $this->db->from('position');
+        $this->db->from('master_position');
         $this->db->where(array('id' => $id_posisi, 'assistant' => 0));
         return $this->db->get()->row_array();
     }
 
     public function getPositionDetailAssistant($id_posisi){
         $this->db->select('*');
-        $this->db->from('position');
+        $this->db->from('master_position');
         $this->db->where(array('id' => $id_posisi, 'assistant' => 1));
         return $this->db->get()->row_array();
     }
@@ -185,28 +185,28 @@ class Jobpro_model extends CI_Model {
 
     public function getWhoisSama($id_atasan1){
         $this->db->select('*');
-        $this->db->from('position');
+        $this->db->from('master_position');
         $this->db->where(array('id_atasan1' => $id_atasan1, 'assistant' => 0));
         return $this->db->get()->result_array();
     }
 
     public function getWhoisSamaAssistant($id_atasan1){
         $this->db->select('*');
-        $this->db->from('position');
+        $this->db->from('master_position');
         $this->db->where(array('id_atasan1' => $id_atasan1, 'assistant' => 1));
         return $this->db->get()->result_array();
     }
 
     public function getWhoisSamaCEOffice($id_atasan1, $div_id){
         $this->db->select('*');
-        $this->db->from('position');
+        $this->db->from('master_position');
         $this->db->where(array('id_atasan1' => $id_atasan1, 'assistant' => 0, 'div_id' => $div_id));
         return $this->db->get()->result_array();
     }
 
     public function updateApproval($data, $id_posisi){
         $this->db->where('id_posisi', $id_posisi);
-        $this->db->update('job_approval', $data);
+        $this->db->update('jobprofile_approval', $data);
     }
 
     public function insert($table, $data){

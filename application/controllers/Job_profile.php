@@ -20,8 +20,8 @@ class Job_profile extends MainController {
         // cek buat userapp admin di menusub health report
         if($this->session->userdata('role_id') == 2){
             // get menu id sekaligus ini daftar aplikasi
-            $id_menu = $this->_general_m->getOnce('id_menu', 'survey_user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
-            $value = $this->_general_m->getRow('survey_user_userapp_admins', array(
+            $id_menu = $this->_general_m->getOnce('id_menu', 'user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
+            $value = $this->_general_m->getRow('user_userapp_admins', array(
                 'id_menu' => $id_menu,
                 'nik' => $this->session->userdata('nik')
             ));
@@ -39,8 +39,8 @@ class Job_profile extends MainController {
         $nik = $this->session->userdata('nik');
         $data['posisi'] = $this->Jobpro_model->getPosisi($nik);
 
-        // cek jika tidak ada data job_approval
-        $job_approval = $this->Jobpro_model->getDetail("*", "job_approval", array('id_posisi' => $data['posisi']['position_id']));
+        // cek jika tidak ada data jobprofile_approval
+        $job_approval = $this->Jobpro_model->getDetail("*", "jobprofile_approval", array('id_posisi' => $data['posisi']['position_id']));
         if(empty($job_approval)){ // jika table job approval kosong
             $data = [
                 'id_posisi' => $data['posisi']['position_id'],
@@ -48,13 +48,13 @@ class Job_profile extends MainController {
                 'status_approval' => 0,
                 'pesan_revisi' => "null"
             ];
-            $this->db->insert('job_approval', $data);
+            $this->db->insert('jobprofile_approval', $data);
         }else{
             //do nothing
         }
 
-        if(empty($this->Jobpro_model->getDetail('*', 'jumlah_staff', array('id_posisi' => $data['posisi']['position_id'])))){ //cek apa jumlah staff sudah ada
-            $this->Jobpro_model->insert('jumlah_staff', array(
+        if(empty($this->Jobpro_model->getDetail('*', 'jobprofile_jumlahstaff', array('id_posisi' => $data['posisi']['position_id'])))){ //cek apa jumlah staff sudah ada
+            $this->Jobpro_model->insert('jobprofile_jumlahstaff', array(
                 'id_posisi' => $data['posisi']['position_id'],
                 'manager' => 0,
                 'supervisor' => 0,
@@ -64,13 +64,13 @@ class Job_profile extends MainController {
 
         //get back this variable, it is gone after I using the if.. else.. above
         $data['pos'] = $this->Jobpro_model->getAllPosition();
-        $data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
         $data['posisi'] = $this->Jobpro_model->getPosisi($nik);
         //ambil informasi approver 1 dan 2
         $data['approver'][0] =  $this->Jobpro_model->getPositionDetail($data['posisi']['id_approver1']);
         $data['approver'][1] =  $this->Jobpro_model->getPositionDetail($data['posisi']['id_approver2']);
         
-        $data['statusApproval'] = $this->db->get_where('job_approval', ['id_posisi' => $data['posisi']['position_id']])->row_array(); //get status approval
+        $data['statusApproval'] = $this->db->get_where('jobprofile_approval', ['id_posisi' => $data['posisi']['position_id']])->row_array(); //get status approval
 
         //ambil data my task dengan id_position dan status
         //$this->Jobpro_model->getMyTask(id_posisi, 'kolom_approver_di_database, status approval);
@@ -78,7 +78,7 @@ class Job_profile extends MainController {
         $my_task = array_merge($my_task, $this->Jobpro_model->getMyTask($data['posisi']['position_id'], 'id_approver2', '2'));
 
         //ambil data my task dengan approver 1 dan 2, vacant, jika admin
-        if($this->Jobpro_model->getDetail('role_id', 'employe', array('nik' => $nik))['role_id'] == 1 || $this->userApp_admin == 1){
+        if($this->Jobpro_model->getDetail('role_id', 'master_employee', array('nik' => $nik))['role_id'] == 1 || $this->userApp_admin == 1){
             if(!empty($my_vacant_task = $this->getMyTaskVacant())){ //ambil data vacant task
                 $my_task = array_merge($my_task, $my_vacant_task); // gabungkan task
             }
@@ -93,7 +93,7 @@ class Job_profile extends MainController {
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+        $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
         $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'job_profile/index_jobprofile_v';
 		// additional styles and custom script
@@ -107,18 +107,18 @@ class Job_profile extends MainController {
     // function untuk menampilkan JP karyawan yang login
     public function myJp(){
         $nik = $this->session->userdata('nik');
-        $id_posisi = $this->Jobpro_model->getDetail('position_id', 'employe', array('nik' => $nik))['position_id'];
+        $id_posisi = $this->Jobpro_model->getDetail('position_id', 'master_employee', array('nik' => $nik))['position_id'];
 
         $data = $this->getDataJP($nik, $id_posisi);
 
-        $data['jp_user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['jp_user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
         $data['pos'] = $this->Jobpro_model->getAllPosition();
         
-        $approval = $this->db->get_where('job_approval', ['id_posisi' => $data['posisi']['id']])->row_array(); //get status approval
+        $approval = $this->db->get_where('jobprofile_approval', ['id_posisi' => $data['posisi']['id']])->row_array(); //get status approval
         
         if ($approval['status_approval'] == 0 || $approval['status_approval'] == 3) {
             // main data
-		    // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
+		    // $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
             $data['load_view'] = 'job_profile/myjp_editor_jobprofile_v';
             // additional styles and custom script
             $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
@@ -126,7 +126,7 @@ class Job_profile extends MainController {
             $data['approval'] = $approval;
 
             // main data
-		    // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
+		    // $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
             $data['load_view'] = 'job_profile/myjp_viewer_jobprofile_v';
             // additional styles and custom script
             $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_view_jobprofile');            
@@ -155,13 +155,13 @@ class Job_profile extends MainController {
         
         $data['pos'] = $this->Jobpro_model->getAllPosition();
         $data['title'] = 'My Task';
-        $data['jp_user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['jp_user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
-		// $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+		// $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
         $data['page_title'] = 'Task Job Profile';
         $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'job_profile/taskjp_jobprofile_v';
@@ -178,8 +178,8 @@ class Job_profile extends MainController {
         $my_nik = $this->session->userdata('nik'); //get my nik
         $nik = $this->input->get('task');// get another nik
 
-        $my_position_id = $this->Jobpro_model->getDetail('position_id', 'employe', array('nik' => $my_nik))['position_id']; //ambil position_id
-        $role_id = $this->Jobpro_model->getDetail('role_id', 'employe', array('nik' => $my_nik))['role_id']; //ambil role_id
+        $my_position_id = $this->Jobpro_model->getDetail('position_id', 'master_employee', array('nik' => $my_nik))['position_id']; //ambil position_id
+        $role_id = $this->Jobpro_model->getDetail('role_id', 'master_employee', array('nik' => $my_nik))['role_id']; //ambil role_id
         
         // if($role_id != 1){ // cek role_id apakah punya hak akses
         //     redirect('auth/blocked','refresh'); //jika tidak punya hak akses tampilkan pesan error
@@ -191,7 +191,7 @@ class Job_profile extends MainController {
         if($role_id == 1 || $this->userApp_admin == 1){
             // nothing
         } else {
-            if(empty($this->db->query("SELECT * FROM position WHERE (id_approver1='".$my_position_id."' AND id='".$id_posisi."') OR (id_approver2='".$my_position_id."' AND id='".$id_posisi."')")->result())){ //cek kalo dia punya akses terhadap karyawan tersebut
+            if(empty($this->db->query("SELECT * FROM master_position WHERE (id_approver1='".$my_position_id."' AND id='".$id_posisi."') OR (id_approver2='".$my_position_id."' AND id='".$id_posisi."')")->result())){ //cek kalo dia punya akses terhadap karyawan tersebut
                 // show_404();
                 exit;
             } else {
@@ -205,11 +205,11 @@ class Job_profile extends MainController {
         
         $data['pos'] = $this->Jobpro_model->getAllPosition();
         $data['title'] = 'Report';
-        $data['jp_user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['jp_user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
 
         if($role_id == 1 || $this->userApp_admin == 1){ //cek jika dia admin
             // main data
-            // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+            // $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
             $data['load_view'] = 'job_profile/reportjp_editor_jobprofile_v';
             // additional styles and custom script
             $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
@@ -221,7 +221,7 @@ class Job_profile extends MainController {
             // $this->load->view('templates/jobs_footer_editor');
         } else {
             // main data
-            // $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+            // $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
             $data['load_view'] = 'job_profile/reportjp_viewer_jobprofile_v';
             // additional styles and custom script
             $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_view_jobprofile');
@@ -251,25 +251,25 @@ class Job_profile extends MainController {
 /* -------------------------------------------------------------------------- */
     public function report(){
         $nik = $this->session->userdata('nik'); //get nik
-        $my_position = $this->Jobpro_model->getDetail('position_id', 'employe', array('nik' => $nik))['position_id']; //ambil my_position
-        $role_id = $this->Jobpro_model->getDetail('role_id', 'employe', array('nik' => $nik))['role_id']; //ambil role_id
+        $my_position = $this->Jobpro_model->getDetail('position_id', 'master_employee', array('nik' => $nik))['position_id']; //ambil my_position
+        $role_id = $this->Jobpro_model->getDetail('role_id', 'master_employee', array('nik' => $nik))['role_id']; //ambil role_id
 
         if($role_id == 1 || $this->userApp_admin == 1){ // cek role_id apakah punya hak akses admin atau userappadmin
-            $task = $this->Jobpro_model->getAllAndOrder('id_posisi', 'job_approval');
-            $data['dept'] = $this->Jobpro_model->getAllAndOrder('nama_departemen', 'departemen');
-            $data['divisi'] = $this->Jobpro_model->getAllAndOrder('division', 'divisi');
+            $task = $this->Jobpro_model->getAllAndOrder('id_posisi', 'jobprofile_approval');
+            $data['dept'] = $this->Jobpro_model->getAllAndOrder('nama_departemen', 'master_department');
+            $data['divisi'] = $this->Jobpro_model->getAllAndOrder('division', 'master_division');
         } else {
-            $task1 = $this->Jobpro_model->getJoin2tables('*', 'job_approval', array('table' => 'position', 'index' => 'position.id = job_approval.id_posisi', 'position' => 'left'), "(id_approver1=".$my_position." AND status_approval=0) OR (id_approver1=".$my_position." AND status_approval=2) OR (id_approver1=".$my_position." AND status_approval=3) OR (id_approver1=".$my_position." AND status_approval=4)"); //cari approval di my position
-            $task2 = $this->Jobpro_model->getJoin2tables('*', 'job_approval', array('table' => 'position', 'index' => 'position.id = job_approval.id_posisi', 'position' => 'left'), "(id_approver2=".$my_position." AND status_approval=0) OR (id_approver2=".$my_position." AND status_approval=1) OR (id_approver2=".$my_position." AND status_approval=3) OR (id_approver2=".$my_position." AND status_approval=4)");
+            $task1 = $this->Jobpro_model->getJoin2tables('*', 'jobprofile_approval', array('table' => 'master_position', 'index' => 'master_position.id = jobprofile_approval.id_posisi', 'position' => 'left'), "(id_approver1=".$my_position." AND status_approval=0) OR (id_approver1=".$my_position." AND status_approval=2) OR (id_approver1=".$my_position." AND status_approval=3) OR (id_approver1=".$my_position." AND status_approval=4)"); //cari approval di my position
+            $task2 = $this->Jobpro_model->getJoin2tables('*', 'jobprofile_approval', array('table' => 'master_position', 'index' => 'master_position.id = jobprofile_approval.id_posisi', 'position' => 'left'), "(id_approver2=".$my_position." AND status_approval=0) OR (id_approver2=".$my_position." AND status_approval=1) OR (id_approver2=".$my_position." AND status_approval=3) OR (id_approver2=".$my_position." AND status_approval=4)");
             $task = array_merge($task1, $task2);
 
-            $my_div = $this->Jobpro_model->getDetail('div_id', 'position', array('id' => $my_position)); //ambil my_position
-            $data['dept'] = $this->Jobpro_model->getDetails('nama_departemen', 'departemen', $my_div); //ambil departemen sesuai divisinya
+            $my_div = $this->Jobpro_model->getDetail('div_id', 'master_position', array('id' => $my_position)); //ambil my_position
+            $data['dept'] = $this->Jobpro_model->getDetails('nama_departemen', 'master_department', $my_div); //ambil departemen sesuai divisinya
         }
 
         $data['title'] = 'Report';
-        $data['jp_user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
-        $data['hirarki_org'] = $this->Jobpro_model->getDetail('hirarki_org', 'position', array('id' => $data['jp_user']['position_id']))['hirarki_org'];
+        $data['jp_user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['hirarki_org'] = $this->Jobpro_model->getDetail('hirarki_org', 'master_position', array('id' => $data['jp_user']['position_id']))['hirarki_org'];
         $data['approval_data'] = $this->getApprovalDetails($task);
 
         // $this->load->view('templates/user_header', $data);
@@ -282,7 +282,7 @@ class Job_profile extends MainController {
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
-		// $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+		// $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
         $data['page_title'] = 'Report Profile';
         $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'job_profile/report_jobprofile_v';
@@ -300,17 +300,17 @@ class Job_profile extends MainController {
 /*                                another code                                */
 /* -------------------------------------------------------------------------- */
     public function getDataJP($nik, $id_posisi){
-        $data['posisi']        = $this->Jobpro_model->getDetail('*', 'position', array('id' => $id_posisi));
-        $data['mydiv']         = $this->Jobpro_model->getDetail("*", 'divisi', array('id' => $data['posisi']['div_id']));
-        $data['mydept']        = $this->Jobpro_model->getDetail('*', 'departemen', array('id' => $data['posisi']['dept_id']));
+        $data['posisi']        = $this->Jobpro_model->getDetail('*', 'master_position', array('id' => $id_posisi));
+        $data['mydiv']         = $this->Jobpro_model->getDetail("*", 'master_division', array('id' => $data['posisi']['div_id']));
+        $data['mydept']        = $this->Jobpro_model->getDetail('*', 'master_department', array('id' => $data['posisi']['dept_id']));
         $data['staff']         = $this->Jobpro_model->getStaff($data['posisi']['id']);
         $data['tujuanjabatan'] = $this->Jobpro_model->getProfileJabatan($data['posisi']['id']);
 
         if(!empty($nik)){
-            $data['emp_name'] = $this->Jobpro_model->getDetail("emp_name", "employe", array('nik' => $nik));
+            $data['emp_name'] = $this->Jobpro_model->getDetail("emp_name", "master_employee", array('nik' => $nik));
         }
 
-        $data['statusApproval'] = $this->db->get_where('job_approval', ['id_posisi' => $data['posisi']['id']])->row_array(); //get status approval
+        $data['statusApproval'] = $this->db->get_where('jobprofile_approval', ['id_posisi' => $data['posisi']['id']])->row_array(); //get status approval
 
         //olah data chart
         //cek jika atasan 1 bukan CEO dan 0
@@ -345,10 +345,10 @@ class Job_profile extends MainController {
     /* -------------------------------------------------------------------------- */
     public function getMyTaskVacant(){ // ambil vacant task
         $my_task_vacant = array(); $x = 0; //prepare variables
-        $id_vacant_task = $this->Jobpro_model->getJoin2tables(  'position.id', 
-                                                                'position', 
-                                                                array('table' => 'employe', 'index' => 'employe.position_id = position.id', 'position' => 'left'), 
-                                                                "employe.position_id IS NULL"
+        $id_vacant_task = $this->Jobpro_model->getJoin2tables(  'master_position.id', 
+                                                                'master_position', 
+                                                                array('table' => 'master_employee', 'index' => 'master_employee.position_id = master_position.id', 'position' => 'left'), 
+                                                                "master_employee.position_id IS NULL"
                                                             ); //ambil id position vacant
 
         foreach($id_vacant_task as $idpos_vacant){ //dapetin id Position Vacant
@@ -382,17 +382,17 @@ class Job_profile extends MainController {
     function getCeoTask(){ // ambil tasknya CEO
         $ceoTask = array(); $x = 0; // prepare variables
         // ambil id posisi yang atasan 1nya CEO
-        $id_ceo_task = $this->Jobpro_model->getDetails('id', 'position', 'id_approver1 = "1" OR id_approver2 = "1"'); // ambil id posisi yang atasan 1nya atau atasan 2nya CEO
+        $id_ceo_task = $this->Jobpro_model->getDetails('id', 'master_position', 'id_approver1 = "1" OR id_approver2 = "1"'); // ambil id posisi yang atasan 1nya atau atasan 2nya CEO
         
         foreach($id_ceo_task as $value){
-            if(!empty($value = $this->Jobpro_model->getJoin2tables( '*', 'job_approval', array('table' => 'position', 'index' => 'job_approval.id_posisi = position.id', 'position' => 'left'), array('id' => $value['id'], 'status_approval' => '1', 'id_approver1' => '1')))){ //ambil task CEO dengan status approval = 1
+            if(!empty($value = $this->Jobpro_model->getJoin2tables( '*', 'jobprofile_approval', array('table' => 'master_position', 'index' => 'jobprofile_approval.id_posisi = master_position.id', 'position' => 'left'), array('id' => $value['id'], 'status_approval' => '1', 'id_approver1' => '1')))){ //ambil task CEO dengan status approval = 1
                 $ceoTask[$x] = $value[0]; // ambil yang pertama karena isinya cuma 1
                 $x++;
             }
         }
 
         foreach($id_ceo_task as $value){
-            if(!empty($value = $this->Jobpro_model->getJoin2tables( '*', 'job_approval', array('table' => 'position', 'index' => 'job_approval.id_posisi = position.id', 'position' => 'left'), array('id' => $value['id'], 'status_approval' => '2', 'id_approver2' => '1')))){ //ambil task CEO dengan status approval = 2
+            if(!empty($value = $this->Jobpro_model->getJoin2tables( '*', 'jobprofile_approval', array('table' => 'master_position', 'index' => 'jobprofile_approval.id_posisi = master_position.id', 'position' => 'left'), array('id' => $value['id'], 'status_approval' => '2', 'id_approver2' => '1')))){ //ambil task CEO dengan status approval = 2
                 $ceoTask[$x] = $value[0]; // ambil yang pertama karena isinya cuma 1
                 $x++;
             }
@@ -407,7 +407,7 @@ class Job_profile extends MainController {
         $id_posisi = $this->input->post('id_posisi');
         $status_sebelum = $this->input->post('status_sebelum');
         $status_approval = $this->input->post('status_approval');
-        $approver = $this->Jobpro_model->getDetail('id_approver1, id_approver2', 'position', array('id' => $id_posisi));
+        $approver = $this->Jobpro_model->getDetail('id_approver1, id_approver2', 'master_position', array('id' => $id_posisi));
         $name_karyawan = $this->input->post('name_karyawan');
 
         // cek apa punya approver2
@@ -423,11 +423,11 @@ class Job_profile extends MainController {
                     ];
                     $this->Jobpro_model->updateApproval($data, $id_posisi);
 
-                    $data_approver2 = $this->Jobpro_model->getDetail('emp_name, email', 'employe', array('position_id' => $approver['id_approver2']));  //ambil email karyawan dengan id approver 1 
+                    $data_approver2 = $this->Jobpro_model->getDetail('emp_name, email', 'master_employee', array('position_id' => $approver['id_approver2']));  //ambil email karyawan dengan id approver 1 
 
                     //ambil email karyawan buat cc
                     $x = 0; $email_cc = array();
-                    foreach($this->Jobpro_model->getDetails('email', 'employe', array('position_id' => $id_posisi)) as $v){
+                    foreach($this->Jobpro_model->getDetails('email', 'master_employee', array('position_id' => $id_posisi)) as $v){
                         $email_cc[$x] = $v['email'];
                         $x++;
                     }
@@ -442,7 +442,7 @@ class Job_profile extends MainController {
 
                     $job_profile = array( //data job profile karyawan
                         'id_posisi' => $id_posisi,
-                        'position_name' => $this->Jobpro_model->getDetail('position_name', 'position', array('id' => $id_posisi))['position_name'],
+                        'position_name' => $this->Jobpro_model->getDetail('position_name', 'master_position', array('id' => $id_posisi))['position_name'],
                         'status'        => $data['status_approval']
                     );
 
@@ -457,7 +457,7 @@ class Job_profile extends MainController {
                     ];
                     $this->Jobpro_model->updateApproval($data, $id_posisi);
                     
-                    $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'employe', array('position_id' => $id_posisi));  //ambil email karyawan dengan id approver 1 
+                    $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'master_employee', array('position_id' => $id_posisi));  //ambil email karyawan dengan id approver 1 
                     /* --------------------------- ambil nama karyawan -------------------------- */
                     $counter_karyawan = count($data_karyawan);
                     $karyawan = array('<ul>'); //buka ul
@@ -472,15 +472,15 @@ class Job_profile extends MainController {
                         $karyawan_email[$key] = $value['email'];
                     }
                     
-                    // $email_cc[0] = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver1']))['email'];
-                    // $email_cc[1] = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver2']))['email'];
+                    // $email_cc[0] = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $approver['id_approver1']))['email'];
+                    // $email_cc[1] = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $approver['id_approver2']))['email'];
 
                     $email_cc = array(); $x = 0;
-                    if(!empty($value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver1']))['email'])){
+                    if(!empty($value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $approver['id_approver1']))['email'])){
                         $email_cc[$x] = $value;
                         $x++;
                     }
-                    if(!empty($value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver2']))['email'])){
+                    if(!empty($value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $approver['id_approver2']))['email'])){
                         $email_cc[$x] = $value;
                         $x++;
                     }
@@ -494,7 +494,7 @@ class Job_profile extends MainController {
 
                     $job_profile = array( //data job profile karyawan
                         'id_posisi' => $id_posisi,
-                        'position_name' => $this->Jobpro_model->getDetail('position_name', 'position', array('id' => $id_posisi))['position_name'],
+                        'position_name' => $this->Jobpro_model->getDetail('position_name', 'master_position', array('id' => $id_posisi))['position_name'],
                         'status'        => $data['status_approval']
                     );
 
@@ -517,7 +517,7 @@ class Job_profile extends MainController {
                 ];
                 $this->Jobpro_model->updateApproval($data, $id_posisi);
 
-                $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'employe', array('position_id' => $id_posisi));  //ambil email karyawan dengan id approver 1 
+                $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'master_employee', array('position_id' => $id_posisi));  //ambil email karyawan dengan id approver 1 
                 /* --------------------------- ambil nama karyawan -------------------------- */
                 $counter_karyawan = count($data_karyawan);
                 $karyawan = array('<ul>'); //buka ul
@@ -535,13 +535,13 @@ class Job_profile extends MainController {
                 // pengaturan email cc
                 if($status_sebelum == 1){ // jika status sebelumnya adalah first approval
                     $email_cc = array(); $x = 0;
-                    if(!empty($value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver1']))['email'])){
+                    if(!empty($value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $approver['id_approver1']))['email'])){
                         $email_cc[$x] = $value;
                         $x++;
                     }
                 } elseif($status_sebelum == 2){ // jika status sebelumnya adalah final approval
                     $email_cc = array(); $x = 0;
-                    if(!empty($value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver2']))['email'])){
+                    if(!empty($value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $approver['id_approver2']))['email'])){
                         $email_cc[$x] = $value;
                         $x++;
                     }
@@ -557,7 +557,7 @@ class Job_profile extends MainController {
 
                 $job_profile = array( //data job profile karyawan
                     'id_posisi' => $id_posisi,
-                    'position_name' => $this->Jobpro_model->getDetail('position_name', 'position', array('id' => $id_posisi))['position_name'],
+                    'position_name' => $this->Jobpro_model->getDetail('position_name', 'master_position', array('id' => $id_posisi))['position_name'],
                     'status'        => $data['status_approval']
                 );
 
@@ -576,7 +576,7 @@ class Job_profile extends MainController {
                 ];
                 $this->Jobpro_model->updateApproval($data, $id_posisi);
 
-                $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'employe', array('position_id' => $id_posisi));  //ambil email karyawan dengan id approver 1 
+                $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'master_employee', array('position_id' => $id_posisi));  //ambil email karyawan dengan id approver 1 
                 /* --------------------------- ambil nama karyawan -------------------------- */
                 $counter_karyawan = count($data_karyawan);
                 $karyawan = array('<ul>'); //buka ul
@@ -591,7 +591,7 @@ class Job_profile extends MainController {
                     $karyawan_email[$key] = $value['email'];
                 }
                 
-                $value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver1']))['email'];
+                $value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $approver['id_approver1']))['email'];
                 if(!empty($value)){
                     $email_cc = $value;
                 } else {
@@ -607,7 +607,7 @@ class Job_profile extends MainController {
 
                 $job_profile = array( //data job profile karyawan
                     'id_posisi' => $id_posisi,
-                    'position_name' => $this->Jobpro_model->getDetail('position_name', 'position', array('id' => $id_posisi))['position_name'],
+                    'position_name' => $this->Jobpro_model->getDetail('position_name', 'master_position', array('id' => $id_posisi))['position_name'],
                     'status'        => $data['status_approval']
                 );
 
@@ -627,7 +627,7 @@ class Job_profile extends MainController {
                 ];
                 $this->Jobpro_model->updateApproval($data, $id_posisi);
 
-                $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'employe', array('position_id' => $id_posisi));  //ambil email karyawan dengan id approver 1 
+                $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'master_employee', array('position_id' => $id_posisi));  //ambil email karyawan dengan id approver 1 
                 /* --------------------------- ambil nama karyawan -------------------------- */
                 $counter_karyawan = count($data_karyawan);
                 $karyawan = array('<ul>'); //buka ul
@@ -642,7 +642,7 @@ class Job_profile extends MainController {
                     $karyawan_email[$key] = $value['email'];
                 }
 
-                if(!empty($value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $approver['id_approver1']))['email'])){
+                if(!empty($value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $approver['id_approver1']))['email'])){
                     $email_cc = $value;
                 } else {
                     $email_cc = "";
@@ -658,7 +658,7 @@ class Job_profile extends MainController {
 
                 $job_profile = array( //data job profile karyawan
                     'id_posisi' => $id_posisi,
-                    'position_name' => $this->Jobpro_model->getDetail('position_name', 'position', array('id' => $id_posisi))['position_name'],
+                    'position_name' => $this->Jobpro_model->getDetail('position_name', 'master_position', array('id' => $id_posisi))['position_name'],
                     'status'        => $data['status_approval']
                 );
 
@@ -677,9 +677,9 @@ class Job_profile extends MainController {
         $id_posisi = $this->input->post('id_posisi');
 
         if(!empty($verify_od)){
-            $this->Jobpro_model->update('job_approval', array('db' => 'id_posisi', 'server' => $id_posisi), array('verify' => '1'));
+            $this->Jobpro_model->update('jobprofile_approval', array('db' => 'id_posisi', 'server' => $id_posisi), array('verify' => '1'));
         } else {
-            $this->Jobpro_model->update('job_approval', array('db' => 'id_posisi', 'server' => $id_posisi), array('verify' => '0'));
+            $this->Jobpro_model->update('jobprofile_approval', array('db' => 'id_posisi', 'server' => $id_posisi), array('verify' => '0'));
         }
     }
     
@@ -691,7 +691,7 @@ class Job_profile extends MainController {
      */
     function getEmailCCAtasan($id_posisi){
         // cek apa ada data approvernya
-        $value = array(); $value = $this->Jobpro_model->getJoin2tables('id, status_approval, id_approver1, id_approver2, position_name', 'position', array('table' => 'job_approval', 'index' => 'job_approval.id_posisi = position.id', 'position' => 'left'), array('id' => $id_posisi))[0];
+        $value = array(); $value = $this->Jobpro_model->getJoin2tables('id, status_approval, id_approver1, id_approver2, position_name', 'master_position', array('table' => 'jobprofile_approval', 'index' => 'jobprofile_approval.id_posisi = master_position.id', 'position' => 'left'), array('id' => $id_posisi))[0];
         if(!empty($value)){ //ambil data posisi
             $data_posisi = $value;
         } else {
@@ -699,7 +699,7 @@ class Job_profile extends MainController {
         }
         $email_cc = array(); $x = 0; //prepare variables
         if($data_posisi['id_approver1'] != 0 && $data_posisi['id_approver1'] != 1){ //jika id atasannya bukan 0 dan CEO
-            $value = array(); $value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $data_posisi['id_approver1']));
+            $value = array(); $value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $data_posisi['id_approver1']));
             if(!empty($value)){
                 $email_cc[$x] = $value['email'];
                 $x++;
@@ -708,7 +708,7 @@ class Job_profile extends MainController {
             }
         }
         if($data_posisi['id_approver2'] != 0 && $data_posisi['id_approver2'] != 1){ // jika id atasannya bukan 0 dan CEO
-            $value = array(); $value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $data_posisi['id_approver2']));
+            $value = array(); $value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $data_posisi['id_approver2']));
             if(!empty($value)){
                 $email_cc[$x] = $value['email'];
                 $x++;
@@ -769,7 +769,7 @@ class Job_profile extends MainController {
         }
         
         /* --------------------------- buat list karyawan --------------------------- */
-        $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'employe', array('position_id' => $job_profile['id_posisi']));
+        $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'master_employee', array('position_id' => $job_profile['id_posisi']));
         $counter_karyawan = count($data_karyawan);
         $karyawan = array('<ul>'); //buka ul
         foreach($data_karyawan as $key => $value){ //ambil nama karyawan)
@@ -794,12 +794,12 @@ class Job_profile extends MainController {
         ];
 
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('position', $data);
+        $this->db->update('master_position', $data);
 
         $datajabatan = [
             'id_posisi' => $this->session->userdata('position_id')
         ];
-        $this->db->insert('profile_jabatan', $datajabatan);
+        $this->db->insert('jobprofile_profilejabatan', $datajabatan);
         
         redirect('job_profile','refresh');
     }
@@ -808,7 +808,7 @@ class Job_profile extends MainController {
     public function edittujuanjbtn($id){
         $data['title'] = 'Ubah Tujuan Jabatan';
         $data['tujab'] = $this->Jobpro_model->getTujabById($id);
-        $data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
 
         $this->form_validation->set_rules('tujuan_jabatan', 'Form', 'trim|required');
 
@@ -830,7 +830,7 @@ class Job_profile extends MainController {
         $id = $this->input->post('id');
         $tujuan = $this->input->post('tujuan');
 
-        $this->Jobpro_model->insert('profile_jabatan', array('id_posisi' => $id, 'tujuan_jabatan' => $tujuan));
+        $this->Jobpro_model->insert('jobprofile_profilejabatan', array('id_posisi' => $id, 'tujuan_jabatan' => $tujuan));
     }
 
     public function edittujuan(){
@@ -838,7 +838,7 @@ class Job_profile extends MainController {
             'tujuan_jabatan' => $this->input->post('tujuan')
         ];
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('profile_jabatan', $data);
+        $this->db->update('jobprofile_profilejabatan', $data);
     }
 
     public function addTanggungJawab(){
@@ -848,7 +848,7 @@ class Job_profile extends MainController {
             'list_pengukuran' => $this->input->post('pengukuran'),
             'id_posisi'       => $this->input->post('id_posisi')
         ];
-        $this->Jobpro_model->insert('tanggung_jawab', $data);
+        $this->Jobpro_model->insert('jobprofile_tanggungjawab', $data);
     }
 
     public function editTanggungJawab(){
@@ -861,7 +861,7 @@ class Job_profile extends MainController {
             'db' => 'id_tgjwb',
             'server' => $this->input->post('idtgjwb')
         );
-        $this->Jobpro_model->update('tanggung_jawab', $where, $data);
+        $this->Jobpro_model->update('jobprofile_tanggungjawab', $where, $data);
     }
     
     public function getTjByID(){
@@ -870,8 +870,8 @@ class Job_profile extends MainController {
 
     public function hapusTanggungJawab($id){
         // $this->db->where('id_tgjwb', $id);
-        // $this->db->delete('tanggung_jawab');
-        $this->Jobpro_model->delete('tanggung_jawab', array('index' => 'id_tgjwb', 'data' => $id));
+        // $this->db->delete('jobprofile_tanggungjawab');
+        $this->Jobpro_model->delete('jobprofile_tanggungjawab', array('index' => 'id_tgjwb', 'data' => $id));
         // $this->session->set_flashdata('flash', 'Deleted');
         // redirect('job_profile', 'refresh');
     }
@@ -881,20 +881,20 @@ class Job_profile extends MainController {
         $id = $this->input->post('id');
         $ruang1 = $this->input->post('ruangl');
 
-        $this->Jobpro_model->insert('ruang_lingkup', array('id_posisi' => $id, 'r_lingkup' => $ruang1));
+        $this->Jobpro_model->insert('jobprofile_ruanglingkup', array('id_posisi' => $id, 'r_lingkup' => $ruang1));
     }
     public function editruanglingkup(){
         $ruang = $this->input->post('ruang');
         if ($ruang) {
             $this->db->set('r_lingkup', $ruang);
             $this->db->where('id', $this->input->post('id'));
-            $this->db->update('ruang_lingkup');
+            $this->db->update('jobprofile_ruanglingkup');
             echo 'Success';
         }else{
             $ruang = '<b>-</b>';
             $this->db->set('r_lingkup', $ruang);
             $this->db->where('id', $this->input->post('id'));
-            $this->db->update('ruang_lingkup');
+            $this->db->update('jobprofile_ruanglingkup');
             echo $ruang;
         }
     }
@@ -908,7 +908,7 @@ class Job_profile extends MainController {
             'wen_atasan2' => $this->input->post('wen_atasan2'),
             'id_posisi' => $this->input->post('id')
         ];
-        $this->Jobpro_model->insert('wewenang', $data);
+        $this->Jobpro_model->insert('jobprofile_wewenang', $data);
     }
 
     public function aksiwewenang(){
@@ -932,12 +932,12 @@ class Job_profile extends MainController {
                 $tableV .= "`wen_atasan2` = '".$data['wen_atasan2']."'";
             }
             if($tableV && $data['id']){
-                $this->db->query("UPDATE `wewenang` SET $tableV WHERE id='".$data['id']."' ");
+                $this->db->query("UPDATE `jobprofile_wewenang` SET $tableV WHERE id='".$data['id']."' ");
             }
         }
         if ($aksi == 'delete') {
             $this->db->where('id', $data['id']);
-            $this->db->delete('wewenang');
+            $this->db->delete('jobprofile_wewenang');
         }
         echo json_encode($aksi);
     }
@@ -954,28 +954,28 @@ class Job_profile extends MainController {
                 'hubungan_eks' => '<b>-</b>',
                 'id_posisi' => $id
             ];
-            $this->Jobpro_model->insert('hub_kerja', $array);
+            $this->Jobpro_model->insert('jobprofile_hubkerja', $array);
         } elseif ($internal && $eksternal){
             $array = [
                 'hubungan_int' => $internal,
                 'hubungan_eks' => $eksternal,
                 'id_posisi' => $id
             ];
-            $this->Jobpro_model->insert('hub_kerja', $array);
+            $this->Jobpro_model->insert('jobprofile_hubkerja', $array);
         } elseif($internal && !$eksternal) {
             $array = [
                 'hubungan_int' => $internal,
                 'hubungan_eks' => '<b>-</b>',
                 'id_posisi' => $id
             ];
-            $this->Jobpro_model->insert('hub_kerja', $array);
+            $this->Jobpro_model->insert('jobprofile_hubkerja', $array);
         }elseif (!$internal && $eksternal) {
             $array = [
                 'hubungan_int' => '<b>-</b>',
                 'hubungan_eks' => $eksternal,
                 'id_posisi' => $id
             ];
-            $this->Jobpro_model->insert('hub_kerja', $array);
+            $this->Jobpro_model->insert('jobprofile_hubkerja', $array);
         }
     }
 
@@ -990,13 +990,13 @@ class Job_profile extends MainController {
         if ($data['tipe'] == 'internal') {
             $this->db->set('hubungan_int', $data['hubInt']);
             $this->db->where('id', $data['id']);
-            $this->db->update('hub_kerja');
+            $this->db->update('jobprofile_hubkerja');
             echo 'success';
         }
         if ($data['tipe'] == 'eksternal') {
             $this->db->set('hubungan_eks', $data['hubEks']);
             $this->db->where('id', $data['id']);
-            $this->db->update('hub_kerja');
+            $this->db->update('jobprofile_hubkerja');
             echo 'success';
         }
     }
@@ -1007,7 +1007,7 @@ class Job_profile extends MainController {
             'text' => $this->input->post('tantangan'),
             'id_posisi' => $this->input->post('id')
         ];
-        $this->Jobpro_model->insert('tantangan', $data);
+        $this->Jobpro_model->insert('jobprofile_tantangan', $data);
     }
 
     public function edittantangan(){
@@ -1015,7 +1015,7 @@ class Job_profile extends MainController {
             'text' => $this->input->post('tantangan')
         ];
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('tantangan', $data);
+        $this->db->update('jobprofile_tantangan', $data);
     }
 
     // kualifikasi aksi
@@ -1027,7 +1027,7 @@ class Job_profile extends MainController {
             'pengetahuan' => $this->input->post('pengetahuan'),
             'kompetensi' => $this->input->post('kompetensi')
         ];  
-        $this->Jobpro_model->insert('kualifikasi', $data);
+        $this->Jobpro_model->insert('jobprofile_kualifikasi', $data);
     }
 
     public function getKualifikasiById(){
@@ -1045,7 +1045,7 @@ class Job_profile extends MainController {
 
 
         $this->db->where('id_posisi', $id);
-        $this->db->update('kualifikasi', $data);
+        $this->db->update('jobprofile_kualifikasi', $data);
     }
 
     //jenjang karir aksi
@@ -1054,14 +1054,14 @@ class Job_profile extends MainController {
             'id_posisi' => $this->input->post('id'),
             'text' => $this->input->post('jenkar')
         ];
-        $this->Jobpro_model->insert('jenjang_kar', $data);
+        $this->Jobpro_model->insert('jobprofile_jenjangkar', $data);
     }
     public function editjenjang(){
         $data = [
             'text' => $this->input->post('jenkar')
         ];
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('jenjang_kar', $data);
+        $this->db->update('jobprofile_jenjangkar', $data);
     }
 	public function updateStaff(){
         
@@ -1071,7 +1071,7 @@ class Job_profile extends MainController {
 			'staff' => $this->input->post('staf')
 		];
 		$this->db->where('id_posisi', $this->input->post('id_posisi'));
-		$this->db->update('jumlah_staff', $data);
+		$this->db->update('jobprofile_jumlahstaff', $data);
 		echo 'staff updated';
     }
     
@@ -1088,11 +1088,11 @@ class Job_profile extends MainController {
         ];
         $this->Jobpro_model->updateApproval($data, $id_posisi); // set approval ke database
 
-        $data_approver1 = $this->Jobpro_model->getDetail('emp_name, email', 'employe', array('position_id' => $approver1));  //ambil email karyawan dengan id approver 1 
+        $data_approver1 = $this->Jobpro_model->getDetail('emp_name, email', 'master_employee', array('position_id' => $approver1));  //ambil email karyawan dengan id approver 1 
 
         //ambil email buat cc
         $x = 0; $email_cc = array();
-        foreach($this->Jobpro_model->getDetails('email', 'employe', array('position_id' => $id_posisi)) as $v){
+        foreach($this->Jobpro_model->getDetails('email', 'master_employee', array('position_id' => $id_posisi)) as $v){
             $email_cc[$x] = $v['email'];
             $x++;
         }
@@ -1107,7 +1107,7 @@ class Job_profile extends MainController {
 
         $job_profile = array( //data job profile karyawan
             'id_posisi'     => $id_posisi,
-            'position_name' => $this->Jobpro_model->getDetail('position_name', 'position', array('id' => $id_posisi))['position_name'],
+            'position_name' => $this->Jobpro_model->getDetail('position_name', 'master_position', array('id' => $id_posisi))['position_name'],
             'status'        => $data['status_approval']
         );
 
@@ -1120,7 +1120,7 @@ class Job_profile extends MainController {
         $tugas = array(); $x = 0;
         foreach($my_task as $key => $value){
             //cari employe dengan id posisi
-            $temp_employe = $this->Jobpro_model->getDetails("nik, emp_name", "employe", array('position_id' => $value['id_posisi']));
+            $temp_employe = $this->Jobpro_model->getDetails("nik, emp_name", "master_employee", array('position_id' => $value['id_posisi']));
             if(!empty($temp_employe)){
                 foreach($temp_employe as $v){
                     $temp_tugas = array_merge($v, $value);
@@ -1139,21 +1139,21 @@ class Job_profile extends MainController {
     }
 
     function getPositionDetails($id_posisi){
-        $temp_posisi = $this->Jobpro_model->getDetail("div_id, dept_id, id", "position", array('id' => $id_posisi));
+        $temp_posisi = $this->Jobpro_model->getDetail("div_id, dept_id, id", "master_position", array('id' => $id_posisi));
         // print_r($temp_posisi);
-        foreach ($this->Jobpro_model->getDetail("position_name", "position", array('id' => $temp_posisi['id'])) as $v){// tambahkan nama posisi
+        foreach ($this->Jobpro_model->getDetail("position_name", "master_position", array('id' => $temp_posisi['id'])) as $v){// tambahkan nama posisi
             $detail_posisi['posisi'] = $v;
         }
-        foreach($this->Jobpro_model->getDetail("nama_departemen", "departemen", array('id' => $temp_posisi['dept_id'])) as $v){// tambahkan nama departemen
+        foreach($this->Jobpro_model->getDetail("nama_departemen", "master_department", array('id' => $temp_posisi['dept_id'])) as $v){// tambahkan nama departemen
             $detail_posisi['departement'] = $v;
         }
-        foreach($this->Jobpro_model->getDetail("id", "departemen", array('id' => $temp_posisi['dept_id'])) as $v){// tambahkan id departemen
+        foreach($this->Jobpro_model->getDetail("id", "master_department", array('id' => $temp_posisi['dept_id'])) as $v){// tambahkan id departemen
             $detail_posisi['id_dept'] = $v;
         }
-        foreach($this->Jobpro_model->getDetail("division", "divisi", array('id' => $temp_posisi['div_id'])) as $v){// tambahkan nama divisi
+        foreach($this->Jobpro_model->getDetail("division", "master_division", array('id' => $temp_posisi['div_id'])) as $v){// tambahkan nama master_division
             $detail_posisi['divisi'] = $v;
         }
-        foreach($this->Jobpro_model->getDetail("id", "divisi", array('id' => $temp_posisi['div_id'])) as $v){// tambahkan id divisi
+        foreach($this->Jobpro_model->getDetail("id", "master_division", array('id' => $temp_posisi['div_id'])) as $v){// tambahkan id master_division
             $detail_posisi['id_div'] = $v;
         }
         return $detail_posisi;
@@ -1161,11 +1161,11 @@ class Job_profile extends MainController {
 
     //this function to regenerate job_approval starter data
     public function startJobApprovalSystem(){
-        foreach($this->Jobpro_model->getDetails('*', 'position', array()) as $k => $v){ //ambil semua nik
+        foreach($this->Jobpro_model->getDetails('*', 'master_position', array()) as $k => $v){ //ambil semua nik
             $nik=$v['id'];// pindahkan ke variabel
             $data['posisi'] = $this->Jobpro_model->getPosisi($nik); //cari data posisi
 
-            $job_approval = $this->Jobpro_model->getDetail('*', 'job_approval', array('id_posisi' => $v['id']));//cek apa sudah ada job_approvalnya
+            $job_approval = $this->Jobpro_model->getDetail('*', 'jobprofile_approval', array('id_posisi' => $v['id']));//cek apa sudah ada job_approvalnya
             if(empty($job_approval)){
                 $data = [
                     'id_posisi'       => $v['id'],
@@ -1173,7 +1173,7 @@ class Job_profile extends MainController {
                     'status_approval' => 0,
                     'pesan_revisi'    => "null"
                 ];
-                $this->db->insert('job_approval', $data);
+                $this->db->insert('jobprofile_approval', $data);
             }else{
                 //do nothing
             }
@@ -1207,13 +1207,13 @@ class Job_profile extends MainController {
             $div = explode('-', $div);
             // print_r($id_div);
             // exit;
-            // $divisi_id = $this->Jobpro_model->getDetail("id", "divisi", array('division' => $this->input->post('divisi')))['id'];
+            // $divisi_id = $this->Jobpro_model->getDetail("id", "master_division", array('division' => $this->input->post('divisi')))['id'];
             //ambil data departemen dengan divisi itu
-            foreach($this->Jobpro_model->getDetails('*', 'departemen', array('div_id' => $div[1])) as $k => $v){
+            foreach($this->Jobpro_model->getDetails('*', 'master_department', array('div_id' => $div[1])) as $k => $v){
                 $data[$k]=$v;
             }
         } else {
-            foreach($this->Jobpro_model->getDetails('*', 'departemen', array()) as $k => $v){
+            foreach($this->Jobpro_model->getDetails('*', 'master_department', array()) as $k => $v){
                 $data[$k]=$v;
             }
         }
@@ -1229,19 +1229,19 @@ class Job_profile extends MainController {
     public function settingApproval() {
         // cek role apa punya akses
         $nik = $this->session->userdata('nik'); //get nik
-        $role_id = $this->Jobpro_model->getDetail('role_id', 'employe', array('nik' => $nik))['role_id']; //ambil role_id
+        $role_id = $this->Jobpro_model->getDetail('role_id', 'master_employee', array('nik' => $nik))['role_id']; //ambil role_id
         if($role_id != 1){
             show_404();
         }
 
         // siapkan data
-        $task = $this->Jobpro_model->getAllAndOrder('id_posisi', 'job_approval');
-        $data['dept'] = $this->Jobpro_model->getAllAndOrder('nama_departemen', 'departemen');
-        $data['divisi'] = $this->Jobpro_model->getAllAndOrder('division', 'divisi');
+        $task = $this->Jobpro_model->getAllAndOrder('id_posisi', 'jobprofile_approval');
+        $data['dept'] = $this->Jobpro_model->getAllAndOrder('nama_departemen', 'master_department');
+        $data['divisi'] = $this->Jobpro_model->getAllAndOrder('division', 'master_division');
 
         $data['title'] = 'Approval Setting';
-        $data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
-        $data['hirarki_org'] = $this->Jobpro_model->getDetail('hirarki_org', 'position', array('id' => $data['user']['position_id']))['hirarki_org'];
+        $data['user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['hirarki_org'] = $this->Jobpro_model->getDetail('hirarki_org', 'master_position', array('id' => $data['user']['position_id']))['hirarki_org'];
         $data['approval_data'] = $this->getApprovalDetails($task);
         
         // $this->load->view('templates/user_header', $data);
@@ -1272,7 +1272,7 @@ class Job_profile extends MainController {
         $nik = $this->input->post('nik');
 
         //data posisi karyawan
-        $data_posisi = $this->Jobpro_model->getJoin2tables('id, status_approval, id_approver1, id_approver2, position_name', 'position', array('table' => 'job_approval', 'index' => 'job_approval.id_posisi = position.id', 'position' => 'left'), array('id' => $id_posisi))[0];
+        $data_posisi = $this->Jobpro_model->getJoin2tables('id, status_approval, id_approver1, id_approver2, position_name', 'master_position', array('table' => 'jobprofile_approval', 'index' => 'jobprofile_approval.id_posisi = master_position.id', 'position' => 'left'), array('id' => $id_posisi))[0];
         
         if($data_posisi['status_approval'] == 1 || $data_posisi['status_approval'] == 2){
             if($data_posisi['status_approval'] == 1){
@@ -1283,7 +1283,7 @@ class Job_profile extends MainController {
                     exit;
                 }
 
-                $temp_penerima = $this->Jobpro_model->getDetail('emp_name, email', 'employe', array('position_id' => $data_posisi['id_approver1']));
+                $temp_penerima = $this->Jobpro_model->getDetail('emp_name, email', 'master_employee', array('position_id' => $data_posisi['id_approver1']));
                 if(empty($temp_penerima)){ // apa ada penerima di approver 1
                     http_response_code(500);
                     $status = array('txtStatus' => 'Posisi Approver 1 tidak memiliki karyawan', 'header' => 'Tidak dapat mengirim email');
@@ -1310,7 +1310,7 @@ class Job_profile extends MainController {
                     exit;
                 }
 
-                $temp_penerima =  $this->Jobpro_model->getDetail('emp_name, email', 'employe', array('position_id' => $data_posisi['id_approver2']));
+                $temp_penerima =  $this->Jobpro_model->getDetail('emp_name, email', 'master_employee', array('position_id' => $data_posisi['id_approver2']));
                 if(empty($temp_penerima)){ // apa ada emplye approver 2
                     http_response_code(500);
                     $status = array('txtStatus' => 'Posisi Approver 2 tidak memiliki karyawan', 'header' => 'Tidak dapat mengirim email');
@@ -1336,7 +1336,7 @@ class Job_profile extends MainController {
             }
             //ambil email buat cc
             $x = 0; $email_cc = array();
-            foreach($this->Jobpro_model->getDetails('email', 'employe', array('position_id' => $id_posisi)) as $v){ // beri email cc ke karyawan
+            foreach($this->Jobpro_model->getDetails('email', 'master_employee', array('position_id' => $id_posisi)) as $v){ // beri email cc ke karyawan
                 $email_cc[$x] = $v['email'];
                 $x++;
             }
@@ -1350,7 +1350,7 @@ class Job_profile extends MainController {
                 $penerima_msg = 'Please fill your Job Profile and submit it!';
             
                 // cek apa ada data approvernya
-                $value = array(); $value = $this->Jobpro_model->getJoin2tables('id, status_approval, id_approver1, id_approver2, position_name', 'position', array('table' => 'job_approval', 'index' => 'job_approval.id_posisi = position.id', 'position' => 'left'), array('id' => $id_posisi))[0];
+                $value = array(); $value = $this->Jobpro_model->getJoin2tables('id, status_approval, id_approver1, id_approver2, position_name', 'master_position', array('table' => 'jobprofile_approval', 'index' => 'jobprofile_approval.id_posisi = master_position.id', 'position' => 'left'), array('id' => $id_posisi))[0];
                 if(!empty($value)){ //ambil data posisi
                     $data_posisi = $value;
                 } else {
@@ -1358,7 +1358,7 @@ class Job_profile extends MainController {
                 }
                 $email_cc = array(); $x = 0; //prepare variables
                 if($data_posisi['id_approver1'] != 0 && $data_posisi['id_approver1'] != 1){ //jika id atasannya bukan 0 dan CEO
-                    $value = array(); $value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $data_posisi['id_approver1'])); // ambil data approver 1
+                    $value = array(); $value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $data_posisi['id_approver1'])); // ambil data approver 1
                     if(!empty($value)){
                         $email_cc[$x] = $value['email'];
                         $x++;
@@ -1391,20 +1391,20 @@ class Job_profile extends MainController {
             }
             //ambil email buat cc
             // $x = 0; $email_cc = array();
-            // foreach($this->Jobpro_model->getDetails('email', 'employe', array('position_id' => $data_posisi['id_approver1'])) as $v){
+            // foreach($this->Jobpro_model->getDetails('email', 'master_employee', array('position_id' => $data_posisi['id_approver1'])) as $v){
             //     if(!empty($v['email'])){
             //         $email_cc[$x] = $v['email'];
             //         $x++;
             //     }
             // }
-            // foreach($this->Jobpro_model->getDetails('email', 'employe', array('position_id' => $data_posisi['id_approver2'])) as $v){
+            // foreach($this->Jobpro_model->getDetails('email', 'master_employee', array('position_id' => $data_posisi['id_approver2'])) as $v){
             //     if(!empty($v['email'])){
             //         $email_cc[$x] = $v['email'];
             //         $x++;
             //     }
             // }
 
-            $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'employe', array('position_id' => $id_posisi));  //ambil email karyawan
+            $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'master_employee', array('position_id' => $id_posisi));  //ambil email karyawan
             // /* --------------------------- ambil nama karyawan -------------------------- */
             $counter_karyawan = count($data_karyawan);
             $karyawan = array('<ul>'); //buka ul
@@ -1481,10 +1481,10 @@ class Job_profile extends MainController {
         }
 
         // ambil id position yang ada karyawannya
-        $temp_posisi_karyawan = $this->Jobpro_model->getJoin2tables(  'position.id', 
-                                                                    'position', 
-                                                                    array('table' => 'employe', 'index' => 'employe.position_id = position.id', 'position' => 'left'), 
-                                                                    "employe.position_id IS NOT NULL"
+        $temp_posisi_karyawan = $this->Jobpro_model->getJoin2tables(  'master_position.id', 
+                                                                    'master_position', 
+                                                                    array('table' => 'master_employee', 'index' => 'master_employee.position_id = master_position.id', 'position' => 'left'), 
+                                                                    "master_employee.position_id IS NOT NULL"
                                                                 );
 
         //ambil id posisi yang punya status itu dan id posisinya memiliki karyawan
@@ -1499,7 +1499,7 @@ class Job_profile extends MainController {
         $counter_email = 0;
         foreach($id_posisi_karyawan as $value){
             // cocokkan id posisi dengan status
-            $v = $this->Jobpro_model->getJoin2tables('id, status_approval, position_name, id_approver1, id_approver2', 'position', array('table' => 'job_approval', 'index' => 'job_approval.id_posisi = position.id', 'position' => 'left'), array('status_approval' => $status, 'id' => $value));
+            $v = $this->Jobpro_model->getJoin2tables('id, status_approval, position_name, id_approver1, id_approver2', 'master_position', array('table' => 'jobprofile_approval', 'index' => 'jobprofile_approval.id_posisi = master_position.id', 'position' => 'left'), array('status_approval' => $status, 'id' => $value));
             // print_r($v);
             // echo("<br/>");
             if(!empty($v[0])){ // cek apa data kosong
@@ -1536,7 +1536,7 @@ class Job_profile extends MainController {
                     // echo(json_encode($status));
                     // exit;
                 }
-                $temp_penerima = $this->Jobpro_model->getDetail('emp_name, email', 'employe', array('position_id' => $id_approver1)); // ambil data penerima
+                $temp_penerima = $this->Jobpro_model->getDetail('emp_name, email', 'master_employee', array('position_id' => $id_approver1)); // ambil data penerima
                 if(empty($temp_penerima)){ // apakah tidak memiliki karyawan posisi atasannya
                     return;
                     // http_response_code(500);
@@ -1564,7 +1564,7 @@ class Job_profile extends MainController {
                 //     echo(json_encode($status));
                 //     exit;
                 }
-                $temp_penerima = $this->Jobpro_model->getDetail('emp_name, email', 'employe', array('position_id' => $id_approver2));
+                $temp_penerima = $this->Jobpro_model->getDetail('emp_name, email', 'master_employee', array('position_id' => $id_approver2));
                 if(empty($temp_penerima)){ // apakah posisi atasannya tidak memiliki karyawan
                     return;
                 //     http_response_code(500);
@@ -1590,7 +1590,7 @@ class Job_profile extends MainController {
             }
             //ambil email buat cc
             $x = 0; $email_cc = array();
-            foreach($this->Jobpro_model->getDetails('email', 'employe', array('position_id' => $id_posisi)) as $v){
+            foreach($this->Jobpro_model->getDetails('email', 'master_employee', array('position_id' => $id_posisi)) as $v){
                 $email_cc[$x] = $v['email'];
                 $x++;
             }
@@ -1604,7 +1604,7 @@ class Job_profile extends MainController {
                 $penerima_msg = 'Please fill your Job Profile and submit it!';
                 
                 // cek apa ada data approvernya
-                $value = array(); $value = $this->Jobpro_model->getJoin2tables('id, status_approval, id_approver1, id_approver2, position_name', 'position', array('table' => 'job_approval', 'index' => 'job_approval.id_posisi = position.id', 'position' => 'left'), array('id' => $id_posisi))[0];
+                $value = array(); $value = $this->Jobpro_model->getJoin2tables('id, status_approval, id_approver1, id_approver2, position_name', 'master_position', array('table' => 'jobprofile_approval', 'index' => 'jobprofile_approval.id_posisi = master_position.id', 'position' => 'left'), array('id' => $id_posisi))[0];
                 if(!empty($value)){ //ambil data posisi
                     $data_posisi = $value;
                 } else {
@@ -1612,7 +1612,7 @@ class Job_profile extends MainController {
                 }
                 $email_cc = array(); $x = 0; //prepare variables
                 if($data_posisi['id_approver1'] != 0 && $data_posisi['id_approver1'] != 1){ //jika id atasannya bukan 0 dan CEO
-                    $value = array(); $value = $this->Jobpro_model->getDetail('email', 'employe', array('position_id' => $data_posisi['id_approver1']));
+                    $value = array(); $value = $this->Jobpro_model->getDetail('email', 'master_employee', array('position_id' => $data_posisi['id_approver1']));
                     if(!empty($value)){
                         $email_cc[$x] = $value['email'];
                         $x++;
@@ -1645,7 +1645,7 @@ class Job_profile extends MainController {
             }
 
             //ambil email karyawan
-            $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'employe', array('position_id' => $id_posisi));  
+            $data_karyawan = $this->Jobpro_model->getDetails('emp_name, email', 'master_employee', array('position_id' => $id_posisi));  
             if(empty($data_karyawan)){
                 return;
                 // http_response_code(500);
@@ -1671,7 +1671,7 @@ class Job_profile extends MainController {
                 }
             }
 
-            // $temp_penerima =  $this->Jobpro_model->getDetail('emp_name, email', 'employe', array('nik' => $nik));
+            // $temp_penerima =  $this->Jobpro_model->getDetail('emp_name, email', 'master_employee', array('nik' => $nik));
             if(empty($karyawan_email)){
                 return;
                 // http_response_code(500);
@@ -1771,8 +1771,8 @@ class Job_profile extends MainController {
 
             } elseif($my_pos_detail['id_atasan1'] == 1 && $my_pos_detail['hirarki_org'] == 'N'){
                 // cari posisi yang bukan assistant
-                $whois_sama[0] = $this->Jobpro_model->getDetails("*", 'position', 'id_atasan1 = "1" AND div_id != "1"');
-                $my_atasan[0] = $this->Jobpro_model->getDetail("*", 'position', array('id' => $my_pos_detail['id_atasan1']));
+                $whois_sama[0] = $this->Jobpro_model->getDetails("*", 'master_position', 'id_atasan1 = "1" AND div_id != "1"');
+                $my_atasan[0] = $this->Jobpro_model->getDetail("*", 'master_position', array('id' => $my_pos_detail['id_atasan1']));
                 
                 $assistant_atasan1 = 0; //tandai buat nanti nampilin orgchartnya horizontal di level ke 3
                 $atasan = 1; // penanda jumlah atasan

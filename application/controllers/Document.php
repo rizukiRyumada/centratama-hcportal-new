@@ -19,11 +19,12 @@ class Document extends AdminController {
 		}
 	}
 
+	// Admin Apps Checker -> cek apa admin punya akses sama aplikasi
 	protected function cekAkses(){
 		// cek akses menu pada url 1
-		$id_menu_sub = $this->_general_m->getOnce('id_menu_sub', 'survey_user_menu_sub', array('url' => $this->uri->segment(1)))['id_menu_sub'];
+		$id_menu_sub = $this->_general_m->getOnce('id_menu_sub', 'user_menu_sub', array('url' => $this->uri->segment(1)))['id_menu_sub'];
 		// cek akses admin
-		if($this->_general_m->getRow('survey_user_menu_sub_admins', array('id_menu_sub' => $id_menu_sub, 'nik' => $this->session->userdata('nik'))) < 1){
+		if($this->_general_m->getRow('user_adminsapp', array('id_menu_sub' => $id_menu_sub, 'nik' => $this->session->userdata('nik'))) < 1){
 			show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
 		}
 
@@ -32,9 +33,9 @@ class Document extends AdminController {
 			// cek apa dia punya akses buat sesi ini
 			if($this->session->userdata('role_id') == 2){
 				// ambil id menu sub
-				$id_menu_sub = $this->_general_m->getOnce('id_menu_sub', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['id_menu_sub'];
+				$id_menu_sub = $this->_general_m->getOnce('id_menu_sub', 'user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['id_menu_sub'];
 				// cek akses admin	
-				if($this->_general_m->getRow('survey_user_menu_sub_admins', array('id_menu_sub' => $id_menu_sub, 'nik' => $this->session->userdata('nik'))) < 1){
+				if($this->_general_m->getRow('user_adminsapp', array('id_menu_sub' => $id_menu_sub, 'nik' => $this->session->userdata('nik'))) < 1){
 					show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
 				}
 			}
@@ -57,7 +58,7 @@ class Document extends AdminController {
 			$data['sidebar'] = getMenu(); // ambil menu
 			$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 			$data['user'] = getDetailUser(); //ambil informasi user
-			$data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+			$data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
 			$data['load_view'] = 'document/index_document_v';
 			// additional styles and custom script
             $data['additional_styles'] = array('plugins/datatables/styles_datatables');
@@ -75,7 +76,7 @@ class Document extends AdminController {
 				'tahun' => date('Y')
 			];
 			
-			$this->db->insert('surat_keluar', $data);
+			$this->db->insert('document_keluar', $data);
 			$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
             Success Added</div>');
 			redirect('document','refresh');
@@ -91,7 +92,7 @@ class Document extends AdminController {
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
-		$data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
+		$data['page_title'] = $this->_general_m->getOnce('title', 'user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
 		$data['load_view'] = 'document/report_document_v';
 		// additional styles and custom script
 		$data['additional_styles'] = array('plugins/datatables/styles_datatables');
@@ -152,7 +153,7 @@ class Document extends AdminController {
 
 	public function lihatNomor()
 	{
-        $data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+        $data['user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
 		$jenis = $this->input->post('jenis');
 		$hasil = $this->M_nomor->getNoUrut($jenis);
 		
@@ -177,7 +178,7 @@ class Document extends AdminController {
 
 	public function simpan()
 	{
-		$data['user'] = $this->db->get_where('employe', ['nik' => $this->session->userdata('nik')])->row_array();
+		$data['user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
 		$data = [
 			'no_surat' => $this->input->post('no'),
 			'perihal' => $this->input->post('perihal'),
@@ -187,7 +188,7 @@ class Document extends AdminController {
 			'tahun' => date('Y')
 		];
 
-		$this->db->insert('surat_keluar', $data);
+		$this->db->insert('document_keluar', $data);
 		redirect('document','refresh');
 	}
 
@@ -241,6 +242,7 @@ class Document extends AdminController {
 		$this->load->library('upload', $config);
 
 		// hapus semua file yg ada dulu di berbagai 
+		// TODO tambahkan jika dia ga kosong filenya baru unlink cek dulu
 		foreach($filetypes as $v){
 			unlink('./assets/document/surat/'.$config['file_name'].'.'.$v);
 		}
@@ -264,7 +266,7 @@ class Document extends AdminController {
 				'msg' => '<table class="table text-left"><tr><td>File name</td><td>:</td><td>'.$upload_status['file_name'].'</td></tr><tr><td>File type</td><td>:</td><td>'.$upload_status['file_type'].'</td></tr><tr><td>File size</td><td>:</td><td>'.$upload_status['file_size'].'KB</td></tr></table>'
 			));
 
-			$this->_general_m->update('surat_keluar', 'no_surat', $this->input->post('no_surat'), array(
+			$this->_general_m->update('document_keluar', 'no_surat', $this->input->post('no_surat'), array(
 				'file' => $upload_status['file_name']
 			));
 		}

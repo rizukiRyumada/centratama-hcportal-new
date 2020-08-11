@@ -54,7 +54,7 @@ class Login extends CI_Controller {
     public function logmein(){
         $nik      = $this->input->post('nik');
         $password = $this->input->post('password');
-        $user     = $this->db->get_where('employe', ['nik' => $nik])->row_array();
+        $user     = $this->db->get_where('master_employee', ['nik' => $nik])->row_array();
         // jika usernya ada
         if($user) {
             // jika usernya aktif

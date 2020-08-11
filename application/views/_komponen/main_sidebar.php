@@ -23,7 +23,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column nav-flat" data-widget="treeview" role="menu">
                 <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
                 <?php foreach($sidebar['menu'] as $key => $value): ?>
-                    <?php if($this->_general_m->getOnce('id_menu', 'survey_user_menu_sub', array('id_menu' => $value['id_menu']))): ?>
+                    <?php if($this->_general_m->getOnce('id_menu', 'user_menu_sub', array('id_menu' => $value['id_menu']))): ?>
                         <!-- jika ada submenunya pilih treeview -->
                         <li class="nav-item has-treeview <?php 
                                 if($this->uri->segment(1) == $value['url']){
@@ -86,7 +86,7 @@
                     <li class="nav-header">MAINTENANCE MENU</li>
                     
                     <!-- menu application setting -->
-                    <?php $sidebar['settings'] = $this->_general_m->getOnce('*', 'survey_user_menu', array('id_menu' => '5')) ?>
+                    <?php $sidebar['settings'] = $this->_general_m->getOnce('*', 'user_menu', array('id_menu' => '5')) ?>
                     <li class="nav-item has-treeview">
                         <a href="#" class="nav-link">
                             <i class="nav-icon <?= $sidebar['settings']['icon']; ?>"></i>
@@ -96,7 +96,7 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <?php $sidebar['settings']['submenu'] = $this->_general_m->getAll('id_menu_sub, title, url', 'survey_user_menu_sub', array('id_menu' => '5')); ?>
+                            <?php $sidebar['settings']['submenu'] = $this->_general_m->getAll('id_menu_sub, title, url', 'user_menu_sub', array('id_menu' => '5')); ?>
                             <?php foreach($sidebar['settings']['submenu'] as $value): ?>
                                 <li class="nav-item">
                                     <a href="<?= base_url().$value['url']; ?>" id="<?= $value['id_menu_sub']; ?>" class="nav-link">
@@ -109,7 +109,7 @@
                     </li>
 
                     <!-- menu general setting -->
-                    <?php $sidebar['settings'] = $this->_general_m->getOnce('*', 'survey_user_menu', array('id_menu' => '7')) ?>
+                    <?php $sidebar['settings'] = $this->_general_m->getOnce('*', 'user_menu', array('id_menu' => '7')) ?>
                     <li class="nav-item has-treeview">
                         <a href="#" class="nav-link">
                             <i class="nav-icon <?= $sidebar['settings']['icon']; ?>"></i>
@@ -119,7 +119,7 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <?php $sidebar['settings']['submenu'] = $this->_general_m->getAll('id_menu_sub, title, url', 'survey_user_menu_sub', array('id_menu' => '7')); ?>
+                            <?php $sidebar['settings']['submenu'] = $this->_general_m->getAll('id_menu_sub, title, url', 'user_menu_sub', array('id_menu' => '7')); ?>
                             <?php foreach($sidebar['settings']['submenu'] as $value): ?>
                                 <li class="nav-item">
                                     <a href="<?= base_url().$value['url']; ?>" id="<?= $value['id_menu_sub']; ?>" class="nav-link">

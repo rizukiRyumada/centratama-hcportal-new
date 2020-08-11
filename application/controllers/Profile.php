@@ -13,21 +13,21 @@ class Profile extends MainController {
     public function index() {
         // ambil data karyawan
         $data['data_karyawan'] = $this->_general_m->getJoin2tables(
-            'employe.nik, employe.emp_name, employe.position_id, employe.email, 
-             position.position_name, position.dept_id, position.div_id, position.hirarki_org',
-            'employe',
-            'position',
-            'employe.position_id = position.id',
+            'master_employee.nik, master_employee.emp_name, master_employee.position_id, master_employee.email, 
+             master_position.position_name, master_position.dept_id, master_position.div_id, master_position.hirarki_org',
+            'master_employee',
+            'master_position',
+            'master_employee.position_id = master_position.id',
             array('nik' => $this->session->userdata('nik'))
         )[0];
-        $data['data_karyawan']['departemen'] = $this->_general_m->getOnce('nama_departemen', 'departemen', array('id' => $data['data_karyawan']['dept_id']))['nama_departemen'];
-        $data['data_karyawan']['divisi'] = $this->_general_m->getOnce('division', 'divisi', array('id' => $data['data_karyawan']['div_id']))['division'];
+        $data['data_karyawan']['departemen'] = $this->_general_m->getOnce('nama_departemen', 'master_department', array('id' => $data['data_karyawan']['dept_id']))['nama_departemen'];
+        $data['data_karyawan']['divisi'] = $this->_general_m->getOnce('division', 'master_division', array('id' => $data['data_karyawan']['div_id']))['division'];
 
         // main data
         $data['sidebar'] = getMenu(); // ambil menu
         $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
         $data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->_general_m->getOnce('title', 'survey_user_menu', array('url' => $this->uri->uri_string()))['title'];
+        $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
         $data['load_view'] = 'profile/profile_index_v';
         // $data['custom_styles'] = array('survey_styles');
         $data['custom_script'] = array('plugins/jqueryValidation/script_jqueryValidation', 'profile/script_profile');
@@ -55,7 +55,7 @@ class Profile extends MainController {
             redirect('profile');
         } else {
             // ambil password dari database
-            $user_password = $this->_general_m->getOnce('password', 'employe', array('nik' => $this->session->userdata('nik')))['password'];
+            $user_password = $this->_general_m->getOnce('password', 'master_employee', array('nik' => $this->session->userdata('nik')))['password'];
 
             // simpan data
             $data = array(
@@ -97,7 +97,7 @@ class Profile extends MainController {
             }
 
             // simpan perubahan ke database
-            $this->_general_m->update('employe', 'nik', $this->session->userdata('nik'), $data);
+            $this->_general_m->update('master_employee', 'nik', $this->session->userdata('nik'), $data);
 
             // set toastr notification
             $this->session->set_userdata('msg', array(

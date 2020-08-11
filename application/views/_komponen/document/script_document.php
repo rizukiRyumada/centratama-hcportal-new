@@ -100,17 +100,17 @@
             let file = $(this).data('file_name')+'.'+$(this).data('file_type');
             let file_name = $(this).data('file_name');
             let file_type = $(this).data('file_type');
+            let file_url = '<?= base_url('assets/document/surat/'); ?>'+file
 
             // hapus semua elemen di dalem file viewer
             let box = $('#fileViewer');
             // while (box.firstChild) {box.removeChild(box.firstChild);}
             box.empty();
-
+            // tambahkan bar nav
+            box.append('<nav class="navbar navbar-expand-lg navbar-light bg-light"><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarSupportedContent"><ul class="nav nav-pills ml-auto"><li class="nav-item"><a class="nav-link" id="deleteFile" data-filename="'+file+'" href="#"><i class="fa fa-trash"></i> Delete</a></li><li class="nav-item"><a class="nav-link" href="'+file_url+'"><i class="fa fa-file-download"></i> Download</a></li></ul></div></nav>');
             if(file_type == 'pdf'){
                 // box.append('<object data="<?= base_url('assets/document/surat/'); ?>'+file+'" type="application/pdf" width="100%" style="height: 85vh"><p>This browser does not support inline PDFs. Please download the PDF to view it: <a href="<?= base_url('assets/document/surat/'); ?>'+file+'">Download PDF</a></p></object>');
-
-                let pdfURL = '<?= base_url('assets/document/surat/'); ?>'+file;
-
+                // let pdfURL = file_url;
                 let options = {
                     pdfOpenParams: {
                         navpanes: 0,
@@ -121,21 +121,30 @@
                 };
 
                 box.append('<div id="pdfViewer" style="width: 100%; height: 85vh;"></div>');
-                PDFObject.embed(pdfURL, '#pdfViewer', options);
+                PDFObject.embed(file_url, '#pdfViewer', options);
             } else {
-                box.append('<img src="<?= base_url('assets/document/surat/'); ?>'+file+'" alt="'+file_name+' document file" style="width: 100%; height: auto;" >');
+                box.append('<img src="'+file_url+'" alt="'+file_name+' document file" style="width: 100%; height: auto;" >');
             }
 
             // set nomor surat dan tampilkan modal
             $('#noSurat').val(no_surat);
             $('#attachFile').modal('show');
 
-            console.log(file);
-            console.log(file_type);
+            // console.log(file);
+            // console.log(file_type);
         });
     });
 
     $(document).ready(function() {
+        // Delete Button Trigger
+        $('#deleteFile').on('click', function(e) {
+            // e.preventDefault();
+            let filename = $(this).data('filename');
+            console.log(filename);
+            console.log('hey');
+        });
+
+        // Filter Jenis
         $("#jenis").change(function() {
             var id = $(this).val();
 

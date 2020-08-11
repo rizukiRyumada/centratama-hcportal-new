@@ -43,12 +43,12 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Document Viewer Modal -->
 <div class="modal fade" id="attachFile" tabindex="-1" role="dialog" aria-labelledby="attachFileLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="attachFileLabel">Modal title</h5>
+        <h5 class="modal-title" id="attachFileLabel">Document Preview</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -85,7 +85,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- Button trigger modal -->
 <!-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#fileViewer">
