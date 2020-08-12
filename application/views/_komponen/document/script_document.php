@@ -73,7 +73,7 @@
         $('#submitAttachmentForm').on('click', function() {
             Swal.fire({
                 icon: 'info',
-                title: 'Uploading files',
+                title: 'Uploading file...',
                 html: '<p>The files is being uploaded please wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
                 showConfirmButton: false,
                 allowOutsideClick: false,
@@ -110,7 +110,7 @@
             // while (box.firstChild) {box.removeChild(box.firstChild);}
             box.empty();
             // tambahkan bar nav
-            box.append('<nav class="navbar navbar-expand-lg navbar-light bg-light"><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarSupportedContent"><ul class="nav nav-pills ml-auto"><li class="nav-item"><a class="nav-link" id="deleteFile" data-filename="'+file+'" href="#"><i class="fa fa-trash"></i> Delete</a></li><li class="nav-item"><a class="nav-link" href="'+file_url+'"><i class="fa fa-file-download"></i> Download</a></li></ul></div></nav>');
+            box.append('<nav class="navbar navbar-expand-lg navbar-light bg-light"><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarSupportedContent"><ul class="nav nav-pills ml-auto"><li class="nav-item"><a class="nav-link" id="deleteFile" href="javascript:deleteFile();" data-no_surat="'+no_surat+'" data-filename="'+file+'"><i class="fa fa-trash"></i> Delete</a></li><li class="nav-item"><a class="nav-link" href="'+file_url+'"><i class="fa fa-file-download"></i> Download</a></li></ul></div></nav>');
             if(file_type == 'pdf'){
                 // box.append('<object data="<?= base_url('assets/document/surat/'); ?>'+file+'" type="application/pdf" width="100%" style="height: 85vh"><p>This browser does not support inline PDFs. Please download the PDF to view it: <a href="<?= base_url('assets/document/surat/'); ?>'+file+'">Download PDF</a></p></object>');
                 // let pdfURL = file_url;
@@ -139,14 +139,6 @@
     });
 
     $(document).ready(function() {
-        // Delete Button Trigger
-        $('#deleteFile').on('click', function(e) {
-            // e.preventDefault();
-            let filename = $(this).data('filename');
-            console.log(filename);
-            console.log('hey');
-        });
-
         // Filter Jenis
         $("#jenis").change(function() {
             var id = $(this).val();
@@ -259,5 +251,44 @@
     //     messages: { 
     //         document_attach: "File must be JPG, GIF or PNG, less than 1MB" }
     // });
+
+    // function for delete document file
+    function deleteFile(){
+        // ambil nama file
+        let filename = $("#deleteFile").data('filename');
+        let no_surat = $("#deleteFile").data('no_surat');
+        console.log(filename);
+
+        let href = "<?= base_url('document/deleteDocument'); ?>?filename="+filename+"&no_surat="+no_surat
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Deleting File...',
+                    html: '<p>The files is being deleted please wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    allowEnterKey: false
+                });
+
+                $.ajax({
+                    url: href,
+                    success: function() {
+                        location.reload();
+                    }
+                });
+            }
+        });
+    }
 </script>
 

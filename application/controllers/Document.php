@@ -239,6 +239,20 @@ class Document extends AdminController {
 		// arahkan balik ke report document
 		redirect('document/report');
 	}
+
+	public function deleteDocument(){
+		$filename = $this->input->get('filename'); // ambil nama file
+		
+		unlink('./assets/document/surat/'.$filename); // hapus file dari directory
+		// hapus nama file dari database
+		$this->_general_m->update('document_keluar', 'no_surat', $this->input->get('no_surat'), array('file' => ''));
+		
+		$this->session->set_userdata('msg_swal', array(
+			'title' => 'File Deleted',
+			'icon' => 'success',
+			'msg' => 'The Document has been successfuly deleted.'
+		));
+	}
 }
 
 /* End of file Document.php */
