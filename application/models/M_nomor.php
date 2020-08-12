@@ -90,7 +90,7 @@ class M_nomor extends CI_Model {
 		$this->db->join('document_access', 'document_jenis.id = document_access.surat_id');
 		$this->db->where('document_access.role_surat_id', $role_id);
 		$this->db->order_by('document_keluar.tanggal', 'desc');
-		$this->db->order_by('document_keluar.no_surat', 'desc');
+		// $this->db->order_by('document_keluar.no_surat', 'desc');
 		$this->db->limit(10);
 		
 		$query = $this->db->get();
@@ -99,7 +99,7 @@ class M_nomor extends CI_Model {
 
 	public function getEntity()
 	{
-		return $this->db->get('entity')->result_array();
+		return $this->db->get('master_entity')->result_array();
 	}
 
 	public function getJenis()
@@ -127,7 +127,7 @@ class M_nomor extends CI_Model {
 		$tahun = date('Y');
 		$this->db->select('LEFT(no_surat,3) as kode', FALSE);
 		$this->db->where('tahun', $tahun);
-		$this->db->where('document_jenis', $jenis);
+		$this->db->where('jenis_surat', $jenis);
 		$this->db->order_by('no_surat', 'DESC');
 		$this->db->limit(1);
 		$query = $this->db->get('document_keluar');

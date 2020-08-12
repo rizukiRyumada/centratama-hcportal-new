@@ -30,10 +30,10 @@
                                 <option value="">- Jenis Surat -</option>
                                 <?php 
                                     $role_id = $this->session->userdata('akses_surat_id');
-                                    $querySurat = "SELECT `jenis_surat`.`id`,`jenis_surat`
-                                                    FROM `jenis_surat`
-                                                    JOIN `user_access_surat` ON `jenis_surat`.`id` = `user_access_surat`.`surat_id`
-                                                    WHERE `user_access_surat`.`role_surat_id` = $role_id";
+                                    $querySurat = "SELECT `document_jenis`.`id`,`jenis_surat`
+                                                    FROM `document_jenis`
+                                                    JOIN `document_access` ON `document_jenis`.`id` = `document_access`.`surat_id`
+                                                    WHERE `document_access`.`role_surat_id` = $role_id";
                                     $jenis_surat = $this->db->query($querySurat)->result_array();
                                 ?>
                                 <?php foreach ($jenis_surat as $j) : ?>

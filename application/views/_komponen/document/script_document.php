@@ -61,6 +61,9 @@
             ]
         });
 
+        // order berdasarkan tanggal descending
+        $('#basicTable').DataTable().order([2, "desc"]).draw();
+
         // jenis surat filter
         $('#jenis-surat').change(function(){
             nTable.ajax.reload();

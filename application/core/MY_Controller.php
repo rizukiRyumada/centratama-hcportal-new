@@ -77,7 +77,40 @@ class AdminController extends MainController {
         parent::__construct();
         // load model
         $this->load->library('form_validation');
+        
+        // cek apa dia punya role admin atau maintenance
+        if($this->session->userdata('role_id') != 1 && $this->session->userdata('role_id') != 2){
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        }
+        
+        // cek akses jika dia role idnya 2 -> admin
+        if($this->session->userdata('role_id') == 2){
+			$this->cekAkses(); // cek akses
+        }
     }
+
+	// Admin Apps Checker -> cek apa admin punya akses sama aplikasi
+	protected function cekAkses(){
+		// cek akses menu pada url 1
+		$id_menu_sub = $this->_general_m->getOnce('id_menu_sub', 'user_menu_sub', array('url' => $this->uri->segment(1)))['id_menu_sub'];
+		// cek akses admin
+		if($this->_general_m->getRow('user_adminsapp', array('id_menu_sub' => $id_menu_sub, 'nik' => $this->session->userdata('nik'))) < 1){
+			show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+		}
+
+		// jika akses sub menu dibawahnya cek dengan 2 url
+		if(!empty($this->uri->segment(2))){
+			// cek apa dia punya akses buat sesi ini
+			if($this->session->userdata('role_id') == 2){
+				// ambil id menu sub
+				$id_menu_sub = $this->_general_m->getOnce('id_menu_sub', 'user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['id_menu_sub'];
+				// cek akses admin	
+				if($this->_general_m->getRow('user_adminsapp', array('id_menu_sub' => $id_menu_sub, 'nik' => $this->session->userdata('nik'))) < 1){
+					show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+				}
+			}
+		}
+	}
 }
 
 /**
