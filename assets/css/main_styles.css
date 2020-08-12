@@ -70,7 +70,7 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
 .navbar-nav > .user-menu > .dropdown-menu {
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
-    padding: .5rem;
+    padding: .5rem 0;
     width: unset;
 }
 
