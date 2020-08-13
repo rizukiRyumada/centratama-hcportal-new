@@ -250,6 +250,12 @@ function getMenu(){
     // [[{"id_menu_sub":"6-00","title":"Your Survey","url":"survey","is_active":"1","id_menu":"6","id_user":"2"},{"id_menu_sub":"6-10","title":"Service Excellence","url":"survey\/excellence","is_active":"1","id_menu":"6","id_user":"2"},{"id_menu_sub":"6-20","title":"Service Engagement","url":"survey\/engagement","is_active":"1","id_menu":"6","id_user":"2"},{"id_menu_sub":"6-30","title":"Your 360 Review","url":"survey\/360index","is_active":"1","id_menu":"6","id_user":"2"}]]
 
     // Array ( [0] => Array ( [id_menu] => 6 [title] => Survey [url] => survey [icon] => fas fa-file-alt [is_active] => 1 [id_user] => 2 ) ) 
+
+    // sort berdasarkan title menu
+    usort($menu, function($a, $b) {
+        return $a['title'] <=> $b['title'];
+    });
+    
     $data = array(
         'menu' => $menu,
         'submenu' => $sub_menu
