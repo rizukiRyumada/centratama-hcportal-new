@@ -138,11 +138,11 @@
         });
     });
 
-    $(document).ready(function() {
-        // Filter Jenis
-        $("#jenis").change(function() {
-            var id = $(this).val();
+    // Filter Jenis
+    $("#jenis").change(function() {
+        var id = $(this).val();
 
+        if(id != ""){
             $.ajax({
                 url: "<?= base_url('document/getSub') ?>",
                 method: "POST",
@@ -152,7 +152,7 @@
                 async: true,
                 dataType: "json",
                 success: function(data) {
-                    var html = "<option value=''>- Subjenis Surat -</option>";
+                    var html = "<option value=''>- Choose One -</option>";
                     var i;
                     for (i = 0; i < data.length; i++) {
                         html +=
@@ -162,45 +162,28 @@
                             data[i].tipe_surat +
                             "</option>";
                     }
-                    $("#tipe").html(html);
+                    $("#tipe").html(html); // masukkan option ke tag tipe
+                    $(".hasil").attr("placeholder", "Choose Document Subtype."); // ganti placeholder nomor
+                    $(".hasil").val(""); // kosongkan value hasil
+                    // $('#entity').prop('selectedIndex',0);// kembalikan entity ke default
                 }
             });
-            return false;
-        });
+        } else {
+            $("#tipe").html(""); // masukkan option ke tag tipe
+            $("#tipe").html("<option value=''>- Choose One -</option>"); // masukkan option ke tag tipe
+            $(".hasil").attr("placeholder", "Choose Document Type."); // ganti placeholder nomor
+            $(".hasil").val(""); // kosongkan value hasil
+        }
+        return false;
     });
 
-    $(document).ready(function() {
-        $("#entity").change(function() {
-            var entity = $("#entity").val();
-            var jenis = $("#jenis").val();
-            var sub = $("#tipe").val();
-            var isi = "";
+    $("#tipe").change(() => {
+        // $('#entity').prop('selectedIndex',0);// kembalikan entity ke default
+        cekEntitySubtype();
+    });
 
-            $.ajax({
-                url: "<?= base_url('document/lihatnomor') ?>",
-                method: "POST",
-                data: {
-                    jenis : jenis,
-                    entity: entity,
-                    sub: sub
-                },
-                async: true,
-                dataType: "json",
-                success: function(data) {
-                    isi =
-                        data.no +
-                        "/" +
-                        data.entity +
-                        "-HC/" +
-                        data.sub +
-                        "/" +
-                        data.bulan +
-                        "/" +
-                        data.tahun;
-                    $(".hasil").val(isi);
-                }
-            });
-        });
+    $("#entity").change(function() {
+        cekEntitySubtype();
     });
 </script>
 
@@ -219,10 +202,10 @@
         },
         messages: {
             no: {
-                required: "Please generate the Document Number by Choosing The Type of Document, Sub Type, and Entity.",
+                required: "Please generate the Document Number by Choosing The Type of Document, Sub Type, and then choose Entity.",
             },
             perihal: {
-                required: "Please enter the Perihal.",
+                required: "Please enter The Subject.",
             }
         },
         errorElement: 'span',
@@ -251,6 +234,71 @@
     //     messages: { 
     //         document_attach: "File must be JPG, GIF or PNG, less than 1MB" }
     // });
+
+    // function buat nomor surat
+    function buatNomor(){
+        var entity = $("#entity").val();
+        var jenis = $("#jenis").val();
+        var sub = $("#tipe").val();
+        var isi = "";
+
+        if(entity != "" && jenis != "" && sub != ""){
+            $.ajax({
+                url: "<?= base_url('document/lihatnomor') ?>",
+                method: "POST",
+                data: {
+                    jenis : jenis,
+                    entity: entity,
+                    sub: sub
+                },
+                async: true,
+                dataType: "json",
+                success: function(data) {
+                    isi =
+                        data.no +
+                        "/" +
+                        data.entity +
+                        "-HC/" +
+                        data.sub +
+                        "/" +
+                        data.bulan +
+                        "/" +
+                        data.tahun;
+                    $(".hasil").val(isi);
+                }
+            });
+        } else {
+            let msg = "";
+            let x = 0;
+            if(jenis == ""){
+                empty[x] = "jenis";
+                x++;
+            }
+            if(sub == ""){
+                empty[x] = "sub jenis";
+                x++;
+            }
+            if(entity == ""){
+                empty[x] = "entity";
+                x++;
+            }
+            if(x != 0){
+                for(let y = 0; y < x; y++){
+                    if(y == 0 && y != x) {
+                        msg += empty[y] + ", ";
+                    } else if(y < x && y+1 != x) {
+                        msg += empty[y] + ", ";
+                    } else if(y+1 == x){
+                        msg += empty[y] + "and ";
+                    } else if(y == x){
+                        msg += empty[y];
+                    }
+                }
+            }
+
+            console.log(msg);
+        }
+    }
 
     // function for delete document file
     function deleteFile(){
@@ -289,6 +337,24 @@
                 });
             }
         });
+    }
+
+    // function cek entity subtype
+    function cekEntitySubtype() {
+        let choosenEntity = $('#entity').val();
+        let choosenSubType = $('#tipe').val();
+
+        if(choosenEntity != "" && choosenSubType != ""){
+            buatNomor();
+        } else {
+            if(choosenSubType == ""){
+                $(".hasil").attr("placeholder", "Choose Document Subtype."); // ganti placeholder
+                $(".hasil").val(""); // kosongkan value hasil
+            } else {
+                $(".hasil").attr("placeholder", "Choose Entity."); // ganti placeholder
+                $(".hasil").val(""); // kosongkan value hasil
+            }
+        }
     }
 </script>
 
