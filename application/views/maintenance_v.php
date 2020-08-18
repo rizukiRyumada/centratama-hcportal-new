@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-sm-7 align-self-center">
-        <h1 class="text text-xl-center" >Under Construction</h1>
-        <p class="text text-center">Sorry but now this feature is under construction. <br> 
+        <h1 class="text text-center" >Under Construction</h1>
+        <p class="text text-center">Sorry, but now this feature is under construction.<br> 
         Please contact HC Care for more info</p>
         <br/>
         <p class="text-center">
