@@ -1,8 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Job_profile extends MainController {
-    // set variabel buat userapp admin
-    protected $userApp_admin = 0;
     
     public function __construct()
     {
@@ -16,20 +14,6 @@ class Job_profile extends MainController {
         $this->load->helper('email');
         // $this->load->helper('encryption');
         $this->load->helper('random_string');
-
-        // cek buat userapp admin di menusub health report
-        if($this->session->userdata('role_id') == 2){
-            // get menu id sekaligus ini daftar aplikasi
-            $id_menu = $this->_general_m->getOnce('id_menu', 'user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
-            $value = $this->_general_m->getRow('user_userapp_admins', array(
-                'id_menu' => $id_menu,
-                'nik' => $this->session->userdata('nik')
-            ));
-
-            if($value > 0){
-                $this->userApp_admin = 1;
-            }
-        }
     }
 
 /* -------------------------------------------------------------------------- */

@@ -32,10 +32,32 @@ class MainController extends MY_Controller {
 
         // main helper
         is_logged_in(); //Cek Login
-        $this->checkToken();
+        $this->checkToken(); // cek token
+        $this->userApp_admin = $this->cekUserAppAdmin(); // cek userapp admin
         
         date_default_timezone_set('Asia/Jakarta'); // set timezone
     }
+
+    protected function cekUserAppAdmin(){
+        // cek buat userapp admin di menusub health report
+        if($this->session->userdata('role_id') == 2){
+            // get menu id sekaligus ini daftar aplikasi
+            $id_menu = $this->_general_m->getOnce('id_menu', 'user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
+            $value = $this->_general_m->getRow('user_userapp_admins', array(
+                'id_menu' => $id_menu,
+                'nik' => $this->session->userdata('nik')
+            ));
+
+            if($value > 0){
+                return 1; // tandai sebagai iya
+            } else {
+                return 0; // tandai sebagai tidak
+            }
+        } else { // untuk user lain
+            return 0; // tandai sebagai tidak
+        }
+    }
+
     public function checkToken() {
         // Token Checker
         if(!empty($this->session->userdata('token'))){
@@ -134,6 +156,65 @@ class SuperAdminController extends MainController {
         }
     }
     
+}
+
+/**
+ * SpecialUserAppController
+ */
+class SpecialUserAppController extends MainController{
+    
+    
+    public function __construct() {
+        parent::__construct();
+        
+        // special user checker to check basic user who has special access based on user identifier
+        // superadmin has all access
+        if($this->session->userdata('role_id') == 1){
+            // superadmin can access all
+        // now the checker is used for admins and user
+        } elseif($this->session->userdata('role_id') == 2 || $this->session->userdata('role_id') == 3) {
+            // cek apa dia userapp admin
+            if($this->userApp_admin != 1){
+                $this->cekAkses();
+            } else {
+                // Userapp admin have all access
+            }
+        // other role disable access
+        } else {
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        }
+    }
+    
+    protected function cekAkses(){
+        // ambil rule dari id_menu
+        $id_menu = $this->_general_m->getOnce('id_menu', 'user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
+        $rule_menu = $this->_general_m->getAll('rule, rule_value', 'user_userapp_special', array('id_menu' => $id_menu));
+
+        // prepare variabel checker
+        $is_allowed = 0;
+        foreach($rule_menu as $v){
+            // cari rule dengan gabungin table master employee dan master position
+            $result = $this->_general_m->getJoin2tables(
+                'nik', 
+                'master_employee', 
+                'master_position', 
+                'master_employee.position_id = master_position.id',
+                array(
+                    'nik' => $this->session->userdata('nik'),
+                    $v['rule'] => $v['rule_value']
+                ));
+
+            if(!empty($result)){
+                $is_allowed++;
+                break 1;
+            }
+        }
+
+        // cek is_allowed
+        if($is_allowed < 1){
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        }
+    }
 }
 
 /* End of file MY_Controller.php */

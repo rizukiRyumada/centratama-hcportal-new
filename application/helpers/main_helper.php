@@ -222,6 +222,76 @@ function getMenu(){
             // gabungkan sub menu
             $sub_menu = array_merge($sub_menu, $sub_menu_admin);
         }
+    } elseif($CI->session->userdata('role_id') == 3) {
+        // ambil list menu tanpa setting
+        $menu = $CI->_general_m->getJoin2tables(
+            '*', 
+            'user_menu', 
+            'user_menu_access', 
+            'user_menu.id_menu = user_menu_access.id_menu', 
+            'id_user = '.$CI->session->userdata('role_id').
+            // this is for special menu
+            ' AND user_menu.id_menu != 5 
+            AND user_menu.id_menu != 7
+            AND user_menu.id_menu != 2'
+        );
+
+        // cari menu special
+        $x = 0; $y = 0; $sub_menu = array();
+        foreach($menu as $k => $v){
+            if($CI->_general_m->getRow('user_userapp_special', array('id_menu' => $v['id_menu'])) >= 1){
+                $menu_special[$x] = $v; // masukkan menu ke variabel special
+                $x++;
+                unset($menu[$k]); // hapus menu dari variabel menu
+            } else {
+                $temp_sub_menu = $CI->_general_m->getJoin2tables('*', 'user_menu_sub', 'user_menu_sub_access', 'user_menu_sub.id_menu_sub = user_menu_sub_access.id_menu_sub', array('id_menu' => $v['id_menu'], 'id_user' => $CI->session->userdata('role_id')));
+                foreach($temp_sub_menu as $v){
+                    $sub_menu[$y] = $v;
+                    $y++;
+                }
+            }
+        }
+        // cek akses menu special
+        if(!empty($menu_special)){
+            foreach($menu_special as $k => $v){
+                // ambil rule menu
+                $rule_menu = $CI->_general_m->getAll('rule, rule_value', 'user_userapp_special', array('id_menu' => $v['id_menu']));
+
+                // prepare variabel checker
+                $is_allowed = 0;
+                foreach($rule_menu as $v){
+                    // cari rule dengan gabungin table master employee dan master position
+                    $result = $CI->_general_m->getJoin2tables(
+                        'nik', 
+                        'master_employee', 
+                        'master_position', 
+                        'master_employee.position_id = master_position.id',
+                        array(
+                            'nik' => $CI->session->userdata('nik'),
+                            $v['rule'] => $v['rule_value']
+                        ));
+
+                    if(!empty($result)){
+                        $is_allowed++;
+                        break 1;
+                    }
+                }
+
+                // cek is_allowed
+                if($is_allowed < 1){
+                    unset($menu_special[$k]);
+                } else { // ambil submenu
+                    $temp_sub_menu = $CI->_general_m->getJoin2tables('*', 'user_menu_sub', 'user_menu_sub_access', 'user_menu_sub.id_menu_sub = user_menu_sub_access.id_menu_sub', array('id_menu' => $v['id_menu'], 'id_user' => $CI->session->userdata('role_id')));
+                    foreach($temp_sub_menu as $v){
+                        $sub_menu[$y] = $v;
+                        $y++;
+                    }
+                }
+            }
+            // gabungkan menu
+            $menu = array_merge($menu, $menu_special);
+        }
+        
     } else {
         // ambil list menu tanpa setting
         $menu = $CI->_general_m->getJoin2tables(
