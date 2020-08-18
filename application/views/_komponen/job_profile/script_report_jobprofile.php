@@ -2,11 +2,13 @@
 $(document).ready(function () {
     var mTable = $('#myTask').DataTable({
         responsive: true,
+        deferRender: true,
+        pagingType: 'full_numbers',
         'dom': 'Bfrtip',
         'buttons': [
             {
                 extend: 'excel',
-                text: 'Export to Excel',
+                text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to Excel',
                 title: '',
                 filename: 'Report Job Profile-<?= date("dmo-Hi"); ?>',
                 exportOptions: {
