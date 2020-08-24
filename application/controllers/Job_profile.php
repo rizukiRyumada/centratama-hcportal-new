@@ -105,7 +105,7 @@ class Job_profile extends MainController {
 		    // $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
             $data['load_view'] = 'job_profile/myjp_editor_jobprofile_v';
             // additional styles and custom script
-            $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
+            $data['custom_script'] = array('plugins/datatables/script_datatables', 'plugins/ckeditor/script_ckeditor.php', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
         } else {
             $data['approval'] = $approval;
 
@@ -152,7 +152,7 @@ class Job_profile extends MainController {
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables', 'job_profile/styles_jobprofile.php');
 		$data['custom_styles'] = array('jobprofile_styles');
-        $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile', 'job_profile/script_edit_jobprofile');
+        $data['custom_script'] = array('plugins/datatables/script_datatables', 'plugins/ckeditor/script_ckeditor.php', 'job_profile/script_jobprofile', 'job_profile/script_edit_jobprofile');
         
 		$this->load->view('main_v', $data);
     }
@@ -196,7 +196,7 @@ class Job_profile extends MainController {
             // $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
             $data['load_view'] = 'job_profile/reportjp_editor_jobprofile_v';
             // additional styles and custom script
-            $data['custom_script'] = array('plugins/datatables/script_datatables', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
+            $data['custom_script'] = array('plugins/datatables/script_datatables', 'plugins/ckeditor/script_ckeditor.php', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
 
             // $this->load->view('templates/user_header', $data);
             // $this->load->view('templates/user_sidebar', $data);
