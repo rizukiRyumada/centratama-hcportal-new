@@ -3,12 +3,20 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Divisi_model extends CI_Model {
+    protected $table = "master_division";
 
     public function getAll()
     {
         $this->db->select('master_division.*, master_employee.emp_name');
         $this->db->from('master_division');
         $this->db->join('master_employee', 'master_employee.nik = master_division.nik_div_head');
+        return $this->db->get()->result_array();
+    }
+
+    public function getOnceById($id){
+        $this->db->select('id, division');
+        $this->db->from($this->table);
+        $this->db->where('id', $id);
         return $this->db->get()->result_array();
     }
 
@@ -42,6 +50,10 @@ class Divisi_model extends CI_Model {
         $this->db->select('*');
         $this->db->from('master_division');
         return $this->db->get()->result_array();
+    }
+
+    public function getWhere($where){
+        return $this->db->get_where($this->table, $where)->result_array();
     }
 }
 

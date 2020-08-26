@@ -3,6 +3,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Jobpro_model extends CI_Model {
+    // list table
+    protected $table = array(
+        'approval' => 'jobprofile_approval'
+    );
 
     public function getMyprofile($nik)
     {
@@ -204,6 +208,11 @@ class Jobpro_model extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+    //  ambil data approval
+    public function getApproval($id_posisi){
+        return $this->db->get_where($this->table['approval'], array('id_posisi' => $id_posisi))->row_array();
+    }
+
     public function updateApproval($data, $id_posisi){
         $this->db->where('id_posisi', $id_posisi);
         $this->db->update('jobprofile_approval', $data);
@@ -216,6 +225,29 @@ class Jobpro_model extends CI_Model {
     public function update($table, $where, $data){
         $this->db->where($where['db'], $where['server']);
         $this->db->update($table, $data);
+    }
+
+    // GET JobProfile Data
+    public function getJobProfileData($posisi){
+        //load model
+        // $this->load->model('Jobpro_model');
+        $data['posisi']        = $posisi;
+        $data['mydiv']         = $this->getDetail("*", 'master_division', array('id' => $posisi['div_id']));
+        $data['mydept']        = $this->getDetail('*', 'master_department', array('id' => $posisi['dept_id']));
+        $data['staff']         = $this->getStaff($posisi['id']);
+        $data['tujuanjabatan'] = $this->getProfileJabatan($posisi['id']);
+
+        $data['tujuanjabatan'] = $this->getProfileJabatan($posisi['id']);                                                     //data tujuan jabatan
+        $data['ruangl']        = $this->getDetail('*', 'jobprofile_ruanglingkup', array('id_posisi' => $posisi['id']));       //data ruang lingkup
+        $data['tu_mu']         = $this->getDetail('*', 'jobprofile_tantangan', array('id_posisi' => $posisi['id']));          // data tanggung jawab dan masalah utama
+        $data['kualifikasi']   = $this->getDetail('*', 'jobprofile_kualifikasi', array('id_posisi' => $posisi['id']));
+        $data['jenk']          = $this->getDetail('*', 'jobprofile_jenjangkar', array('id_posisi' => $posisi['id']));
+        $data['hub']           = $this->getDetail('*', 'jobprofile_hubkerja', array('id_posisi' => $posisi['id']));
+        $data['tgjwb']         = $this->getDetails('*', 'jobprofile_tanggungjawab', array('id_posisi' => $posisi['id']));
+        $data['wen']           = $this->getDetails('*', 'jobprofile_wewenang', array('id_posisi' => $posisi['id']));
+        $data['atasan']        = $this->getDetail('position_name', 'master_position', array('id' => $posisi['id_atasan1']));
+
+        return $data; // kembalikan data
     }
 }
 

@@ -3,6 +3,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dept_model extends CI_Model {
+    protected $table = "master_department";
 
     public function getAll()
     {
@@ -36,6 +37,13 @@ class Dept_model extends CI_Model {
 
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('master_department', $data);
+    }
+
+    function getDetailById($dept_id){
+        $this->db->select('id, nama_departemen');
+        $this->db->from($this->table);
+        $this->db->where('id', $dept_id);
+        return $this->db->get()->result_array();
     }
 
 }
