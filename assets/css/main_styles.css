@@ -8,7 +8,7 @@ html {
     scroll-behavior: smooth;
 }
 
-/* ------------------------------ Class styles ----------------------------- */
+/* ------------------------------ Main Class Styles Replacement ----------------------------- */
 .btn{
     border-radius: 2em;
 }
@@ -27,9 +27,14 @@ html {
     border-radius: 1.5rem;
 }
 
+/* form control input group styles */
+.input-group-append span.input-group-text{
+    border-radius: 0 1.5rem 1.5rem 0;
+}
+
 /* input-text */
 .input-group-text{
-    border-radius: 5em 0 0 5em;
+    border-radius: 1.5em 0 0 1.5em;
 }
 
 /* custom color and hover */
