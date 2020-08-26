@@ -6,9 +6,12 @@ class Job_profile extends MainController {
     {
         parent::__construct();
         // load model
-        $this->load->model('Jobpro_model');
-        $this->load->model('Divisi_model');
-        $this->load->model('Dept_model');
+        $this->load->model([
+            'Jobpro_model', 
+            'Divisi_model',
+            'Dept_model',
+            'posisi_m'
+        ]);
 
         // load helper
         $this->load->helper('email');
@@ -133,9 +136,31 @@ class Job_profile extends MainController {
     public function taskJp(){
         // prepare the data
         $nik = $this->input->get('task');
-        $id_posisi = $this->input->get('id');
+        $id_posisi = $this->input->get('id'); // posisi karyawan
+        $my_position = $this->posisi_m->getMyPosition();
         $data = $this->getDataJP($nik, $id_posisi);
-        $data['status'] = $this->input->get('status');
+        // $data['status'] = $this->input->get('status');
+
+        // cek akses taskJP
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+            // nothing
+        } else {
+            if(empty($this->db->query("SELECT * FROM master_position WHERE (id_approver1='".$my_position['id']."' AND id='".$id_posisi."') OR (id_approver2='".$my_position['id']."' AND id='".$id_posisi."')")->result())){ //cek kalo dia punya akses terhadap karyawan tersebut
+                show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+                exit;
+            } else {
+                //nothing
+            };      
+        }
+
+        // ambil status jp
+        $approval = $this->Jobpro_model->getApproval($id_posisi);
+        $data['status'] = $approval['status_approval'];
+
+        // cek status berdasarkan status jp
+        if($data['status'] == 0 || $data['status'] == 3 || $data['status'] == 4){
+            show_404();
+        }
         
         $data['pos'] = $this->Jobpro_model->getAllPosition();
         $data['title'] = 'My Task';
@@ -176,7 +201,7 @@ class Job_profile extends MainController {
             // nothing
         } else {
             if(empty($this->db->query("SELECT * FROM master_position WHERE (id_approver1='".$my_position_id."' AND id='".$id_posisi."') OR (id_approver2='".$my_position_id."' AND id='".$id_posisi."')")->result())){ //cek kalo dia punya akses terhadap karyawan tersebut
-                // show_404();
+                show_404();
                 exit;
             } else {
                 //nothing
