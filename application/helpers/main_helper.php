@@ -259,7 +259,7 @@ function getMenu(){
 
                 // prepare variabel checker
                 $is_allowed = 0;
-                foreach($rule_menu as $v){
+                foreach($rule_menu as $value){
                     // cari rule dengan gabungin table master employee dan master position
                     $result = $CI->_general_m->getJoin2tables(
                         'nik', 
@@ -268,7 +268,7 @@ function getMenu(){
                         'master_employee.position_id = master_position.id',
                         array(
                             'nik' => $CI->session->userdata('nik'),
-                            $v['rule'] => $v['rule_value']
+                            $value['rule'] => $value['rule_value']
                         ));
 
                     if(!empty($result)){
