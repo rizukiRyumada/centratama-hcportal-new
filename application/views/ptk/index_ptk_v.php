@@ -27,6 +27,8 @@
         </div>
     </div>
 </div>
+
+<!-- main tabs -->
 <div class="row">
     <div class="col">
         <div class="card card-success card-tabs">
