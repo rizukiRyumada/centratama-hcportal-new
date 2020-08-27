@@ -15,8 +15,10 @@
   "dependencies": {
     "admin-lte": "^3.0.5",
     "chartjs-plugin-datalabels": "^0.7.0",
+    "ckeditor4": "^4.14.1",
     "orgchart": "^2.1.10",
     "pdfobject": "^2.1.1",
-    "tableexport": "^5.2.0"
+    "tableexport": "^5.2.0",
+    "tippy.js": "^6.2.6"
   }
 }
