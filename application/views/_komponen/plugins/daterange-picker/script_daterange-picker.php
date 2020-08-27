@@ -28,27 +28,27 @@
         console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
     });
 
-    $('.datepicker').daterangepicker({
-        autoUpdateInput: false,
-        "singleDatePicker": true,
-        "showDropdowns": true,
-        "minYear": 1989,
-        "maxYear": 2580,
-        "showWeekNumbers": true,
-        "showISOWeekNumbers": true,
-        "autoApply": false,
-        // "startDate": "<?= date('m/d/o', time()); ?>",
-        // "endDate": "<?= date('m/d/o', time()); ?>",
-        "drops": "auto",
-        "opens": "center"
-    }, function(start, end, label) {
-        console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-    });
+    // $('.datepicker').daterangepicker({
+    //     autoUpdateInput: false,
+    //     "singleDatePicker": true,
+    //     "showDropdowns": true,
+    //     "minYear": 1989,
+    //     "maxYear": 2580,
+    //     "showWeekNumbers": true,
+    //     "showISOWeekNumbers": true,
+    //     "autoApply": false,
+    //     // "startDate": "<?= date('m/d/o', time()); ?>",
+    //     // "endDate": "<?= date('m/d/o', time()); ?>",
+    //     "drops": "auto",
+    //     "opens": "center"
+    // }, function(start, end, label) {
+    //     console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+    // });
 
-    $('input[name="datefilter"]').daterangepicker({
-        autoUpdateInput: false,
-        locale: {
-            cancelLabel: 'Clear'
-        }
-    });
+    // $('input[name="datefilter"]').daterangepicker({
+    //     autoUpdateInput: false,
+    //     locale: {
+    //         cancelLabel: 'Clear'
+    //     }
+    // });
 </script>
