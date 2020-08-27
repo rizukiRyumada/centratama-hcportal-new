@@ -25,7 +25,8 @@ class Ptk extends SpecialUserAppController {
         'entity' => 'master_entity',
         'department' => 'master_department',
         'division' => 'master_division',
-        'position' => 'master_position'
+        'position' => 'master_position',
+        'location' => 'master_location'
     );
     
     public function __construct() {
@@ -103,6 +104,7 @@ class Ptk extends SpecialUserAppController {
             $data['education'] = $this->_general_m->getAll('*', 'ptk_education', array()); // education
             // TODO dari javascript MPP dari table position
             $data['data_atasan'] = $this->posisi_m->whoAtasanS(); // ambil data atasan 1 dan 2
+            $data['work_location'] = $this->_general_m->getAll('id, location', $this->table['location'], array());
 
             // sorting
             usort($data['entity'], function($a, $b) { return $a['keterangan'] <=> $b['keterangan']; }); // sort berdasarkan title menu
@@ -121,9 +123,9 @@ class Ptk extends SpecialUserAppController {
             // $data['page_title'] = "Create New Form ".$this->page_title['index'];
             $data['load_view'] = 'ptk/createNew_ptk_v';
             // additional styles and custom script
-            // $data['additional_styles'] = array();
+            $data['additional_styles'] = array('plugins/datepicker/styles_datepicker');
             // $data['custom_styles'] = array();
-            $data['custom_script'] = array('plugins/jqueryValidation/script_jqueryValidation', 'plugins/daterange-picker/script_daterange-picker', 'plugins/ckeditor/script_ckeditor.php', 'ptk/script_createNew_ptk');
+            $data['custom_script'] = array('plugins/jqueryValidation/script_jqueryValidation', 'plugins/datepicker/script_datepicker', 'plugins/ckeditor/script_ckeditor.php', 'ptk/script_createNew_ptk');
             
             $this->load->view('main_v', $data);
         } else {
@@ -144,14 +146,8 @@ class Ptk extends SpecialUserAppController {
 /* -------------------------------------------------------------------------- */
 /*                               OTHER Functions                              */
 /* -------------------------------------------------------------------------- */
-    public function ajax_viewer_jobProfile(){
-        
-    }
-
-    public function viewer_jobProfile($id_posisi){
-        // data posisi
-        $position_my = $this->posisi_m->getMyPosition();
-        $position = $this->posisi_m->getOnceWhere(array('id' => $id_posisi));
+    // cek akses buat frame viewer
+    public function cekakses_viewer($position_my, $position){
         // cek apa dia admin atau userapp admin
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
             // perbolehkan akses bebas
@@ -172,6 +168,15 @@ class Ptk extends SpecialUserAppController {
             }
         }
         // cek otoritas apa divisi id dan dept idnya sama antara my position dengan id posisi yang dituju
+    }
+
+    // viewer job profile
+    public function viewer_jobProfile($id_posisi){
+        // data posisi
+        $position_my = $this->posisi_m->getMyPosition();
+        $position = $this->posisi_m->getOnceWhere(array('id' => $id_posisi));
+        // cek akses
+        $this->cekakses_viewer($position_my, $position);
         
         // load Job Profile model
         $this->load->model('jobpro_model');
@@ -181,7 +186,7 @@ class Ptk extends SpecialUserAppController {
         // $data = $this->getDataJP($nik, $id_posisi);
 
         // ambil data position
-        $data   = $this->jobpro_model->getJobProfileData($position);  // get data Job Profile
+        $data = $this->jobpro_model->getJobProfileData($position);  // get data Job Profile
 
         // get data status
         // $data['status'] = $this->input->get('status');
@@ -195,14 +200,68 @@ class Ptk extends SpecialUserAppController {
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
 		// $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
-        $data['page_title'] = 'Task Job Profile';
+        // $data['page_title'] = 'Task Job Profile';
         // $data['userApp_admin'] = $this->userApp_admin;
 		$data['load_view'] = 'ptk/jobProfile_ptk_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables', 'job_profile/styles_jobprofile.php');
 		$data['custom_styles'] = array('jobprofile_styles');
-        $data['custom_script'] = array('plugins/datatables/script_datatables', 'plugins/ckeditor/script_ckeditor.php', 'job_profile/script_jobprofile', 'job_profile/script_edit_jobprofile');
+        $data['custom_script'] = array('job_profile/script_jobprofile', 'job_profile/script_view_jobprofile');        
         
+		$this->load->view('main_frame_v', $data);
+    }
+
+    // viewer orgchart
+    public function viewer_jobProfile_orgchart($id_posisi) {
+        // data posisi
+        $position_my = $this->posisi_m->getMyPosition();
+        $position = $this->posisi_m->getOnceWhere(array('id' => $id_posisi));
+        // cek akses
+        $this->cekakses_viewer($position_my, $position);
+
+        // load Job Profile model
+        $this->load->model('jobpro_model');
+
+        // ambil dan olah data chart
+        // cek jika atasan 1 bukan CEO dan 0
+        if($position['id_atasan1'] != 0){
+            // if($data_position['id_atasan1'] != 1 && $data_position['id_atasan1'] != 0){
+            // Olah data orgchart
+            $org_data = $this->jobpro_model->getOrgChartData($position['id']);
+        } elseif($position['id_atasan1'] != 0 && $position['div_id'] == 1){
+            $org_data = $this->jobpro_model->getOrgChartData($position['id']);
+        // } elseif($position['id_atasan1'] == 1){
+        //     $org_data = $this->olahDataChart($position['id']);
+        } else {
+            //siapkan data null
+            $org_data[0] = json_encode(null);
+            $org_data[1] = json_encode(null);
+            $org_data[2] = json_encode(null);
+            $org_data[3] = 0;
+            $org_data[4] = 0;
+        }
+
+        $data['orgchart_data'] = $org_data[0]; //masukkan data orgchart yang sudah diolah ke JSON
+        $data['orgchart_data_assistant1'] = $org_data[1];
+        $data['orgchart_data_assistant2'] = $org_data[2];
+        $data['assistant_atasan1'] = $org_data[3];
+        $data['atasan'] = $org_data[4];
+
+        $data['title'] = 'My Task';
+        $data['jp_user'] = $this->db->get_where('master_employee', ['nik' => $this->session->userdata('nik')])->row_array();
+
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+		// $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
+        // $data['page_title'] = 'Task Job Profile';
+        // $data['userApp_admin'] = $this->userApp_admin;
+		$data['load_view'] = 'ptk/jobProfile_orgchart_ptk_v';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables', 'job_profile/styles_jobprofile.php');
+		$data['custom_styles'] = array('jobprofile_styles');
+        $data['custom_script'] = array('job_profile/script_jobprofile', 'job_profile/script_view_jobprofile');        
         
 		$this->load->view('main_frame_v', $data);
     }

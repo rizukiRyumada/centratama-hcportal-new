@@ -1,4 +1,4 @@
-<script src="<?= base_url('/assets/js/iframe-resize/iframeResizer.min.js'); ?>"></script>
+<!-- <script src="<?php // base_url('/assets/js/iframe-resize/iframeResizer.min.js'); ?>"></script> -->
 <script>
     // $('#ptkForm').validate({
     //     rules: {
@@ -148,6 +148,24 @@
         }
     });
 
+    // Work Locations Other input checkbox
+    $('#work_location_otherTrigger'). on('change', function(){
+        if($('#work_location_otherTrigger').prop('checked') == true) {
+            // jika diceklis, tampilkan input free text work location
+            $('input[name="work_location_text"]').val('');
+            $('input[name="work_location_text"]').show();
+            $('select[name="work_location_choose"]').hide();
+            // pilih, pilihan pertama selected option location list
+            $('select[name="work_location_choose"]').prop('selectedIndex', 0);
+        } else if($('#work_location_otherTrigger').prop('checked') == false) {
+            // jika tidak diceklis, tampilkan pilihan work location
+            $('select[name="work_location_choose"]').show();
+            $('input[name="work_location_text"]').hide();
+            // isi dummy text di input free text work location
+            $('input[name="work_location_text"]').val('-');
+        }
+    });
+
     // ambil data job profile ketika dropdown berubah
     $("#positionInput").on('change', function() {
         let id_posisi = $(this).children("option:selected").val();
@@ -161,6 +179,7 @@
 
             let jobprofile_viewer = $("#viewer_jobprofile");
             jobprofile_viewer.attr('src', '<?= base_url('ptk/viewer_jobProfile'); ?>/'+id_posisi);
+            $('#viewer_jobprofile_orgchart').attr('src', '<?= base_url('ptk/viewer_jobProfile_orgchart'); ?>/'+id_posisi);
             // iFrameResize({log:true}, '#viewer_jobprofile');
             // iFrameResize({
             //     log: true, // Enable console logging
@@ -198,86 +217,20 @@
             //     )
             //     }
             // })
-
-            // console.log(jobprofile_viewer);
-            // jobprofile_viewer.src = '<?= base_url('ptk/viewer_jobProfile'); ?>/'+id_posisi;
-            // el.src = url; // assign url to src property
-            // jobprofile_viewer.src = jobprofile_viewer.src;
-            // jobprofile_viewer.style.height = jobprofile_viewer.contentWindow.document.body.scrollHeight + 'px';
-
-            // $("#viewer_jobprofile").onload = function() { 
-            // $("#viewer_jobprofile").style.height = $("#viewer_jobprofile").contentWindow.document.body.scrollHeight + 'px'; } 
-
-            // jobprofile_viewer.children().css('background', 'blue');
-
-            // Adjusting the iframe height onload event
-            // jobprofile_viewer.onload = function(){
-            // }
-
-            // console.log(jobprofile_viewer.contentWindow.document.body.scrollHeight + 'px');
-
-            // set iframe height
-            // setIframeHeight(jobprofile_viewer);
-            // jobprofile_viewer.style.height = jobprofile_viewer.contentWindow.document.documentElement.scrollHeight + 'px';
-
-            // $(jobprofile_viewer+" > " + document).ready(function() {
-            //     jobprofile_viewer.css('height', $(jobprofile_viewer+" > html").height()+'px');
-            // });
-            // here you can make the height, I delete it first, then I make it again
-            // iFrameID.height = "";
-            
-            // var doc = jobprofile_viewer.contentDocument? jobprofile_viewer.contentDocument: 
-            //     jobprofile_viewer.contentWindow.document;
-            // jobprofile_viewer.attr('height', getDocHeight( doc ) + 4 + "px");
-
-            // set otomas=tis tinggi iframe
-            // var ifrm = jobprofile_viewer;
-            // var doc = ifrm.contentDocument? ifrm.contentDocument: 
-            //     ifrm.contentWindow.document;
-            // ifrm.style.visibility = 'hidden';
-            // // ifrm.style.height = "10px"; // reset to minimal height ...
-            // // IE opt. for bing/msn needs a bit added or scrollbar appears
-            // ifrm.style.height = getDocHeight( doc ) + 4 + "px";
-            // ifrm.style.visibility = 'visible';
-
-            // console.log(getDocHeight( doc ) + 4 + "px");
         } else {
             // sembunyikan tab job Profile dan orgChart
             $('#tab_jobProfile').fadeOut();
             $('#tab_orgChart').fadeOut();
-
-            // $('#positionInput').prop('selectedIndex',0);// kembalikan status ke default
-
-            // remove job profile and organization chart
         }
+    });
+
+    // Customized Form Validation
+    $('#ptkForm').submit(function() {
+        console.log('submitted');
     });
 
 /* -------------------------------------------------------------------------- */
 /*                                // Functions                                */
 /* -------------------------------------------------------------------------- */
-    // set Iframe Height
-    // function setIframeHeight(id) {
-    //     var ifrm = id;
-    //     var doc = ifrm.contentDocument? ifrm.contentDocument: 
-    //         ifrm.contentWindow.document;
-    //     ifrm.style.visibility = 'hidden';
-    //     ifrm.style.height = "10px"; // reset to minimal height ...
-    //     // IE opt. for bing/msn needs a bit added or scrollbar appears
-    //     ifrm.style.height = getDocHeight( doc ) + 4 + "px";
-    //     ifrm.style.visibility = 'visible';
-    // }
-
-    // function getDocHeight(doc) {
-    //     doc = doc || document;
-    //     // stackoverflow.com/questions/1145850/
-    //     var body   = doc.body, html = doc.documentElement;
-    //     var height = Math.max( body.scrollHeight, body.offsetHeight, 
-    //         html.clientHeight, html.scrollHeight, html.offsetHeight );
-    //     return height;
-    // }
+    
 </script>
-<!-- 
-<script type="text/javascript">
-function AdjustIframeHeightOnLoad() { document.getElementById("form-iframe").style.height = document.getElementById("form-iframe").contentWindow.document.body.scrollHeight + "px"; }
-function AdjustIframeHeight(i) { document.getElementById("form-iframe").style.height = parseInt(i) + "px"; }
-</script> -->

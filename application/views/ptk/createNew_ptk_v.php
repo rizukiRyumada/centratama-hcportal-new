@@ -1,4 +1,6 @@
 <!-- TODO Create Manual Validation -->
+<!-- TODO Pasang Tippy.js -->
+<!-- Submition form -->
 
 <!-- banner -->
 <div class="row mb-3 pl-2 px-3">
@@ -114,7 +116,24 @@
                                     <div class="form-group row mb-0">
                                         <label for="workLocationForm" class="col-sm-4 col-form-label">Work Location</label>
                                         <div class="col-sm-8">
-                                            <input type="text" name="work_location" class="form-control" id="workLocationForm" placeholder="Where to be placed at?" value="<?php echo set_value('work_location'); ?>" required>
+                                            <!-- <input id="workLocation_text" type="text" name="work_location_text" class="form-control" id="workLocationForm" placeholder="Where to be placed at?" value="<?php echo set_value('work_location'); ?>" required> -->
+                                            <div class="row h-100">
+                                                <div class="col-9">
+                                                    <select name="work_location_choose" class="custom-select" >
+                                                        <option selected value="-">Select Work Location...</option>
+                                                        <?php foreach($work_location as $v): ?>
+                                                            <option value="<?= $v['id']; ?>"><?= $v['location']; ?></option>
+                                                        <?php endforeach;?>
+                                                    </select>
+                                                    <input type="text" name="work_location_text" placeholder="Where to be placed at?" value="<?php echo set_value('work_location'); ?>" class="form-control" style="display: none;" value="-" required>
+                                                </div>
+                                                <div class="col-3 align-self-center">
+                                                    <div class="icheck-primary">
+                                                        <input type="checkbox" name="work_location_otherTrigger" id="work_location_otherTrigger" >
+                                                        <label for="work_location_otherTrigger">Other</label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -180,6 +199,7 @@
                                         <label for="mppReq" class="col-sm-5 col-form-label">Manpower required</label>
                                         <div class="col-sm-7">
                                             <div class="input-group">
+                                                <!-- TODO tambah fungsi max mengikuti di database -->
                                                 <input type="number" class="form-control" id="mppReq" name="mpp_req" min="1" max="5">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">person(s)</span>
@@ -221,14 +241,11 @@
                                 <div class="col-lg-6">
                                     <div class="form-group row">
                                         <label for="inputEmail3" class="col-sm-5 col-form-label">Date Required</label>
-                                        <!-- <div class="col-sm-7">
-                                            <input type="date" class="form-control" id="inputEmail3" placeholder="Email">
-                                        </div> -->
                                         <div class="col-sm-7 input-group mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                                             </div>
-                                            <input type="text" name="date_required" class="datepicker form-control" placeholder="Click or Tap to choose date" value="<?php echo set_value('date_required'); ?>" required>
+                                            <input type="text" name="date_required" class="pickadate form-control" placeholder="Click or Tap to choose date" value="<?php echo set_value('date_required'); ?>" required>
                                         </div>
                                     </div>
                                 </div>
@@ -486,7 +503,7 @@
 /* ------------------------------------------------------------------------------- */ -->
                     <!-- Tab form Job Profile -->
                     <div class="tab-pane fade" id="custom-tabs-jobProfile" role="tabpanel" aria-labelledby="custom-tabs-jobProfile-tab">
-                        <div class="card card-danger">
+                        <div class="card card-gray box-shadow-none border-0">
                             <div class="card-header p-0 pb-1">
                                 <h3 class="card-title"></h3>
                                 <div class="card-tools">
@@ -504,8 +521,17 @@
 
                     <!-- Tab form Organization Chart -->
                     <div class="tab-pane fade" id="custom-tabs-orgchart" role="tabpanel" aria-labelledby="custom-tabs-orgchart-tab">
-                        <!-- NOW tampilkan orgchart -->
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum deserunt incidunt nemo consequuntur tempore veniam voluptates! Delectus est tenetur blanditiis dolore eum iste ipsa odio, adipisci earum a sit vero.
+                        <div class="card card-gray">
+                            <div class="card-header p-0 pb-1">
+                                <h3 class="card-title"></h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand"></i></button>
+                                </div><!-- /.card-tools -->
+                            </div><!-- /.card-header -->
+                            <div class="card-body p-0" style="height: 600px">
+                                <iframe id="viewer_jobprofile_orgchart" frameborder="0" scrolling="yes" style="width: 100%; height:100%; overflow: visible"></iframe>
+                            </div><!-- /.card-body -->
+                        </div>
                     </div><!-- /Tab form Organization Chart -->
                 </div>
             </div>
