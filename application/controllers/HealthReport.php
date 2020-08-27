@@ -299,7 +299,6 @@ class HealthReport extends MainController {
         return $array; 
     } 
       
-    // TODO tambah penanda buat nampilin data dia doang kalo dia bukan admin dan userapp admin
     public function ajax_getReportData(){
         // siapkan variable where
         $where = '';

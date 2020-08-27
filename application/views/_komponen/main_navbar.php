@@ -1,4 +1,3 @@
-<!-- TODO fix menu bar padding on profile -->
 <!-- main navbar -->
 <nav class="main-header navbar navbar-expand navbar-dark navbar-primary ">
     <!-- Left navbar links -->

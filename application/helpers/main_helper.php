@@ -27,7 +27,6 @@ function is_logged_in(){
 
         $suburl = $CI->uri->segment(2);
 
-        //TODO ubah survey menu ke user menu
         $queryMenu = $CI->db->get_where('user_menu', ['url' => $url])->row_array(); // cari informasi url yang diakses
         $queryMenuSub = $CI->db->get_where('user_menu_sub', array('url' => $url. '/' .$suburl))->row_array(); // cari informasi sub url yang diakses
 

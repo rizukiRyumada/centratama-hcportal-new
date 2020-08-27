@@ -1,6 +1,5 @@
 <?php
 
-// TODO upload document dalam pdf, doc, excel
 // TODO tambah status upload doc
 
 defined('BASEPATH') OR exit('No direct script access allowed');

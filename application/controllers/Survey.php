@@ -1,5 +1,4 @@
 <?php  
-// TODO pindahkan setting survey ke menu survey jadi report yang bisa baca admin dan userapp admin
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Survey extends MainController {
@@ -507,7 +506,7 @@ class Survey extends MainController {
                 ' AND div_id = "'.$data_employe['div_id'].
                 '" AND nik != "'.$data_employe['nik'].'"'
             );
-            // FIXME
+            // TODO bedakan Functional-div dan Functional-dept
             //ambil data teman sebaya Functional-div di divisi dan deptnya
             $data_peers = array_merge($data_peers, $this->f360getEmployeDetail(
                 'hirarki_org = "Functional-div"'.
@@ -564,7 +563,7 @@ class Survey extends MainController {
                 '" AND dept_id != "'.$data_employe['dept_id'].
                 '" AND nik != "'.$data_employe['nik'].'"'
             );
-            //FIXME
+            // TODO bedakan Functional-div dan Functional-dept
             //ambil data teman sebaya Functional-div di divisi dan deptnya
             $data_other_function = array_merge($data_other_function, $this->f360getEmployeDetail(
                 'hirarki_org = "Functional-div"'.
