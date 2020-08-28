@@ -1,6 +1,7 @@
 <!-- TODO Create Manual Validation -->
 <!-- TODO Pasang Tippy.js -->
-<!-- Submition form -->
+<!-- TODO Submition form -->
+<!-- NOW replacement input form -->
 
 <!-- banner -->
 <div class="row mb-3 pl-2 px-3">
@@ -120,7 +121,7 @@
                                             <div class="row h-100">
                                                 <div class="col-9">
                                                     <select name="work_location_choose" class="custom-select" >
-                                                        <option selected value="-">Select Work Location...</option>
+                                                        <option selected value="">Select Work Location...</option>
                                                         <?php foreach($work_location as $v): ?>
                                                             <option value="<?= $v['id']; ?>"><?= $v['location']; ?></option>
                                                         <?php endforeach;?>

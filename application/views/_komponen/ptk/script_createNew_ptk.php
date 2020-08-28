@@ -101,21 +101,36 @@
     //     }
     // });
 
+    // Job Position Selector
+    var input_jptext = $('input[name="job_position_text"]'); // selector job position text
+    var input_jpchoose = $('select[name="job_position_choose"]'); // selector job position text
     // Job Position Form trigger from budget radio button
     $('input[name="budget"]').on('change', function() {
-        $("#budgetAlert").hide();
+        $("#budgetAlert").hide(); // sembunyikan overlay job position alert
+        // setting buat jquery validate
+        $('input[name="budget"]').parent().parent().parent().parent().addClass('border-gray-light').removeClass('border-danger');
+        $('input[name="budget"]').removeClass('is-invalid');
+        $('#unbudgettedRadio').parent().remove('.invalid-tooltip');
         if($('input[name="budget"]:checked').val() == 0) { // cek jika unbudgeted
-            $('input[name="job_position_text"]').fadeIn(); // tampilkan free text buat nulis nama job 
-            $('select[name="job_position_choose"]').hide(); // sembunyikan pilihan posisi job
+            input_jptext.fadeIn(); // tampilkan free text buat nulis nama job 
+            input_jpchoose.hide(); // sembunyikan pilihan posisi job
             $('#positionInput').prop('selectedIndex',0);// kembalikan status ke default - position chooser
 
             // sembunyikan tab job Profile dan orgChart
             $('#tab_jobProfile').fadeOut();
             $('#tab_orgChart').fadeOut();
+
+            // remove valid and invalid class
+            input_jpchoose.removeClass('is-valid').removeClass('is-invalid'); // remove class invalid
+            input_jpchoose.parent().remove('.invalid-tooltip'); // remove class invalid
         } else if($('input[name="budget"]:checked').val() == 1) { // cek jika budgeted
-            $('select[name="job_position_choose"]').fadeIn(); // tampilkan pilihan job position 
-            $('input[name="job_position_text"]').hide(); // sembunyikan free text job profile
-            $('input[name="job_position_text"]').val(''); // kosongkan kotak job_position_text
+            input_jpchoose.fadeIn(); // tampilkan pilihan job position 
+            input_jptext.hide(); // sembunyikan free text job profile
+            input_jptext.val(''); // kosongkan kotak job_position_text
+
+            // remove valid and invalid class
+            input_jptext.removeClass('is-valid').removeClass('is-invalid'); // remove class invalid
+            input_jptext.parent().remove('.invalid-tooltip'); // remove class invalid
         }
     });
 
@@ -148,21 +163,29 @@
         }
     });
 
+    // work location selector
+    var input_WLtext = $('input[name="work_location_text"]');
+    var input_WLchoose = $('select[name="work_location_choose"]');
+    var input_WLtrigger = $('#work_location_otherTrigger');
     // Work Locations Other input checkbox
-    $('#work_location_otherTrigger'). on('change', function(){
-        if($('#work_location_otherTrigger').prop('checked') == true) {
+    input_WLtrigger.on('change', function(){
+        if(input_WLtrigger.prop('checked') == true) {
             // jika diceklis, tampilkan input free text work location
-            $('input[name="work_location_text"]').val('');
-            $('input[name="work_location_text"]').show();
-            $('select[name="work_location_choose"]').hide();
+            input_WLtext.val('');
+            input_WLtext.show();
+            input_WLchoose.hide();
             // pilih, pilihan pertama selected option location list
-            $('select[name="work_location_choose"]').prop('selectedIndex', 0);
-        } else if($('#work_location_otherTrigger').prop('checked') == false) {
+            input_WLchoose.prop('selectedIndex', 0);
+            $(input_WLchoose).removeClass('is-invalid').removeClass('is-valid'); // add class invalid
+            $(input_WLchoose).parent().remove('.is-invalid'); // show error tooltip
+        } else if(input_WLtrigger.prop('checked') == false) {
             // jika tidak diceklis, tampilkan pilihan work location
-            $('select[name="work_location_choose"]').show();
-            $('input[name="work_location_text"]').hide();
+            input_WLchoose.show();
+            input_WLtext.hide();
             // isi dummy text di input free text work location
-            $('input[name="work_location_text"]').val('-');
+            input_WLtext.val('');
+            $(input_WLtext).removeClass('is-invalid').removeClass('is-valid'); // add class invalid
+            $(input_WLtext).parent().remove('.is-invalid'); // show error tooltip
         }
     });
 
@@ -224,13 +247,299 @@
         }
     });
 
-    // Customized Form Validation
-    $('#ptkForm').submit(function() {
-        console.log('submitted');
+    /* -------------------------------------------------------------------------- */
+    /*                        Single input form validation                        */
+    /* -------------------------------------------------------------------------- */
+    // message validation
+    var choose = "Please choose one.";
+    var fill = "This field is required.";
+
+    // tooltip validation
+    var msg_choose = '<div class="invalid-tooltip">'+choose+'</div>' ;
+    var msg_fill = '<div class="invalid-tooltip">'+fill+'</div>' ;
+
+    var input_select = [
+        {input: "entity", name: "Entity"},
+        {input: "job_level", name: "Job Level"},
+        {input: "emp_stats", name: "Status of Employement"},
+        {input: "education", name: "Education"},
+        {input: "sex", name: "Sex"}
+    ];
+
+    // validation entity
+    let validate_entity = $('select[name="' + input_select[0].input + '"]');
+    validate_entity.on('change', function() {
+        validate_entity.removeClass('is-invalid'); // remove class invalid
+        validate_entity.removeClass('is-valid'); // remove class invalid
+        validate_entity.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            validate_entity.addClass('is-valid'); // remove class invalid
+            validate_entity.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            validate_entity.addClass('is-invalid'); // remove class invalid
+            validate_entity.parent().append(msg_choose); // show error tooltip
+        }
     });
 
-/* -------------------------------------------------------------------------- */
-/*                                // Functions                                */
-/* -------------------------------------------------------------------------- */
-    
+    // validation job_level
+    let validate_job_level = $('select[name="' + input_select[1].input + '"]');
+    validate_job_level.on('change', function() {
+        validate_job_level.removeClass('is-invalid'); // remove class invalid
+        validate_job_level.removeClass('is-valid'); // remove class invalid
+        validate_job_level.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            validate_job_level.addClass('is-valid'); // remove class invalid
+            validate_job_level.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            validate_job_level.addClass('is-invalid'); // remove class invalid
+            validate_job_level.parent().append(msg_choose); // show error tooltip
+        }
+    });
+
+    // validation emp_stats
+    let validate_empstats = $('select[name="' + input_select[2].input + '"]');
+    validate_empstats.on('change', function() {
+        validate_empstats.removeClass('is-invalid'); // remove class invalid
+        validate_empstats.removeClass('is-valid'); // remove class invalid
+        validate_empstats.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            validate_empstats.addClass('is-valid'); // remove class invalid
+            validate_empstats.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            validate_empstats.addClass('is-invalid'); // remove class invalid
+            validate_empstats.parent().append(msg_choose); // show error tooltip
+        }
+    });
+
+    // validation education
+    let validate_education = $('select[name="' + input_select[3].input + '"]');
+    validate_education.on('change', function() {
+        validate_education.removeClass('is-invalid'); // remove class invalid
+        validate_education.removeClass('is-valid'); // remove class invalid
+        validate_education.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            validate_education.addClass('is-valid'); // remove class invalid
+            validate_education.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            validate_education.addClass('is-invalid'); // remove class invalid
+            validate_education.parent().append(msg_choose); // show error tooltip
+        }
+    });
+
+    // validation sex
+    let validate_sex = $('select[name="' + input_select[4].input + '"]');
+    validate_sex.on('change', function() {
+        validate_sex.removeClass('is-invalid'); // remove class invalid
+        validate_sex.removeClass('is-valid'); // remove class invalid
+        validate_sex.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            validate_sex.addClass('is-valid'); // remove class invalid
+            validate_sex.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            validate_sex.addClass('is-invalid'); // remove class invalid
+            validate_sex.parent().append(msg_choose); // show error tooltip
+        }
+    });
+
+    // validate job profile free text
+    input_jptext.on('keyup', function() {
+        input_jptext.removeClass('is-invalid'); // remove class invalid
+        input_jptext.removeClass('is-valid'); // remove class invalid
+        input_jptext.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            input_jptext.addClass('is-valid'); // remove class invalid
+            input_jptext.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            input_jptext.addClass('is-invalid'); // remove class invalid
+            input_jptext.parent().append(msg_fill); // show error tooltip
+        }
+    });
+    // validate job profile chooser
+    input_jpchoose.on('change', function() {
+        input_jpchoose.removeClass('is-invalid'); // remove class invalid
+        input_jpchoose.removeClass('is-valid'); // remove class invalid
+        input_jpchoose.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            input_jpchoose.addClass('is-valid'); // remove class invalid
+            input_jpchoose.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            input_jpchoose.addClass('is-invalid'); // remove class invalid
+            input_jpchoose.parent().append(msg_choose); // show error tooltip
+        }
+    });
+
+    // validate work location text
+    input_WLtext.on('keyup', function() {
+        input_WLtext.removeClass('is-invalid'); // remove class invalid
+        input_WLtext.removeClass('is-valid'); // remove class invalid
+        input_WLtext.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            input_WLtext.addClass('is-valid'); // remove class invalid
+            input_WLtext.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            input_WLtext.addClass('is-invalid'); // remove class invalid
+            input_WLtext.parent().append(msg_fill); // show error tooltip
+        }
+    });
+    // validate work location chooser
+    input_WLchoose.on('change', function() {
+        input_WLchoose.removeClass('is-invalid'); // remove class invalid
+        input_WLchoose.removeClass('is-valid'); // remove class invalid
+        input_WLchoose.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            input_WLchoose.addClass('is-valid'); // remove class invalid
+            input_WLchoose.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            input_WLchoose.addClass('is-invalid'); // remove class invalid
+            input_WLchoose.parent().append(msg_choose); // show error tooltip
+        }
+    });
+
+    /* -------------------------------------------------------------------------- */
+    /*                        // Customized Form Validation                       */
+    /* -------------------------------------------------------------------------- */
+    $('#ptkForm').submit(function() {
+        // console.log('submitted');
+        // validate counter and message variable
+        let msg_validate = "<ul>";
+        let letScroll = "";
+        let counter_validate = 0;
+
+        Swal.fire({
+            icon: 'info',
+            title: 'Checking form validation...',
+            html: '<p>Validating the form before submitting to the server.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false
+        });
+
+        // cek validasi select form
+        $.each(input_select, function(index, value){
+            let now_validate = $('select[name="' + value.input + '"]');
+            if(now_validate.val() == ""){
+                now_validate.addClass('is-invalid'); // add class invalid
+                now_validate.parent().append(msg_choose); // show error tooltip
+                msg_validate += "<li>"+value.name+" is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // now_validate.removeClass('is-invalid'); // remove class invalid
+                // nothing
+            }
+        });
+
+        // cek validasi job position
+        let msg_validate_jp = "<li>Job Position is empty</li>";
+        if($('input[name="budget"]:checked').val() == 0) { // cek jika unbudgeted
+            if($(input_jptext).val() == ""){
+                $(input_jptext).addClass('is-invalid'); // add class invalid
+                $(input_jptext).parent().append(msg_fill); // show error tooltip
+                msg_validate += msg_validate_jp; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+        } else if($('input[name="budget"]:checked').val() == 1) { // cek jika budgeted
+            if(input_jpchoose.val() == ""){
+                input_jpchoose.addClass('is-invalid'); // add class invalid
+                input_jpchoose.parent().append(msg_choose); // show error tooltip
+                msg_validate += msg_validate_jp; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+        } else {
+            $('input[name="budget"]').parent().parent().parent().parent().removeClass('border-gray-light').addClass('border-danger');
+            $('input[name="budget"]').addClass('is-invalid');
+            $('#unbudgettedRadio').parent().append(msg_choose);
+        }
+
+        // validate work location
+        let msg_validate_wl = "<li>Work Location is empty</li>"
+        if(input_WLtrigger.prop('checked') == true) {
+            // jika diceklis, tampilkan input free text work location
+            if($(input_WLtext).val() == ""){
+                $(input_WLtext).addClass('is-invalid'); // add class invalid
+                $(input_WLtext).parent().append(msg_fill); // show error tooltip
+                msg_validate += msg_validate_wl; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+        } else if(input_WLtrigger.prop('checked') == false) {
+            // jika tidak diceklis, tampilkan pilihan work location
+            if(input_WLchoose.val() == ""){
+                input_WLchoose.addClass('is-invalid'); // add class invalid
+                input_WLchoose.parent().append(msg_choose); // show error tooltip
+                msg_validate += msg_validate_wl; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+        }
+        
+        // tutup list error message validate
+        msg_validate += "</ul>";
+        // cek apa ada form error
+        if(counter_validate != 0){
+            // List empty form popup
+            $(document).Toasts('create', {
+                class: 'bg-danger', 
+                title: 'List of Empty Form',
+                subtitle: 'Lets fill it',
+                position: 'bottomRight',
+                body: msg_validate + "Please look at red mark or border."
+            })
+            // tampilkan pesan error dalam swal
+            Swal.fire({
+                title: 'Form Validation Error',
+                html: "Please fill the required input form.",
+                icon: 'error',
+                showCancelButton: false,
+                // confirmButtonColor: '#99FF99',
+                // cancelButtonColor: '#d33',
+                confirmButtonText: 'Ok, I wiil check it.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            }).then((result) => {
+                if (result.value) {
+                    var el = $('select#entityInput');
+                    var elOffset = el.offset().top;
+                    var elHeight = el.height();
+                    var windowHeight = $(window).height();
+                    var offset;
+
+                    if (elHeight < windowHeight) {
+                        offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+                    }
+                    else {
+                        offset = elOffset;
+                    }
+                    $([document.documentElement, document.body]).animate({ //for animation
+                        scrollTop: offset
+                    }, 750);
+                }
+            });
+
+            // batalkan pengiriman form
+            return false;
+        } else {
+            // kirimkan form
+            // return true;
+
+            // show submitting swal notification
+            Swal.fire({
+                icon: 'info',
+                title: 'Submitting the form...',
+                html: '<p>Form validation completed, Please Wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                showConfirmButton: false,
+                // allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            });
+            return false;
+        }
+    });
 </script>
