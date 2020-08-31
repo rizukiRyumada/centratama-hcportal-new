@@ -101,16 +101,28 @@
     //     }
     // });
 
+    // CKEDITOR Instances
+    CKEDITOR.replace( 'ska' );
+    CKEDITOR.replace( 'req_special' );
+    CKEDITOR.replace( 'outline' );
+    CKEDITOR.replace( 'main_responsibilities' );
+    CKEDITOR.replace( 'tasks' );
+
     // Job Position Selector
     var input_jptext = $('input[name="job_position_text"]'); // selector job position text
     var input_jpchoose = $('select[name="job_position_choose"]'); // selector job position text
+    var input_budget = $('input[name="budget"]');
+    var input_budget_checked = $('input[name="budget"]:checked');
     // Job Position Form trigger from budget radio button
-    $('input[name="budget"]').on('change', function() {
+    input_budget.on('change', function() {
         $("#budgetAlert").hide(); // sembunyikan overlay job position alert
         // setting buat jquery validate
-        $('input[name="budget"]').parent().parent().parent().parent().addClass('border-gray-light').removeClass('border-danger');
-        $('input[name="budget"]').removeClass('is-invalid');
-        $('#unbudgettedRadio').parent().remove('.invalid-tooltip');
+        input_budget.parent().parent().parent().parent().addClass('border-gray-light').removeClass('border-danger');
+        input_budget.removeClass('is-invalid');
+        $('#unbudgettedRadio').siblings('.invalid-tooltip').remove(); // hapus tooltip invalid 
+        
+        console.log($('input[name="budget"]:checked').val());
+        
         if($('input[name="budget"]:checked').val() == 0) { // cek jika unbudgeted
             input_jptext.fadeIn(); // tampilkan free text buat nulis nama job 
             input_jpchoose.hide(); // sembunyikan pilihan posisi job
@@ -122,7 +134,7 @@
 
             // remove valid and invalid class
             input_jpchoose.removeClass('is-valid').removeClass('is-invalid'); // remove class invalid
-            input_jpchoose.parent().remove('.invalid-tooltip'); // remove class invalid
+            input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else if($('input[name="budget"]:checked').val() == 1) { // cek jika budgeted
             input_jpchoose.fadeIn(); // tampilkan pilihan job position 
             input_jptext.hide(); // sembunyikan free text job profile
@@ -130,7 +142,7 @@
 
             // remove valid and invalid class
             input_jptext.removeClass('is-valid').removeClass('is-invalid'); // remove class invalid
-            input_jptext.parent().remove('.invalid-tooltip'); // remove class invalid
+            input_jptext.siblings('.invalid-tooltip').remove(); // remove class invalid
         }
     });
 
@@ -140,7 +152,7 @@
     // Replacement form trigger
     input_replacement.on('change', () => {
         // remove validation class
-        input_replacement_who.parent().remove('.invalid-tooltip'); // remove class invalid
+        input_replacement_who.siblings('.invalid-tooltip').remove(); // remove class invalid
         input_replacement_who.removeClass('is-invalid'); // remove class invalid
         if(input_replacement.prop("checked") == true) { // cek jika replacement check box dicek
             input_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
@@ -151,12 +163,15 @@
     });
     // Replacement who free text
     input_replacement_who.on('keyup', function() {
+        // remove validation class
+        input_replacement_who.siblings('.invalid-tooltip').remove(); // remove invalid tooltip
+        input_replacement_who.removeClass('is-invalid'); // remove class invalid
         if(input_replacement_who.val() == ""){
             $(input_replacement_who).addClass('is-invalid'); // add class invalid
             $(input_replacement_who).parent().append(msg_fill); // show error tooltip
         } else {
             $(input_replacement_who).removeClass('is-invalid'); // remove class invalid
-            $(input_replacement_who).parent().remove(".invalid-tooltip"); // hide error tooltip
+            input_replacement_who.siblings('.invalid-tooltip').remove(); // remove invalid tooltip
         }
     });
 
@@ -169,23 +184,56 @@
     input_resource.on('change', function() {
         input_resource_internal.parent().parent().parent().removeClass('border border-danger');
         input_resource_internal.removeClass('is-invalid');
-        input_resource_internal.parent().remove('.invalid-tooltip');
-        if(input_resource_checked.val() == "int") { // cek jika internal radio button
+        input_resource_internal.siblings('.invalid-tooltip').remove();
+        if($('input[name="resources"]:checked').val() == "int") { // cek jika internal radio button
             input_resource_internalwho.slideDown(); // tampilkan input text internal_who
-        } else if(input_resource_checked.val() == "ext") { // cek jika external radio button
+        } else if($('input[name="resources"]:checked').val() == "ext") { // cek jika external radio button
             input_resource_internalwho.slideUp(); // sembunyikan input text internal_who
+            input_resource_internalwho.removeClass('is-invalid');
+            input_resource_internalwho.siblings('.invalid-tooltip').remove();
+        }
+    });
+    input_resource_internalwho.on('keyup', function() {
+        input_resource_internalwho.removeClass('is-invalid');
+        input_resource_internalwho.siblings('.invalid-tooltip').remove();
+        if(input_resource_internalwho.val() == ""){
+            input_resource_internalwho.addClass('is-invalid'); // add class invalid
+            input_resource_internalwho.parent().append(msg_fill); // show error tooltip
         }
     });
 
+    //NOW
+    // variabel input name Work Experience
+    var input_workexp = $('input[name="work_exp"]');
+    var input_workexp_checked = $('input[name="work_exp"]:checked');
+    var input_workexp_years = $('#we_years');
+    var input_workexp_yearstext = $('input[name="work_exp_years"]');
     // Work Experience Radio button Internal form
-    $('input[name="work_exp"]').on('change', function() {
+    input_workexp.on('change', function() {
+        input_workexp.parent().parent().parent().parent().parent().removeClass('border border-danger'); // hapus border
+        input_workexp.removeClass('is-invalid'); // hapus kelas invalid
+        $('#experiencedRadio').siblings('.invalid-tooltip').remove(); // hapus tooltip invalid
         if($('input[name="work_exp"]:checked').val() == 1) { // cek jika cekbox work experience
-            $('#we_years').fadeIn(); // tampilkan kotak free text tahun
+            input_workexp_years.fadeIn(); // tampilkan kotak free text tahun
         } else if($('input[name="work_exp"]:checked').val() == 0) { // cek jika cekbox fresh graduate
-            $('#we_years').fadeOut(); // sembunyikan kotak free text tahun
-            $('input[name="work_exp_years"]').val(''); // kosongkan kotak we_years
+            input_workexp_years.fadeOut(); // sembunyikan kotak free text tahun
+            input_workexp_yearstext.val(''); // kosongkan kotak we_years
+            // remove validation years text
+            input_workexp_yearstext.removeClass('is-invalid'); // remove class invalid
+            input_workexp_yearstext.siblings('.invalid-tooltip').remove(); // remove error tooltip
         }
     });
+    // Work Experience Years text validation
+    // input_workexp_yearstext.on('keyup', function() {
+    //     input_workexp_yearstext.removeClass('is-invalid'); // remove class invalid
+    //     input_workexp_yearstext.siblings('.invalid-tooltip').remove(); // remove error tooltip
+    //     if(input_workexp_yearstext.val() == ""){
+    //         input_workexp_yearstext.addClass('is-invalid'); // add class invalid
+    //         input_workexp_yearstext.parent().append(msg_fill); // show error tooltip
+    //     } else {
+    //         // nothing
+    //     }
+    // });
 
     // work location selector
     var input_WLtext = $('input[name="work_location_text"]');
@@ -201,7 +249,7 @@
             // pilih, pilihan pertama selected option location list
             input_WLchoose.prop('selectedIndex', 0);
             $(input_WLchoose).removeClass('is-invalid').removeClass('is-valid'); // add class invalid
-            $(input_WLchoose).parent().remove('.invalid-tooltip'); // show error tooltip
+            $(input_WLchoose).siblings('.invalid-tooltip').remove(); // show error tooltip
         } else if(input_WLtrigger.prop('checked') == false) {
             // jika tidak diceklis, tampilkan pilihan work location
             input_WLchoose.show();
@@ -209,15 +257,15 @@
             // isi dummy text di input free text work location
             input_WLtext.val('');
             $(input_WLtext).removeClass('is-invalid').removeClass('is-valid'); // add class invalid
-            $(input_WLtext).parent().remove('.invalid-tootip'); // show error tooltip
+            $(input_WLtext).siblings('.invalid-tooltip').remove(); // show error tooltip
         }
     });
     // validate work location text
     input_WLtext.on('keyup', function() {
         input_WLtext.removeClass('is-invalid'); // remove class invalid
-        input_WLtext.parent().remove('.invalid-tooltip'); // remove class invalid
+        input_WLtext.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
-            input_WLtext.parent().remove('.invalid-tooltip'); // remove class invalid
+            input_WLtext.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
             input_WLtext.addClass('is-invalid'); // remove class invalid
             input_WLtext.parent().append(msg_fill); // show error tooltip
@@ -245,8 +293,6 @@
             // tampilkan tab job Profile dan orgChart
             $('#tab_jobProfile').fadeIn();
             $('#tab_orgChart').fadeIn();
-
-            console.log(id_posisi);
 
             let jobprofile_viewer = $("#viewer_jobprofile");
             jobprofile_viewer.attr('src', '<?= base_url('ptk/viewer_jobProfile'); ?>/'+id_posisi);
@@ -300,11 +346,13 @@
     /* -------------------------------------------------------------------------- */
     // message validation
     var choose = "Please choose one.";
-    var fill = "This field is required.";
+    var fill   = "This field is required.";
+    var number = "The input is required and should be number.";
 
     // tooltip validation
     var msg_choose = '<div class="invalid-tooltip">'+choose+'</div>' ;
-    var msg_fill = '<div class="invalid-tooltip">'+fill+'</div>' ;
+    var msg_fill   = '<div class="invalid-tooltip">'+fill+'</div>' ;
+    var msg_number = '<div class="invalid-tooltip">'+number+'</div>'
 
     var input_select = [
         {input: "entity", name: "Entity"},
@@ -319,10 +367,10 @@
     validate_entity.on('change', function() {
         validate_entity.removeClass('is-invalid'); // remove class invalid
         validate_entity.removeClass('is-valid'); // remove class invalid
-        validate_entity.parent().remove('.invalid-tooltip'); // remove class invalid
+        validate_entity.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
             validate_entity.addClass('is-valid'); // remove class invalid
-            validate_entity.parent().remove('.invalid-tooltip'); // remove class invalid
+            validate_entity.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
             validate_entity.addClass('is-invalid'); // remove class invalid
             validate_entity.parent().append(msg_choose); // show error tooltip
@@ -334,10 +382,10 @@
     validate_job_level.on('change', function() {
         validate_job_level.removeClass('is-invalid'); // remove class invalid
         validate_job_level.removeClass('is-valid'); // remove class invalid
-        validate_job_level.parent().remove('.invalid-tooltip'); // remove class invalid
+        validate_job_level.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
             validate_job_level.addClass('is-valid'); // remove class invalid
-            validate_job_level.parent().remove('.invalid-tooltip'); // remove class invalid
+            validate_job_level.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
             validate_job_level.addClass('is-invalid'); // remove class invalid
             validate_job_level.parent().append(msg_choose); // show error tooltip
@@ -349,10 +397,10 @@
     validate_empstats.on('change', function() {
         validate_empstats.removeClass('is-invalid'); // remove class invalid
         validate_empstats.removeClass('is-valid'); // remove class invalid
-        validate_empstats.parent().remove('.invalid-tooltip'); // remove class invalid
+        validate_empstats.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
             validate_empstats.addClass('is-valid'); // remove class invalid
-            validate_empstats.parent().remove('.invalid-tooltip'); // remove class invalid
+            validate_empstats.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
             validate_empstats.addClass('is-invalid'); // remove class invalid
             validate_empstats.parent().append(msg_choose); // show error tooltip
@@ -364,10 +412,10 @@
     validate_education.on('change', function() {
         validate_education.removeClass('is-invalid'); // remove class invalid
         validate_education.removeClass('is-valid'); // remove class invalid
-        validate_education.parent().remove('.invalid-tooltip'); // remove class invalid
+        validate_education.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
             validate_education.addClass('is-valid'); // remove class invalid
-            validate_education.parent().remove('.invalid-tooltip'); // remove class invalid
+            validate_education.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
             validate_education.addClass('is-invalid'); // remove class invalid
             validate_education.parent().append(msg_choose); // show error tooltip
@@ -379,10 +427,10 @@
     validate_sex.on('change', function() {
         validate_sex.removeClass('is-invalid'); // remove class invalid
         validate_sex.removeClass('is-valid'); // remove class invalid
-        validate_sex.parent().remove('.invalid-tooltip'); // remove class invalid
+        validate_sex.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
             validate_sex.addClass('is-valid'); // remove class invalid
-            validate_sex.parent().remove('.invalid-tooltip'); // remove class invalid
+            validate_sex.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
             validate_sex.addClass('is-invalid'); // remove class invalid
             validate_sex.parent().append(msg_choose); // show error tooltip
@@ -393,10 +441,10 @@
     input_jptext.on('keyup', function() {
         input_jptext.removeClass('is-invalid'); // remove class invalid
         // input_jptext.removeClass('is-valid'); // remove class invalid
-        input_jptext.parent().remove('.invalid-tooltip'); // remove class invalid
+        input_jptext.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
             // input_jptext.addClass('is-valid'); // remove class invalid
-            input_jptext.parent().remove('.invalid-tooltip'); // remove class invalid
+            input_jptext.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
             input_jptext.addClass('is-invalid'); // remove class invalid
             input_jptext.parent().append(msg_fill); // show error tooltip
@@ -406,13 +454,56 @@
     input_jpchoose.on('change', function() {
         input_jpchoose.removeClass('is-invalid'); // remove class invalid
         input_jpchoose.removeClass('is-valid'); // remove class invalid
-        input_jpchoose.parent().remove('.invalid-tooltip'); // remove class invalid
+        input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
             input_jpchoose.addClass('is-valid'); // remove class invalid
-            input_jpchoose.parent().remove('.invalid-tooltip'); // remove class invalid
+            input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
             input_jpchoose.addClass('is-invalid'); // remove class invalid
             input_jpchoose.parent().append(msg_choose); // show error tooltip
+        }
+    });
+
+    // validate Date Required
+    var input_daterequired = $('input[name="date_required"]');
+    input_daterequired.on('keyup change', function(){
+        input_daterequired.removeClass('is-invalid'); // hapus kelas is invalid
+        input_daterequired.siblings('.invalid-tooltip').remove();
+        if(input_daterequired.val() == ""){
+            input_daterequired.addClass('is-invalid'); // tambah kelas invalid
+            input_daterequired.parent().append(msg_fill); // tampilkan pesan error
+        } else {
+            // nothing
+        }
+    });
+
+    // validate Majoring
+    var input_majoring = $('input[name="majoring"]');
+    input_majoring.on('keyup change', function(){
+        input_majoring.removeClass('is-invalid'); // hapus kelas is invalid
+        input_majoring.siblings('.invalid-tooltip').remove();
+        if(input_majoring.val() == ""){
+            input_majoring.addClass('is-invalid'); // tambah kelas invalid
+            input_majoring.parent().append(msg_fill); // tampilkan pesan error
+        } else {
+            // nothing
+        }
+    });
+
+    // input type number validation
+    $('input[type="number"]').on('change keyup', function() {
+        $(this).removeClass('is-invalid'); // remove class invalid
+        $(this).siblings('.invalid-tooltip').remove(); // remove error tooltip
+        if($.isNumeric($(this).val()) != true) { // cek jika value kosong
+            if($(this).val() == ""){ // cek value yang diinput user
+                $(this).addClass('is-invalid'); // add class invalid
+                $(this).parent().append(msg_number); // show error tooltip
+            } else {
+                $(this).addClass('is-invalid'); // add class invalid
+                $(this).parent().append(msg_number); // show error tooltip
+            }
+        } else {
+            // nothing
         }
     });
 
@@ -471,8 +562,8 @@
                 // nothing
             }
         } else {
-            $('input[name="budget"]').parent().parent().parent().parent().removeClass('border-gray-light').addClass('border-danger');
-            $('input[name="budget"]').addClass('is-invalid');
+            input_budget.parent().parent().parent().parent().removeClass('border-gray-light').addClass('border-danger');
+            input_budget.addClass('is-invalid');
             $('#unbudgettedRadio').parent().append(msg_choose);
         }
 
@@ -513,7 +604,7 @@
         }
 
         // validate resource form
-        if(input_resource_checked.val() == "int") {
+        if($('input[name="resources"]:checked').val() == "int") {
             if(input_resource_internalwho.val() == ""){
                 input_resource_internalwho.addClass('is-invalid'); // add class invalid
                 input_resource_internalwho.parent().append(msg_fill); // show error tooltip
@@ -522,7 +613,7 @@
             } else {
                 // nothing
             }
-        } else if(input_resource_checked.val() == "ext"){
+        } else if($('input[name="resources"]:checked').val() == "ext"){
             // nothing
         } else {
             input_resource_internal.parent().parent().parent().addClass('border border-danger');
@@ -531,7 +622,126 @@
             msg_validate += "<li>Resource is empty</li>"; // pesan empty
             counter_validate++; // validate counter add
         }
+
+        // variable man power required
+        let input_mpp = $('input[name="mpp_req"]');
+        // validate Man Power Required
+        if(input_mpp.val() == ""){
+            input_mpp.addClass('is-invalid'); // add class invalid
+            input_mpp.parent().append(msg_number); // show error tooltip
+            msg_validate += "<li>Man Power Required is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        } else {
+            // nothing
+        }
+
+        let input_preferage = $('input[name="preferred_age"]');
+        // validate preferred age
+        if(input_preferage.val() ==""){
+            input_preferage.addClass('is-invalid'); // add class invalid
+            input_preferage.parent().append(msg_number); // show error tooltip
+            msg_validate += "<li>Preferred Age is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        } else {
+            // nothing
+        }
+
+        // NOW
+        // validate work experience
+        if($('input[name="work_exp"]:checked').val() == 1) { // cek jika cekbox work experience
+            if(input_workexp_yearstext.val() == ""){
+                input_workexp_yearstext.addClass('is-invalid'); // add class invalid
+                input_workexp_yearstext.parent().append(msg_number); // show error tooltip
+                msg_validate += "<li>Work Experience Years is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            }
+        } else if($('input[name="work_exp"]:checked').val() == 0) { // cek jika cekbox fresh graduate
+            // nothing
+        } else {
+            input_workexp.parent().parent().parent().parent().parent().addClass('border border-danger');
+            input_workexp.addClass('is-invalid');
+            $('#experiencedRadio').parent().append(msg_choose);
+            msg_validate += "<li>Work Experience not choosen</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        }
+
+        // validate Date Required
+        if(input_daterequired.val() == ""){
+            input_daterequired.addClass('is-invalid'); // tambah kelas invalid
+            input_daterequired.parent().append(msg_fill); // tampilkan pesan error
+            msg_validate += "<li>Date Required is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        } else {
+            // nothing
+        }
+
+        // validate majoring
+        if(input_majoring.val() == ""){
+            input_majoring.addClass('is-invalid'); // tambah kelas invalid
+            input_majoring.parent().append(msg_fill); // tampilkan pesan error
+            msg_validate += "<li>Majoring is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        } else {
+            // nothing
+        }
+
+        // take data of ckeditor data
+        let textarea_ska = CKEDITOR.instances['ska'].getData();
+        let textarea_reqspecial = CKEDITOR.instances['req_special'].getData();
+        let textarea_outline = CKEDITOR.instances['outline'].getData();
+        let textarea_mainrespon = CKEDITOR.instances['main_responsibilities'].getData();
+        let textarea_tasks = CKEDITOR.instances['tasks'].getData();
         
+        // validate skill, knowledge, and abilities
+        let textarea_selector_ska = $('textarea#ska');
+        if(textarea_ska == ""){
+            textarea_selector_ska.parent().parent().addClass('border border-danger');
+            msg_validate += "<li>Skill, Knowledge, and Abilities is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        } else {
+            textarea_selector_ska.parent().parent().removeClass('border border-danger');
+        }
+
+        // validate special requirement
+        // let textarea_selector_reqspecial = $('textarea#req_special');
+        // if(textarea_reqspecial == ""){
+        //     textarea_selector_reqspecial.parent().parent().addClass('border border-danger');
+        //     msg_validate += "<li>Special Requirement is empty</li>"; // pesan empty
+        //     counter_validate++; // validate counter add
+        // } else {
+        //     textarea_selector_reqspecial.parent().parent().removeClass('border border-danger');
+        // }
+
+        // validate outline textarea
+        let textarea_selector_outline = $('textarea#outline');
+        if(textarea_outline == ""){
+            textarea_selector_outline.parent().parent().addClass('border border-danger');
+            msg_validate += "<li>Outline is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        } else {
+            textarea_selector_outline.parent().parent().removeClass('border border-danger');
+        }
+
+        // validate main responsibilities textarea
+        let textarea_selector_mainrespon = $('textarea#main_responsibilities');
+        if(textarea_mainrespon == ""){
+            textarea_selector_mainrespon.parent().parent().addClass('border border-danger');
+            msg_validate += "<li>Main Responsibilities is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        } else {
+            textarea_selector_mainrespon.parent().parent().removeClass('border border-danger');
+        }
+
+        // validate tasks textarea
+        let textarea_selector_tasks = $('textarea#tasks');
+        if(textarea_tasks == ""){
+            textarea_selector_tasks.parent().parent().addClass('border border-danger');
+            msg_validate += "<li>Tasks is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        } else {
+            textarea_selector_tasks.parent().parent().removeClass('border border-danger');
+        }
+
         // tutup list error message validate
         msg_validate += "</ul>";
         // cek apa ada form error

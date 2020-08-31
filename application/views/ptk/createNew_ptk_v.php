@@ -243,10 +243,10 @@
                                     <div class="form-group row">
                                         <label for="inputEmail3" class="col-sm-5 col-form-label">Date Required</label>
                                         <div class="col-sm-7 input-group mb-3">
-                                            <div class="input-group-prepend">
+                                            <input type="text" name="date_required" class="pickadate form-control" placeholder="Click or Tap to choose date" value="<?php echo set_value('date_required'); ?>" required>
+                                            <div class="input-group-append">
                                                 <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                                             </div>
-                                            <input type="text" name="date_required" class="pickadate form-control" placeholder="Click or Tap to choose date" value="<?php echo set_value('date_required'); ?>" required>
                                         </div>
                                     </div>
                                 </div>
@@ -358,7 +358,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label>Skill, Knowledge, and Abilities</label>
-                                        <textarea name="ska" class="form-control ckeditor" rows="3" placeholder="Enter ..." required ><?php echo set_value('ska'); ?></textarea>
+                                        <textarea name="ska" id="ska" class="form-control" rows="3" placeholder="Enter ..." required ><?php echo set_value('ska'); ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -369,7 +369,7 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <label>Special Requirement</label>
-                                        <textarea name="req_special" class="form-control ckeditor" rows="3" placeholder="Enter ..." required ><?php echo set_value('req_special'); ?></textarea>
+                                        <textarea name="req_special" id="req_special" class="form-control" rows="3" placeholder="Enter ..." required ><?php echo set_value('req_special'); ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -380,7 +380,7 @@
                                 <div class="col">
                                     <div class="form-group mb-0">
                                         <label>Outline Why This Position is necessary</label>
-                                        <textarea name="outline" class="form-control ckeditor" rows="3" placeholder="Enter ..." required><?php echo set_value('outline'); ?></textarea>
+                                        <textarea name="outline" id="outline" class="form-control" rows="3" placeholder="Enter ..." required><?php echo set_value('outline'); ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -472,7 +472,7 @@
                                 <div class="col">
                                     <div class="form-group mb-0">
                                         <label>Main Responsibilities</label>
-                                        <textarea name="main_responsibilities" class="form-control ckeditor" rows="5" placeholder="Enter ..." required ><?php echo set_value('main_responsibilities'); ?></textarea>
+                                        <textarea name="main_responsibilities" id="main_responsibilities" class="form-control" rows="5" placeholder="Enter ..." required ><?php echo set_value('main_responsibilities'); ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -483,7 +483,7 @@
                                 <div class="col">
                                     <div class="form-group mb-0">
                                         <label>Tasks</label>
-                                        <textarea name="tasks" class="form-control ckeditor" rows="5" placeholder="Enter ..." required ><?php echo set_value('tasks'); ?></textarea>
+                                        <textarea name="tasks" id="tasks" class="form-control" rows="5" placeholder="Enter ..." required ><?php echo set_value('tasks'); ?></textarea>
                                     </div>
                                 </div>
                             </div>
