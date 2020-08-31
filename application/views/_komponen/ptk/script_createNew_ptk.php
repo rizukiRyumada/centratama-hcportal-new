@@ -134,22 +134,46 @@
         }
     });
 
+    // replacement variable
+    let input_replacement = $('input[name="replacement"]');
+    let input_replacement_who = $('input[name="replacement_who"]');
     // Replacement form trigger
-    $('input[name="replacement"]').on('change', () => {
-        if($('input[name="replacement"]').prop("checked") == true) { // cek jika replacement check box dicek
-            $('input[name="replacement_who"]').removeAttr('disabled'); // aktifkan form replacement who
-        } else if($('input[name="replacement"]').prop("checked") == false) { // cek jika replacement check box tidak dicek
-            $('input[name="replacement_who"]').attr('disabled', true); // nonaktifkan kotak replacement who
-            $('input[name="replacement_who"]').val(''); // kosongkan kotak replacement who
+    input_replacement.on('change', () => {
+        // remove validation class
+        input_replacement_who.parent().remove('.invalid-tooltip'); // remove class invalid
+        input_replacement_who.removeClass('is-invalid'); // remove class invalid
+        if(input_replacement.prop("checked") == true) { // cek jika replacement check box dicek
+            input_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
+        } else if(input_replacement.prop("checked") == false) { // cek jika replacement check box tidak dicek
+            input_replacement_who.attr('disabled', true); // nonaktifkan kotak replacement who
+            input_replacement_who.val(''); // kosongkan kotak replacement who
+        }
+    });
+    // Replacement who free text
+    input_replacement_who.on('keyup', function() {
+        if(input_replacement_who.val() == ""){
+            $(input_replacement_who).addClass('is-invalid'); // add class invalid
+            $(input_replacement_who).parent().append(msg_fill); // show error tooltip
+        } else {
+            $(input_replacement_who).removeClass('is-invalid'); // remove class invalid
+            $(input_replacement_who).parent().remove(".invalid-tooltip"); // hide error tooltip
         }
     });
 
+    // variable resource form
+    var input_resource = $('input[name="resources"]');
+    var input_resource_checked = $('input[name="resources"]:checked');
+    var input_resource_internal = $('#internalForm');
+    var input_resource_internalwho = $('input[name="internal_who"]');
     // Reource Radio button Internal form
-    $('input[name="resources"]').on('change', function() {
-        if($('input[name="resources"]:checked').val() == "int") { // cek jika internal radio button
-            $('input[name="internal_who"]').slideDown(); // tampilkan input text internal_who
-        } else if($('input[name="resources"]:checked').val() == "ext") { // cek jika external radio button
-            $('input[name="internal_who"]').slideUp(); // sembunyikan input text internal_who
+    input_resource.on('change', function() {
+        input_resource_internal.parent().parent().parent().removeClass('border border-danger');
+        input_resource_internal.removeClass('is-invalid');
+        input_resource_internal.parent().remove('.invalid-tooltip');
+        if(input_resource_checked.val() == "int") { // cek jika internal radio button
+            input_resource_internalwho.slideDown(); // tampilkan input text internal_who
+        } else if(input_resource_checked.val() == "ext") { // cek jika external radio button
+            input_resource_internalwho.slideUp(); // sembunyikan input text internal_who
         }
     });
 
@@ -177,7 +201,7 @@
             // pilih, pilihan pertama selected option location list
             input_WLchoose.prop('selectedIndex', 0);
             $(input_WLchoose).removeClass('is-invalid').removeClass('is-valid'); // add class invalid
-            $(input_WLchoose).parent().remove('.is-invalid'); // show error tooltip
+            $(input_WLchoose).parent().remove('.invalid-tooltip'); // show error tooltip
         } else if(input_WLtrigger.prop('checked') == false) {
             // jika tidak diceklis, tampilkan pilihan work location
             input_WLchoose.show();
@@ -185,7 +209,31 @@
             // isi dummy text di input free text work location
             input_WLtext.val('');
             $(input_WLtext).removeClass('is-invalid').removeClass('is-valid'); // add class invalid
-            $(input_WLtext).parent().remove('.is-invalid'); // show error tooltip
+            $(input_WLtext).parent().remove('.invalid-tootip'); // show error tooltip
+        }
+    });
+    // validate work location text
+    input_WLtext.on('keyup', function() {
+        input_WLtext.removeClass('is-invalid'); // remove class invalid
+        input_WLtext.parent().remove('.invalid-tooltip'); // remove class invalid
+        if($(this).val() != ""){
+            input_WLtext.parent().remove('.invalid-tooltip'); // remove class invalid
+        } else {
+            input_WLtext.addClass('is-invalid'); // remove class invalid
+            input_WLtext.parent().append(msg_fill); // show error tooltip
+        }
+    });
+    // validate work location chooser
+    input_WLchoose.on('change', function() {
+        input_WLchoose.removeClass('is-invalid'); // remove class invalid
+        input_WLchoose.removeClass('is-valid'); // remove class invalid
+        input_WLchoose.closest('div.invalid-tooltip').remove(); // remove class invalid
+        if($(this).val() != ""){
+            input_WLchoose.addClass('is-valid'); // remove class invalid
+            input_WLchoose.closest('div.invalid-tooltip').remove(); // remove class invalid
+        } else {
+            input_WLchoose.addClass('is-invalid'); // remove class invalid
+            input_WLchoose.parent().append(msg_choose); // show error tooltip
         }
     });
 
@@ -344,10 +392,10 @@
     // validate job profile free text
     input_jptext.on('keyup', function() {
         input_jptext.removeClass('is-invalid'); // remove class invalid
-        input_jptext.removeClass('is-valid'); // remove class invalid
+        // input_jptext.removeClass('is-valid'); // remove class invalid
         input_jptext.parent().remove('.invalid-tooltip'); // remove class invalid
         if($(this).val() != ""){
-            input_jptext.addClass('is-valid'); // remove class invalid
+            // input_jptext.addClass('is-valid'); // remove class invalid
             input_jptext.parent().remove('.invalid-tooltip'); // remove class invalid
         } else {
             input_jptext.addClass('is-invalid'); // remove class invalid
@@ -365,33 +413,6 @@
         } else {
             input_jpchoose.addClass('is-invalid'); // remove class invalid
             input_jpchoose.parent().append(msg_choose); // show error tooltip
-        }
-    });
-
-    // validate work location text
-    input_WLtext.on('keyup', function() {
-        input_WLtext.removeClass('is-invalid'); // remove class invalid
-        input_WLtext.removeClass('is-valid'); // remove class invalid
-        input_WLtext.parent().remove('.invalid-tooltip'); // remove class invalid
-        if($(this).val() != ""){
-            input_WLtext.addClass('is-valid'); // remove class invalid
-            input_WLtext.parent().remove('.invalid-tooltip'); // remove class invalid
-        } else {
-            input_WLtext.addClass('is-invalid'); // remove class invalid
-            input_WLtext.parent().append(msg_fill); // show error tooltip
-        }
-    });
-    // validate work location chooser
-    input_WLchoose.on('change', function() {
-        input_WLchoose.removeClass('is-invalid'); // remove class invalid
-        input_WLchoose.removeClass('is-valid'); // remove class invalid
-        input_WLchoose.parent().remove('.invalid-tooltip'); // remove class invalid
-        if($(this).val() != ""){
-            input_WLchoose.addClass('is-valid'); // remove class invalid
-            input_WLchoose.parent().remove('.invalid-tooltip'); // remove class invalid
-        } else {
-            input_WLchoose.addClass('is-invalid'); // remove class invalid
-            input_WLchoose.parent().append(msg_choose); // show error tooltip
         }
     });
 
@@ -478,6 +499,38 @@
                 // nothing
             }
         }
+
+        // validate replacement form
+        if(input_replacement.prop("checked") == true) { // cek jika replacement check box dicek
+            if(input_replacement_who.val() == ""){
+                $(input_replacement_who).addClass('is-invalid'); // add class invalid
+                $(input_replacement_who).parent().append(msg_fill); // show error tooltip
+                msg_validate += "<li>Replacement is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            }
+        } else if(input_replacement.prop("checked") == false) { // cek jika replacement check box tidak dicek
+            // nothing
+        }
+
+        // validate resource form
+        if(input_resource_checked.val() == "int") {
+            if(input_resource_internalwho.val() == ""){
+                input_resource_internalwho.addClass('is-invalid'); // add class invalid
+                input_resource_internalwho.parent().append(msg_fill); // show error tooltip
+                msg_validate += "<li>Please type an employee name</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+        } else if(input_resource_checked.val() == "ext"){
+            // nothing
+        } else {
+            input_resource_internal.parent().parent().parent().addClass('border border-danger');
+            input_resource_internal.addClass('is-invalid');
+            input_resource_internal.parent().append(msg_choose);
+            msg_validate += "<li>Resource is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        }
         
         // tutup list error message validate
         msg_validate += "</ul>";
@@ -488,9 +541,9 @@
                 class: 'bg-danger', 
                 title: 'List of Empty Form',
                 subtitle: 'Lets fill it',
-                position: 'bottomRight',
+                position: 'bottomLeft',
                 body: msg_validate + "Please look at red mark or border."
-            })
+            });
             // tampilkan pesan error dalam swal
             Swal.fire({
                 title: 'Form Validation Error',
