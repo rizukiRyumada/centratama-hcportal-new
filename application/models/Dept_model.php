@@ -43,7 +43,7 @@ class Dept_model extends CI_Model {
         $this->db->select('id, nama_departemen');
         $this->db->from($this->table);
         $this->db->where('id', $dept_id);
-        return $this->db->get()->result_array();
+        return $this->db->get()->row_array();
     }
 
 }

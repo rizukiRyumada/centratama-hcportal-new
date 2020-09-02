@@ -55,6 +55,19 @@ class Divisi_model extends CI_Model {
     public function getWhere($where){
         return $this->db->get_where($this->table, $where)->result_array();
     }
+    
+    /**
+     * Ambil data detail divisi
+     *
+     * @param  mixed $dept_id
+     * @return void
+     */
+    function getDetailById($id_div){
+        $this->db->select('id, division');
+        $this->db->from($this->table);
+        $this->db->where('id', $id_div);
+        return $this->db->get()->row_array();
+    }
 }
 
 /* End of file Divisi_model.php */

@@ -14,11 +14,13 @@
   "license": "Apache-2.0",
   "dependencies": {
     "admin-lte": "^3.0.5",
+    "bootstrap-steps": "^1.0.2",
     "chartjs-plugin-datalabels": "^0.7.0",
     "ckeditor4": "^4.14.1",
     "orgchart": "^2.1.10",
     "pdfobject": "^2.1.1",
+    "popper.js": "^1.16.1",
     "tableexport": "^5.2.0",
-    "tippy.js": "^6.2.6"
+    "tippy.js": "^5.2.1"
   }
 }

@@ -19,8 +19,11 @@
 <script src="<?= base_url('assets/vendor/node_modules/admin-lte/plugins/select2/js/select2.full.min.js'); ?>"></script>
 <!-- swal2 - Sweet Alert -->
 <script src="<?= base_url('/assets/vendor/node_modules/sweetalert2/dist/sweetalert2.all.min.js'); ?>" ></script>
-<!-- Tippy JS - Tooltip -->
-<script src="<?= base_url('/assets/vendor/node_modules/tippy.js/dist/tippy-bundle.umd.min.js'); ?>"></script>
+<!-- Tippy JS and popper - Tooltip -->
+<!-- <script src="<?= base_url('/assets/js/tippy.js/popper.min.js'); ?>"></script>
+<script src="<?= base_url('/assets/js/tippy.js/tippy-bundle.umd.min.js'); ?>"></script> -->
+<script src="https://unpkg.com/popper.js@1"></script>
+<script src="https://unpkg.com/tippy.js@5"></script>
 
 <!-- general custom script -->
 <script>

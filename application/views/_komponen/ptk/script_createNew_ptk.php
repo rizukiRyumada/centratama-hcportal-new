@@ -202,7 +202,6 @@
         }
     });
 
-    //NOW
     // variabel input name Work Experience
     var input_workexp = $('input[name="work_exp"]');
     var input_workexp_checked = $('input[name="work_exp"]:checked');
@@ -490,6 +489,68 @@
         }
     });
 
+    // validate interviewer
+    var input_interviewer_name = $('#interviewer_name3');
+    var input_interviewer_position = $('#interviewer_position3');
+    // validate interviewer name
+    input_interviewer_name.on('keyup change', function() {
+        // hapus kelas validasi
+        input_interviewer_position.removeClass('is-invalid'); // hapus kelas is invalid
+        input_interviewer_position.siblings('.invalid-tooltip').remove();
+        input_interviewer_name.removeClass('is-invalid'); // hapus kelas is invalid
+        input_interviewer_name.siblings('.invalid-tooltip').remove();
+        if(input_interviewer_name.val() != ""){
+            if(input_interviewer_position.val() == ""){
+                input_interviewer_position.addClass('is-invalid'); // tambah kelas invalid
+                input_interviewer_position.parent().append(msg_fill); // tampilkan pesan error
+                msg_validate += "<li>Interviewer Position is empty is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+        } else {
+            if(input_interviewer_position.val() != ""){
+                if(input_interviewer_name.val() == ""){
+                    input_interviewer_name.addClass('is-invalid'); // tambah kelas invalid
+                    input_interviewer_name.parent().append(msg_fill); // tampilkan pesan error
+                    msg_validate += "<li>Interviewer Name is empty</li>"; // pesan empty
+                    counter_validate++; // validate counter add
+                } else {
+                    // nothing
+                }
+            }
+        }
+    });
+    // validate interviewer position
+    input_interviewer_position.on('keyup change', function() {
+        // hapus kelas validasi
+        input_interviewer_position.removeClass('is-invalid'); // hapus kelas is invalid
+        input_interviewer_position.siblings('.invalid-tooltip').remove();
+        input_interviewer_name.removeClass('is-invalid'); // hapus kelas is invalid
+        input_interviewer_name.siblings('.invalid-tooltip').remove();
+        if(input_interviewer_position.val() != ""){
+            if(input_interviewer_name.val() == ""){
+                input_interviewer_name.addClass('is-invalid'); // tambah kelas invalid
+                input_interviewer_name.parent().append(msg_fill); // tampilkan pesan error
+                msg_validate += "<li>Interviewer Position is empty is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+        } else {
+            if(input_interviewer_name.val() != ""){
+                if(input_interviewer_position.val() == ""){
+                    input_interviewer_position.addClass('is-invalid'); // tambah kelas invalid
+                    input_interviewer_position.parent().append(msg_fill); // tampilkan pesan error
+                    msg_validate += "<li>Interviewer Name is empty</li>"; // pesan empty
+                    counter_validate++; // validate counter add
+                } else {
+                    // nothing
+                }
+            }
+        }
+    });
+
     // input type number validation
     $('input[type="number"]').on('change keyup', function() {
         $(this).removeClass('is-invalid'); // remove class invalid
@@ -646,7 +707,6 @@
             // nothing
         }
 
-        // NOW
         // validate work experience
         if($('input[name="work_exp"]:checked').val() == 1) { // cek jika cekbox work experience
             if(input_workexp_yearstext.val() == ""){
@@ -656,7 +716,7 @@
                 counter_validate++; // validate counter add
             }
         } else if($('input[name="work_exp"]:checked').val() == 0) { // cek jika cekbox fresh graduate
-            // nothing
+            input_workexp_yearstext.val('0'); // set value sama dengan nol
         } else {
             input_workexp.parent().parent().parent().parent().parent().addClass('border border-danger');
             input_workexp.addClass('is-invalid');
@@ -695,51 +755,74 @@
         // validate skill, knowledge, and abilities
         let textarea_selector_ska = $('textarea#ska');
         if(textarea_ska == ""){
-            textarea_selector_ska.parent().parent().addClass('border border-danger');
+            textarea_selector_ska.parent().parent().parent().addClass('border border-danger');
             msg_validate += "<li>Skill, Knowledge, and Abilities is empty</li>"; // pesan empty
             counter_validate++; // validate counter add
         } else {
-            textarea_selector_ska.parent().parent().removeClass('border border-danger');
+            textarea_selector_ska.parent().parent().parent().removeClass('border border-danger');
         }
 
         // validate special requirement
         // let textarea_selector_reqspecial = $('textarea#req_special');
         // if(textarea_reqspecial == ""){
-        //     textarea_selector_reqspecial.parent().parent().addClass('border border-danger');
+        //     textarea_selector_reqspecial.parent().parent().parent().addClass('border border-danger');
         //     msg_validate += "<li>Special Requirement is empty</li>"; // pesan empty
         //     counter_validate++; // validate counter add
         // } else {
-        //     textarea_selector_reqspecial.parent().parent().removeClass('border border-danger');
+        //     textarea_selector_reqspecial.parent().parent().parent().removeClass('border border-danger');
         // }
 
         // validate outline textarea
         let textarea_selector_outline = $('textarea#outline');
         if(textarea_outline == ""){
-            textarea_selector_outline.parent().parent().addClass('border border-danger');
+            textarea_selector_outline.parent().parent().parent().addClass('border border-danger');
             msg_validate += "<li>Outline is empty</li>"; // pesan empty
             counter_validate++; // validate counter add
         } else {
-            textarea_selector_outline.parent().parent().removeClass('border border-danger');
+            textarea_selector_outline.parent().parent().parent().removeClass('border border-danger');
         }
 
         // validate main responsibilities textarea
         let textarea_selector_mainrespon = $('textarea#main_responsibilities');
         if(textarea_mainrespon == ""){
-            textarea_selector_mainrespon.parent().parent().addClass('border border-danger');
+            textarea_selector_mainrespon.parent().parent().parent().addClass('border border-danger');
             msg_validate += "<li>Main Responsibilities is empty</li>"; // pesan empty
             counter_validate++; // validate counter add
         } else {
-            textarea_selector_mainrespon.parent().parent().removeClass('border border-danger');
+            textarea_selector_mainrespon.parent().parent().parent().removeClass('border border-danger');
         }
 
         // validate tasks textarea
         let textarea_selector_tasks = $('textarea#tasks');
         if(textarea_tasks == ""){
-            textarea_selector_tasks.parent().parent().addClass('border border-danger');
+            textarea_selector_tasks.parent().parent().parent().addClass('border border-danger');
             msg_validate += "<li>Tasks is empty</li>"; // pesan empty
             counter_validate++; // validate counter add
         } else {
-            textarea_selector_tasks.parent().parent().removeClass('border border-danger');
+            textarea_selector_tasks.parent().parent().parent().removeClass('border border-danger');
+        }
+
+        // validate jika nama atau posisi di interviewer terisi
+        if(input_interviewer_name.val() != ""){
+            if(input_interviewer_position.val() == ""){
+                input_interviewer_position.addClass('is-invalid'); // tambah kelas invalid
+                input_interviewer_position.parent().append(msg_fill); // tampilkan pesan error
+                msg_validate += "<li>Interviewer Position is empty is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+        } else {
+            if(input_interviewer_position.val() != ""){
+                if(input_interviewer_name.val() == ""){
+                    input_interviewer_name.addClass('is-invalid'); // tambah kelas invalid
+                    input_interviewer_name.parent().append(msg_fill); // tampilkan pesan error
+                    msg_validate += "<li>Interviewer Name is empty</li>"; // pesan empty
+                    counter_validate++; // validate counter add
+                } else {
+                    // nothing
+                }
+            }
         }
 
         // tutup list error message validate
@@ -802,7 +885,162 @@
                 allowEscapeKey: false,
                 allowEnterKey: false
             });
-            return false;
+            return true;
         }
     });
+
+    /* -------------------------------------------------------------------------- */
+    /*                          Tippy JS Tooltip trigger                          */
+    /* -------------------------------------------------------------------------- */
+
+    // With the above scripts loaded, you can call `tippy()` with a CSS
+    // selector and a `content` prop:
+
+    // Entity
+    tippy('#entityInput', {
+        content: 'Please choose one entity',
+    });
+
+    // Job Position
+    // alert budget
+    tippy('#budgetAlert', {
+        content: 'Please Choose one Budget',
+    });
+    // Job Title free text
+    tippy('#jobTitleInput', {
+        content: 'Job Position Free Text',
+    });
+    // job Position selection
+    tippy('#positionInput', {
+        content: 'Job Position Selection',
+    });
+
+    // Job Level
+    tippy('#jobLevelForm', {
+        content: 'Job Level',
+    });
+
+    // Work Location
+    // Work Location selection
+    tippy('#work_location_choose', {
+        content: 'Work Location selection',
+    });
+    // Work Location Text
+    tippy('#work_location_text', {
+        content: 'Work Location Text',
+    });
+    // Work Location Other Trigger
+    tippy('#work_location_otherTrigger', {
+        content: 'Work Location other trigger',
+    });
+
+    // budget
+    tippy('#chooseBudget', {
+        content: 'Budget',
+    });
+
+    // Replacement
+    // replacement trigger
+    tippy('#replace', {
+        content: 'Replace',
+    });
+    // Replacement Who
+    tippy('#replacement_who', {
+        content: 'Replacement Who',
+    });
+
+    // Resource
+    tippy('#resource', {
+        content: 'Resource',
+    });
+    // Internal Who
+    tippy('#internal_who', {
+        content: 'Internal Who',
+    });
+
+    // Man Power Required
+    tippy('#mppReq', {
+        content: 'Man Power Required',
+    });
+
+    // Number of Incumbent
+    tippy('#noiReq', {
+        content: 'Number of Incumbent',
+    });
+
+    // Employement Status
+    tippy('#emp_stats', {
+        content: 'Employement Status',
+    });
+
+    // Date required
+    tippy('#date_required', {
+        content: 'Date Required',
+    });
+
+    // Education
+    tippy('#education', {
+        content: 'Education',
+    });
+    // Majoring
+    tippy('#majoring', {
+        content: 'Majoring',
+    });
+
+    // Age
+    tippy('#age', {
+        content: 'Preferred Age',
+    });
+    // Sex
+    tippy('#sexForm', {
+        content: 'Sex',
+    });
+
+    // Fresh Graduate
+    tippy('#freshGradRadio', {
+        content: 'Fresh Graduate',
+    });
+    // Experienced
+    tippy('#experiencedRadio', {
+        content: 'Experienced',
+    });
+    // Work Experience Years
+    tippy('#we_years', {
+        content: 'Work Experienced Years',
+    });
+
+    // Skill, Knowledge, and abilities (ska)
+    tippy('#ska_label', {
+        content: 'Skill, Knowledge, and abilities (ska)',
+    });
+
+    // Special Requirement
+    tippy('#reqSpecial_label', {
+        content: 'Special Requirement',
+    });
+
+    // Outline
+    tippy('#outline_label', {
+        content: 'Outline',
+    });
+
+    // Interviewer
+    tippy('#interviewer_name3', {
+        content: 'Interviewer Name',
+    });
+    tippy('#interviewer_position3', {
+        content: 'Interviewer Position',
+    });
+
+    // Main Responsibilities
+    tippy('#main_responsibilities_label', {
+        content: 'main_responsibilities',
+    });
+
+    // Tasks
+    tippy('#tasks_label', {
+        content: 'Tasks',
+    });
+    
+
 </script>
