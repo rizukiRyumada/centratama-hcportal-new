@@ -849,12 +849,12 @@ class Survey extends MainController {
             }
                 
             // tambah data ke data karyawan
-            $data_karyawan[$k]['divisi'] = $temp_divisi;
+            $data_karyawan[$k]['divisi']     = $temp_divisi;
             $data_karyawan[$k]['departemen'] = $temp_position['nama_departemen'];
-            $data_karyawan[$k]['position'] = $temp_position['position_name'];
-            $data_karyawan[$k]['f360'] = $temp_status_f360s;
-            $data_karyawan[$k]['exc'] = $temp_status_exc;
-            $data_karyawan[$k]['eng'] = $temp_status_eng;
+            $data_karyawan[$k]['position']   = $temp_position['position_name'];
+            $data_karyawan[$k]['f360']       = $temp_status_f360s;
+            $data_karyawan[$k]['exc']        = $temp_status_exc;
+            $data_karyawan[$k]['eng']        = $temp_status_eng;
         }
         
         // cek buat trigger
