@@ -30,6 +30,7 @@
 <div class="row">
     <div class="col">
         <div class="card card-primary card-outline card-outline-tabs">
+            <!-- <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div> -->
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
                     <li class="nav-item">
@@ -48,13 +49,6 @@
                     <!-- Tab Form PTK -->
                     <div class="tab-pane fade active show" id="custom-tabs-ptkForm" role="tabpanel" aria-labelledby="custom-tabs-ptkForm-tab">
                         <?php $this->load->view('ptk/ptk_editor_v'); ?>
-
-                        <!-- Submit Button -->
-                        <div class="row px-3 justify-content-end">
-                            <div class="col-md-3 text-right">
-                                <button id="submitPTK" class="btn btn-lg btn-success w-100"><i class="fa fa-paper-plane"></i> Submit</button>
-                            </div>
-                        </div>
                     </div><!-- /Tab form PTK -->
                     
                     <!-- /* -------------------------------------------------------------------------- */
@@ -70,8 +64,15 @@
                         <?php $this->load->view('ptk/ptk_jobprofile_orgchart_v'); ?>
                     </div><!-- /Tab form Organization Chart -->
                 </div>
-            </div>
-            <!-- /.card -->
+            </div><!-- /.card -->
         </div>
     </div>
 </div>
+
+<script>
+    var id_entity = "<?= $id_entity; ?>";
+    var id_div    = "<?= $id_div; ?>";
+    var id_dept   = "<?= $id_dept; ?>";
+    var id_pos    = "<?= $id_pos; ?>";
+    var id_time   = "<?= $id_time; ?>";
+</script>

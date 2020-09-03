@@ -503,8 +503,6 @@
             if(input_interviewer_position.val() == ""){
                 input_interviewer_position.addClass('is-invalid'); // tambah kelas invalid
                 input_interviewer_position.parent().append(msg_fill); // tampilkan pesan error
-                msg_validate += "<li>Interviewer Position is empty is empty</li>"; // pesan empty
-                counter_validate++; // validate counter add
             } else {
                 // nothing
             }
@@ -571,7 +569,7 @@
     /* -------------------------------------------------------------------------- */
     /*                        // Customized Form Validation                       */
     /* -------------------------------------------------------------------------- */
-    $('#ptkForm').submit(function() {
+    $('#submitPTK').on('click', function() {
         // console.log('submitted');
         // validate counter and message variable
         let msg_validate = "<ul>";
@@ -885,7 +883,8 @@
                 allowEscapeKey: false,
                 allowEnterKey: false
             });
-            return true;
+            
+            $('#ptkForm').submit(); // submit form if validation success
         }
     });
 

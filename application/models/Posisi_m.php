@@ -38,9 +38,19 @@ class Posisi_m extends CI_Model {
         return $this->db->get_where($this->table, array("$this->table_employee.position_id" => $id))->result_array();
     }
 
-    public function whoAtasanS(){
+    public function whoMyAtasanS(){
         // ambil data my position
         $my_position = $this->getMyPosition();
+        //ambil data atasan detailnya dan orangnya
+        $data_atasan['atasan1'] = $this->whoIsOnThisPosition($my_position['id_atasan1']);
+        $data_atasan['atasan2'] = $this->whoIsOnThisPosition($my_position['id_atasan2']);
+        
+        return $data_atasan;
+    }
+
+    public function whoAtasanS($id_position){
+        // ambil data my position
+        $my_position = $this->getOnceWhere(array("id" => $id_position));
         //ambil data atasan detailnya dan orangnya
         $data_atasan['atasan1'] = $this->whoIsOnThisPosition($my_position['id_atasan1']);
         $data_atasan['atasan2'] = $this->whoIsOnThisPosition($my_position['id_atasan2']);

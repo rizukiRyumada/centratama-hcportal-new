@@ -94,12 +94,12 @@ class Ptk extends SpecialUserAppController {
 
             $data['entity'] = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
             $data['division'] = $this->divisi_model->getOnceById($detail_emp['div_id'])[0]; // ambil division
-            $data['department'] = $this->dept_model->getDetailById($detail_emp['dept_id'])[0]; // ambil departemen
+            $data['department'] = $this->dept_model->getDetailById($detail_emp['dept_id']); // ambil departemen
             $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $detail_emp['div_id'], 'dept_id' => $detail_emp['dept_id'])); // position
             $data['emp_status'] = $this->_general_m->getAll('*', 'master_employee_status', array()); // employee status
             $data['education'] = $this->_general_m->getAll('*', 'ptk_education', array()); // education
             // TODO dari javascript MPP dari table position
-            $data['data_atasan'] = $this->posisi_m->whoAtasanS(); // ambil data atasan 1 dan 2
+            $data['data_atasan'] = $this->posisi_m->whoMyAtasanS(); // ambil data atasan 1 dan 2
             $data['work_location'] = $this->_general_m->getAll('id, location', $this->table['location'], array());
 
             // sorting
@@ -227,6 +227,7 @@ class Ptk extends SpecialUserAppController {
             // set pesan berhasil disubmit
             
             // balikkan ke halaman awal employee Requisition
+            redirect('ptk');
         }
     }
 
@@ -235,7 +236,7 @@ class Ptk extends SpecialUserAppController {
 /* -------------------------------------------------------------------------- */
     
     /**
-     * ajax_getMyFormList
+     * get ajax form list for index page
      *
      * @return void
      */
@@ -262,11 +263,32 @@ class Ptk extends SpecialUserAppController {
             $data_ptk[$key]["name_div"] = $this->divisi_model->getDetailById($value['id_div'])['division'];
             $data_ptk[$key]["name_dept"] = $this->dept_model->getDetailById($value['id_dept'])['nama_departemen'];
             $data_ptk[$key]["time_modified"] = date("o-m-d", $value['time_modified']);
-            $data_ptk[$key]["href"] = base_url('ptk/viewPTK')."?id_entity=".$value['id_entity']."&id_div=".$value['id_div']."&id_dept=".$value['id_dept']."&id_time=".$value['id_time'];
+            $data_ptk[$key]["href"] = base_url('ptk/viewPTK')."?id_entity=".$value['id_entity']."&id_div=".$value['id_div']."&id_dept=".$value['id_dept']."&id_pos=".$value['id_pos']."&id_time=".$value['id_time'];
         }
 
         echo(json_encode([
             'data' => $data_ptk
+        ]));
+    }
+
+    function ajax_getPTKdata(){
+        // TODO cek akses kalo admin, atau bukan
+
+        $data = $this->ptk_m->getDetail_ptk(
+            $this->input->post('id_entity'),
+            $this->input->post('id_div'),
+            $this->input->post('id_dept'),
+            $this->input->post('id_pos'),
+            $this->input->post('id_time')
+        );
+        // ubah bentuk date
+        $data['req_date'] = date("d-m-o", strtotime($data['req_date']));
+
+        // print_r($data);
+        // exit;
+
+        echo(json_encode([
+            "data" => $data
         ]));
     }
 
@@ -391,6 +413,47 @@ class Ptk extends SpecialUserAppController {
         $data['custom_script'] = array('job_profile/script_jobprofile', 'job_profile/script_view_jobprofile');        
         
 		$this->load->view('main_frame_v', $data);
+    }
+
+    function viewPTK(){
+        // ptk data
+        $data['id_entity'] = $this->input->get('id_entity');
+        $data['id_div']    = $this->input->get('id_div');
+        $data['id_dept']   = $this->input->get('id_dept');
+        $data['id_pos']    = $this->input->get('id_pos');
+        $data['id_time']   = $this->input->get('id_time');
+
+        // form data
+        $data['entity']     = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
+        $data['division']   = $this->divisi_model->getOnceById($data['id_div'])[0]; // ambil division
+        $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+        $data['position']   = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+        $data['emp_status'] = $this->_general_m->getAll('*', 'master_employee_status', array()); // employee status
+        $data['education']  = $this->_general_m->getAll('*', 'ptk_education', array()); // education
+        // TODO dari javascript MPP dari table position
+        if($data['id_pos'] != 0){
+            $data['data_atasan'] = $this->posisi_m->whoAtasanS($data['id_pos']); // ambil data atasan 1 dan 2
+        } else {
+            $data['data_atasan'] = "";
+        }
+        $data['work_location'] = $this->_general_m->getAll('id, location', $this->table['location'], array());
+        // sorting
+        usort($data['entity'], function($a, $b) { return $a['keterangan'] <=> $b['keterangan']; }); // sort berdasarkan title menu
+        usort($data['position'], function($a, $b) { return $a['position_name'] <=> $b['position_name']; }); // sort berdasarkan title menu
+
+        // main data
+        $data['sidebar'] = getMenu(); // ambil menu
+        $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+        $data['user'] = getDetailUser(); //ambil informasi user
+        $data['page_title'] = "View PTK";
+        // $data['page_title'] = "Create New Form ".$this->page_title['index'];
+        $data['load_view'] = 'ptk/viewPTK_ptk_v';
+        // additional styles and custom script
+        $data['additional_styles'] = array('plugins/datepicker/styles_datepicker');
+        // $data['custom_styles'] = array();
+        $data['custom_script'] = array('plugins/jqueryValidation/script_jqueryValidation', 'plugins/datepicker/script_datepicker', 'plugins/ckeditor/script_ckeditor.php', 'ptk/script_viewer_ptk');
+        
+        $this->load->view('main_v', $data);
     }
 
 }
