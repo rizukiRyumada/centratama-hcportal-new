@@ -87,7 +87,6 @@ class MainController extends MY_Controller {
             $this->session->unset_userdata('token');            
         }
     }
-    
 }
 
 /**
@@ -162,7 +161,6 @@ class SuperAdminController extends MainController {
  * SpecialUserAppController
  */
 class SpecialUserAppController extends MainController{
-    
     
     public function __construct() {
         parent::__construct();

@@ -27,17 +27,34 @@ class Posisi_m extends CI_Model {
         // ambil detail position
         return $this->db->get_where($this->table, array('id' => $my_id))->row_array();
     }
-
+    
+    /**
+     * get salah satu informasi terkait dengan $where
+     *
+     * @param  mixed $where
+     * @return void
+     */
     public function getOnceWhere($where){
         return $this->db->get_where($this->table, $where)->row_array();
     }
-
+    
+    /**
+     * Siapa yang ada di posisi ini? dan dapatkan detailnya
+     *
+     * @param  mixed $id
+     * @return void
+     */
     public function whoIsOnThisPosition($id){
         $this->db->select("id, position_name, dept_id, div_id, id_atasan1, id_atasan2, assistant, id_approver1, id_approver2, mpp, hirarki_org, job_grade, nik, emp_name, is_active, position_id, id_entity, role_id, email");
         $this->db->join($this->table_employee, "$this->table_employee.position_id = $this->table.id", 'left');
         return $this->db->get_where($this->table, array("$this->table_employee.position_id" => $id))->result_array();
     }
-
+    
+    /**
+     * Siapakah atasan saya
+     *
+     * @return void
+     */
     public function whoMyAtasanS(){
         // ambil data my position
         $my_position = $this->getMyPosition();
@@ -47,7 +64,13 @@ class Posisi_m extends CI_Model {
         
         return $data_atasan;
     }
-
+    
+    /**
+     * Siapakah atasan dengan id_posisi
+     *
+     * @param  mixed $id_position
+     * @return void
+     */
     public function whoAtasanS($id_position){
         // ambil data my position
         $my_position = $this->getOnceWhere(array("id" => $id_position));
