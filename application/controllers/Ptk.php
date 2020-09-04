@@ -33,7 +33,8 @@ class Ptk extends SpecialUserAppController {
     
 
     public function index() {
-        // ptk status
+        // ptk data
+        $data['my_hirarki'] = $this->posisi_m->getOnceWhere(array('id' => $this->session->userdata('position_id')))['hirarki_org'];
         $data['ptk_status'] = $this->ptk_m->getAll_ptkStatus();
 
         // main data
@@ -51,6 +52,20 @@ class Ptk extends SpecialUserAppController {
     }
 
     function createNewForm(){
+        // get my hirarki
+        $my_hirarki = $this->posisi_m->getOnceWhere(array('id' => $this->session->userdata('position_id')))['hirarki_org'];
+        // cekakses hanya admin, superadmin, N-2 dan N-1 yang bisa akses
+        if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+            // have all access
+        } else {
+            // cek akses berdasarkan hirarki N-1 dan N-2 yang bisa akses
+            if($my_hirarki == "N-1" || $my_hirarki == "N-2"){
+                // have access
+            } else {
+                show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+            }
+        }
+
         // load library form validation
         $this->load->library('form_validation');
 
@@ -92,10 +107,16 @@ class Ptk extends SpecialUserAppController {
             // Form Data
             $detail_emp = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik'))[0]; // ambil posisi dianya
 
+            // Form Data
+            if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+                $data['division'] = $this->divisi_model->getDivisi(); // ambil division
+            } else {
+                $data['division'] = $this->divisi_model->getOnceById($detail_emp['div_id'])[0]; // ambil division
+                $data['department'] = $this->dept_model->getDetailById($detail_emp['dept_id']); // ambil departemen
+                $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $detail_emp['div_id'], 'dept_id' => $detail_emp['dept_id'])); // position
+            }
+
             $data['entity'] = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
-            $data['division'] = $this->divisi_model->getOnceById($detail_emp['div_id'])[0]; // ambil division
-            $data['department'] = $this->dept_model->getDetailById($detail_emp['dept_id']); // ambil departemen
-            $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $detail_emp['div_id'], 'dept_id' => $detail_emp['dept_id'])); // position
             $data['emp_status'] = $this->_general_m->getAll('*', 'master_employee_status', array()); // employee status
             $data['education'] = $this->_general_m->getAll('*', 'ptk_education', array()); // education
             // TODO dari javascript MPP dari table position
@@ -104,7 +125,9 @@ class Ptk extends SpecialUserAppController {
 
             // sorting
             usort($data['entity'], function($a, $b) { return $a['keterangan'] <=> $b['keterangan']; }); // sort berdasarkan title menu
-            usort($data['position'], function($a, $b) { return $a['position_name'] <=> $b['position_name']; }); // sort berdasarkan title menu
+            if(!empty($data['position'])){
+                usort($data['position'], function($a, $b) { return $a['position_name'] <=> $b['position_name']; }); // sort berdasarkan title menu
+            }
             // usort($data['emp_status'], function($a, $b) { return $a['status_name'] <=> $b['status_name']; }); // sort berdasarkan title menu
             // usort($data['education'], function($a, $b) { return $a['name'] <=> $b['name']; }); // sort berdasarkan title menu
 
@@ -121,7 +144,13 @@ class Ptk extends SpecialUserAppController {
             // additional styles and custom script
             $data['additional_styles'] = array('plugins/datepicker/styles_datepicker');
             // $data['custom_styles'] = array();
-            $data['custom_script'] = array('plugins/jqueryValidation/script_jqueryValidation', 'plugins/datepicker/script_datepicker', 'plugins/ckeditor/script_ckeditor.php', 'ptk/script_createNew_ptk');
+            $data['custom_script'] = array(
+                'plugins/jqueryValidation/script_jqueryValidation', 
+                'plugins/datepicker/script_datepicker', 
+                'plugins/ckeditor/script_ckeditor.php', 
+                'ptk/script_formvariable_ptk',
+                'ptk/script_validator_ptk',
+                'ptk/script_submit_validator_ptk');
             
             $this->load->view('main_v', $data);
         } else {
@@ -351,7 +380,7 @@ class Ptk extends SpecialUserAppController {
 		// $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
         // $data['page_title'] = 'Task Job Profile';
         // $data['userApp_admin'] = $this->userApp_admin;
-		$data['load_view'] = 'ptk/jobProfile_ptk_v';
+		$data['load_view'] = '_frame/job_profile/jobProfile_viewer_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables', 'job_profile/styles_jobprofile.php');
 		$data['custom_styles'] = array('jobprofile_styles');
@@ -406,7 +435,7 @@ class Ptk extends SpecialUserAppController {
 		// $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu', array('url' => $this->uri->uri_string()))['title'];
         // $data['page_title'] = 'Task Job Profile';
         // $data['userApp_admin'] = $this->userApp_admin;
-		$data['load_view'] = 'ptk/jobProfile_orgchart_ptk_v';
+		$data['load_view'] = '_frame/job_profile/jobProfile_orgchart_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables', 'job_profile/styles_jobprofile.php');
 		$data['custom_styles'] = array('jobprofile_styles');
@@ -451,7 +480,13 @@ class Ptk extends SpecialUserAppController {
         // additional styles and custom script
         $data['additional_styles'] = array('plugins/datepicker/styles_datepicker');
         // $data['custom_styles'] = array();
-        $data['custom_script'] = array('plugins/jqueryValidation/script_jqueryValidation', 'plugins/datepicker/script_datepicker', 'plugins/ckeditor/script_ckeditor.php', 'ptk/script_viewer_ptk');
+        $data['custom_script'] = array(
+            'plugins/jqueryValidation/script_jqueryValidation', 
+            'plugins/datepicker/script_datepicker', 
+            'plugins/ckeditor/script_ckeditor.php', 
+            'ptk/script_formvariable_ptk',
+            'ptk/script_validator_ptk',
+            'ptk/script_viewer_ptk');
         
         $this->load->view('main_v', $data);
     }

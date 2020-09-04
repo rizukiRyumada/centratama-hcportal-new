@@ -1232,6 +1232,16 @@ class Job_profile extends MainController {
         //bawa balik ke ajax
     }
 
+    public function ajax_getPosition(){
+        // take division and department
+        $divisi = $this->input->post('divisi');
+        $departemen = $this->input->post('departemen');
+        // get position
+        $posisi = $this->posisi_m->getAllWhere(array("div_id" => $divisi, "dept_id" => $departemen));
+        // bring back with json
+        echo(json_encode($posisi));
+    }
+
 /* -------------------------------------------------------------------------- */
 /*                            Job Profile Settings                            */
 /* -------------------------------------------------------------------------- */

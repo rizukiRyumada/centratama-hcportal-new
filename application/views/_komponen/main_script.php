@@ -22,8 +22,8 @@
 <!-- Tippy JS and popper - Tooltip -->
 <!-- <script src="<?= base_url('/assets/js/tippy.js/popper.min.js'); ?>"></script>
 <script src="<?= base_url('/assets/js/tippy.js/tippy-bundle.umd.min.js'); ?>"></script> -->
-<script src="https://unpkg.com/popper.js@1"></script>
-<script src="https://unpkg.com/tippy.js@5"></script>
+<!-- <script src="https://unpkg.com/popper.js@1"></script>
+<script src="https://unpkg.com/tippy.js@5"></script> -->
 
 <!-- general custom script -->
 <script>

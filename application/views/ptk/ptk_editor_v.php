@@ -25,12 +25,19 @@
                 <div class="col-sm-8">
                     <input type="text" id="budgetAlert" class="form-control border border-danger" value="Choose budgeted or unbudgeted first" title="Please Choose budgeted or unbudgeted first" disabled>
                     <input name="job_position_text" type="text" class="form-control" id="jobTitleInput" placeholder="Enter Job Title..." style="display: none;" required>
-                    <select id="positionInput" name="job_position_choose" class="custom-select" style="display: none;" required>
-                        <option value="" >Select an Job Position...</option>
-                        <?php foreach($position as $v): ?>
-                        <option value="<?= $v['id']; ?>" ><?= $v['position_name']; ?></option>
-                        <?php endforeach;?>
-                    </select>
+                    <!-- show select job position based on role -->
+                    <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
+                        <select id="positionInput" name="job_position_choose" class="custom-select" style="display: none;" required disabled>
+                            <option value="" >Choose Department first...</option>
+                        </select>
+                    <?php else: ?>
+                        <select id="positionInput" name="job_position_choose" class="custom-select" style="display: none;" required>
+                            <option value="" >Select an Job Position...</option>
+                            <?php foreach($position as $v): ?>
+                                <option value="<?= $v['id']; ?>" ><?= $v['position_name']; ?></option>
+                            <?php endforeach;?>
+                        </select>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="form-group row">
@@ -44,24 +51,46 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group row">
-                <label for="divisionForm" class="col-sm-4 col-form-label">Division</label>
-                <div class="col-sm-8">
-                    <input type="hidden" name="division" value="<?= $division['id']; ?>">
-                    <select id="divisionForm" class="custom-select" disabled>
-                        <option selected value="<?= $division['id']; ?>"><?= $division['division']; ?></option>
-                    </select>
+            <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
+                <div class="form-group row">
+                    <label for="divisionForm" class="col-sm-4 col-form-label">Division</label>
+                    <div class="col-sm-8">
+                        <select id="divisionForm" class="custom-select" name="division">
+                            <option value="">Choose Division...</option>
+                            <?php foreach($division as $v): ?>
+                                <option value="<?= $v['id']; ?>"><?= $v['division']; ?></option>
+                            <?php endforeach;?>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="departementForm" class="col-sm-4 col-form-label">Department</label>
-                <div class="col-sm-8">
-                    <input type="hidden" name="department" value="<?= $department['id']; ?>">
-                    <select id="departementForm" class="custom-select" disabled>
-                        <option selected value="<?= $department['id']; ?>"><?= $department['nama_departemen']; ?></option>
-                    </select>
+                <div class="form-group row">
+                    <label for="departementForm" class="col-sm-4 col-form-label">Department</label>
+                    <div class="col-sm-8">
+                        <select id="departementForm" class="custom-select" name="department" disabled>
+                            <option value="">Choose Division first...</option>
+                        </select>
+                    </div>
+                </div>    
+            <?php else: ?>
+                <div class="form-group row">
+                    <label for="divisionForm" class="col-sm-4 col-form-label">Division</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" name="division" value="<?= $division['id']; ?>">
+                        <select id="divisionForm" class="custom-select" disabled>
+                            <option selected value="<?= $division['id']; ?>"><?= $division['division']; ?></option>
+                        </select>
+                    </div>
                 </div>
-            </div>
+                <div class="form-group row">
+                    <label for="departementForm" class="col-sm-4 col-form-label">Department</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" name="department" value="<?= $department['id']; ?>">
+                        <select id="departementForm" class="custom-select" disabled>
+                            <option selected value="<?= $department['id']; ?>"><?= $department['nama_departemen']; ?></option>
+                        </select>
+                    </div>
+                </div>    
+            <?php endif; ?>
             <div class="form-group row mb-0">
                 <label for="workLocationForm" class="col-sm-4 col-form-label">Work Location</label>
                 <div class="col-sm-8">

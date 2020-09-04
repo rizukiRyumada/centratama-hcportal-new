@@ -1,13 +1,7 @@
 <script>
     // get data ptk from ajax
     $(document).ready(function(){
-        // CKEDITOR Instances
-        CKEDITOR.replace( 'ska' );
-        CKEDITOR.replace( 'req_special' );
-        CKEDITOR.replace( 'outline' );
-        CKEDITOR.replace( 'main_responsibilities' );
-        CKEDITOR.replace( 'tasks' );
-
+        // ajax function to get data from database and placed it on form
         $.ajax({
             url: "<?= base_url('ptk/ajax_getPTKdata'); ?>",
             data: {
@@ -48,11 +42,6 @@
                 }
 
                 // budget selector
-                // variable budget
-                let input_jptext = $('input[name="job_position_text"]'); // selector job position text
-                let input_jpchoose = $('select[name="job_position_choose"]'); // selector job position text
-                let input_budget = $('input[name="budget"]');
-                let input_budget_checked = $('input[name="budget"]:checked');
                 // select budget
                 $('input[name="budget"][value="'+data.data.budget+'"]').attr('checked',true);
                 $("#budgetAlert").hide(); // sembunyikan overlay job position alert
@@ -69,8 +58,6 @@
                     $('select#positionInput option[value="'+ data.data.id_pos +'"]').attr('selected',true); // ubah job position yg dipilih
                 }
 
-                let input_replacement_who = $('input[name="replacement_who"]');
-                let input_replacement = $('input[name="replacement"]');
                 // replacement selector
                 if(data.data.replacement != ""){
                     input_replacement.attr('checked', true); // check replacement checkbox
@@ -81,9 +68,6 @@
                 }
 
                 // work location selector
-                let input_WLtext = $('input[name="work_location_text"]');
-                let input_WLchoose = $('select[name="work_location_choose"]');
-                let input_WLtrigger = $('#work_location_otherTrigger');
                 let work_location = JSON.parse(data.data.work_location); // parse json work location
                 if(work_location.other == true){
                     $('input[name="work_location_otherTrigger"]').attr('checked', true); // cekbox true other location
@@ -104,11 +88,6 @@
 
                 // resources selector
                 let resources = JSON.parse(data.data.resources); // parse json resources
-                // variable resource form
-                let input_resource = $('input[name="resources"]');
-                let input_resource_checked = $('input[name="resources"]:checked');
-                let input_resource_internal = $('#internalForm');
-                let input_resource_internalwho = $('input[name="internal_who"]');
                 $('input[name="resources"][value="'+resources.resources+'"]').attr('checked',true); // select resources
                 if(resources.resources == "int"){
                     input_resource_internalwho.slideDown(); // tampilkan input text internal_who
@@ -117,11 +96,6 @@
                     // nothing
                 }
 
-                // variabel input name Work Experience
-                let input_workexp = $('input[name="work_exp"]');
-                let input_workexp_checked = $('input[name="work_exp"]:checked');
-                let input_workexp_years = $('#we_years');
-                let input_workexp_yearstext = $('input[name="work_exp_years"]');
                 // work experience selector
                 if(data.data.work_exp > 0) { // cek jika cekbox work experience
                     input_workexp_years.fadeIn(); // tampilkan kotak free text tahun
@@ -138,10 +112,11 @@
                 CKEDITOR.instances['main_responsibilities'].setData(data.data.main_responsibilities);
                 CKEDITOR.instances['tasks'].setData(data.data.tasks);
 
+                // tampilkan tab job profile viewer dan ambil datanya
+                showMeJobProfile(id_pos);
+
                 // $('.overlay').fadeOut(); // hapus overlay
             }
         })
     });
 </script>
-
-<?php $this->load->view('_komponen/ptk/script_validator_ptk'); ?>

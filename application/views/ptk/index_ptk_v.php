@@ -3,29 +3,37 @@
     <div class="col-md-2 d-md-inline-block d-none">
         <img src="<?= base_url('/assets/img/illustration/ptk/thingking-new-employee.svg'); ?>" alt="" class="responsive-image">
     </div>
-    <div class="col-md-6">
+    <div class="
+    <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1" || $my_hirarki == "N-2"): ?>
+        col-md-6
+    <?php else: ?>
+        col-md-10
+    <?php endif; ?>
+    ">
         <div class="row h-100">
             <div class="col align-self-center">
                 <p class="text m-0">Employee Requisition Form digunakan untuk mengajukan tenaga kerja baru, dengan melalui beberapa tahap approval.</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4 py-2">
-        <div class="row h-100">
-            <div class="col align-self-center text-center">
-                <a href="<?= base_url('ptk/createNewForm'); ?>" class="w-100 btn btn-success">
-                    <div class="row h-100">
-                        <div class="col-auto align-self-center text-center">
-                            <img src="<?= base_url('/assets/img/illustration/add-document.svg'); ?>" alt="add-document" class="img-lg">
+    <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1" || $my_hirarki == "N-2"): ?>
+        <div class="col-md-4 py-2">
+            <div class="row h-100">
+                <div class="col align-self-center text-center">
+                    <a href="<?= base_url('ptk/createNewForm'); ?>" class="w-100 btn btn-success">
+                        <div class="row h-100">
+                            <div class="col-auto align-self-center text-center">
+                                <img src="<?= base_url('/assets/img/illustration/add-document.svg'); ?>" alt="add-document" class="img-lg">
+                            </div>
+                            <div class="col align-self-center text-center">
+                                <p class="text m-0">Create New Employee Requisition Form</p>
+                            </div>
                         </div>
-                        <div class="col align-self-center text-center">
-                            <p class="text m-0">Create New Employee Requisition Form</p>
-                        </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
 
 <!-- main tabs -->
@@ -41,9 +49,11 @@
                   <li class="nav-item">
                     <a class="nav-link ptk_tableTrigger" id="custom-tabs-four-profile-tab" data-toggle="pill" data-status="0" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Inactive</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link ptk_tableTrigger" id="custom-tabs-four-messages-tab" data-toggle="pill" data-status="2" href="#custom-tabs-four-messages" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">All Data</a>
-                  </li>
+                  <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
+                    <li class="nav-item">
+                        <a class="nav-link ptk_tableTrigger" id="custom-tabs-four-messages-tab" data-toggle="pill" data-status="2" href="#custom-tabs-four-messages" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">All Data</a>
+                    </li>
+                  <?php endif; ?>
                 </ul>
             </div>
             <div class="card-body table-responsive">
