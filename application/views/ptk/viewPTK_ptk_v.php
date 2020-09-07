@@ -48,7 +48,7 @@
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <!-- Tab Form PTK -->
                     <div class="tab-pane fade active show" id="custom-tabs-ptkForm" role="tabpanel" aria-labelledby="custom-tabs-ptkForm-tab">
-                        <?php $this->load->view('ptk/ptk_editor_v'); ?>
+                        <?php $this->load->view('ptk/ptk_viewer_v'); ?>
                     </div><!-- /Tab form PTK -->
                     
                     <!-- /* -------------------------------------------------------------------------- */

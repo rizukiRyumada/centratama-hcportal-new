@@ -25,13 +25,13 @@ class Ptk_m extends CI_Model {
     /**
      * get ptk list with status
      *
-     * @param  mixed $getWithStatus
+     * @param  mixed $where
      * @return void
      */
-    function get_ptkList($getWithStatus){
+    function get_ptkList($where){
         $this->db->select($this->table['main'].".id_entity, ".$this->table['main'].".id_div, ".$this->table['main'].".id_dept, ".$this->table['main'].".id_pos, ".$this->table['main'].".id_time, ".$this->table['main'].".time_modified, ".$this->table['main'].".status, ".$this->table['main'].".status_now");
         $this->db->join($this->table['status'], $this->table['main'].".status_now = ".$this->table['status'].".id", 'left');
-        return $this->db->get_where($this->table['main'], array('type' => $getWithStatus))->result_array();
+        return $this->db->get_where($this->table['main'], $where)->result_array();
     }
     
     /**

@@ -23,7 +23,7 @@ class Employee_m extends CI_Model {
             $this->table['position'], 
             $this->table['position'].'.id = '. $this->table['employee'].'.position_id',
             'left');
-        return $this->db->get_where($this->table['employee'], $this->table['employee'].'.nik = "'. $nik .'"')->result_array();
+        return $this->db->get_where($this->table['employee'], $this->table['employee'].'.nik = "'. $nik .'"')->row_array();
     }
 
     function getPosFromNik($nik){
@@ -32,7 +32,7 @@ class Employee_m extends CI_Model {
             $this->table['position'], 
             $this->table['position'].'.id = '. $this->table['employee'].'.position_id',
             'left');
-        return $this->db->get_where($this->table['employee'], $this->table['employee'].'.nik = "'. $nik .'"')->result_array();
+        return $this->db->get_where($this->table['employee'], $this->table['employee'].'.nik = "'. $nik .'"')->row_array();
     }
 }
 

@@ -105,7 +105,7 @@ class Ptk extends SpecialUserAppController {
 
         if($this->form_validation->run() == FALSE){
             // Form Data
-            $detail_emp = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik'))[0]; // ambil posisi dianya
+            $detail_emp = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik')); // ambil posisi dianya
 
             // Form Data
             if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
@@ -274,20 +274,23 @@ class Ptk extends SpecialUserAppController {
         $getWithStatus = $this->input->post('status');
 
         // ambil divisi departemen posisi
-        $DeptDiv = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik'));
+        $deptDiv = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik'));
 
         // date division department status details
         // get form list ptk
         if($getWithStatus == 2){
-            if($this->session->userdata('role_id') == 1){
+            if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
                 $data_ptk = $this->ptk_m->getAll_ptkList();
             } else {
                 show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
             }
         } else {
-            $data_ptk = $this->ptk_m->get_ptkList($getWithStatus);
+            $data_ptk = $this->ptk_m->get_ptkList(array(
+                'type' => $getWithStatus,
+                'id_div' => $deptDiv['div_id'],
+                'id_dept' => $deptDiv['dept_id']
+            ));
         }
-         // NOW
         foreach ($data_ptk as $key => $value) {
             $data_ptk[$key]["name_div"] = $this->divisi_model->getDetailById($value['id_div'])['division'];
             $data_ptk[$key]["name_dept"] = $this->dept_model->getDetailById($value['id_dept'])['nama_departemen'];
@@ -302,6 +305,7 @@ class Ptk extends SpecialUserAppController {
 
     function ajax_getPTKdata(){
         // TODO cek akses kalo admin, atau bukan
+
 
         $data = $this->ptk_m->getDetail_ptk(
             $this->input->post('id_entity'),
@@ -325,12 +329,13 @@ class Ptk extends SpecialUserAppController {
 /*                               OTHER Functions                              */
 /* -------------------------------------------------------------------------- */
     // cek akses buat frame viewer
-    public function cekakses_viewer($position_my, $position){
+    public function cekakses_ptk($position_my, $position){
         // cek apa dia admin atau userapp admin
-        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 196 || $position_my['id'] == "1"){
             // perbolehkan akses bebas
         } else {
             // cek berdasarkan hirarki
+            //NOW
             if($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
                 // cek berdasarkan kesamaan divisi dan department
                 if($position_my['div_id'] == $position['div_id'] && $position_my['dept_id'] == $position['dept_id']){
@@ -340,7 +345,15 @@ class Ptk extends SpecialUserAppController {
                     exit;    
                 }
                 // TODO tambah cek akses per approver
-            } else {
+            } elseif($position_my['hirarki_org'] == "N"){
+                if($position_my['div_id'] == $position['div_id']){
+                    // perbolehkan akses
+                } else {
+                    show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+                    exit;  
+                }
+            }
+            else {
                 show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                 exit;
             }
@@ -354,7 +367,7 @@ class Ptk extends SpecialUserAppController {
         $position_my = $this->posisi_m->getMyPosition();
         $position = $this->posisi_m->getOnceWhere(array('id' => $id_posisi));
         // cek akses
-        $this->cekakses_viewer($position_my, $position);
+        $this->cekakses_ptk($position_my, $position);
         
         // load Job Profile model
         $this->load->model('jobpro_model');
@@ -395,7 +408,7 @@ class Ptk extends SpecialUserAppController {
         $position_my = $this->posisi_m->getMyPosition();
         $position = $this->posisi_m->getOnceWhere(array('id' => $id_posisi));
         // cek akses
-        $this->cekakses_viewer($position_my, $position);
+        $this->cekakses_ptk($position_my, $position);
 
         // load Job Profile model
         $this->load->model('jobpro_model');
@@ -451,6 +464,12 @@ class Ptk extends SpecialUserAppController {
         $data['id_dept']   = $this->input->get('id_dept');
         $data['id_pos']    = $this->input->get('id_pos');
         $data['id_time']   = $this->input->get('id_time');
+    
+        // data posisi
+        $position_my = $this->posisi_m->getMyPosition();
+        $position = $this->posisi_m->getOnceWhere(array('id' => $data['id_pos']));
+        // cek akses
+        $this->cekakses_ptk($position_my, $position);
 
         // form data
         $data['entity']     = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity

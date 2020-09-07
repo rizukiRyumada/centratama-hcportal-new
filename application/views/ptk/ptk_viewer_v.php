@@ -345,22 +345,26 @@
                         <th>Name</th>
                         <th>Position</th>
                     </tr>
-                    <?php foreach($data_atasan['atasan2'] as $v): ?>
-                    <tr>
-                        <td><?= $x; ?></td>
-                        <td><?= $v['emp_name']; ?></td>
-                        <td><?= $v['position_name']; ?></td>
-                    </tr>
-                    <?php $x++; ?>
-                    <?php endforeach;?>
-                    <?php foreach($data_atasan['atasan1'] as $v): ?>
-                    <tr>
-                        <td><?= $x; ?></td>
-                        <td><?= $v['emp_name']; ?></td>
-                        <td><?= $v['position_name']; ?></td>
-                    </tr>
-                    <?php $x++; ?>
-                    <?php endforeach;?>
+                    <?php if(!empty($data_atasan['atasan2'])): ?>
+                        <?php foreach($data_atasan['atasan2'] as $v): ?>
+                            <tr>
+                                <td><?= $x; ?></td>
+                                <td><?= $v['emp_name']; ?></td>
+                                <td><?= $v['position_name']; ?></td>
+                            </tr>
+                            <?php $x++; ?>
+                        <?php endforeach;?>
+                    <?php endif; ?>
+                    <?php if(!empty($data_atasan['atasan1'])): ?>
+                        <?php foreach($data_atasan['atasan1'] as $v): ?>
+                            <tr>
+                                <td><?= $x; ?></td>
+                                <td><?= $v['emp_name']; ?></td>
+                                <td><?= $v['position_name']; ?></td>
+                            </tr>
+                            <?php $x++; ?>
+                        <?php endforeach;?>
+                    <?php endif; ?>
                     <tr>
                         <td><?= $x; ?></td>
                         <td><input type="text" name="interviewer_name3" class="form-control" id="interviewer_name3" placeholder="Enter Name..."></td>
