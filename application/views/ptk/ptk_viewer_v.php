@@ -1,5 +1,5 @@
 <!-- <form id="ptkForm" action="<?= base_url('ptk/createNewForm'); ?>" method="POST" novalidate> -->
-<form id="ptkForm" action="<?= $url_submit; ?>" method="POST" novalidate>
+<form id="ptkForm" action="<?= base_url('ptk/updateStatus'); ?>" method="POST" novalidate>
     <div class="row bg-gray mb-3">
         <div class="col py-2">
             <h5 class="font-weight-bold m-0">Identity</h5>
@@ -399,6 +399,13 @@
         </div>
     </div>
     <!-- /Tasks -->
+
+    <!-- hidden text for form information -->
+    <input type="hidden" name="id_entity" value="<?= $id_entity; ?>">
+    <input type="hidden" name="id_div" value="<?= $id_div; ?>">
+    <input type="hidden" name="id_dept" value="<?= $id_dept; ?>">
+    <input type="hidden" name="id_pos" value="<?= $id_pos; ?>">
+    <input type="hidden" name="id_time" value="<?= $id_time; ?>">
 
     <!-- hidden form for additional information -->
     <input type="hidden" name="action"> 

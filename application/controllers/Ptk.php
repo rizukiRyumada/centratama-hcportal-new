@@ -503,7 +503,7 @@ class Ptk extends SpecialUserAppController {
         // form data
         $data['position_my'] = $position_my; // my position data
         $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
-        $data['status_detail'] = $this->ptk_m->getDetail_ptkStatusDetailByStatusId($data['status_now']); // get status details
+        $data['status_detail'] = $this->ptk_m->getDetail_ptkStatusDetailByStatusId($data['status_form']); // get status details
         $data['entity']     = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
         $data['division']   = $this->divisi_model->getOnceById($data['id_div'])[0]; // ambil division
         $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
@@ -544,25 +544,21 @@ class Ptk extends SpecialUserAppController {
     }
 
     function updateStatus(){
-        // // get my hirarki
-        // $my_hirarki = $this->posisi_m->getOnceWhere(array('id' => $this->session->userdata('position_id')))['hirarki_org'];
-        // // cekakses hanya admin, superadmin, N-2 dan N-1 yang bisa akses        
-        // if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
-        //     // have all access
-        // } else {
-        //     // cek akses berdasarkan hirarki N-1 dan N-2 yang bisa akses
-        //     if($my_hirarki == "N-1" || $my_hirarki == "N-2"){
-        //         // have access
-        //     } else {
-        //         show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
-        //     }
-        // }
+        // get form info
+        $id_entity = $this->input->post('id_entity');
+        $id_div = $this->input->post('id_div');
+        $id_dept = $this->input->post('id_dept');
+        $id_pos = $this->input->post('id_pos');
+        $id_time = $this->input->post('id_time');
 
+        // get my position data
+        $position_my = $this->posisi_m->getMyPosition();
         // ambil id status
+        $statuus_now = $this->input->post('status_now');
         // ambil action
-        // ambil my hirarki
-        // ambil status sebelum
+        $action = $this->input->post('action');        
         // kasih status setelah
+        
         // ambil status json dan update dengan liat hirarki
         // beri pesan jika revisi ke status json
         // simpan semua data ke database
@@ -570,7 +566,15 @@ class Ptk extends SpecialUserAppController {
         $this->form_validation->set_rules($this->config_formValidation); // load settings
         if($this->form_validation->run() == FALSE){ // jalankan validasi
             // tampilkan pesan error
-            echo(json_encode("Form validation error"));
+            $this->session->set_userdata('msg_swal',
+                array(
+                    'icon' => 'error',
+                    'title' => 'Form Validation Error?!',
+                    'msg' => 'Sorry there is an error on form validation please check again and please enable javascript to showing what form needed to be fill.'
+                )
+            );
+            
+            header('location: ' . base_url('ptk/testStatus')."?id_entity=$id_entity&id_div=$id_div&id_dept=$id_dept&id_pos=$id_pos&id_time=$id_time");
         } else {
             // set pengaturan buat status now
 

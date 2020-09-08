@@ -122,6 +122,47 @@
                 '<i class="fa fa-thumbs-down"></i>',
             cancelButtonAriaLabel: 'Thumbs down'
         });
+
+        let action = $(this).data('id');
+        let status = $(this).data('status');
+
+        // ubah form action dan status
+        $('input[name="action"]').val(action);
+        $('input[name="status_now"]').val(status);
+        // apabila idnya 2 tampilkan swal textarea
+        if(action == 2){
+            const { value: pesan_revisi } = await Swal.fire({
+                title: "Type a Message to be Revised",
+                input: 'textarea',
+                inputPlaceholder: 'Type your message here...',
+                showCancelButton: true,
+                inputValue: pesan_revisi,
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                    return 'You need to write a message!'
+                    }
+                }
+            });
+
+            if (pesan_revisi) {
+                // Swal.fire(pesan_revisi);
+
+                // taruh pesan revisi ke form taruh
+                $('input[name="pesan_revisi"]').val(pesan_revisi);
+
+                $('#ptkForm').submit(); // submit form if validation success
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please type a message',
+                });                
+            }
+        } else {
+            $('#ptkForm').submit(); // submit form if validation success
+        }
+        // submit ke database
         
         // let validator = submit_validator(); // submit validator taken from .../application/views/_komponen/ptk/script_submitValidator_ptk.php
         // let counter_validate = validator[0];
