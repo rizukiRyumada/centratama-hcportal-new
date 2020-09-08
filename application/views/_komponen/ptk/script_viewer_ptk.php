@@ -56,6 +56,7 @@
                     input_jptext.hide(); // sembunyikan free text job profile
                     input_jptext.val(''); // kosongkan kotak job_position_text
                     $('select#positionInput option[value="'+ data.data.id_pos +'"]').attr('selected',true); // ubah job position yg dipilih
+                    $('input[name="job_position_choose"]').val(data.data.id_pos);
                 }
 
                 // replacement selector

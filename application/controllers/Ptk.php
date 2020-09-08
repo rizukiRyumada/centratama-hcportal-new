@@ -1,10 +1,6 @@
 <?php
-// TODO unbudgeted form position add freetext, budgeted choose position on div and dept
-// TODO Work location ambil api kota di Indonesia
 // TODO di tabel position tambah man power kuota => mpp
-// TODO interviewer dari atasan 1 dan atasan 2, dan tambahin dari data lain
 // TODO tambah popover di tiap kotak form
-// TODO tambah oragnisasi di tab form sebelah job profile
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -14,6 +10,7 @@ class Ptk extends SpecialUserAppController {
         'index' => "Employee Requisition"
     );
 
+    // table name list
     protected $table = array(
         'employee' => 'master_employee',
         'entity' => 'master_entity',
@@ -23,12 +20,48 @@ class Ptk extends SpecialUserAppController {
         'location' => 'master_location',
         'ptk_status' => 'ptk_status'
     );
+
+    // TODO if checkbox replacement checked set rules required to replacement_who
+    // TODO if checkbox job_position_check checked set rules required to internal_who
+    // TODO if checkbox job_position_check checked set rules required to job_position_text
+    // TODO if checkbox work_exp == 1 set rules to work_exp_years
+    // TODO if checkbox interviewer_name diisi, set rules interviewer_job_title, dan sebaliknya
+
+    // set rules form validation
+    // array('field' => 'entity', 'label' => 'Entity', 'rules' => 'required'),
+    // array('field' => 'password', 'label' => 'Password', 'rules' => 'required', 'errors' => array('required' => 'You must provide a %s.',),),
+    protected $config_formValidation = array(
+            array('field' => 'entity', 'label' => 'Entity', 'rules' => 'required'),
+            // array('field' => 'job_position', 'label' => 'Job Position', 'rules' => 'required'),
+            array('field' => 'job_level', 'label' => 'Job Level', 'rules' => 'required'),
+            // array('field' => 'division', 'label' => 'Division', 'rules' => 'required'),
+            // array('field' => 'department', 'label' => 'Departemen', 'rules' => 'required'),
+            // array('field' => 'work_location', 'label' => 'Work Location', 'rules' => 'required'),
+            array('field' => 'budget', 'label' => 'Budget', 'rules' => 'required'),
+            array('field' => 'resources', 'label' => 'Resources', 'rules' => 'required'),
+            array('field' => 'mpp_req', 'label' => 'MPP Req', 'rules' => 'required'),
+            array('field' => 'emp_stats', 'label' => 'Employee Status', 'rules' => 'required'),
+            array('field' => 'date_required', 'label' => 'Date Required', 'rules' => 'required'),
+            array('field' => 'education', 'label' => 'Education', 'rules' => 'required'),
+            array('field' => 'majoring', 'label' => 'Majoring', 'rules' => 'required'),
+            array('field' => 'preferred_age', 'label' => 'Preferred Age', 'rules' => 'required'),
+            array('field' => 'sex', 'label' => 'Sex', 'rules' => 'required'),
+            array('field' => 'work_exp', 'label' => 'Working Experience', 'rules' => 'required'),
+            array('field' => 'ska', 'label' => 'Skill, Knowledge, and Abilities', 'rules' => 'required'),
+            // array('field' => 'req_special', 'label' => 'Special Requirement', 'rules' => 'required'),
+            array('field' => 'outline', 'label' => 'Outline Why This Position is necessary', 'rules' => 'required'),
+            array('field' => 'main_responsibilities', 'label' => 'Main Responsibilities', 'rules' => 'required'),
+            array('field' => 'tasks', 'label' => 'Tasks', 'rules' => 'required')
+    );
     
     public function __construct() {
         parent::__construct();
         
         // load models
         $this->load->model(['entity_m', 'divisi_model', 'dept_model', 'employee_m', 'posisi_m', 'ptk_m']);
+
+        // load library
+        $this->load->library('form_validation');
     }
     
 
@@ -65,45 +98,9 @@ class Ptk extends SpecialUserAppController {
                 show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
             }
         }
-
-        // load library form validation
-        $this->load->library('form_validation');
-
-        // TODO if checkbox replacement checked set rules required to replacement_who
-        // TODO if checkbox job_position_check checked set rules required to internal_who
-        // TODO if checkbox job_position_check checked set rules required to job_position_text
-        // TODO if checkbox work_exp == 1 set rules to work_exp_years
-        // TODO if checkbox interviewer_name diisi, set rules interviewer_job_title, dan sebaliknya
-
-        // set rules form validation
-        // array('field' => 'entity', 'label' => 'Entity', 'rules' => 'required'),
-        // array('field' => 'password', 'label' => 'Password', 'rules' => 'required', 'errors' => array('required' => 'You must provide a %s.',),),
-        $config = array(
-                array('field' => 'entity', 'label' => 'Entity', 'rules' => 'required'),
-                // array('field' => 'job_position', 'label' => 'Job Position', 'rules' => 'required'),
-                array('field' => 'job_level', 'label' => 'Job Level', 'rules' => 'required'),
-                // array('field' => 'division', 'label' => 'Division', 'rules' => 'required'),
-                // array('field' => 'department', 'label' => 'Departemen', 'rules' => 'required'),
-                // array('field' => 'work_location', 'label' => 'Work Location', 'rules' => 'required'),
-                array('field' => 'budget', 'label' => 'Budget', 'rules' => 'required'),
-                array('field' => 'resources', 'label' => 'Resources', 'rules' => 'required'),
-                array('field' => 'mpp_req', 'label' => 'MPP Req', 'rules' => 'required'),
-                array('field' => 'emp_stats', 'label' => 'Employee Status', 'rules' => 'required'),
-                array('field' => 'date_required', 'label' => 'Date Required', 'rules' => 'required'),
-                array('field' => 'education', 'label' => 'Education', 'rules' => 'required'),
-                array('field' => 'majoring', 'label' => 'Majoring', 'rules' => 'required'),
-                array('field' => 'preferred_age', 'label' => 'Preferred Age', 'rules' => 'required'),
-                array('field' => 'sex', 'label' => 'Sex', 'rules' => 'required'),
-                array('field' => 'work_exp', 'label' => 'Working Experience', 'rules' => 'required'),
-                array('field' => 'ska', 'label' => 'Skill, Knowledge, and Abilities', 'rules' => 'required'),
-                // array('field' => 'req_special', 'label' => 'Special Requirement', 'rules' => 'required'),
-                array('field' => 'outline', 'label' => 'Outline Why This Position is necessary', 'rules' => 'required'),
-                array('field' => 'main_responsibilities', 'label' => 'Main Responsibilities', 'rules' => 'required'),
-                array('field' => 'tasks', 'label' => 'Tasks', 'rules' => 'required')
-        );
-        $this->form_validation->set_rules($config);
-
-        if($this->form_validation->run() == FALSE){
+        
+        $this->form_validation->set_rules($this->config_formValidation); // load settings
+        if($this->form_validation->run() == FALSE){ // jalankan validasi
             // Form Data
             $detail_emp = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik')); // ambil posisi dianya
 
@@ -116,12 +113,14 @@ class Ptk extends SpecialUserAppController {
                 $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $detail_emp['div_id'], 'dept_id' => $detail_emp['dept_id'])); // position
             }
 
+            // form data
             $data['entity'] = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
             $data['emp_status'] = $this->_general_m->getAll('*', 'master_employee_status', array()); // employee status
             $data['education'] = $this->_general_m->getAll('*', 'ptk_education', array()); // education
             // TODO dari javascript MPP dari table position
             $data['data_atasan'] = $this->posisi_m->whoMyAtasanS(); // ambil data atasan 1 dan 2
             $data['work_location'] = $this->_general_m->getAll('id, location', $this->table['location'], array());
+            $data['position_my'] = $this->posisi_m->getMyPosition();
 
             // sorting
             usort($data['entity'], function($a, $b) { return $a['keterangan'] <=> $b['keterangan']; }); // sort berdasarkan title menu
@@ -149,109 +148,28 @@ class Ptk extends SpecialUserAppController {
                 'plugins/datepicker/script_datepicker', 
                 'plugins/ckeditor/script_ckeditor.php', 
                 'ptk/script_formvariable_ptk',
-                'ptk/script_validator_ptk',
-                'ptk/script_submit_validator_ptk');
+                'ptk/script_createNew_ptk',
+                'ptk/script_submitValidator_ptk');
             
             $this->load->view('main_v', $data);
         } else {
-            // tampilkan post
-            // print_r($this->input->post());
-            // exit;
+            // cekakses hanya admin, superadmin, N-2 dan N-1 yang bisa akses
+            if($my_hirarki == "N-2") {
+                $status_now = 'ptk_stats-1'; //  set status drafted
+            } elseif($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1") {
+                if($this->input->post('action') == "save"){
+                    $status_now = 'ptk_stats-1'; // set status saved
+                } elseif ($this->input->post('action') == "submit"){
+                    $status_now = 'ptk_stats-2'; // set status proposed
+                } else {
+                    show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+                }
+            } else {
+                show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+            }
 
-            //timestamp id
-            $data['id_time'] = time();
-            // time modified
-            $data['time_modified'] = time();
-            // created at
-            $status = $this->_general_m->getAll("id", $this->table["ptk_status"], array()); // ambil data status
-            $status['0']['time'] = time(); // tambahkan waktu pada status
-            $data['status'] = json_encode($status);
-            // add status now
-            $data['status_now'] = 'ptk_stats-1';
-            // Entity
-            $data['id_entity'] = $this->input->post('entity');
-            // budget
-            $data['budget'] = $this->input->post('budget');
-            // Job Position
-            if($this->input->post('budget') == 0){ // jika unbudgetted
-                // masukkan id_posisi jadi nol
-                $data['id_pos'] = 0;
-                $data['position_other'] = $this->input->post('job_position_text');
-            } else {
-                // masukkan id_posisi
-                $data['id_pos'] = $this->input->post('job_position_choose');
-                $data['position_other'] = "";
-            }
-            // Job Level
-            $data['job_level'] = $this->input->post('job_level');
-            // Division
-            $data['id_div'] = $this->input->post('division');
-            // Department
-            $data['id_dept'] = $this->input->post('department');
-            // Work Location
-            if(filter_var($this->input->post('work_location_otherTrigger'), FILTER_VALIDATE_BOOLEAN) == true){
-                $work_location = [
-                    "other"    => filter_var($this->input->post('work_location_otherTrigger'), FILTER_VALIDATE_BOOLEAN),
-                    "location" => $this->input->post('work_location_text')];
-                $data['work_location'] = json_encode($work_location);
-            } else {
-                $work_location = [
-                    "other"    => false,
-                    "location" => $this->input->post('work_location_choose')];
-                $data['work_location'] = json_encode($work_location);
-            }
-            // replacement
-            if(filter_var($this->input->post('replacement'), FILTER_VALIDATE_BOOLEAN) == true){
-                $data['replacement'] = $this->input->post('replacement_who');
-            } else {
-                $data['replacement'] = "";
-            }
-            // resources
-            if($this->input->post('resources') == "int"){
-                $data['resources'] = json_encode([
-                    "resources"    => $this->input->post('resources'),
-                    "internal_who" => $this->input->post('internal_who')
-                ]);
-            } else {
-                $data['resources'] = json_encode([
-                    "resources"    => $this->input->post('resources'),
-                    "internal_who" => ""]);
-            }
-            // mpp
-            $data['req_mpp'] = $this->input->post('mpp_req');
-            // status employement
-            $data['id_employee_status'] = $this->input->post('emp_stats');
-            // Date Required
-            $data['req_date'] = date("o-m-d", strtotime($this->input->post('date_required')));
-            // Education
-            $data['id_ptk_edu'] = $this->input->post('education');
-            // Majoring
-            $data['majoring'] = $this->input->post('majoring');
-            // Preferred Age
-            $data['age'] = $this->input->post('preferred_age');
-            // Sex
-            $data['sex'] = $this->input->post('sex');
-            // Working Experience
-            $data['work_exp'] = $this->input->post('work_exp_years');
-            // ska
-            $data['req_ska'] = $this->input->post('ska');
-            // Special Requirement
-            $data['req_special'] = $this->input->post('req_special');
-            // Outline
-            $data['outline'] = $this->input->post('outline');
-            // Interviewer
-            if(!empty($this->input->post('interviewer_name3')) && !empty($this->input->post('interviewer_position3'))){
-                $data['interviewer3'] = json_encode([
-                    'name' => $this->input->post('interviewer_name3'),
-                    'position' => $this->input->post('interviewer_position3')
-                ]);
-            }
-            // Main Responsibilities
-            $data['main_responsibilities'] = $this->input->post('main_responsibilities');
-            // Tasks
-            $data['tasks'] = $this->input->post('tasks');
-
-            $this->ptk_m->saveForm($data);
+            // save form
+            $this->saveForm($status_now);
             
             // set pesan berhasil disubmit
             
@@ -291,6 +209,8 @@ class Ptk extends SpecialUserAppController {
                 'id_dept' => $deptDiv['dept_id']
             ));
         }
+
+        // ambil informasi tambahan
         foreach ($data_ptk as $key => $value) {
             $data_ptk[$key]["name_div"] = $this->divisi_model->getDetailById($value['id_div'])['division'];
             $data_ptk[$key]["name_dept"] = $this->dept_model->getDetailById($value['id_dept'])['nama_departemen'];
@@ -302,10 +222,18 @@ class Ptk extends SpecialUserAppController {
             'data' => $data_ptk
         ]));
     }
-
+    
+    /**
+     * Function for ajax to get data form
+     *
+     * @return void
+     */
     function ajax_getPTKdata(){
-        // TODO cek akses kalo admin, atau bukan
-
+        // data posisi
+        $position_my = $this->posisi_m->getMyPosition();
+        $position = $this->posisi_m->getOnceWhere(array('id' => $this->input->post('id_pos')));
+        // cek akses
+        $this->cekakses_ptk($position_my, $position);
 
         $data = $this->ptk_m->getDetail_ptk(
             $this->input->post('id_entity'),
@@ -335,30 +263,123 @@ class Ptk extends SpecialUserAppController {
             // perbolehkan akses bebas
         } else {
             // cek berdasarkan hirarki
-            //NOW
-            if($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
+            if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
                 // cek berdasarkan kesamaan divisi dan department
                 if($position_my['div_id'] == $position['div_id'] && $position_my['dept_id'] == $position['dept_id']){
                     // perbolehkan akses
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
-                    exit;    
+                    exit;
                 }
-                // TODO tambah cek akses per approver
-            } elseif($position_my['hirarki_org'] == "N"){
-                if($position_my['div_id'] == $position['div_id']){
-                    // perbolehkan akses
-                } else {
-                    show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
-                    exit;  
-                }
-            }
-            else {
+            } else {
                 show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                 exit;
             }
         }
         // cek otoritas apa divisi id dan dept idnya sama antara my position dengan id posisi yang dituju
+    }
+    
+    /**
+     * function used for save ptk form
+     *
+     * @return void
+     */
+    public function saveForm($status_now) {
+        //timestamp id
+        $data['id_time'] = time();
+        // time modified
+        $data['time_modified'] = time();
+        // created at
+        $status = $this->_general_m->getAll("id", $this->table["ptk_status"], array()); // ambil data status
+        $status['0']['time'] = time(); // tambahkan waktu pada status
+        $data['status'] = json_encode($status);
+        // add status now
+        $data['status_now'] = $status_now;
+        // Entity
+        $data['id_entity'] = $this->input->post('entity');
+        // budget
+        $data['budget'] = $this->input->post('budget');
+        // Job Position
+        if($this->input->post('budget') == 0){ // jika unbudgetted
+            // masukkan id_posisi jadi nol
+            $data['id_pos'] = 0;
+            $data['position_other'] = $this->input->post('job_position_text');
+        } else {
+            // masukkan id_posisi
+            $data['id_pos'] = $this->input->post('job_position_choose');
+            $data['position_other'] = "";
+        }
+        // Job Level
+        $data['job_level'] = $this->input->post('job_level');
+        // Division
+        $data['id_div'] = $this->input->post('division');
+        // Department
+        $data['id_dept'] = $this->input->post('department');
+        // Work Location
+        if(filter_var($this->input->post('work_location_otherTrigger'), FILTER_VALIDATE_BOOLEAN) == true){
+            $work_location = [
+                "other"    => filter_var($this->input->post('work_location_otherTrigger'), FILTER_VALIDATE_BOOLEAN),
+                "location" => $this->input->post('work_location_text')];
+            $data['work_location'] = json_encode($work_location);
+        } else {
+            $work_location = [
+                "other"    => false,
+                "location" => $this->input->post('work_location_choose')];
+            $data['work_location'] = json_encode($work_location);
+        }
+        // replacement
+        if(filter_var($this->input->post('replacement'), FILTER_VALIDATE_BOOLEAN) == true){
+            $data['replacement'] = $this->input->post('replacement_who');
+        } else {
+            $data['replacement'] = "";
+        }
+        // resources
+        if($this->input->post('resources') == "int"){
+            $data['resources'] = json_encode([
+                "resources"    => $this->input->post('resources'),
+                "internal_who" => $this->input->post('internal_who')
+            ]);
+        } else {
+            $data['resources'] = json_encode([
+                "resources"    => $this->input->post('resources'),
+                "internal_who" => ""]);
+        }
+        // mpp
+        $data['req_mpp'] = $this->input->post('mpp_req');
+        // status employement
+        $data['id_employee_status'] = $this->input->post('emp_stats');
+        // Date Required
+        $data['req_date'] = date("o-m-d", strtotime($this->input->post('date_required')));
+        // Education
+        $data['id_ptk_edu'] = $this->input->post('education');
+        // Majoring
+        $data['majoring'] = $this->input->post('majoring');
+        // Preferred Age
+        $data['age'] = $this->input->post('preferred_age');
+        // Sex
+        $data['sex'] = $this->input->post('sex');
+        // Working Experience
+        $data['work_exp'] = $this->input->post('work_exp_years');
+        // ska
+        $data['req_ska'] = $this->input->post('ska');
+        // Special Requirement
+        $data['req_special'] = $this->input->post('req_special');
+        // Outline
+        $data['outline'] = $this->input->post('outline');
+        // Interviewer
+        if(!empty($this->input->post('interviewer_name3')) && !empty($this->input->post('interviewer_position3'))){
+            $data['interviewer3'] = json_encode([
+                'name' => $this->input->post('interviewer_name3'),
+                'position' => $this->input->post('interviewer_position3')
+            ]);
+        }
+        // Main Responsibilities
+        $data['main_responsibilities'] = $this->input->post('main_responsibilities');
+        // Tasks
+        $data['tasks'] = $this->input->post('tasks');
+
+        // save form to database
+        $this->ptk_m->saveForm($data);
     }
 
     // viewer job profile
@@ -456,7 +477,12 @@ class Ptk extends SpecialUserAppController {
         
 		$this->load->view('main_frame_v', $data);
     }
-
+    
+    /**
+     * PTK viewer
+     *
+     * @return void
+     */
     function viewPTK(){
         // ptk data
         $data['id_entity'] = $this->input->get('id_entity');
@@ -467,11 +493,17 @@ class Ptk extends SpecialUserAppController {
     
         // data posisi
         $position_my = $this->posisi_m->getMyPosition();
-        $position = $this->posisi_m->getOnceWhere(array('id' => $data['id_pos']));
+        $position    = $this->posisi_m->getOnceWhere(array('id' => $data['id_pos']));
         // cek akses
         $this->cekakses_ptk($position_my, $position);
 
+        // data useradmin app
+        $data['userApp_admin'] = $this->userApp_admin;
+        // NOW
         // form data
+        $data['position_my'] = $position_my; // my position data
+        $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
+        $data['status_detail'] = $this->ptk_m->getDetail_ptkStatusDetailByStatusId($data['status_now']); // get status details
         $data['entity']     = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
         $data['division']   = $this->divisi_model->getOnceById($data['id_div'])[0]; // ambil division
         $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
@@ -490,9 +522,9 @@ class Ptk extends SpecialUserAppController {
         usort($data['position'], function($a, $b) { return $a['position_name'] <=> $b['position_name']; }); // sort berdasarkan title menu
 
         // main data
-        $data['sidebar'] = getMenu(); // ambil menu
-        $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
-        $data['user'] = getDetailUser(); //ambil informasi user
+        $data['sidebar']    = getMenu();        // ambil menu
+        $data['breadcrumb'] = getBreadCrumb();  // ambil data breadcrumb
+        $data['user']       = getDetailUser();  //ambil informasi user
         $data['page_title'] = "View PTK";
         // $data['page_title'] = "Create New Form ".$this->page_title['index'];
         $data['load_view'] = 'ptk/viewPTK_ptk_v';
@@ -504,10 +536,47 @@ class Ptk extends SpecialUserAppController {
             'plugins/datepicker/script_datepicker', 
             'plugins/ckeditor/script_ckeditor.php', 
             'ptk/script_formvariable_ptk',
-            'ptk/script_validator_ptk',
+            'ptk/script_updateStatus_ptk',
+            'ptk/script_submitValidator_ptk',
             'ptk/script_viewer_ptk');
         
         $this->load->view('main_v', $data);
+    }
+
+    function updateStatus(){
+        // // get my hirarki
+        // $my_hirarki = $this->posisi_m->getOnceWhere(array('id' => $this->session->userdata('position_id')))['hirarki_org'];
+        // // cekakses hanya admin, superadmin, N-2 dan N-1 yang bisa akses        
+        // if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+        //     // have all access
+        // } else {
+        //     // cek akses berdasarkan hirarki N-1 dan N-2 yang bisa akses
+        //     if($my_hirarki == "N-1" || $my_hirarki == "N-2"){
+        //         // have access
+        //     } else {
+        //         show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        //     }
+        // }
+
+        // ambil id status
+        // ambil action
+        // ambil my hirarki
+        // ambil status sebelum
+        // kasih status setelah
+        // ambil status json dan update dengan liat hirarki
+        // beri pesan jika revisi ke status json
+        // simpan semua data ke database
+
+        $this->form_validation->set_rules($this->config_formValidation); // load settings
+        if($this->form_validation->run() == FALSE){ // jalankan validasi
+            // tampilkan pesan error
+            echo(json_encode("Form validation error"));
+        } else {
+            // set pengaturan buat status now
+
+            // simpan ke dalam database
+            // $this->saveForm($status_now);
+        } // NOW
     }
 
 }

@@ -30,7 +30,7 @@
 
     // Job Position Selector
     var input_jptext = $('input[name="job_position_text"]'); // selector job position text
-    var input_jpchoose = $('select[name="job_position_choose"]'); // selector job position text
+    var input_jpchoose = $('select#positionInput'); // selector job position text
     var input_budget = $('input[name="budget"]');
     var input_budget_checked = $('input[name="budget"]:checked');
 

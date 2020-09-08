@@ -48,6 +48,37 @@ class Ptk_m extends CI_Model {
             'id_time'   => $id_time
         ))->row_array();
     }
+    
+    /**
+     * get detail information of status id
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    function getDetail_ptkStatusDetailByStatusId($id_status){
+        return $this->db->get_where($this->table['status'], array('id' => $id_status))->row_array();
+    }
+    
+    /**
+     * get id status now ptk
+     *
+     * @param  mixed $id_entity
+     * @param  mixed $id_div
+     * @param  mixed $id_dept
+     * @param  mixed $id_pos
+     * @param  mixed $id_time
+     * @return void
+     */
+    function getDetail_ptkStatusNow($id_entity, $id_div, $id_dept, $id_pos, $id_time){
+        $this->db->select('status_now');
+        return $this->db->get_where($this->table['main'], array(
+            'id_entity' => $id_entity,
+            'id_div'    => $id_div,
+            'id_dept'   => $id_dept,
+            'id_pos'    => $id_pos,
+            'id_time'   => $id_time
+        ))->row_array()['status_now'];
+    }
 
     function saveForm($data){
         $this->db->insert($this->table['main'], $data);

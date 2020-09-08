@@ -49,6 +49,133 @@
                     <!-- Tab Form PTK -->
                     <div class="tab-pane fade active show" id="custom-tabs-ptkForm" role="tabpanel" aria-labelledby="custom-tabs-ptkForm-tab">
                         <?php $this->load->view('ptk/ptk_viewer_v'); ?>
+
+                        <!-- buttons -->
+                        <div class="row justify-content-end">
+                             <!-- buat CEO -->
+                            <?php if($position_my['id'] == 1): ?>
+                                <?php if($status_form == "ptk_stats-B"): ?>
+                                    <div class="col-md-6">
+                                        <div class="btn-group w-100">
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
+                                                <i class="fa fa-check"></i> Accept
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
+                                                <i class="fas fa-edit"></i> Revise
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                                <i class="fa fa-times"></i> Reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="col">
+                                        <div class="alert alert-<?= $status_detail['css_color']; ?>">
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            <!-- buat Divisi HC -->
+                            <?php elseif($position_my['id'] == 196): ?>
+                                <?php if($status_form == "ptk_stats-4"): ?>
+                                    <div class="col-md-6">
+                                        <div class="btn-group w-100">
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
+                                                <i class="fa fa-check"></i> Accept
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
+                                                <i class="fas fa-edit"></i> Revise
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                                <i class="fa fa-times"></i> Reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="col">
+                                        <div class="alert alert-<?= $status_detail['css_color']; ?>">
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            <!-- buat Admin -->
+                            <?php elseif($userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
+                                <?php if($status_form == "ptk_stats-3"): ?>
+                                    <div class="col-md-6">
+                                        <div class="btn-group w-100">
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
+                                                <i class="fa fa-check"></i> Accept
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
+                                                <i class="fas fa-edit"></i> Revise
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                                <i class="fa fa-times"></i> Reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="col">
+                                        <div class="alert alert-<?= $status_detail['css_color']; ?>">
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            <!-- buat hirarki N -->
+                            <?php elseif($position_my['hirarki_org'] == "N"): ?>
+                                <?php if($status_form == "ptk_stats-2"): ?>
+                                    <div class="col-md-6">
+                                        <div class="btn-group w-100">
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
+                                                <i class="fa fa-check"></i> Accept
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
+                                                <i class="fas fa-edit"></i> Revise
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                                <i class="fa fa-times"></i> Reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="col">
+                                        <div class="alert alert-<?= $status_detail['css_color']; ?>">
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            <!-- buat hirarki N-1 -->
+                            <?php elseif($position_my['hirarki_org'] == "N-1"): ?>
+                                <?php if($status_form == "ptk_stats-1"): ?>
+                                    <div class="col-md-6">
+                                        <div class="btn-group w-100">
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
+                                                <i class="fa fa-check"></i> Accept
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
+                                                <i class="fas fa-edit"></i> Revise
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                                <i class="fa fa-times"></i> Reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="col">
+                                        <div class="alert alert-<?= $status_detail['css_color']; ?>">
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            <!-- buat hirarki N-2 -->
+                            <?php else: ?>
+                                <div class="col">
+                                    <div class="alert alert-<?= $status_detail['css_color']; ?>">
+                                        <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div><!-- /Tab form PTK -->
                     
                     <!-- /* -------------------------------------------------------------------------- */

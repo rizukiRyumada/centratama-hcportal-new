@@ -1,4 +1,5 @@
-<form id="ptkForm" action="<?= base_url('ptk/createNewForm'); ?>" method="POST" novalidate>
+<!-- <form id="ptkForm" action="<?= base_url('ptk/createNewForm'); ?>" method="POST" novalidate> -->
+<form id="ptkForm" action="<?= $url_submit; ?>" method="POST" novalidate>
     <div class="row bg-gray mb-3">
         <div class="col py-2">
             <h5 class="font-weight-bold m-0">Identity</h5>
@@ -15,7 +16,7 @@
                     <select id="entityInput" name="entity" class="custom-select" required>
                         <option value="" >Select an Entity...</option>
                         <?php foreach($entity as $v): ?>
-                        <option value="<?= $v['id']; ?>" data-nama="<?= $v['nama_entity']; ?>" ><?= $v['keterangan']; ?></option>
+                            <option value="<?= $v['id']; ?>" data-nama="<?= $v['nama_entity']; ?>" ><?= $v['keterangan']; ?></option>
                         <?php endforeach;?>
                     </select>
                 </div>                                        
@@ -25,7 +26,8 @@
                 <div class="col-sm-8">
                     <input type="text" id="budgetAlert" class="form-control border border-danger" value="Choose budgeted or unbudgeted first" title="Please Choose budgeted or unbudgeted first" disabled>
                     <input name="job_position_text" type="text" class="form-control" id="jobTitleInput" placeholder="Enter Job Title..." style="display: none;" required>
-                    <select id="positionInput" name="job_position_choose" class="custom-select" style="display: none;" required>
+                    <input type="hidden" name="job_position_choose" >
+                    <select id="positionInput" class="custom-select" style="display: none;" disabled required>
                         <option value="" >Select an Job Position...</option>
                         <?php foreach($position as $v): ?>
                         <option value="<?= $v['id']; ?>" ><?= $v['position_name']; ?></option>
@@ -397,4 +399,9 @@
         </div>
     </div>
     <!-- /Tasks -->
+
+    <!-- hidden form for additional information -->
+    <input type="hidden" name="action"> 
+    <input type="hidden" name="pesan_revisi"> 
+    <input type="hidden" name="status_now">
 </form>

@@ -49,12 +49,24 @@
                     <div class="tab-pane fade active show" id="custom-tabs-ptkForm" role="tabpanel" aria-labelledby="custom-tabs-ptkForm-tab">
                         <?php $this->load->view('ptk/ptk_editor_v'); ?>
 
-                        <!-- Submit Button -->
+                        <!-- Buttons -->
                         <div class="row px-3 justify-content-end">
-                            <div class="col-md-3 text-right">
-                                <button id="submitPTK" class="btn btn-lg btn-success w-100"><i class="fa fa-paper-plane"></i> Submit</button>
+                            <div class="col-md-6 text-right">
+                                <div class="btn-group w-100">
+                                    <button class="submitPTK btn btn-lg btn-warning w-100" data-id="save">
+                                        <i class="fa fa-save"></i> Save
+                                    </button>
+                                    <?php if($position_my['hirarki_org'] == "N-1"): ?>
+                                        <button class="submitPTK btn btn-lg btn-success w-100" data-id="submit">
+                                            <i class="fa fa-paper-plane"></i> Submit
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Save Button -->
+
                     </div><!-- /Tab form PTK -->
                     
                     <!-- /* -------------------------------------------------------------------------- */
