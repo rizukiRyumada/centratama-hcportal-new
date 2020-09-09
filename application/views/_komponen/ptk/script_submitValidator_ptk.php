@@ -5,15 +5,15 @@
         let letScroll = "";
         let counter_validate = 0;
 
-        Swal.fire({
-            icon: 'info',
-            title: 'Checking form validation...',
-            html: '<p>Validating the form before submitting to the server.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
-            showConfirmButton: false,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false
-        });
+        // Swal.fire({
+        //     icon: 'info',
+        //     title: 'Checking form validation...',
+        //     html: '<p>Validating the form before submitting to the server.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+        //     showConfirmButton: false,
+        //     allowOutsideClick: false,
+        //     allowEscapeKey: false,
+        //     allowEnterKey: false
+        // });
 
         // cek validasi select form
         $.each(input_select, function(index, value){

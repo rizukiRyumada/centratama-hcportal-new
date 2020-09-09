@@ -1,6 +1,7 @@
 <?php
 // TODO di tabel position tambah man power kuota => mpp
 // TODO tambah popover di tiap kotak form
+// TODO buat dia milih replacement karyawan
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -149,6 +150,7 @@ class Ptk extends SpecialUserAppController {
                 'plugins/ckeditor/script_ckeditor.php', 
                 'ptk/script_formvariable_ptk',
                 'ptk/script_createNew_ptk',
+                'ptk/script_validator_ptk',
                 'ptk/script_submitValidator_ptk');
             
             $this->load->view('main_v', $data);
@@ -483,6 +485,7 @@ class Ptk extends SpecialUserAppController {
      *
      * @return void
      */
+    // NOW
     function viewPTK(){
         // ptk data
         $data['id_entity'] = $this->input->get('id_entity');
@@ -499,7 +502,6 @@ class Ptk extends SpecialUserAppController {
 
         // data useradmin app
         $data['userApp_admin'] = $this->userApp_admin;
-        // NOW
         // form data
         $data['position_my'] = $position_my; // my position data
         $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
@@ -532,13 +534,14 @@ class Ptk extends SpecialUserAppController {
         $data['additional_styles'] = array('plugins/datepicker/styles_datepicker');
         // $data['custom_styles'] = array();
         $data['custom_script'] = array(
-            'plugins/jqueryValidation/script_jqueryValidation', 
+            // 'plugins/jqueryValidation/script_jqueryValidation', 
             'plugins/datepicker/script_datepicker', 
             'plugins/ckeditor/script_ckeditor.php', 
             'ptk/script_formvariable_ptk',
+            'ptk/script_viewer_ptk',
             'ptk/script_updateStatus_ptk',
-            'ptk/script_submitValidator_ptk',
-            'ptk/script_viewer_ptk');
+            'ptk/script_validator_ptk',
+            'ptk/script_submitValidator_ptk');
         
         $this->load->view('main_v', $data);
     }
@@ -554,10 +557,11 @@ class Ptk extends SpecialUserAppController {
         // get my position data
         $position_my = $this->posisi_m->getMyPosition();
         // ambil id status
-        $statuus_now = $this->input->post('status_now');
+        $status_now = $this->input->post('status_now');
         // ambil action
         $action = $this->input->post('action');        
         // kasih status setelah
+        
         
         // ambil status json dan update dengan liat hirarki
         // beri pesan jika revisi ke status json

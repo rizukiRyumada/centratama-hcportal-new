@@ -63,7 +63,7 @@
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
                                                 <i class="fas fa-edit"></i> Revise
                                             </button>
-                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                            <button class="submitPTK btn btn-lg btn-danger w-100" data-status="<?= $status_form; ?>" data-id="0">
                                                 <i class="fa fa-times"></i> Reject
                                             </button>
                                         </div>
@@ -86,7 +86,7 @@
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
                                                 <i class="fas fa-edit"></i> Revise
                                             </button>
-                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                            <button class="submitPTK btn btn-lg btn-danger w-100" data-status="<?= $status_form; ?>" data-id="0">
                                                 <i class="fa fa-times"></i> Reject
                                             </button>
                                         </div>
@@ -109,7 +109,7 @@
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
                                                 <i class="fas fa-edit"></i> Revise
                                             </button>
-                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                            <button class="submitPTK btn btn-lg btn-danger w-100" data-status="<?= $status_form; ?>" data-id="0">
                                                 <i class="fa fa-times"></i> Reject
                                             </button>
                                         </div>
@@ -132,7 +132,7 @@
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
                                                 <i class="fas fa-edit"></i> Revise
                                             </button>
-                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                            <button class="submitPTK btn btn-lg btn-danger w-100" data-status="<?= $status_form; ?>" data-id="0">
                                                 <i class="fa fa-times"></i> Reject
                                             </button>
                                         </div>
@@ -155,7 +155,7 @@
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
                                                 <i class="fas fa-edit"></i> Revise
                                             </button>
-                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="0">
+                                            <button class="submitPTK btn btn-lg btn-danger w-100" data-status="<?= $status_form; ?>" data-id="0">
                                                 <i class="fa fa-times"></i> Reject
                                             </button>
                                         </div>

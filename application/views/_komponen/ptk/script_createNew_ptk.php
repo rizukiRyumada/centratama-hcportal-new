@@ -105,7 +105,7 @@
     /*                           Customized Form Validation                       */
     /* -------------------------------------------------------------------------- */
     $('.submitPTK').on('click', function() {
-        <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1"): ?>
+        <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>
             // ambil data pada tombol save atau submit
             $('input[name="action"]').val($(this).data('id'));
         <?php endif; ?>
@@ -113,7 +113,6 @@
         let validator = submit_validator(); // submit validator taken from .../application/views/_komponen/ptk/script_submitValidator_ptk.php
         let counter_validate = validator[0];
         let msg_validate = validator[1];
-
         // cek apa ada form error
         if(counter_validate != 0){
             // List empty form popup

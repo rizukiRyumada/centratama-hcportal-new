@@ -428,7 +428,7 @@
     <!-- /Tasks -->
 
     <!-- penanda save dan submit buat hirarki N-1 -->
-    <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1"): ?>
+    <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>
         <input type="hidden" name="action">
     <?php endif; ?>
 </form>

@@ -101,133 +101,144 @@
     //     }
     // });
 
+    // document ready function
+    $(document).ready(function() {
+        CKEDITOR.replace( 'textareaPesanRevisi' );
+    });
+
     /* -------------------------------------------------------------------------- */
     /*                           Customized Form Validation                       */
     /* -------------------------------------------------------------------------- */
     $('.submitPTK').on('click', function() {
-        Swal.fire({
-            title: '<strong>HTML <u>example</u></strong>',
-            icon: 'info',
-            html:
-                'You can use <b>bold text</b>, ' +
-                '<a href="//sweetalert2.github.io">links</a> ' +
-                'and other HTML tags',
-            showCloseButton: true,
-            showCancelButton: true,
-            focusConfirm: false,
-            confirmButtonText:
-                '<i class="fa fa-thumbs-up"></i> Great!',
-            confirmButtonAriaLabel: 'Thumbs up, great!',
-            cancelButtonText:
-                '<i class="fa fa-thumbs-down"></i>',
-            cancelButtonAriaLabel: 'Thumbs down'
-        });
-
         let action = $(this).data('id');
         let status = $(this).data('status');
+        let action_msg = "";
+        let css_color = "";
+        
+        // jika tombol accept yang dippilih
+        if(action == 1){
+            action_msg = 'Accept';
+            css_color = "success";
+        // jika tombol denied yang dipilih
+        } else if(action == 0){
+            action_msg = 'Reject';
+            css_color = "danger";
+        // jika tombol revise yang dipilih
+        } else if(action == 2){
+            action_msg = 'Revise';
+            css_color = "warning";
+        }
 
-        // ubah form action dan status
-        $('input[name="action"]').val(action);
-        $('input[name="status_now"]').val(status);
-        // apabila idnya 2 tampilkan swal textarea
-        if(action == 2){
-            const { value: pesan_revisi } = await Swal.fire({
-                title: "Type a Message to be Revised",
-                input: 'textarea',
-                inputPlaceholder: 'Type your message here...',
-                showCancelButton: true,
-                inputValue: pesan_revisi,
-                showCancelButton: true,
-                inputValidator: (value) => {
-                    if (!value) {
-                    return 'You need to write a message!'
+        let validator = submit_validator(); // submit validator taken from .../application/views/_komponen/ptk/script_submitValidator_ptk.php
+        let counter_validate = validator[0];
+        let msg_validate = validator[1];
+
+        console.log(counter_validate);
+        
+        // cek apa ada form error
+        if(counter_validate != 0){
+            // List empty form popup
+            $(document).Toasts('create', {
+                class: 'bg-danger', 
+                title: 'List of Empty Form',
+                subtitle: 'Lets fill it',
+                position: 'bottomLeft',
+                body: msg_validate + "Please look at red mark or border."
+            });
+            // tampilkan pesan error dalam swal
+            Swal.fire({
+                title: 'Form Validation Error',
+                html: "Please fill the required input form.",
+                icon: 'error',
+                showCancelButton: false,
+                // confirmButtonColor: '#99FF99',
+                // cancelButtonColor: '#d33',
+                confirmButtonText: 'Ok, I wiil check it.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            }).then((result) => {
+                if (result.value) {
+                    var el = $('select#entityInput');
+                    var elOffset = el.offset().top;
+                    var elHeight = el.height();
+                    var windowHeight = $(window).height();
+                    var offset;
+
+                    if (elHeight < windowHeight) {
+                        offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
                     }
+                    else {
+                        offset = elOffset;
+                    }
+                    $([document.documentElement, document.body]).animate({ //for animation
+                        scrollTop: offset
+                    }, 750);
                 }
             });
 
-            if (pesan_revisi) {
-                // Swal.fire(pesan_revisi);
+            // batalkan pengiriman form
+            // return false;
+        } else { // jika form validation berhasil
+            console.log('error');
+            // modal dialog to ask are you sure
 
-                // taruh pesan revisi ke form taruh
-                $('input[name="pesan_revisi"]').val(pesan_revisi);
+            Swal.fire({
+                title: 'Are you sure?',
+                html: "You want to <span class='label text-"+css_color+" font-weight-bold'>"+action_msg+"</span> this form.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    // ubah form action dan status
+                    $('input[name="action"]').val(action);
+                    $('input[name="status_now"]').val(status);
 
-                $('#ptkForm').submit(); // submit form if validation success
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Please type a message',
-                });                
-            }
-        } else {
-            $('#ptkForm').submit(); // submit form if validation success
+                    // apabila idnya 2 tampilkan swal textarea
+                    if(action == 2){
+                        // tampilkan modal pesan revisi
+                        $('#pesanRevisi').modal('show');
+                    } else {
+                        // pergi ke function submit
+
+                    }
+                }
+            });
         }
-        // submit ke database
-        
-        // let validator = submit_validator(); // submit validator taken from .../application/views/_komponen/ptk/script_submitValidator_ptk.php
-        // let counter_validate = validator[0];
-        // let msg_validate = validator[1];
-
-        // // cek apa ada form error
-        // if(counter_validate != 0){
-        //     // List empty form popup
-        //     $(document).Toasts('create', {
-        //         class: 'bg-danger', 
-        //         title: 'List of Empty Form',
-        //         subtitle: 'Lets fill it',
-        //         position: 'bottomLeft',
-        //         body: msg_validate + "Please look at red mark or border."
-        //     });
-        //     // tampilkan pesan error dalam swal
-        //     Swal.fire({
-        //         title: 'Form Validation Error',
-        //         html: "Please fill the required input form.",
-        //         icon: 'error',
-        //         showCancelButton: false,
-        //         // confirmButtonColor: '#99FF99',
-        //         // cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Ok, I wiil check it.',
-        //         allowOutsideClick: false,
-        //         allowEscapeKey: false,
-        //         allowEnterKey: false
-        //     }).then((result) => {
-        //         if (result.value) {
-        //             var el = $('select#entityInput');
-        //             var elOffset = el.offset().top;
-        //             var elHeight = el.height();
-        //             var windowHeight = $(window).height();
-        //             var offset;
-
-        //             if (elHeight < windowHeight) {
-        //                 offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
-        //             }
-        //             else {
-        //                 offset = elOffset;
-        //             }
-        //             $([document.documentElement, document.body]).animate({ //for animation
-        //                 scrollTop: offset
-        //             }, 750);
-        //         }
-        //     });
-
-        //     // batalkan pengiriman form
-        //     return false;
-        // } else {
-        //     // kirimkan form
-        //     // return true;
-
-        //     // show submitting swal notification
-        //     Swal.fire({
-        //         icon: 'info',
-        //         title: 'Submitting the form...',
-        //         html: '<p>Form validation completed, Please Wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
-        //         showConfirmButton: false,
-        //         // allowOutsideClick: false,
-        //         allowEscapeKey: false,
-        //         allowEnterKey: false
-        //     });
-            
-        //     $('#ptkForm').submit(); // submit form if validation success
-        // }
     });
+
+    $("#submitPesanRevisi").on('click', function() {
+        let textarea_pesanRevisi = CKEDITOR.instances['textareaPesanRevisi'].getData();
+
+        if(textarea_pesanRevisi == ""){
+            // tampilkan pesan error
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please write a message for user to revise the form!',
+            });
+        } else {
+            $('input[name="pesan_revisi"]').val(pesan_revisi); // taruh pesan revisi di form
+            // pergi ke function submit
+        }
+        
+    });
+
+    function letSubmitForm(){
+        // show submitting swal notification
+        Swal.fire({
+            icon: 'info',
+            title: 'Submitting the form...',
+            html: '<p>Please Wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+            showConfirmButton: false,
+            // allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false
+        });
+        $('#ptkForm').submit(); // submit form if validation success
+    }
 </script>
