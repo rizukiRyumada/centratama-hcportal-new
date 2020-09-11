@@ -43,8 +43,17 @@
             <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
             <div class="card-header px-0 pb-0 pt-1">
                 <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                  <?php if(!empty($mytask)): ?>
+                    <li class="nav-item">
+                        <a class="nav-link ptk_tableTrigger active" id="custom-tabs-four-myTask-tab" data-toggle="pill" data-status="4" href="#custom-tabs-four-myTask" role="tab" aria-controls="custom-tabs-four-myTask" aria-selected="true">My Task</a>
+                    </li>
+                  <?php endif; ?>
                   <li class="nav-item">
-                    <a class="nav-link ptk_tableTrigger active" id="custom-tabs-four-home-tab" data-toggle="pill" data-status="1" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Active</a>
+                    <a class="nav-link ptk_tableTrigger 
+                    <?php if(empty($mytask)): ?>
+                        active
+                    <?php endif; ?>
+                    " id="custom-tabs-four-home-tab" data-toggle="pill" data-status="1" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false">Active</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link ptk_tableTrigger" id="custom-tabs-four-profile-tab" data-toggle="pill" data-status="0" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Inactive</a>
@@ -82,13 +91,22 @@
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Status Info</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="timeline">
+                            
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-body">
                 <div class="row">

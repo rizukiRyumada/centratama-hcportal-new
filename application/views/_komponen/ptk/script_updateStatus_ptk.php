@@ -204,7 +204,7 @@
                         $('#pesanRevisi').modal('show');
                     } else {
                         // pergi ke function submit
-
+                        letSubmitForm();
                     }
                 }
             });
@@ -222,10 +222,11 @@
                 text: 'Please write a message for user to revise the form!',
             });
         } else {
-            $('input[name="pesan_revisi"]').val(pesan_revisi); // taruh pesan revisi di form
+            $('input[name="pesan_revisi"]').val(textarea_pesanRevisi); // taruh pesan revisi di form
+            $('#pesanRevisi').modal('hide'); // tutup modal pesan revisi
             // pergi ke function submit
+            letSubmitForm();
         }
-        
     });
 
     function letSubmitForm(){

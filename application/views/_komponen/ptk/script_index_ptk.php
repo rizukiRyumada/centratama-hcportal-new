@@ -1,6 +1,7 @@
 <script>
     // variable
-    var status = 1;
+    var status = '<?= $mytask; ?>';
+    var mytask = '<?= $mytask; ?>';
 
     // table index ptk
     // Tabel HealthReport
@@ -86,7 +87,10 @@
                         //         cssClass = 'text-success';
                         //         break;
                         // }
-                        switch(data) {
+                        process_data = data.split("<~>");
+                        hrefData = JSON.parse(process_data[1]);
+                        console.log(hrefData);
+                        switch(process_data[0]) {
                             <?php foreach($ptk_status as $k => $v): ?>
                                 case '<?= $v['id']; ?>':
                                     status = '<?= $v['status_name']; ?>';
@@ -95,7 +99,7 @@
                             <?php endforeach;?>
                         }
 
-                        return '<span class="w-100 badge badge-'+cssClass+'">'+status+'</span>';
+                        return '<a href="javascript:showTimeline('+hrefData[0]+', '+hrefData[1]+', '+hrefData[2]+', '+hrefData[3]+', '+hrefData[4]+')" ><span class="w-100 badge badge-'+cssClass+'">'+status+'</span></a>';
                     }
                     return data;
                 }
@@ -116,7 +120,45 @@
 
     // listen ke nav link untuk mengubah datatables
     $('.ptk_tableTrigger').on('click', function(){
-        status = $(this).data('status'); // ubah status variable
-        table.ajax.reload(); // reload table
+        if($(this).data('status') == "4"){
+            status = mytask; // pake variable mytask
+            table.ajax.reload(); // reload table
+        } else {
+            status = $(this).data('status'); // ubah status variable
+            table.ajax.reload(); // reload table
+        }
     });
+
+    // open timeline popup
+    $('.showTimeline').on('click', function(){
+        let id_entity = $(this).data('id_entity');
+        let id_div    = $(this).data('id_div');
+        let id_dept   = $(this).data('id_dept');
+        let id_pos    = $(this).data('id_pos');
+        let id_time   = $(this).data('id_time');
+
+        console.log(id_entity);
+    });
+
+    function showTimeline(id_entity, id_div, id_dept, id_pos, id_time){
+        console.log(id_entity);
+
+        // get data status dari database
+        $.ajax({
+           url: '<?= base_url("ptk/ajax_getStatusData"); ?>',
+           data: {
+               id_entity: id_entity,
+               id_div: id_div,
+               id_dept: id_dept,
+               id_pos: id_pos,
+               id_time: id_time
+           },
+           method: "POST",
+           success: function(){
+               
+           }
+        });
+
+        // atur data timeline
+    }
 </script>

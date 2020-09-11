@@ -52,7 +52,7 @@
 
                         <!-- buttons -->
                         <div class="row justify-content-end">
-                             <!-- buat CEO -->
+                            <!-- buat CEO -->
                             <?php if($position_my['id'] == 1): ?>
                                 <?php if($status_form == "ptk_stats-B"): ?>
                                     <div class="col-md-6">
@@ -146,17 +146,14 @@
                                 <?php endif; ?>
                             <!-- buat hirarki N-1 -->
                             <?php elseif($position_my['hirarki_org'] == "N-1"): ?>
-                                <?php if($status_form == "ptk_stats-1"): ?>
+                                <?php if($status_form == "ptk_stats-1" || $status_form == "ptk_stats-C" || $status_form == "ptk_stats-D" || $status_form == "ptk_stats-E" || $status_form == "ptk_stats-F"): ?>
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
-                                                <i class="fa fa-check"></i> Accept
+                                                <i class="fa fa-paper-plane"></i> Submit
                                             </button>
-                                            <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
-                                                <i class="fas fa-edit"></i> Revise
-                                            </button>
-                                            <button class="submitPTK btn btn-lg btn-danger w-100" data-status="<?= $status_form; ?>" data-id="0">
-                                                <i class="fa fa-times"></i> Reject
+                                            <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="3">
+                                                <i class="fas fa-save"></i> Save
                                             </button>
                                         </div>
                                     </div>
