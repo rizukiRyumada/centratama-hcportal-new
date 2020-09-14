@@ -84,12 +84,7 @@
     </div>
 </div>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#statusViewer">
-  Launch demo modal
-</button>
-
-<!-- Modal -->
+<!-- Modal Status History Viewer -->
 <div class="modal fade" id="statusViewer" tabindex="-1" aria-labelledby="statusViewerLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -102,17 +97,13 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12">
+                        <div id="overlay_statusHistory" class="overlay" ></div>
                         <div class="timeline">
                             <!-- timeline data -->
                         </div>
                     </div>
                 </div>
             </div>
-           
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
         </div>
     </div>
-</div>
+</div><!-- /Modal Status History Viewer -->

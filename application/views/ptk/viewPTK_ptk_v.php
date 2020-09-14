@@ -42,6 +42,9 @@
                     <li class="nav-item" id="tab_orgChart" style="display: none;">
                         <a class="nav-link" id="custom-tabs-orgchart-tab" data-toggle="pill" href="#custom-tabs-orgchart" role="tab" aria-controls="custom-tabs-orgchart" aria-selected="false">Organization Chart</a>
                     </li>
+                    <li class="nav-item" id="tab_timeline">
+                        <a class="nav-link" id="custom-tabs-timeline-tab" data-toggle="pill" href="#custom-tabs-timeline" role="tab" aria-controls="custom-tabs-timeline" aria-selected="false">Status History</a>
+                    </li>
                 </ul>
             </div>
             <div class="card-body">
@@ -187,6 +190,18 @@
                     <div class="tab-pane fade" id="custom-tabs-orgchart" role="tabpanel" aria-labelledby="custom-tabs-orgchart-tab">
                         <?php $this->load->view('ptk/ptk_jobprofile_orgchart_v'); ?>
                     </div><!-- /Tab form Organization Chart -->
+
+                    <!-- Tab form Status History -->
+                    <div class="tab-pane fade" id="custom-tabs-timeline" role="tabpanel" aria-labelledby="custom-tabs-timeline-tab">
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="overlay_statusHistory" class="overlay" ></div>
+                                <div class="timeline">
+                                    <!-- timeline data -->
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /Tab form Status History -->
                 </div>
             </div><!-- /.card -->
         </div>

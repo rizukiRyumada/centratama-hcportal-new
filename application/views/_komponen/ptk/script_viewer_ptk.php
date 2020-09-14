@@ -1,6 +1,9 @@
 <script>
     // get data ptk from ajax
     $(document).ready(function(){
+        // set timeline data and set the view
+        set_timelineView(id_entity, id_div, id_dept, id_pos, id_time);
+
         // ajax function to get data from database and placed it on form
         $.ajax({
             url: "<?= base_url('ptk/ajax_getPTKdata'); ?>",

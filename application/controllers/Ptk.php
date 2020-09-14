@@ -120,7 +120,11 @@ class Ptk extends SpecialUserAppController {
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
 		// $data['custom_styles'] = array();
-        $data['custom_script'] = array('plugins/datatables/script_datatables', 'ptk/script_index_ptk');
+        $data['custom_script'] = array(
+            'plugins/datatables/script_datatables', 
+            'ptk/script_index_ptk',
+            'ptk/script_ajax_timelineStatusHistory_ptk'
+        );
         
 		$this->load->view('main_v', $data);
     }
@@ -726,7 +730,9 @@ class Ptk extends SpecialUserAppController {
             'ptk/script_viewer_ptk',
             'ptk/script_updateStatus_ptk',
             'ptk/script_validator_ptk',
-            'ptk/script_submitValidator_ptk');
+            'ptk/script_submitValidator_ptk',
+            'ptk/script_ajax_timelineStatusHistory_ptk'
+        );
         
         $this->load->view('main_v', $data);
     }
@@ -843,20 +849,15 @@ class Ptk extends SpecialUserAppController {
                     exit;
                 }
             } elseif($position_my['hirarki_org'] == "N-1") {
-                if($status_now == "ptk_stats-1"){
-                    // cek action
-                    if($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-2", $status_data, $name_signed, $nik_signed);
-                    } elseif($action == 3){
-                        $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed);
-                    } else {
-                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                        exit;
-                    }
+                // cek action
+                if($action == 1){
+                    $new_statsData = $this->process_statusData("ptk_stats-2", $status_data, $name_signed, $nik_signed);
+                } elseif($action == 3){
+                    $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed);
                 } else {
                     show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                     exit;
-                }
+                }    
             } else {
                 show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                 exit;
