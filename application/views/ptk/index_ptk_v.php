@@ -53,11 +53,11 @@
                     <?php if(empty($mytask)): ?>
                         active
                     <?php endif; ?>
-                    " id="custom-tabs-four-home-tab" data-toggle="pill" data-status="1" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false">Active</a>
+                    " id="custom-tabs-four-home-tab" data-toggle="pill" data-status="1" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false">History</a>
                   </li>
-                  <li class="nav-item">
+                  <!-- <li class="nav-item">
                     <a class="nav-link ptk_tableTrigger" id="custom-tabs-four-profile-tab" data-toggle="pill" data-status="0" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Inactive</a>
-                  </li>
+                  </li> -->
                   <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
                     <li class="nav-item">
                         <a class="nav-link ptk_tableTrigger" id="custom-tabs-four-messages-tab" data-toggle="pill" data-status="2" href="#custom-tabs-four-messages" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">All Data</a>
@@ -66,6 +66,16 @@
                 </ul>
             </div>
             <div class="card-body table-responsive">
+                <div class="row justify-content-end">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="statusPtk">Status :</label>
+                            <select id="statusPtk" class="custom-select form-control form-control-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <table id="table_indexPTK" class="table table-striped">
                     <thead class="text-center">
                         <tr>

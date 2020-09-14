@@ -252,6 +252,7 @@ class Ptk extends SpecialUserAppController {
      *
      * @return void
      */
+    // NOW
     public function ajax_getMyFormList(){
         // get with status
         $getWithStatus = $this->input->post('status');
@@ -259,6 +260,9 @@ class Ptk extends SpecialUserAppController {
         // ambil divisi departemen posisi
         $deptDiv = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik'));
         $position_my = $this->posisi_m->getMyPosition(); // get my position data
+
+        // prepare variable
+        $statuses = array();
 
         // date division department status details
         // get form list ptk
@@ -271,16 +275,16 @@ class Ptk extends SpecialUserAppController {
         } elseif($getWithStatus == "0" || $getWithStatus == "1") {
             if($position_my['id'] == 1 || $position_my['id'] == 196 || $this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
                 $data_ptk = $this->ptk_m->get_ptkList(array(
-                    'type' => $getWithStatus
+                    // 'type' => $getWithStatus
                 ));  
             } elseif($position_my['hirarki_org'] == "N"){
                 $data_ptk = $this->ptk_m->get_ptkList(array(
-                    'type' => $getWithStatus,
+                    // 'type' => $getWithStatus,
                     'id_div' => $deptDiv['div_id']
                 ));    
             } elseif($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
                 $data_ptk = $this->ptk_m->get_ptkList(array(
-                    'type' => $getWithStatus,
+                    // 'type' => $getWithStatus,
                     'id_div' => $deptDiv['div_id'],
                     'id_dept' => $deptDiv['dept_id']
                 ));
@@ -341,7 +345,27 @@ class Ptk extends SpecialUserAppController {
             $data_ptk[$key]['status_now'] = $value['status_now']."<~>".json_encode(array($value['id_entity'], $value['id_div'], $value['id_dept'], $value['id_pos'], $value['id_time']));
         }
 
+        // olah status beri nama
+        $myStatus = array();
+        if($getWithStatus == "0" || $getWithStatus == "1" || $getWithStatus == "2"){
+            // ambil semua status
+            $statuses = $this->ptk_m->getAll_ptkStatus();
+            foreach($statuses as $k => $v){
+                $myStatus[$k]['id'] = $v['id'];
+                $myStatus[$k]['name'] = $v['status_text'];
+            }
+        } elseif(!empty($getWithStatus)) {
+            foreach($statuses as $k => $v){
+                $myStatus[$k]['id'] = $v;
+                $myStatus[$k]['name'] = $this->ptk_m->getDetail_ptkStatusDetailByStatusId($v)['status_text'];
+            }
+        } else {
+            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            exit;
+        }
+
         echo(json_encode([
+            'statuses' => $myStatus,
             'data' => $data_ptk
         ]));
     }

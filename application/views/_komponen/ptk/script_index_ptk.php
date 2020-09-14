@@ -2,6 +2,8 @@
     // variable
     var status = '<?= $mytask; ?>';
     var mytask = '<?= $mytask; ?>';
+    var status_selected = ""; // status selected buat filter per status
+    var tab_clicked = 1; // flag tab clicked
 
     // table index ptk
     // Tabel HealthReport
@@ -12,7 +14,7 @@
             // processing: '<div class="spinner-grow text-primary" role="status"><span class="sr-only">Loading...</span></div>',
             zeroRecords: '<p class="m-0 text-danger font-weight-bold">No Data.</p>'
         },
-        // pagingType: 'full_numbers',
+        pagingType: 'full_numbers',
         // serverSide: true,
         // dom: 'Bfrtip',
         deferRender: true,
@@ -58,6 +60,15 @@
             complete: (data, jqXHR) => { // run function when ajax complete
                 table.columns.adjust();
 
+                if(tab_clicked == 1){ // cek jika actionnya tab clicked
+                    let eldata = data.responseJSON.statuses;
+                    let statusPTK = $("#statusPtk");
+                    statusPTK.empty().append('<option value="">Filter Status</option>'); //kosongkan selection value dan tambahkan satu selection option
+                    $.each(eldata, function(i, v) {
+                        statusPTK.append('<option value="' + v.id + '">' + v.name + '</option>'); //tambahkan 1 per 1 option yang didapatkan
+                    });
+                }
+                
                 // ajax data counter
                 var ajax_request_time = new Date().getTime() - ajax_start_time;
                 toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
@@ -119,12 +130,32 @@
 
     // listen ke nav link untuk mengubah datatables
     $('.ptk_tableTrigger').on('click', function(){
+        tab_clicked = 1; // flag tab clicked
+        status_selected = $(this).data('status'); // set tab selected status
         if($(this).data('status') == "4"){
             status = mytask; // pake variable mytask
             table.ajax.reload(); // reload table
         } else {
             status = $(this).data('status'); // ubah status variable
             table.ajax.reload(); // reload table
+        }
+    });
+
+    let filterPTK = $('#statusPtk');
+    filterPTK.on('change', function(){
+        tab_clicked = 0; // flag tab clicked
+        if(filterPTK.val() != ""){
+            let eldata = JSON.stringify({'my_task': [filterPTK.val()]});
+            status = eldata; // pake variable mytask
+            table.ajax.reload(); // reload table
+        } else {
+            if(status_selected == "4"){
+                status = mytask; // pake variable mytask
+                table.ajax.reload(); // reload table
+            } else {
+                status = status_selected; // ubah status variable
+                table.ajax.reload(); // reload table
+            }
         }
     });
 
