@@ -89,7 +89,6 @@
                         // }
                         process_data = data.split("<~>");
                         hrefData = JSON.parse(process_data[1]);
-                        console.log(hrefData);
                         switch(process_data[0]) {
                             <?php foreach($ptk_status as $k => $v): ?>
                                 case '<?= $v['id']; ?>':
@@ -129,34 +128,56 @@
         }
     });
 
-    // open timeline popup
-    $('.showTimeline').on('click', function(){
-        let id_entity = $(this).data('id_entity');
-        let id_div    = $(this).data('id_div');
-        let id_dept   = $(this).data('id_dept');
-        let id_pos    = $(this).data('id_pos');
-        let id_time   = $(this).data('id_time');
-
-        console.log(id_entity);
-    });
-
+    // open timeline
     function showTimeline(id_entity, id_div, id_dept, id_pos, id_time){
-        console.log(id_entity);
-
         // get data status dari database
         $.ajax({
-           url: '<?= base_url("ptk/ajax_getStatusData"); ?>',
-           data: {
-               id_entity: id_entity,
-               id_div: id_div,
-               id_dept: id_dept,
-               id_pos: id_pos,
-               id_time: id_time
-           },
-           method: "POST",
-           success: function(){
-               
-           }
+            url: '<?= base_url("ptk/ajax_getStatusData"); ?>',
+            data: {
+                id_entity: id_entity,
+                id_div: id_div,
+                id_dept: id_dept,
+                id_pos: id_pos,
+                id_time: id_time
+            },
+            method: "POST",
+            success: function(data){
+                let data_timeline = JSON.parse(data);
+
+                // kosongkan timeline
+                $('.timeline').empty();
+
+                // variabel buat penanda
+                let date_before = "";
+                let id_timeline = "";
+                $.each(data_timeline, function(index, value){
+                    // split data timeline
+                    let el = value.time.split('<~>');
+                    let date_now = el[0];
+                    let time_now = el[1];
+
+                    // tambah data timeline
+                    if(date_before != date_now){
+                        // buat label date
+                        id_timeline = "timeline-"+index;
+                        $('.timeline').prepend('<div id="'+id_timeline+'" class="time-label"><span class="bg-red">'+date_now+'</span></div>');
+                    } else {
+                        // nothing
+                    }
+                    date_before = date_now; // set date before dengan date now
+
+                    $('#'+id_timeline).parent().append('<div><i class="'+value.icon+' bg-'+value.css_color+'"></i><div id='+index+' class="timeline-item"><span class="time"><i class="fas fa-clock"></i> '+time_now+'</span><h3 class="timeline-header"><a href="#">'+value.signedby+'</a> '+value.signedbynik+'</h3></div></div>');
+
+                    // jika tidak kosong tampilkan pesan revisi
+                    if(value.pesan_revisi != undefined){
+                        $('.timeline-item#'+index).append('<div class="timeline-body">'+value.pesan_revisi+'</div>'); // tambah pesan revisi
+                    }
+                    $('.timeline-item#'+index).append('<div class="timeline-footer"><span class="badge badge-'+value.css_color+'">'+value.status_name+'</span></div>');
+                });
+
+                // show modal
+                $('#statusViewer').modal('show');
+            }
         });
 
         // atur data timeline

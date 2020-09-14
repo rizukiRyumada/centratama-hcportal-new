@@ -1,5 +1,9 @@
 <!-- <script src="<?php // base_url('/assets/js/iframe-resize/iframeResizer.min.js'); ?>"></script> -->
 <script>
+    // variable
+    var status = "<?= $status_form; ?>";
+    var action = "";
+
     // $('#ptkForm').validate({
     //     rules: {
     //         entity: {
@@ -110,15 +114,20 @@
     /*                           Customized Form Validation                       */
     /* -------------------------------------------------------------------------- */
     $('.submitPTK').on('click', function() {
-        let action = $(this).data('id');
-        let status = $(this).data('status');
+        action = $(this).data('id');
+        // let status = $(this).data('status');
         let action_msg = "";
         let css_color = "";
         
         // jika tombol accept yang dippilih
         if(action == 1){
-            action_msg = 'Accept';
-            css_color = "success";
+            if(status == "ptk_stats-1"){
+                action_msg = 'Submit';
+                css_color = "success";
+            } else {
+                action_msg = 'Accept';
+                css_color = "success";
+            }
         // jika tombol denied yang dipilih
         } else if(action == 0){
             action_msg = 'Reject';
@@ -127,6 +136,17 @@
         } else if(action == 2){
             action_msg = 'Revise';
             css_color = "warning";
+        // jika tombol save yang dipilih
+        } else if(action == 3) {
+            action_msg = 'Save';
+            css_color = "warning";
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Button Not Found!',
+            });
+            return false;
         }
 
         let validator = submit_validator(); // submit validator taken from .../application/views/_komponen/ptk/script_submitValidator_ptk.php
@@ -180,9 +200,6 @@
             // batalkan pengiriman form
             // return false;
         } else { // jika form validation berhasil
-            console.log('error');
-            // modal dialog to ask are you sure
-
             Swal.fire({
                 title: 'Are you sure?',
                 html: "You want to <span class='label text-"+css_color+" font-weight-bold'>"+action_msg+"</span> this form.",
@@ -190,7 +207,8 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
@@ -230,10 +248,24 @@
     });
 
     function letSubmitForm(){
+        let text_title = "";
+        if(status == "ptk_stats-1"){
+            text_title = 'Saving the form...';
+        } else {
+            if(action == 0){
+                text_title = 'Rejecting the form...';
+            } else if(action == 2){
+                text_title = 'Revising the form...';
+            } else if(action == 3){
+                text_title = 'Saving the form...';
+            } else {
+                text_title = 'Submitting the form...';
+            }
+        }
         // show submitting swal notification
         Swal.fire({
             icon: 'info',
-            title: 'Submitting the form...',
+            title: text_title,
             html: '<p>Please Wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
             showConfirmButton: false,
             // allowOutsideClick: false,

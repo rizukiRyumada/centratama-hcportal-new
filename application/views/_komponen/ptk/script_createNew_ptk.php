@@ -108,6 +108,7 @@
         <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>
             // ambil data pada tombol save atau submit
             $('input[name="action"]').val($(this).data('id'));
+            let action = $(this).data('id');
         <?php endif; ?>
         
         let validator = submit_validator(); // submit validator taken from .../application/views/_komponen/ptk/script_submitValidator_ptk.php
@@ -159,12 +160,22 @@
             return false;
         } else {
             // kirimkan form
-            // return true;
+
+            <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>
+                let text_title = "";
+                if(action == "save"){
+                    text_title = 'Saving the form...';
+                } else {
+                    text_title = 'Submitting the form...';
+                }
+            <?php else: ?>
+                let text_title = 'Saving the form...';
+            <?php endif; ?>
 
             // show submitting swal notification
             Swal.fire({
                 icon: 'info',
-                title: 'Submitting the form...',
+                title: text_title,
                 html: '<p>Form validation completed, Please Wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
                 showConfirmButton: false,
                 // allowOutsideClick: false,

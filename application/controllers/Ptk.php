@@ -97,7 +97,7 @@ class Ptk extends SpecialUserAppController {
                 $dataStatusList[$x] = $v['id_ptkstatus'];
                 $x++;
             }
-        } elseif($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1"){
+        } elseif($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
             $a = $this->_general_m->getAll('id_ptkstatus', $this->table['ptk_status_pj'], array('condition_value' => $position_my['hirarki_org']));
             foreach($a as $v){
                 $dataStatusList[$x] = $v['id_ptkstatus'];
@@ -198,6 +198,7 @@ class Ptk extends SpecialUserAppController {
             // cekakses hanya admin, superadmin, N-2 dan N-1 yang bisa akses
             if($my_hirarki == "N-2") {
                 $status_now = 'ptk_stats-1'; //  set status drafted
+                $title = "Saved"; $msg = "Your form has been saved.";
             } elseif($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1") {
                 if($this->input->post('action') == "save"){
                     $status_now = 'ptk_stats-1'; // set status saved
@@ -273,7 +274,7 @@ class Ptk extends SpecialUserAppController {
                     'type' => $getWithStatus,
                     'id_div' => $deptDiv['div_id']
                 ));    
-            } elseif($position_my['hirarki_org'] == "N-1"){
+            } elseif($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
                 $data_ptk = $this->ptk_m->get_ptkList(array(
                     'type' => $getWithStatus,
                     'id_div' => $deptDiv['div_id'],
@@ -301,7 +302,7 @@ class Ptk extends SpecialUserAppController {
                             'id_div' => $deptDiv['div_id']
                         ));
                     }
-                } elseif($position_my['hirarki_org'] == "N-1"){
+                } elseif($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
                     foreach($statuses as $k => $v){
                         $temp_ptk[$k] = $this->ptk_m->get_ptkList(array(
                             'status_now' => $v,
@@ -309,6 +310,8 @@ class Ptk extends SpecialUserAppController {
                             'id_dept' => $deptDiv['dept_id']
                         ));
                     }
+                } else {
+                    show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                 }
 
                 $data_ptk = array();
@@ -386,13 +389,18 @@ class Ptk extends SpecialUserAppController {
 
         $status_data = array_reverse($temp_status_data);
 
+        //NOW
         // lengkapi data
         foreach($status_data as $k => $v){
             $status_data[$k]['time'] = date("j M o<~>H:i", $v['time']);
-            // $status_data
+            // get status data attribute
+            $el = $this->ptk_m->getDetail_ptkStatusDetailByStatusId($v['id']);
+            $status_data[$k]['status_name'] = $el['status_name'];
+            $status_data[$k]['css_color'] = $el['css_color'];
+            $status_data[$k]['icon'] = $el['icon'];
         }
 
-        print_r($status_data);
+        echo(json_encode($status_data));
     }
 
 /* -------------------------------------------------------------------------- */
@@ -657,7 +665,6 @@ class Ptk extends SpecialUserAppController {
      *
      * @return void
      */
-    // NOW
     function viewPTK(){
         // ptk data
         $data['id_entity'] = $this->input->get('id_entity');
@@ -723,7 +730,12 @@ class Ptk extends SpecialUserAppController {
         
         $this->load->view('main_v', $data);
     }
-
+    
+    /**
+     * update status form ptk
+     *
+     * @return void
+     */
     function updateStatus(){
         // get form info
         $id_entity = $this->input->post('id_entity');
@@ -857,7 +869,11 @@ class Ptk extends SpecialUserAppController {
             if($action == 0){
                 $icon = "error"; $title = "Rejected"; $msg = "You have Rejected this form.";
             } elseif($action == 1){
-                $icon = "success"; $title = "Accepted"; $msg = "You have Accepted this form.";
+                if($status_now == "ptk_stats-1"){
+                    $icon = "success"; $title = "Proposed"; $msg = "You have Proposed this form.";
+                } else {
+                    $icon = "success"; $title = "Accepted"; $msg = "You have Accepted this form.";
+                }
             } elseif($action == 2){
                 $icon = "warning"; $title = "Requested to Revise"; $msg = "You have requested to Revise this form.";
             } elseif($action == 3){
