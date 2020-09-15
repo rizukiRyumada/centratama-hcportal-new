@@ -1,4 +1,5 @@
 <?php
+// TODO buat tampilan form viewer
 // TODO di tabel position tambah man power kuota => mpp
 // TODO tambah popover di tiap kotak form
 // TODO buat dia milih replacement karyawan
@@ -252,7 +253,6 @@ class Ptk extends SpecialUserAppController {
      *
      * @return void
      */
-    // NOW
     public function ajax_getMyFormList(){
         // get with status
         $getWithStatus = $this->input->post('status');
@@ -417,7 +417,6 @@ class Ptk extends SpecialUserAppController {
 
         $status_data = array_reverse($temp_status_data);
 
-        //NOW
         // lengkapi data
         foreach($status_data as $k => $v){
             $status_data[$k]['time'] = date("j M o<~>H:i", $v['time']);
