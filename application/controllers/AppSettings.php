@@ -10,6 +10,10 @@ class AppSettings extends SuperAdminController {
         parent::__construct();
     }
 
+/* -------------------------------------------------------------------------- */
+/*                                MAIN FUNCTION                               */
+/* -------------------------------------------------------------------------- */
+
     public function index()
     {
         // main data
@@ -67,10 +71,32 @@ class AppSettings extends SuperAdminController {
         $data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu_sub', array('url' => $this->uri->uri_string()))['title'];
         $data['load_view'] = 'appsettings/survey_appsettings_v';
-        // $data['custom_styles'] = array('survey_styles');
-        // $data['custom_script'] = array('survey/script_survey');
+        $data['custom_styles'] = array('appsettings_survey_styles');
+        $data['custom_script'] = array('appsettings/script_survey_appsettings');
         
         $this->load->view('main_v', $data);
+    }
+
+/* -------------------------------------------------------------------------- */
+/*                              Surveys Function                              */
+/* -------------------------------------------------------------------------- */
+    public function survey_newPeriods(){
+        // ambil get survey yang mau direset
+        // tentukan yg mana yg mau direset
+        // jalankan masing-masing function
+
+    }
+
+    function survey_newPeriods_exc(){
+
+    }
+
+    function survey_newPeriods_eng(){
+
+    }
+
+    function survey_newPeriods_360(){
+
     }
 
 }
