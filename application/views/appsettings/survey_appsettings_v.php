@@ -38,6 +38,7 @@
                         <ul class="text-decoration-none">
                             <li>Periods: 2x/year (Semester)</li>
                             <li>Status: </li>
+                            <li>How much?: </li>
                         </ul>
                         <a href="javascript:changePeriods('eng')" class="btn btn-light text-dark"><i class="fa fa-file-signature"></i> Survey Statuses</a>
                     </div>
@@ -47,6 +48,7 @@
                         <ul class="text-decoration-none">
                             <li>Periods: 4x/year (Quartal)</li>
                             <li>Status: </li>
+                            <li>How much?: </li>
                         </ul>
                         <a href="javascript:changePeriods('exc')" class="btn btn-light text-dark"><i class="fa fa-file-signature"></i> Survey Statuses</a>
                     </div>
@@ -56,10 +58,48 @@
                         <ul class="text-decoration-none">
                             <li>Periods: 2x/year (Semester)</li>
                             <li>Status: </li>
+                            <li>How much?: </li>
                         </ul>
                         <a href="javascript:changePeriods('360')" class="btn btn-light text-dark"><i class="fa fa-file-signature"></i> Survey Statuses</a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /* -------------------------------------------------------------------------- */
+     /*                                   MODALS                                   */
+     /* -------------------------------------------------------------------------- */ -->
+
+<!-- Modal Typeit for checking the user certainty -->
+<div class="modal fade" id="typeItModal" tabindex="-1" role="dialog" aria-labelledby="typeItModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="typeItModalLabel">Type the right phrase</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-2">
+                    <div class="col">
+                        <p class="text">Please type the phrase below.</p>
+                        <p class="text-primary font-weight-bold text-center">saya yakin untuk memulai periode baru</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <input type="text" name="typeit" id="typeit" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="checkInput">Ok</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>

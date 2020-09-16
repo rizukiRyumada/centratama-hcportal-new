@@ -80,21 +80,75 @@ class AppSettings extends SuperAdminController {
 /* -------------------------------------------------------------------------- */
 /*                              Surveys Function                              */
 /* -------------------------------------------------------------------------- */
-    public function survey_newPeriods(){
+// table name
+    protected $table_survey = [
+        'exc' => 'survey_exc_hasil',
+        'eng' => 'survey_eng_hasil',
+        '360' => 'survey_f360_hasil',
+        'exc_dept' => 'survey_exc_departemen',
+        'exc_pertanyaan' => 'survey_exc_pertanyaan'
+    ];
+    public function ajax_survey_newPeriods(){
         // ambil get survey yang mau direset
+        $survey = $this->input->post('survey');
         // tentukan yg mana yg mau direset
+        if($survey == 'eng'){
+            $this->survey_newPeriods_eng();
+        } elseif($survey == "exc"){
+            $this->survey_newPeriods_exc();
+        } elseif($survey == "360"){
+            $this->survey_newPeriods_360();
+        } else {
+            show_404("Error", FALSE);
+        }
         // jalankan masing-masing function
+        echo(json_encode($survey));
 
     }
-
+    // survey excellence new period
     function survey_newPeriods_exc(){
-
+        // load models
+        $this->load->model('_archives_m');
+        // find the quarter of year
+        //Our date.
+        
+        //Get the month number of the date
+        $month = date("n", time());
+        //Divide that month number by 3 and round up using ceil.
+        $yearQuarter = ceil($month / 3);
+        // cek di archives apakah ada data di periode dan tahun ini
+        $is_exist = $this->_archives_m->getRow($this->table_survey['exc'], [
+            'tahun' => date('o', time()),
+            'periode' => $yearQuarter
+        ]);
+        // cek jika datanya ada apa engga
+        if($is_exist < 1){
+            // ambil data
+            $vya = $this->_general_m->getAll('*', $this->table_survey['exc'], []);
+            // lengkapi data
+            foreach($vya as $k => $v){
+                $vya[$k]['tahun'] = date('o', time());
+                $vya[$k]['periode'] = $yearQuarter;
+                $vya[$k]['id_departemen_dinilai'] = $v['id_departemen'];
+                $vya[$k]['departemen_dinilai'] = $this->_general_m->getOnce('nama', $this->table_survey['exc_dept'], array('id' => $v['id_departemen']))['nama'];
+                $vya[$k]['departemen_penilai'] = $v['departemen'];
+                $vya[$k]['pertanyaan'] = $this->_general_m->getOnce('pertanyaan', $this->table_survey['exc_pertanyaan'], array('id' => $v['id_pertanyaan']))['pertanyaan'];
+                unset($vya[$k]['id_departemen']);
+                unset($vya[$k]['departemen']);
+            }
+            // masukkan ke database archives
+            $this->_archives_m->insertAll($this->table_survey['exc'], $vya);
+        } else {
+            show_404();
+        }
+        
+        // hapus data di database utama
     }
-
+    // service enggagement new period
     function survey_newPeriods_eng(){
 
     }
-
+    // survey feedback 360 new period
     function survey_newPeriods_360(){
 
     }
