@@ -125,7 +125,7 @@ class AppSettings extends SuperAdminController {
         }
         // cek di archives apakah ada data di periode dan tahun ini
         $is_exist = $this->_archives_m->getRow($this->table_survey['exc'], [
-            'tahun' => date('o', time()),
+            'tahun' => $year,
             'periode' => $yearQuarter
         ]);
         // cek jika datanya ada apa engga
@@ -171,7 +171,7 @@ class AppSettings extends SuperAdminController {
         }
         // cek di archives apakah ada data di periode dan tahun ini
         $is_exist = $this->_archives_m->getRow($this->table_survey['eng'], [
-            'tahun' => date('o', time()),
+            'tahun' => $year,
             'periode' => $period
         ]);
         // cek jika datanya ada apa engga
@@ -212,7 +212,7 @@ class AppSettings extends SuperAdminController {
         }
         // cek di archives apakah ada data di periode dan tahun ini
         $is_exist = $this->_archives_m->getRow($this->table_survey['360'], [
-            'tahun' => date('o', time()),
+            'tahun' => $year,
             'periode' => $period
         ]);
         // cek jika datanya ada apa engga
@@ -237,6 +237,67 @@ class AppSettings extends SuperAdminController {
         } else {
             echo(0); // tanda gagal
         }
+    }
+    function ajax_getStatusSuvey(){
+        // ambil status masing survey data dengan periode dipilih
+        // load models
+        $this->load->model('_archives_m');
+        // find the quarter of year
+        //Get the month number of the date
+        $month = date("n", time());
+        //Divide that month number by 3 and round up using ceil.
+        $period = ceil($month / 6);
+        $yearQuarter = ceil($month / 3);
+        if($period > 1){ // buat nandain periode sebelumnya
+            $period = $period - 1;
+            $yearQuarter = $yearQuarter - 1;
+            $year = date('o', time());
+        } else { // jika di periode pertama
+            $period = 2;
+            $yearQuarter = 4;
+            $year = date('o', strtotime("-1 year", time()));
+        }
+        // cek di archives apakah ada data di periode dan tahun ini
+        $isExist_eng = $this->_archives_m->getRow($this->table_survey['eng'], [
+            'tahun' => $year,
+            'periode' => $period
+        ]);
+        // cek di archives apakah ada data di periode dan tahun ini
+        $isExist_360 = $this->_archives_m->getRow($this->table_survey['360'], [
+            'tahun' => $year,
+            'periode' => $period
+        ]);
+        // cek di archives apakah ada data di periode dan tahun ini
+        $isExist_exc = $this->_archives_m->getRow($this->table_survey['exc'], [
+            'tahun' => $year,
+            'periode' => $yearQuarter
+        ]);
+
+        // cek jika data eng ada di archives
+        if($isExist_eng < 1){
+            $exist_eng = 0;
+        } else {
+            $exist_eng = 1;
+        }
+        // cek jika data exc ada di archives
+        if($isExist_exc < 1){
+            $exist_exc = 0;
+        } else {
+            $exist_exc = 1;
+        }
+        // cek jika data 360 ada di archives
+        if($isExist_360 < 1){
+            $exist_360 = 0;
+        } else {
+            $exist_360 = 1;
+        }
+
+        // balikkan data dalam bentuk json
+        echo(json_encode([
+            'eng' => $exist_eng,
+            'exc' => $exist_exc,
+            'f360' => $exist_360
+        ]));
     }
 
 }

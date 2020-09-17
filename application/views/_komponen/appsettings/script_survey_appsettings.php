@@ -1,6 +1,47 @@
 <script>
     // siapkan variable penampung
     var survey_selected = "";
+
+    $(document).ready(() => {
+        $.ajax({
+            url: "<?= base_url('appSettings/ajax_getStatusSuvey'); ?>",
+            success: (data) => {
+                let vya = JSON.parse(data);
+                let msg_1 = '<span class="badge badge-success">Running Period</span>';
+                let msg_0 = '<span class="badge badge-danger">Outdated Period</span>';
+
+                let statusEng = $('#statusEng');
+                if(vya.eng == 1){
+                    statusEng.children('.fa').remove();
+                    statusEng.append(msg_1);
+                } else {
+                    statusEng.children('.fa').remove();
+                    statusEng.append(msg_0);
+                    statusEng.parent().parent().append('<a href="javascript:changePeriods'+"('eng')"+'" class="btn btn-light text-dark w-100"><i class="fas fa-plus-circle text-success"></i> New Period</a>');
+                }
+                let statusExc = $('#statusExc');
+                if(vya.exc == 1){
+                    statusExc.children('.fa').remove();
+                    statusExc.append(msg_1);
+                } else {
+                    statusExc.children('.fa').remove();
+                    statusExc.append(msg_0);
+                    statusExc.parent().parent().append('<a href="javascript:changePeriods'+"('exc')"+'" class="btn btn-light text-dark w-100"><i class="fas fa-plus-circle text-success"></i> New Period</a>');
+                }
+                let status360 = $('#status360');
+                if(vya.f360 == 1){
+                    status360.children('.fa').remove();
+                    status360.append(msg_1);
+                } else {
+                    status360.children('.fa').remove();
+                    status360.append(msg_0);
+                    status360.parent().parent().append('<a href="javascript:changePeriods'+"('360')"+'" class="btn btn-light text-dark w-100"><i class="fas fa-plus-circle text-success"></i> New Period</a>');
+                }
+            }
+        })
+    });
+
+    // untuk menerima event klik dari tag a
     function changePeriods(survey){
         // set jenis survey yang mau diatur
         survey_selected = survey;

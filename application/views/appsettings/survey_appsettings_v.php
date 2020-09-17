@@ -37,30 +37,24 @@
                         
                         <ul class="text-decoration-none">
                             <li>Periods: 2x/year (Semester)</li>
-                            <li>Status: </li>
-                            <li>How much?: </li>
+                            <li id="statusEng">Status: <i class="fa fa-spinner fa-spin"></i></li>
                         </ul>
-                        <a href="javascript:changePeriods('eng')" class="btn btn-light text-dark"><i class="fa fa-file-signature"></i> Survey Statuses</a>
                     </div>
                     <div class="bg-orange p-3 col-lg-4 col-md-6 col-12 mt-2">
                         <h5 class="font-weight-bold">Service Excellence Survey</h5>
                         
                         <ul class="text-decoration-none">
                             <li>Periods: 4x/year (Quartal)</li>
-                            <li>Status: </li>
-                            <li>How much?: </li>
+                            <li id="statusExc">Status: <i class="fa fa-spinner fa-spin"></i></li>
                         </ul>
-                        <a href="javascript:changePeriods('exc')" class="btn btn-light text-dark"><i class="fa fa-file-signature"></i> Survey Statuses</a>
                     </div>
                     <div class="bg-yellow p-3 col-lg-4 col-md-6 col-12 mt-2">
                         <h5 class="font-weight-bold">360° Feedback</h5>
                         
                         <ul class="text-decoration-none">
                             <li>Periods: 2x/year (Semester)</li>
-                            <li>Status: </li>
-                            <li>How much?: </li>
+                            <li id="status360">Status: <i class="fa fa-spinner fa-spin"></i></li>
                         </ul>
-                        <a href="javascript:changePeriods('360')" class="btn btn-light text-dark"><i class="fa fa-file-signature"></i> Survey Statuses</a>
                     </div>
                 </div>
             </div>
