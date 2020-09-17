@@ -186,6 +186,15 @@ class _general_m extends CI_Model {
         $this->db->where($whereIndex, $whereAttrib);
         $this->db->update($table, $data);
     }
+
+    /**
+     * TRUNCATE
+     *
+     * @return void
+     */
+    public function truncate($table){
+        $this->db->truncate($table);
+    }
     
 }
 

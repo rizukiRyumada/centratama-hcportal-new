@@ -177,9 +177,10 @@ class _archives_m extends CI_Model {
      * @return void
      */
     public function insertAll($table, $data){
-        foreach($data as $v){
-            $this->db_arc->insert($table, $v);
-        }
+        // foreach($data as $v){
+        //     $this->db_arc->insert($table, $v);
+        // }
+        $this->db_arc->insert_batch($table, $data);
     }
 
     // UPDATE    

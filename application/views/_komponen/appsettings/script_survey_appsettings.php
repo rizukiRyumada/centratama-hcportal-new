@@ -55,7 +55,7 @@
                         title: 'Please Wait',
                         html: '<p>'+"Please don't close this tab and the browser, the survey data is being moved to archives database."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
                         showConfirmButton: false,
-                        // allowOutsideClick: false,
+                        allowOutsideClick: false,
                         allowEscapeKey: false,
                         allowEnterKey: false
                     });
@@ -63,10 +63,27 @@
                 success: (data) => {
                     input_typeit.removeClass('is-invalid is-valid'); // remove class valid
                     input_typeit.val(""); // kosongkan input type
+                    
+                    // cek buat nampilin pesan
+                    if(data == 1){
+                        Swal.fire(
+                            'New Period Started',
+                            'The Survey Data has been archived to hcportal_archives and new period of survey has been started.',
+                            'success'
+                        )
+                    } else {
+                        Swal.fire(
+                            'Now is still the period of this Survey',
+                            'Cannot start new survey period because the period is still on the way.',
+                            'error'
+                        )
+                    }
+                },
+                error: (data) => {
                     Swal.fire(
-                        'New Period Started',
-                        'The Survey Data has been archived to hcportal_archives and new period of survey has been started',
-                        'success'
+                        'Error',
+                        'There is an error occured, please contact HC Care.',
+                        'error'
                     )
                 }
             });
