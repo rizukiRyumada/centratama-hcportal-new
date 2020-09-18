@@ -7,8 +7,27 @@ class Employee_m extends CI_Model {
     // tables
     protected $table = array(
         'employee' => 'master_employee',
-        'position' => 'master_position'
+        'position' => 'master_position',
+        'division' => 'master_division',
+        'department' => 'master_department'
     );
+    
+    /**
+     * get All Employee Data with all details
+     *
+     * @return void
+     */
+    public function getAllEmp()
+    {
+        $this->db->select($this->table['employee'].'.nik as id_emp, '.$this->table['employee'].'.emp_name,nik, '.$this->table['position'].'.hirarki_org, position_id, '.$this->table['position'].'.div_id , '.$this->table['position'].'.dept_id, '.$this->table['position'].'.id, position_name, '.$this->table['division'].'.id, division, '.$this->table['department'].'.id, nama_departemen');
+        $this->db->from($this->table['position']);
+        $this->db->join($this->table['division'], $this->table['division'].'.id = '.$this->table['position'].'.div_id');
+        $this->db->join($this->table['department'], $this->table['department'].'.id = '.$this->table['position'].'.dept_id');
+        $this->db->join($this->table['employee'], $this->table['employee'].'.position_id = '.$this->table['position'].'.id');
+        $this->db->order_by('id_emp', 'asc');
+        
+        return $this->db->get()->result_array();
+    }
     
     /**
      * get dept id and div id from nik
@@ -25,7 +44,13 @@ class Employee_m extends CI_Model {
             'left');
         return $this->db->get_where($this->table['employee'], $this->table['employee'].'.nik = "'. $nik .'"')->row_array();
     }
-
+    
+    /**
+     * getPosFromNik
+     *
+     * @param  mixed $nik
+     * @return void
+     */
     function getPosFromNik($nik){
         $this->db->select($this->table['position'].'.id, '.$this->table['position'].'.dept_id');
         $this->db->join(
