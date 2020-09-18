@@ -913,9 +913,14 @@ class Ptk extends SpecialUserAppController {
         }
     }
 
-    /* -------------------------------------------------------------------------- */
-    /*                                Mini Function                               */
-    /* -------------------------------------------------------------------------- */
+    // Print Function
+    function printPTK(){
+        redirect('maintenance');
+    }
+
+/* -------------------------------------------------------------------------- */
+/*                                Mini Function                               */
+/* -------------------------------------------------------------------------- */
     function process_statusData($status_new, $status_data, $name_signed, $nik_signed, $pesan_revisi = ""){
         if($status_data == array()){
             $status_data[0] = array(
