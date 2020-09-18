@@ -34,16 +34,19 @@
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="custom-tabs-ptkForm-tab" data-toggle="pill" href="#custom-tabs-ptkForm" role="tab" aria-controls="custom-tabs-ptkForm" aria-selected="true">Form</a>
+                        <a class="nav-link active" id="custom-tabs-ptkForm-tab" data-toggle="pill" href="#custom-tabs-ptkForm" role="tab" aria-controls="custom-tabs-ptkForm" aria-selected="true"><i class="fa fa-file-alt"></i> Form</a>
                     </li>
                     <li class="nav-item" id="tab_jobProfile" style="display: none;">
-                        <a class="nav-link" id="custom-tabs-jobProfile-tab" data-toggle="pill" href="#custom-tabs-jobProfile" role="tab" aria-controls="custom-tabs-jobProfile" aria-selected="false">Job Profile</a>
+                        <a class="nav-link" id="custom-tabs-jobProfile-tab" data-toggle="pill" href="#custom-tabs-jobProfile" role="tab" aria-controls="custom-tabs-jobProfile" aria-selected="false"><i class="fa fa-briefcase"></i> Job Profile</a>
                     </li>
                     <li class="nav-item" id="tab_orgChart" style="display: none;">
-                        <a class="nav-link" id="custom-tabs-orgchart-tab" data-toggle="pill" href="#custom-tabs-orgchart" role="tab" aria-controls="custom-tabs-orgchart" aria-selected="false">Organization Chart</a>
+                        <a class="nav-link" id="custom-tabs-orgchart-tab" data-toggle="pill" href="#custom-tabs-orgchart" role="tab" aria-controls="custom-tabs-orgchart" aria-selected="false"><i class="fa fa-sitemap"></i> Organization Chart</a>
                     </li>
                     <li class="nav-item" id="tab_timeline">
-                        <a class="nav-link" id="custom-tabs-timeline-tab" data-toggle="pill" href="#custom-tabs-timeline" role="tab" aria-controls="custom-tabs-timeline" aria-selected="false">Status History</a>
+                        <a class="nav-link" id="custom-tabs-timeline-tab" data-toggle="pill" href="#custom-tabs-timeline" role="tab" aria-controls="custom-tabs-timeline" aria-selected="false"><i class="fa fa-history"></i> Status History</a>
+                    </li>
+                    <li class="nav-item" id="tab_timeline">
+                        <a class="nav-link" href="<?= base_url('ptk/printPTK'); ?>?id_entity=<?= $id_entity; ?>&id_div=<?= $id_div; ?>&id_dept=<?= $id_dept; ?>&id_pos=<?= $id_pos; ?>&id_time=<?= $id_time; ?>" aria-selected="false"><i class="fa fa-print"></i> Print</a>
                     </li>
                 </ul>
             </div>
