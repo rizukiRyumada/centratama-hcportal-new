@@ -132,23 +132,28 @@ class AppSettings extends SuperAdminController {
         if($is_exist < 1){
             // ambil data
             $vya = $this->_general_m->getAll('*', $this->table_survey['exc'], []);
-            // lengkapi data
-            foreach($vya as $k => $v){
-                $vya[$k]['tahun'] = $year;
-                $vya[$k]['periode'] = $yearQuarter;
-                $vya[$k]['id_departemen_dinilai'] = $v['id_departemen'];
-                $vya[$k]['departemen_dinilai'] = $this->_general_m->getOnce('nama', $this->table_survey['exc_dept'], array('id' => $v['id_departemen']))['nama'];
-                $vya[$k]['departemen_penilai'] = $v['departemen'];
-                $vya[$k]['pertanyaan'] = $this->_general_m->getOnce('pertanyaan', $this->table_survey['exc_pertanyaan'], array('id' => $v['id_pertanyaan']))['pertanyaan'];
-                unset($vya[$k]['id_departemen']);
-                unset($vya[$k]['departemen']);
-            }
-            // masukkan ke database archives
-            $this->_archives_m->insertAll($this->table_survey['exc'], $vya);
-            //hapus data dari database utama
-            $this->_general_m->truncate($this->table_survey['exc']);
+            // jika data ga kosong
+            if(!empty($vya)){
+                // lengkapi data
+                foreach($vya as $k => $v){
+                    $vya[$k]['tahun'] = $year;
+                    $vya[$k]['periode'] = $yearQuarter;
+                    $vya[$k]['id_departemen_dinilai'] = $v['id_departemen'];
+                    $vya[$k]['departemen_dinilai'] = $this->_general_m->getOnce('nama', $this->table_survey['exc_dept'], array('id' => $v['id_departemen']))['nama'];
+                    $vya[$k]['departemen_penilai'] = $v['departemen'];
+                    $vya[$k]['pertanyaan'] = $this->_general_m->getOnce('pertanyaan', $this->table_survey['exc_pertanyaan'], array('id' => $v['id_pertanyaan']))['pertanyaan'];
+                    unset($vya[$k]['id_departemen']);
+                    unset($vya[$k]['departemen']);
+                }
+                // masukkan ke database archives
+                $this->_archives_m->insertAll($this->table_survey['exc'], $vya);
+                //hapus data dari database utama
+                $this->_general_m->truncate($this->table_survey['exc']);
 
-            echo(1); // tanda sukses
+                echo(1); // tanda sukses
+            } else {
+                echo(2); // beri tanda kalo data kosong
+            }
         } else {
             echo(0); // tanda gagal
         }
@@ -178,18 +183,23 @@ class AppSettings extends SuperAdminController {
         if($is_exist < 1){
             // ambil data
             $vya = $this->_general_m->getAll('*', $this->table_survey['eng'], []);
-            // lengkapi data
-            foreach($vya as $k => $v){
-                $vya[$k]['tahun'] = $year;
-                $vya[$k]['periode'] = $period;
-                $vya[$k]['pertanyaan'] = $this->_general_m->getOnce('pertanyaan', $this->table_survey['eng_pertanyaan'], array('id' => $v['id_pertanyaan']))['pertanyaan'];
-            }
-            // masukkan ke database archives
-            $this->_archives_m->insertAll($this->table_survey['eng'], $vya);
-            //hapus data dari database utama
-            $this->_general_m->truncate($this->table_survey['eng']);
+            // jika data kosong
+            if(!empty($vya)){
+                // lengkapi data
+                foreach($vya as $k => $v){
+                    $vya[$k]['tahun'] = $year;
+                    $vya[$k]['periode'] = $period;
+                    $vya[$k]['pertanyaan'] = $this->_general_m->getOnce('pertanyaan', $this->table_survey['eng_pertanyaan'], array('id' => $v['id_pertanyaan']))['pertanyaan'];
+                }
+                // masukkan ke database archives
+                $this->_archives_m->insertAll($this->table_survey['eng'], $vya);
+                //hapus data dari database utama
+                $this->_general_m->truncate($this->table_survey['eng']);
 
-            echo(1); // tanda sukses
+                echo(1); // tanda sukses
+            } else {
+                echo(2); // tanda data kosong
+            }
         } else {
             echo(0); // tanda gagal
         }
@@ -219,21 +229,26 @@ class AppSettings extends SuperAdminController {
         if($is_exist < 1){
             // ambil data
             $vya = $this->_general_m->getAll('*', $this->table_survey['360'], []);
-            // lengkapi data
-            foreach($vya as $k => $v){
-                $vya[$k]['tahun'] = $year;
-                $vya[$k]['periode'] = $period;
-                $pertanyaan = $this->_general_m->getOnce('id_kategori_pertanyaan, pertanyaan', $this->table_survey['360_pertanyaan'], array('id' => $v['id_pertanyaan']));
-                $vya[$k]['pertanyaan'] = $pertanyaan['pertanyaan'];
-                $vya[$k]['id_kategori_pertanyaan'] = $pertanyaan['id_kategori_pertanyaan'];
-                $vya[$k]['nama_kategori'] = $this->_general_m->getOnce('nama_kategori', $this->table_survey['360_kategori'], array('id_kategori_pertanyaan' => $pertanyaan['id_kategori_pertanyaan']))['nama_kategori'];
-            }
-            // masukkan ke database archives
-            $this->_archives_m->insertAll($this->table_survey['360'], $vya);
-            //hapus data dari database utama
-            $this->_general_m->truncate($this->table_survey['360']);
+            // jika data kosong
+            if(!empty($vya)){
+                // lengkapi data
+                foreach($vya as $k => $v){
+                    $vya[$k]['tahun'] = $year;
+                    $vya[$k]['periode'] = $period;
+                    $pertanyaan = $this->_general_m->getOnce('id_kategori_pertanyaan, pertanyaan', $this->table_survey['360_pertanyaan'], array('id' => $v['id_pertanyaan']));
+                    $vya[$k]['pertanyaan'] = $pertanyaan['pertanyaan'];
+                    $vya[$k]['id_kategori_pertanyaan'] = $pertanyaan['id_kategori_pertanyaan'];
+                    $vya[$k]['nama_kategori'] = $this->_general_m->getOnce('nama_kategori', $this->table_survey['360_kategori'], array('id_kategori_pertanyaan' => $pertanyaan['id_kategori_pertanyaan']))['nama_kategori'];
+                }
+                // masukkan ke database archives
+                $this->_archives_m->insertAll($this->table_survey['360'], $vya);
+                //hapus data dari database utama
+                $this->_general_m->truncate($this->table_survey['360']);
 
-            echo(1); // tanda sukses
+                echo(1); // tanda sukses
+            } else {
+                echo(2); // beri tanda data kosong
+            }
         } else {
             echo(0); // tanda gagal
         }

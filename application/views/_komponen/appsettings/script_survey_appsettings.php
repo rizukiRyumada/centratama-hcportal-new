@@ -104,7 +104,7 @@
                 success: (data) => {
                     input_typeit.removeClass('is-invalid is-valid'); // remove class valid
                     input_typeit.val(""); // kosongkan input type
-                    
+
                     // cek buat nampilin pesan
                     if(data == 1){
                         Swal.fire(
@@ -112,10 +112,24 @@
                             'The Survey Data has been archived to hcportal_archives and new period of survey has been started.',
                             'success'
                         )
-                    } else {
+                        // refresh the page
+                        location.reload(); 
+                    } else if(data == 2) {
+                        Swal.fire(
+                            'Survey Data is Null',
+                            'There is no employee fill the survey, cannot continue without survey data.',
+                            'error'
+                        )
+                    } else if(data == 0){
                         Swal.fire(
                             'Now is still the period of this Survey',
                             'Cannot start new survey period because the period is still on the way.',
+                            'error'
+                        )
+                    } else {
+                        Swal.fire(
+                            '404 Unknown Error',
+                            'There is an unknown error, please contact HC Care to get more assistance.',
                             'error'
                         )
                     }
