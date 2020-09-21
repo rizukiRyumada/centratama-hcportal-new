@@ -4,6 +4,8 @@
 // TODO tambah popover di tiap kotak form
 // TODO buat dia milih replacement karyawan
 
+// NOW tampilan all data, tampilkan semua data form olah dalam bentuk satu table memanjang
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Ptk extends SpecialUserAppController {

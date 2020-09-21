@@ -1,4 +1,5 @@
 // TODO ubah nama periode setelah diarchives
+// TODO buat database master job_level
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class AppSettings extends SuperAdminController {
