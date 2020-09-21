@@ -107,13 +107,19 @@
 
                     // cek buat nampilin pesan
                     if(data == 1){
-                        Swal.fire(
-                            'New Period Started',
-                            'The Survey Data has been archived to hcportal_archives and new period of survey has been started.',
-                            'success'
-                        )
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'New Period Started',
+                            html: '<p>'+"The Survey Data has been archived to hcportal_archives and new period of survey has been started."+'<br/>Refreshing this page...<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        });
                         // refresh the page
-                        location.reload(); 
+                        setTimeout(function() {
+							location.reload();
+						}, 2000);
                     } else if(data == 2) {
                         Swal.fire(
                             'Survey Data is Null',
