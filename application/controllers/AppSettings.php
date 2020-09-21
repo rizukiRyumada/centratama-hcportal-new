@@ -1,3 +1,4 @@
+// TODO ubah nama periode setelah diarchives
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class AppSettings extends SuperAdminController {

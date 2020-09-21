@@ -65,9 +65,9 @@
                 result.dismiss === Swal.DismissReason.cancel) {
                 // jika tidak tampilkan pesan gagal
                 Swal.fire(
-                'Cancelled',
-                "Okay I'll make everything untounchable.",
-                'error'
+                    'Cancelled',
+                    "Okay I'll make everything untounchable.",
+                    'error'
                 )
             }
         });
@@ -91,10 +91,14 @@
                 method: "POST",
                 beforeSend: () => {
                     $('#typeItModal').modal('hide'); // hide the modal
+                    // remove typeit attribute
+                    input_typeit.removeClass('is-invalid is-valid');
+                    input_typeit.siblings('.invalid-feedback').remove();
+                    input_typeit.val(""); // kosongkan typeit form
                     Swal.fire({
                         icon: 'info',
                         title: 'Please Wait',
-                        html: '<p>'+"Please don't close this tab and the browser, the survey data is being moved to archives database."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                        html: '<p>'+"Please don't close this tab and the browser, the survey data is being archived."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
                         showConfirmButton: false,
                         allowOutsideClick: false,
                         allowEscapeKey: false,
