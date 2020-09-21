@@ -110,7 +110,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'New Period Started',
-                            html: '<p>'+"The Survey Data has been archived to hcportal_archives and new period of survey has been started."+'<br/>Refreshing this page...<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                            html: '<p>'+"The Survey Data has been archived to hcportal_archives and new period of survey has been started."+'<br/><br/>Refreshing this page...<br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
                             showConfirmButton: false,
                             allowOutsideClick: false,
                             allowEscapeKey: false,
