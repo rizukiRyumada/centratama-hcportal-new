@@ -21,6 +21,18 @@ class Posisi_m extends CI_Model {
         return $this->db->get_where($this->table, $where)->result_array();
     }
 
+    /**
+     * get Position data using custom where
+     * getWhere
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    public function getAll_whereSelect($select, $where){
+        $this->db->select($select);
+        return $this->db->get_where($this->table, $where)->result_array();
+    }
+
     public function getMyPosition() {
         // ambil my id dari nik
         $my_id = $this->db->select("position_id")->get_where($this->table_employee, array('nik' => $this->session->userdata('nik')))->row_array()['position_id'];

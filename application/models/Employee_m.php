@@ -41,8 +41,25 @@ class Employee_m extends CI_Model {
         $this->db->join(
             $this->table['position'], 
             $this->table['position'].'.id = '. $this->table['employee'].'.position_id',
-            'left');
+            'left'
+        );
         return $this->db->get_where($this->table['employee'], $this->table['employee'].'.nik = "'. $nik .'"')->row_array();
+    }
+    
+    /**
+     * getDetails_employee
+     *
+     * @param  mixed $nik
+     * @return void
+     */
+    function getDetails_employee($nik){
+        $this->db->select('nik, emp_name, is_active, position_name, id_entity, role_id, akses_surat_id, dept_id, div_id, email');
+        $this->db->join(
+            $this->table['position'], 
+            $this->table['employee'].'.position_id='.$this->table['position'].'.id', 
+            'left'
+        );
+        return $this->db->get_where($this->table['employee'], array('nik' => $nik))->row_array();
     }
     
     /**

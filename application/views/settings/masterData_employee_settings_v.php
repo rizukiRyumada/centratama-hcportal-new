@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-borderless table-hover" id="employe-table">
+                    <table class="table table-striped table-hover" id="employe-table">
                         <thead>
                             <th>Nik</th>
                             <th>Employe Name's</th>
@@ -61,12 +61,14 @@
                                 <td data-filter="div-<?= $employe['div_id'] ?>"><?= $employe['division'] ?></td>
                                 <td data-filter="dept-<?= $employe['dept_id'] ?>"><?= $employe['nama_departemen'] ?></td>
                                 <td>
-                                    <!-- <button class="btn btn-success btn-circle btn-sm editEmp" data-nik="<?= $employe['nik']; ?>" type="button" data-toggle="modal" data-target="#editEmployeModal"><i class="fas fa-pencil-alt"></i></button> -->
-                                    <button class="btn btn-success btn-circle btn-sm editEmp" data-nik="<?= $employe['nik']; ?>" type="button"><i class="fas fa-pencil-alt"></i></button>
-                                    <!-- //TODO tambah popup sebelum user dapa menghapus employe -->
-                                    <a href="<?= base_url('master/deleteEmploye') ?>?nik=<?= $employe['nik'] ?>" class="btn btn-danger btn-circle btn-sm" ><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
+                                    <div class="btn-group">
+                                        <button class="btn btn-success btn-sm editEmp" data-nik="<?= $employe['nik']; ?>" type="button"><i class="fas fa-pencil-alt"></i></button>
+                                        <!-- //TODO tambah popup sebelum user dapa menghapus employe -->
+                                        <!-- <a href="<?= base_url('master/deleteEmploye') ?>?nik=<?= $employe['nik'] ?>" class="btn btn-danger btn-sm" ><i class="fas fa-trash-alt"></i></a> -->
+                                        <button class="btn btn-danger btn-sm deleteEmp" ><i class="fas fa-trash-alt" data-nik="<?= $employe['nik']; ?>"></i></button>
+                                    </div>        
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -88,17 +90,17 @@
             <div class="modal-body">
                 <form id="tambahEmployeForm" action="<?= base_url('master/tambahEmploye') ?>" method="POST">
                     <div class="row">
-                        <div class="col form-group">
+                        <div class="col-lg-6 form-group">
                             <label for="nik_tambah">NIK</label>
                             <input name="nik" type="text" class="form-control" id="nik_tambah" placeholder="Enter a NIK" maxlength="8" required>
                         </div>
-                        <div class="col form-group">
+                        <div class="col-lg-6 form-group">
                             <label for="name_tambah">Name</label>
                             <input name="name" type="text" class="form-control" id="name_tambah" placeholder="Enter a Name" required>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="div_tambah">Divisi</label>
                             <select name="divisi" id="div_tambah" class="div custom-select form-control form-control-sm">
                                 <option value="0">Pilih Divisi...</option>
@@ -107,14 +109,14 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="departemen_tambah">Departemen</label>
                             <input type="text" id="departemen_tambah" class="form-control" value="Harap pilih Divisi" readonly>
                             <select name="departemen" id="dept_tambah" class="dept custom-select form-control form-control-sm" style="display: none;">
                                 <option value=""></option>
                             </select> 
                         </div>
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="pos_tambah">Position</label>
                             <select name="position" id="pos_tambah" class="pos custom-select form-control form-control-sm" style="display: none;">
                                 <option value=""></option>
@@ -123,7 +125,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="entity_tambah">Entity</label>
                             <select name="entity" id="entity_tambah" class="custom-select form-control form-control-sm">
                                 <option value="">Pilih Entity...</option>
@@ -132,22 +134,26 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="role_tambah">Role</label>
                             <select name="role" id="role_tambah" class="custom-select form-control form-control-sm">
                                 <option value="">Pilih Role...</option>
                                 <?php foreach($role as $v): ?>
-                                    <option value="<?= $v['id'] ?>"><?= $v['role'] ?></option>
+                                    <option value="<?= $v['id'] ?>"><?= $v['description'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-2 form-group">
-                            <label for="role_surat_tambah">Role Surat</label>
-                            <input name="role_surat" id="role_surat_tambah" type="checkbox" class="form-control" >
-                        </div>
-                        <div class="col-2 form-group">
-                            <label for="is_active_tambah">is_active</label>
-                            <input name="is_active" type="checkbox" id="is_active_tambah" class="form-control" >
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <div class="col-6 form-group">
+                                    <label for="role_surat_tambah">Role Surat</label>
+                                    <input name="role_surat" id="role_surat_tambah" type="checkbox" class="form-control" >
+                                </div>
+                                <div class="col-6 form-group">
+                                    <label for="is_active_tambah">is_active</label>
+                                    <input name="is_active" type="checkbox" id="is_active_tambah" class="form-control" >
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -185,18 +191,18 @@
             <div class="modal-body">
                 <form id="editEmployeForm" action="<?= base_url('master/editEmploye') ?>" method="POST">
                     <div class="row">
-                        <div class="col form-group">
+                        <div class="col-lg-6 form-group">
                             <label for="nik_edit">NIK</label>
                             <input name="nik" type="text" class="form-control" id="nik_edit" placeholder="Enter a NIK" maxlength="8" required>
                             <input type="hidden" name="onik" >
                         </div>
-                        <div class="col form-group">
+                        <div class="col-lg-6 form-group">
                             <label for="name_edit">Name</label>
                             <input name="name" type="text" class="form-control" id="name_edit" placeholder="Enter a Name" required>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="div_edit">Divisi</label>
                             <select name="divisi" id="div_edit" class="div custom-select form-control form-control-sm">
                                 <?php foreach($divisi as $v): ?>
@@ -204,14 +210,14 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="departemen_edit">Departemen</label>
                             <input type="text" class="form-control" id="departemen_edit" readonly>
                             <select name="departemen" id="dept_edit" class="dept custom-select form-control form-control-sm" style="display: none;">
                                 <option value=""></option>
                             </select> 
                         </div>
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="position_edit">Position</label>
                             <input type="text" class="form-control" id="position_edit" readonly>
                             <select name="position" id="pos_edit" class="pos custom-select form-control form-control-sm" style="display: none;">
@@ -220,7 +226,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="entity_edit">Entity</label>
                             <select name="entity" id="entity_edit" class="custom-select form-control form-control-sm">
                                 <?php foreach($entity as $v): ?>
@@ -228,21 +234,25 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col form-group">
+                        <div class="col-lg-4 form-group">
                             <label for="role_edit">Role</label>
                             <select name="role" id="role_edit" class="custom-select form-control form-control-sm">
                                 <?php foreach($role as $v): ?>
-                                    <option value="<?= $v['id'] ?>"><?= $v['role'] ?></option>
+                                    <option value="<?= $v['id'] ?>"><?= $v['description'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-2 form-group">
-                            <label for="role_surat_edit">Role Surat</label>
-                            <input name="role_surat" type="checkbox" class="form-control" id="role_surat_edit" >
-                        </div>
-                        <div class="col-2 form-group">
-                            <label for="is_active_edit">is_active</label>
-                            <input name="is_active" type="checkbox" class="form-control" id="is_active_edit">
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <div class="col-6 form-group">
+                                    <label for="role_surat_edit">Role Surat</label>
+                                    <input name="role_surat" type="checkbox" class="form-control" id="role_surat_edit" >
+                                </div>
+                                <div class="col-6 form-group">
+                                    <label for="is_active_edit">is_active</label>
+                                    <input name="is_active" type="checkbox" class="form-control" id="is_active_edit">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">

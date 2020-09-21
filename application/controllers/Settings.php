@@ -14,7 +14,7 @@ class Settings extends SuperAdminController {
     {
         parent::__construct();
         // Load Models
-        $this->load->model(['master_m', 'entity_m', 'divisi_model', 'dept_model', 'employee_m']);
+        $this->load->model(['dept_model', 'divisi_model', 'employee_m', 'entity_m', 'master_m', 'posisi_m']);
     }
     
 
@@ -94,12 +94,71 @@ class Settings extends SuperAdminController {
         $data['page_title'] = $this->page_title['masterData_employee'];
 		$data['load_view'] = 'settings/masterData_employee_settings_v';
 		// additional styles and custom script
-        // $data['additional_styles'] = array();
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
 		// $data['custom_styles'] = array();
-        $data['custom_script'] = array();
+        $data['custom_script'] = array(
+            'plugins/datatables/script_datatables',
+            'plugins/jqueryValidation/script_jqueryValidation',
+            'settings/script_masterData_employee_settings'
+        );
         
 		$this->load->view('main_v', $data);
     }
+
+/* -------------------------------------------------------------------------- */
+/*                                AJAX FUNCTION                               */
+/* -------------------------------------------------------------------------- */
+        
+    /**
+     * get Departement data
+     *
+     * @return void
+     */
+    public function ajax_getDepartment(){
+        if(!empty($div = $this->input->post('divisi'))){
+            //get id divisi
+            $div = explode('-', $div);
+            // print_r($id_div);
+            // exit;
+            // $divisi_id = $this->Jobpro_model->getDetail("id", "divisi", array('division' => $this->input->post('divisi')))['id'];
+            //ambil data departemen dengan divisi itu
+            foreach($this->dept_model->getAll_where(array('div_id' => $div[1])) as $k => $v){
+                $data[$k]=$v;
+            }
+        } else {
+            foreach($this->dept_model->getAll() as $k => $v){
+                $data[$k]=$v;
+            }
+        }
+        print_r(json_encode($data));
+    }
+
+    /**
+     * get detail employee with nik post data
+     *
+     * @return void
+     */
+    public function ajax_getDetails_employee(){
+        $nik = $this->input->post('nik');
+        $employe = $this->employee_m->getDetails_employee($nik);
+
+        // $employe['divisi'] = $this->Master_m->getDetail('division', 'divisi', array('id' => $employe['div_id']))['division'];
+        $employe['departemen'] = $this->dept_model->ajaxDeptById($employe['dept_id'])['nama_departemen'];
+
+        echo json_encode($employe);
+    }
+    
+    /**
+     * ajax_getPosition
+     *
+     * @return void
+     */
+    function ajax_getPosition(){
+        $div = explode('-', $this->input->post('div'));
+        $dept = $this->input->post('dept');
+        echo(json_encode($this->posisi_m->getAll_whereSelect('id, position_name', array('div_id' => $div[1], 'dept_id' => $dept))));
+    }
+
 }
 
 /* End of file Settings.php */
