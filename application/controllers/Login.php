@@ -57,35 +57,27 @@ class Login extends CI_Controller {
         $user     = $this->db->get_where('master_employee', ['nik' => $nik])->row_array();
         // jika usernya ada
         if($user) {
-            // jika usernya aktif
-            if($user['is_active'] == 1) {
-                // cek password
-                if(password_verify($password, $user['password'])) {
-                    $data = [
-                        'nik' => $user['nik'],
-                        'position_id' => $user['position_id'],
-						'akses_surat_id' => $user['akses_surat_id'],
-                        'role_id' => $user['role_id']
-                    ];
-                    $this->session->set_userdata($data);
+            // cek password
+            if(password_verify($password, $user['password'])) {
+                $data = [
+                    'nik' => $user['nik'],
+                    'position_id' => $user['position_id'],
+                    'akses_surat_id' => $user['akses_surat_id'],
+                    'role_id' => $user['role_id']
+                ];
+                $this->session->set_userdata($data);
 
-                    if(empty($this->session->userdata('token'))){ // cek apa ada token
-                        // TODO tambahkan fitur buat mengganti arah redirect sehabis login
-                        // redirect
-                        $this->redirect();
-                    } else {
-                        //targetkan sesuai token
-                        header('location: '. base_url('direct/arahkanFromEmail'));
-                    }
+                if(empty($this->session->userdata('token'))){ // cek apa ada token
+                    // TODO tambahkan fitur buat mengganti arah redirect sehabis login
+                    // redirect
+                    $this->redirect();
                 } else {
-                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
-                    Wrong Password! </div>');
-                    $this->session->set_userdata(array('error' => 1));
-                    redirect('login');
+                    //targetkan sesuai token
+                    header('location: '. base_url('direct/arahkanFromEmail'));
                 }
             } else {
                 $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
-                Your NIK has not been activated! </div>');
+                Wrong Password! </div>');
                 $this->session->set_userdata(array('error' => 1));
                 redirect('login');
             }

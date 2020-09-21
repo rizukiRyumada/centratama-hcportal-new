@@ -45,6 +45,16 @@ class Employee_m extends CI_Model {
         );
         return $this->db->get_where($this->table['employee'], $this->table['employee'].'.nik = "'. $nik .'"')->row_array();
     }
+
+    /**
+     * getDetail_employeeAllData
+     *
+     * @param  mixed $nik
+     * @return void
+     */
+    function getDetail_employeeAllData($nik){
+        return $this->db->get_where($this->table['employee'], array('nik' => $nik))->row_array();
+    }
     
     /**
      * getDetails_employee
@@ -53,7 +63,7 @@ class Employee_m extends CI_Model {
      * @return void
      */
     function getDetails_employee($nik){
-        $this->db->select('nik, emp_name, is_active, position_name, id_entity, role_id, akses_surat_id, dept_id, div_id, email');
+        $this->db->select('nik, emp_name, position_name, id_entity, role_id, akses_surat_id, dept_id, div_id, email');
         $this->db->join(
             $this->table['position'], 
             $this->table['employee'].'.position_id='.$this->table['position'].'.id', 
@@ -75,6 +85,17 @@ class Employee_m extends CI_Model {
             $this->table['position'].'.id = '. $this->table['employee'].'.position_id',
             'left');
         return $this->db->get_where($this->table['employee'], $this->table['employee'].'.nik = "'. $nik .'"')->row_array();
+    }
+    
+    /**
+     * remove employee by nik (DANGEROUS FUNCTION)
+     *
+     * @param  mixed $nik
+     * @return void
+     */
+    function remove($nik){
+        $this->db->where('nik', $nik);
+        $this->db->delete($this->table['employee']);
     }
 }
 
