@@ -44,44 +44,38 @@
                 } else {
                     $('input[id="role_surat_edit"]').prop('checked', false);
                 }
-
-                // is_active aktif karyawan
-                if(data.is_active == 1){
-                    $('input[id="is_active_edit"]').prop('checked', true);
-                } else {
-                    $('input[id="is_active_edit"]').prop('checked', false);
-                }
             }
         });
     });
 
+    // prepare variable
+    let selected_nik = "";
+    // action delete employee
     $('.deleteEmp').on('click', function() {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: true
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: false,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#0072c6'
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                )
+                selected_nik = $(this).data('nik');
+                // tampilkan modal tantangan typeit challenge
+                $('#typeItModal').modal('show');
             } else if (
                 /* Read more about handling dismissals below */
                 result.dismiss === Swal.DismissReason.cancel
             ) {
                 Swal.fire(
                     'Cancelled',
-                    'Your imaginary file is safe',
+                    "Okay I'll make everything untounchable.",
                     'error'
                 )
-
-                var a = "<?= base_url('master/deleteEmploye') ?>";
             }
         })
     });
@@ -354,4 +348,93 @@
                 $(element).removeClass('is-invalid');
             }
         });
+
+    // variable preparation
+    let input_typeit = $('input[name="typeit"]'); // selector input typeit
+    let msg = ['<span id="exampleInputEmail1-error" class="error invalid-feedback">', '</span>'];
+    let msg_empty = msg[0]+'Please enter the phare above.'+msg[1];
+    let msg_notmatch = msg[0]+'The Phrase you typed is not match, please try again.'+msg[1];
+    // on click typeit challenge
+    $('#deleteEmp_typeItChallenge').on('click', () => {
+        // cek validasi
+        if(validate_input_typeit() == true){
+            $.ajax({
+                url: '<?= base_url('settings/ajax_removeEmployee'); ?>',
+                data: {
+                    nik: selected_nik
+                },
+                method: "POST",
+                beforeSend: () => {
+                    $('#typeItModal').modal('hide'); // hide the modal
+                    // remove typeit attribute
+                    input_typeit.removeClass('is-invalid is-valid');
+                    input_typeit.siblings('.invalid-feedback').remove();
+                    input_typeit.val(""); // kosongkan typeit form
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Please Wait',
+                        html: '<p>'+"Please don't close this tab and the browser, the employee data is being archived."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false
+                    });
+                },
+                error: () => {
+                    Swal.fire(
+                        '500 Error',
+                        'There is an error on the server, sorry.',
+                        'error'
+                    )
+                },
+                success: (data) => {
+                    if(data == 1){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Employee Archived to hcportal_archives',
+                            html: '<p>'+"Employee data has been archived."+'<br/><br/>Refreshing this page...<br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        });
+                        // refresh the page
+                        setTimeout(function() {
+							location.reload();
+						}, 2000);
+                    } else {
+                        Swal.fire(
+                            '404 Unknown Error',
+                            'There is an unknown error, please contact HC Care to get more assistance.',
+                            'error'
+                        )
+                    }
+                }
+            });
+        }
+    });
+
+    //validator input typeit
+    input_typeit.on('keyup', function(){
+        // validate input type it first
+        validate_input_typeit();
+    });
+
+    function validate_input_typeit(){
+        let typed = input_typeit.val(); // ambil data yang diinput
+        input_typeit.removeClass('is-invalid is-valid');
+        input_typeit.siblings('.invalid-feedback').remove();
+        if(typed == "" || typed == undefined || typed == null){
+            input_typeit.addClass('is-invalid');
+            input_typeit.parent().append(msg_empty);
+            return false;
+        } else if(typed != "saya yakin untuk menonaktifkan karyawan ini"){
+            input_typeit.addClass('is-invalid');
+            input_typeit.parent().append(msg_notmatch);
+            return false;
+        } else {
+            input_typeit.addClass('is-valid');
+            return true;
+        }
+    }
 </script>

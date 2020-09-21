@@ -158,7 +158,26 @@ class Settings extends SuperAdminController {
         $dept = $this->input->post('dept');
         echo(json_encode($this->posisi_m->getAll_whereSelect('id, position_name', array('div_id' => $div[1], 'dept_id' => $dept))));
     }
+    
+    /**
+     * ajax_removeEmployee
+     *
+     * @return void
+     */
+    protected $table_employee = [
+        'employee' => 'master_employee'
+    ];
+    function ajax_removeEmployee(){
+        $nik = $this->input->post('nik'); // get nik data
+        // load model archives
+        $this->load->model('_archives_m');
 
+        $data_employee = $this->employee_m->getDetail_employeeAllData($nik); // ambil data karyawan full
+        $data_employee['date'] = time(); // get now_date
+        $this->_archives_m->insert($this->table_employee['employee'], $data_employee); // masukkan data employee ke dalam database archives
+        $this->employee_m->remove($nik); // hapus data employee dengan nik tersebut
+        echo(1); // tandai proses berhasil atau gagal
+    }
 }
 
 /* End of file Settings.php */

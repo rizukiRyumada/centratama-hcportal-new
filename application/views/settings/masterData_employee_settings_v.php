@@ -29,7 +29,7 @@
                             <select id="departement" class="custom-select form-control form-control-sm">
                                 <option value="">All</option>
                                 <?php foreach($dept as $v): ?>
-                                <option value="dept-<?= $v['id'] ?>"><?= $v['nama_departemen'] ?></option>
+                                    <option value="dept-<?= $v['id'] ?>"><?= $v['nama_departemen'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -37,7 +37,7 @@
                     <div class="col-1 text-center">
                         <div class="container d-flex h-100 m-0 px-auto"> <!-- this container make the element to vertically and horizontally centered -->
                             <div class="row justify-content-center align-self-center w-100 m-0">
-                                <a type="button" class="btn btn-primary" data-placement="left" title="Add New Employe" data-toggle="modal" data-target="#tambahEmployeModal"><i class="fa fa-plus text-white"></i></a>
+                                <a type="button" class="btn btn-primary" data-placement="left" title="Add New Employe" data-toggle="modal" data-target="#tambahEmployeModal"><i class="fas fa-user-plus text-white"></i></a>
                             </div>
                         </div>
                     </div>
@@ -62,10 +62,10 @@
                                 <td data-filter="dept-<?= $employe['dept_id'] ?>"><?= $employe['nama_departemen'] ?></td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-success btn-sm editEmp" data-nik="<?= $employe['nik']; ?>" type="button"><i class="fas fa-pencil-alt"></i></button>
+                                        <button class="btn btn-success btn-sm editEmp" data-nik="<?= $employe['nik']; ?>" type="button"><i class="fas fa-user-edit"></i></button>
                                         <!-- //TODO tambah popup sebelum user dapa menghapus employe -->
                                         <!-- <a href="<?= base_url('master/deleteEmploye') ?>?nik=<?= $employe['nik'] ?>" class="btn btn-danger btn-sm" ><i class="fas fa-trash-alt"></i></a> -->
-                                        <button class="btn btn-danger btn-sm deleteEmp" ><i class="fas fa-trash-alt" data-nik="<?= $employe['nik']; ?>"></i></button>
+                                        <button class="btn btn-danger btn-sm deleteEmp" data-nik="<?= $employe['nik']; ?>"><i class="fas fa-user-minus"></i></button>
                                     </div>        
                                 </td>
                             </tr>
@@ -125,7 +125,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-5 form-group">
                             <label for="entity_tambah">Entity</label>
                             <select name="entity" id="entity_tambah" class="custom-select form-control form-control-sm">
                                 <option value="">Pilih Entity...</option>
@@ -134,7 +134,7 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-5 form-group">
                             <label for="role_tambah">Role</label>
                             <select name="role" id="role_tambah" class="custom-select form-control form-control-sm">
                                 <option value="">Pilih Role...</option>
@@ -143,17 +143,9 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="row">
-                                <div class="col-6 form-group">
-                                    <label for="role_surat_tambah">Role Surat</label>
-                                    <input name="role_surat" id="role_surat_tambah" type="checkbox" class="form-control" >
-                                </div>
-                                <div class="col-6 form-group">
-                                    <label for="is_active_tambah">is_active</label>
-                                    <input name="is_active" type="checkbox" id="is_active_tambah" class="form-control" >
-                                </div>
-                            </div>
+                        <div class="col-lg-2 form-group">
+                            <label for="role_surat_tambah">Role Surat</label>
+                            <input name="role_surat" id="role_surat_tambah" type="checkbox" class="form-control" >
                         </div>
                     </div>
                     <div class="row">
@@ -226,7 +218,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-5 form-group">
                             <label for="entity_edit">Entity</label>
                             <select name="entity" id="entity_edit" class="custom-select form-control form-control-sm">
                                 <?php foreach($entity as $v): ?>
@@ -234,7 +226,7 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-lg-4 form-group">
+                        <div class="col-lg-5 form-group">
                             <label for="role_edit">Role</label>
                             <select name="role" id="role_edit" class="custom-select form-control form-control-sm">
                                 <?php foreach($role as $v): ?>
@@ -242,17 +234,9 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-lg-4">
-                            <div class="row">
-                                <div class="col-6 form-group">
-                                    <label for="role_surat_edit">Role Surat</label>
-                                    <input name="role_surat" type="checkbox" class="form-control" id="role_surat_edit" >
-                                </div>
-                                <div class="col-6 form-group">
-                                    <label for="is_active_edit">is_active</label>
-                                    <input name="is_active" type="checkbox" class="form-control" id="is_active_edit">
-                                </div>
-                            </div>
+                        <div class="col-lg-2 form-group">
+                            <label for="role_surat_edit">Role Surat</label>
+                            <input name="role_surat" type="checkbox" class="form-control" id="role_surat_edit" >
                         </div>
                     </div>
                     <div class="row">
@@ -272,6 +256,43 @@
                 <button type="submit" class="btn btn-secondary">Save changes</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /* -------------------------------------------------------------------------- */
+     /*                                   MODALS                                   */
+     /* -------------------------------------------------------------------------- */ -->
+
+<!-- Modal Typeit for checking the user certainty -->
+<div class="modal fade" id="typeItModal" tabindex="-1" role="dialog" aria-labelledby="typeItModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="typeItModalLabel">Type the right phrase</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-2">
+                    <div class="col">
+                        <p class="text">Please type the phrase below.</p>
+                        <p class="text-primary font-weight-bold text-center">saya yakin untuk menonaktifkan karyawan ini</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <input type="text" name="typeit" id="typeit" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteEmp_typeItChallenge">Ok</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
