@@ -101,7 +101,7 @@ function sendEmail($data_penerima_email, $emailText, $subject_email){
     $CI =& get_instance();
 
     // configuration for send email
-    // NOW ubah jadi 1 saat production
+    // PRODUCTION ubah jadi 1 saat production
     $config = $CI->Jobpro_model->getDetail(
         'useragent, protocol, smtp_host, smtp_port, smtp_user, smtp_pass, charset, wordwrap, mailtype', 
         'setting_email', 
@@ -117,13 +117,13 @@ function sendEmail($data_penerima_email, $emailText, $subject_email){
     $CI->email->initialize($config);
 
     // SETTING identitas email
-    // FIXME ubah from ke pengaturan server
+    // PRODUCTION ubah from ke pengaturan server
     // $CI->email->from($config['smtp_user'], $config['smtp_user']);
     $CI->email->from('Ryumada@dev.github', 'Ryumada');
-    //FIXME ubah to ke pengatauran server
+    // PRODUCTION ubah to ke pengatauran server
     $CI->email->to($data_penerima_email['email']);
     // $CI->email->to('asd@ss.id'); //for testing
-    // FIXME cc email
+    // PRODUCTION cc email
     if(!empty($data_penerima_email['email_cc'])){
         $CI->email->cc($data_penerima_email['email_cc']);
     }

@@ -141,7 +141,6 @@
         <div class="container-fluid">
             <a href="../../index3.html" class="navbar-brand d-flex">
                 <img class="brand-image navbar-logo" src="<?= base_url('assets/'); ?>img/logo.png" alt="Centratama Group Logo">
-                <!-- FIXME judul aplikasi -->
                 <span class="brand-text font-weight-light d-inline-block navbar-text-leftbordered font-berlinsans"><span class="text-nowrap">HC Portal</span></span>
             </a>
             
@@ -188,7 +187,6 @@
         </div>
     </nav><!-- /navbar -->
 
-    <!-- FIXME tanggalan -->
     <!-- content wrapper for more than 1080px -->
     <div class="content-wrapper bg-transparent" id="content-wrap">
         <!-- konten tanggal -->
@@ -279,7 +277,6 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- FIXME Judul Aplikasi ngambil dari database aja kali ya -->
                 <h5 class="modal-title" id="loginModalTitle">Login to <b class="font-berlinsans" style="color: #0072C6">HC Portal</b></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>

@@ -82,7 +82,8 @@ $db['default'] = array(
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
-	'db_debug' => (ENVIRONMENT !== 'production'),
+	// PRODUCTION ubah jadi ===
+	'db_debug' => (ENVIRONMENT !== 'production'), 
 	'cache_on' => FALSE,
 	'cachedir' => '',
 	'char_set' => 'utf8',
@@ -104,6 +105,7 @@ $db['archives'] = array(
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
+	// PRODUCTION ubah jadi ===
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
 	'cachedir' => '',

@@ -428,7 +428,6 @@ class Job_profile extends MainController {
                         'diperbarui' => time(),
                         'status_approval' => '2',
                         'pesan_revisi' => 'null'
-                        //BUG pesan Revisi
                     ];
                     $this->Jobpro_model->updateApproval($data, $id_posisi);
 
@@ -462,7 +461,6 @@ class Job_profile extends MainController {
                         'diperbarui' => time(),
                         'status_approval' => '4',
                         'pesan_revisi' => 'null'
-                        //BUG Persan Revisi
                     ];
                     $this->Jobpro_model->updateApproval($data, $id_posisi);
                     
@@ -518,7 +516,6 @@ class Job_profile extends MainController {
                 } else {
                     $simpan_pesan = 'null';
                 }
-                // BUG Pesan Revisi
                 $data = [
                     'diperbarui' => time(),
                     'status_approval' => '3',
