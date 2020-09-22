@@ -77,7 +77,7 @@
     </div>
 </div>
 
-<!-- Modal edit karyawan -->
+<!-- Modal tambah karyawan -->
 <div class="modal fade" id="tambahEmployeModal" tabindex="-1" role="dialog" aria-labelledby="tambahEmployeModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -88,7 +88,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="tambahEmployeForm" action="<?= base_url('master/tambahEmploye') ?>" method="POST">
+                <form id="tambahEmployeForm" action="<?= base_url('settings/employee_addNew') ?>" method="POST">
                     <div class="row">
                         <div class="col-lg-6 form-group">
                             <label for="nik_tambah">NIK</label>
@@ -181,7 +181,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="editEmployeForm" action="<?= base_url('master/editEmploye') ?>" method="POST">
+                <form id="editEmployeForm" action="<?= base_url('settings/employee_editEmployee') ?>" method="POST">
                     <div class="row">
                         <div class="col-lg-6 form-group">
                             <label for="nik_edit">NIK</label>

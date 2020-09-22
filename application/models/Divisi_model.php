@@ -20,6 +20,10 @@ class Divisi_model extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+    public function getOnceWhere($where){
+        return $this->db->get_where($this->table, $where)->row_array();
+    }
+
     public function updateDiv()
     {
         $data = [

@@ -88,6 +88,16 @@ class Employee_m extends CI_Model {
     }
     
     /**
+     * insert employee data to database
+     *
+     * @param  mixed $data
+     * @return void
+     */
+    function insert($data){
+        $this->db->insert($this->table['employee'], $data);
+    }
+    
+    /**
      * remove employee by nik (DANGEROUS FUNCTION)
      *
      * @param  mixed $nik
@@ -96,6 +106,18 @@ class Employee_m extends CI_Model {
     function remove($nik){
         $this->db->where('nik', $nik);
         $this->db->delete($this->table['employee']);
+    }
+    
+    /**
+     * update employee data
+     *
+     * @param  mixed $where
+     * @param  mixed $data
+     * @return void
+     */
+    function update($where, $data){
+        $this->db->where($where);
+        $this->db->update($this->table['employee'], $data);
     }
 }
 

@@ -104,6 +104,103 @@ class Settings extends SuperAdminController {
         
 		$this->load->view('main_v', $data);
     }
+    
+    /**
+     * add new data employee
+     *
+     * @return void
+     */
+    public function employee_addNew(){//fungsi untuk menambah employe
+        // cek role surat dan is_active
+        //ubah password ke bcrypt
+        //simpan ke database
+
+        $data = array(
+            'nik' => $this->input->post('nik'),
+            'emp_name' => $this->input->post('name'),
+            'position_id' => $this->input->post('position'),
+            'id_entity' => $this->input->post('entity'),
+            'role_id' => $this->input->post('role'),
+            'email' => $this->input->post('email'),
+            'password' => password_hash($this->input->post('password'), PASSWORD_BCRYPT) // hashing password
+        );
+
+        // cek role surat 
+        if($this->input->post('role_surat') == 'on'){
+            $data['akses_surat_id'] = 1;
+        } else {
+            $data['akses_surat_id'] = 0;
+        }
+
+        $this->employee_m->insert($data);
+
+        // siapkan notifikasi swal
+        $this->session->set_userdata('msg_swal', array(
+            'icon' => 'success',
+            'title' => 'Added Successfully',
+            'msg' => 'The new Employee Data has been added to main database.'
+        ));
+        header('location: ' . base_url('settings/masterData_employee'));
+    }
+
+    /**
+     * edit data employee
+     * $onik ~ original nik
+     *
+     * @return void
+     */
+    public function employee_editEmployee(){ //fungsi untuk mengedit employe
+        // jika nik tidak diubah
+        $nik = $this->input->post('nik');
+        $onik = $this->input->post('onik');
+        $data = array(
+            'emp_name' => $this->input->post('name'),
+            'id_entity' => $this->input->post('entity'),
+            'role_id' => $this->input->post('role'),
+            'email' => $this->input->post('email')
+        );
+        //get origin data
+        // $dataEmploye = $this->Master_m->getDetail('*', 'employe', array('nik' => $onik));
+        
+        //cek kalau password tidak kosong
+        if(!empty($password = $this->input->post('password'))){ // hasing password dan simpan ke $dataEmploye
+            $data['password'] = password_hash($password, PASSWORD_BCRYPT);
+        } else {
+            // nothing
+        }
+
+        // cek role surat
+        if($this->input->post('role_surat') == 'on'){
+            $data['akses_surat_id'] = 1;
+        } else {
+            $data['akses_surat_id'] = 0;
+        }
+
+        //cek jika posisi kosong atau tidak
+        if(!empty($position_id = $this->input->post('position'))){
+            $data['position_id'] = $position_id;
+        } else {
+            //nothing
+        }
+
+        //cek jika nik diubah atau tidak
+        if($nik != $onik){
+            $data['nik'] = $nik;
+        } else {
+            //nothing
+        }
+
+        $where = array('nik' => $onik); // buat where
+        $this->employee_m->update($where, $data);
+
+        // siapkan notifikasi swal
+        $this->session->set_userdata('msg_swal', array(
+            'icon' => 'success',
+            'title' => 'Edited Successfully',
+            'msg' => 'Your changes has been saved to database.'
+        ));
+        header('location: ' . base_url('settings/masterData_employee'));
+    }
 
 /* -------------------------------------------------------------------------- */
 /*                                AJAX FUNCTION                               */
@@ -173,7 +270,20 @@ class Settings extends SuperAdminController {
         $this->load->model('_archives_m');
 
         $data_employee = $this->employee_m->getDetail_employeeAllData($nik); // ambil data karyawan full
+        // lengkapi data employee
+        $data_pos = $this->posisi_m->getOnceWhere(array('id' => $data_employee['position_id']));
+        $data_div = $this->divisi_model->getOnceWhere(array('id' => $data_pos['div_id']));
+        $data_dept = $this->dept_model->getDetailById($data_pos['dept_id']);
+        // masukkan ke dalam data employee
+        $data_employee['div_id'] = $data_div['id'];
+        $data_employee['div_name'] = $data_div['division'];
+        $data_employee['dept_id'] = $data_dept['id'];
+        $data_employee['dept_name'] = $data_dept['nama_departemen'];
+        $data_employee['position_name'] = $data_pos['position_name'];
+        $data_employee['hirarki_org'] = $data_pos['hirarki_org'];
+        $data_employee['job_grade'] = $data_pos['job_grade'];
         $data_employee['date'] = time(); // get now_date
+
         $this->_archives_m->insert($this->table_employee['employee'], $data_employee); // masukkan data employee ke dalam database archives
         $this->employee_m->remove($nik); // hapus data employee dengan nik tersebut
         echo(1); // tandai proses berhasil atau gagal
