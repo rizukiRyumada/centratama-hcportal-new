@@ -119,6 +119,8 @@ class AppSettings extends SuperAdminController {
         $month = date("n", time());
         //Divide that month number by 3 and round up using ceil.
         $yearQuarter = ceil($month / 3);
+        $yearQuarter_now = $yearQuarter;
+        $year_now = date('o', time());
         if($yearQuarter > 1){ // buat nandain periode sebelumnya
             $yearQuarter = $yearQuarter - 1;
             $year = date('o', time());
@@ -154,7 +156,7 @@ class AppSettings extends SuperAdminController {
                 $this->_general_m->truncate($this->table_survey['exc']);
                 // update judul survey
                 $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 0, array(
-                    'judul' => 'Service Excellence Survey [Periode '.$yearQuarter.' - '.$year.']'
+                    'judul' => 'Service Excellence Survey [Periode '.$yearQuarter_now.' - '.$year_now.']'
                 ));
 
                 echo(1); // tanda sukses
@@ -174,6 +176,8 @@ class AppSettings extends SuperAdminController {
         $month = date("n", time());
         //Divide that month number by 3 and round up using ceil.
         $period = ceil($month / 6);
+        $period_now = $period;
+        $year_now = date('o', time());
         if($period > 1){ // buat nandain periode sebelumnya
             $period = $period - 1;
             $year = date('o', time());
@@ -204,7 +208,7 @@ class AppSettings extends SuperAdminController {
                 $this->_general_m->truncate($this->table_survey['eng']);
                 // ubah judul survey
                 $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 1, array(
-                    'judul' => 'Employee Engagement Survey [Periode '.$period.' - '.$year.']'
+                    'judul' => 'Employee Engagement Survey [Periode '.$period_now.' - '.$year_now.']'
                 ));
 
                 echo(1); // tanda sukses
@@ -224,6 +228,8 @@ class AppSettings extends SuperAdminController {
         $month = date("n", time());
         //Divide that month number by 3 and round up using ceil.
         $period = ceil($month / 6);
+        $period_now = $period;
+        $year_now = date('o', time());
         if($period > 1){ // buat nandain periode sebelumnya
             $period = $period - 1;
             $year = date('o', time());
@@ -257,7 +263,7 @@ class AppSettings extends SuperAdminController {
                 $this->_general_m->truncate($this->table_survey['360']);
                 // ubah judul survey
                 $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 2, array(
-                    'judul' => '360° Feedback [Periode '.$period.' - '.$year.']'
+                    'judul' => '360° Feedback [Periode '.$period_now.' - '.$year_now.']'
                 ));
 
                 echo(1); // tanda sukses
@@ -268,6 +274,11 @@ class AppSettings extends SuperAdminController {
             echo(0); // tanda gagal
         }
     }
+    /**
+     * get status survey with for ajax
+     *
+     * @return void
+     */
     function ajax_getStatusSuvey(){
         // ambil status masing survey data dengan periode dipilih
         // load models
