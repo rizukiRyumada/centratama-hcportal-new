@@ -4,7 +4,6 @@
 // TODO tambah popover di tiap kotak form
 // TODO buat dia milih replacement karyawan
 
-// NOW tampilan all data, tampilkan semua data form olah dalam bentuk satu table memanjang
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -17,13 +16,16 @@ class Ptk extends SpecialUserAppController {
     // table name list
     protected $table = array(
         'employee' => 'master_employee',
+        'employee_status' => 'master_employeeStatus',
         'entity' => 'master_entity',
         'department' => 'master_department',
         'division' => 'master_division',
         'position' => 'master_position',
         'location' => 'master_location',
+        'joblevel' => 'master_joblevel',
         'ptk_status' => 'ptk_status',
-        'ptk_status_pj' => 'ptk_status-pj'
+        'ptk_status_pj' => 'ptk_status-pj',
+        'ptk_education' => 'ptk_education'
     );
 
     // TODO if checkbox replacement checked set rules required to replacement_who
@@ -163,7 +165,7 @@ class Ptk extends SpecialUserAppController {
 
             // form data
             $data['entity'] = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
-            $data['emp_status'] = $this->_general_m->getAll('*', 'master_employee_status', array()); // employee status
+            $data['emp_status'] = $this->_general_m->getAll('*', 'master_employeeStatus', array()); // employee status
             $data['education'] = $this->_general_m->getAll('*', 'ptk_education', array()); // education
             // TODO dari javascript MPP dari table position
             $data['data_atasan'] = $this->posisi_m->whoMyAtasanS(); // ambil data atasan 1 dan 2
@@ -464,12 +466,107 @@ class Ptk extends SpecialUserAppController {
         }
         // cek otoritas apa divisi id dan dept idnya sama antara my position dengan id posisi yang dituju
     }
+
+    // NOW tampilan all data, tampilkan semua data form olah dalam bentuk satu table memanjang
+    function exportHistory(){
+        if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+            // allow access
+        } else {
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+            exit;
+        }
+
+        // ambil semua data
+        $data_ptk = $this->ptk_m->getAll();
+
+        foreach($data_ptk as $k => $v){
+            $data_ptk[$k]['entity'] = $this->entity_m->getOnce(array('id' => $v['id_entity']))['keterangan'];
+            $data_ptk[$k]['division'] = $this->divisi_model->getOnceWhere(array('id' => $v['id_div']))['division'];
+            $data_ptk[$k]['department'] = $this->dept_model->getDetailById($v['id_dept'])['nama_departemen'];
+            $data_ptk[$k]['job_level'] = $this->_general_m->getOnce('name', $this->table['joblevel'], array('id' => $v['job_level']))['name']; // lengkapi data job_level
+            $data_ptk[$k]['education'] = $this->_general_m->getOnce('name', $this->table['ptk_education'], array('id' => $v['id_ptk_edu']))['name']; // get ptk edu name
+            $data_ptk[$k]['employee_status'] = $this->_general_m->getOnce('status_name', $this->table['employee_status'], array('id' => $v['id_employee_status']))['status_name']; // get employee status name
+            $data_ptk[$k]['status'] = $this->_general_m->getOnce('status_text', $this->table['ptk_status'], array('id' => $v['status_now']))['status_text']; // lengkapi data status
+            $data_ptk[$k]['time_modified'] = date('o-m-d H:i', $v['time_modified']);
+
+            // lengkapi data posisi 
+            if($v['id_pos'] != 0){
+                $data_posisi = $this->posisi_m->getOnceWhere(array('id' => $v['id_pos']));
+                $data_ptk[$k]['position'] = $data_posisi['position_name'];
+                $data_ptk[$k]['hirarki_org'] = $data_posisi['hirarki_org'];
+            }
+
+            // lengkapi data resources
+            $data_resources = json_decode($v['resources'], true);
+            unset($data_ptk[$k]['resources']); // hapus data resources
+            if($data_resources == "ext"){
+                $data_ptk[$k]['resources'] = "Eksternal";
+                $data_ptk[$k]['internal_who'] = null;
+            } else {
+                $data_ptk[$k]['resources'] = "Internal";
+                $data_ptk[$k]['resources_internal_who'] = $data_resources['internal_who'];
+            }
+            // lengkapi data interviewer3
+            if(!empty($v['interviewer3'])){
+                $data_interviewer3 = json_decode($v['interviewer3'], true);
+                $data_ptk[$k]['interviewer3_name'] = $data_interviewer3['name'];
+                $data_ptk[$k]['interviewer3_position'] = $data_interviewer3['position'];
+            } else {
+                $data_ptk[$k]['interviewer3_name'] = "";
+                $data_ptk[$k]['interviewer3_position'] = "";
+            }
+            // lengkapi data work location
+            $data_workLocation = json_decode($v['work_location'], true);
+            if($data_workLocation['other'] == false){
+                $data_ptk[$k]['work_location'] = $this->_general_m->getOnce('location', $this->table['location'], array('id' => $data_workLocation['location']))['location'];
+            } else {
+                $data_ptk[$k]['work_location'] = $data_workLocation['location'];
+            }
+            // lengkapi requirement special
+            if(!empty($v['req_special'])){
+                $data_ptk[$k]['req_special'] = str_replace("&nbsp;", "" , trim(strip_tags($v['req_special'])));
+            }
+            // olah budget
+            if($v['budget'] == 1){
+                $data_ptk[$k]['budget'] = "Budgetted";
+            } else {
+                $data_ptk[$k]['budget'] = "Unbudgetted";
+            }
+            // olah sex
+            if($v['sex'] == 1){
+                $data_ptk[$k]['sex'] = "Male";
+            } else {
+                $data_ptk[$k]['sex'] = "Female";
+            }
+            
+            // strip tags from input form
+            $data_ptk[$k]['outline'] = str_replace("&nbsp;", "" , trim(strip_tags($v['outline'])));
+            $data_ptk[$k]['main_responsibilities'] = str_replace("&nbsp;", "" , trim(strip_tags($v['main_responsibilities'])));
+            $data_ptk[$k]['tasks'] = str_replace("&nbsp;", "" , trim(strip_tags($v['tasks'])));
+            $data_ptk[$k]['req_ska'] = str_replace("&nbsp;", "" , trim(strip_tags($v['req_ska'])));
+
+            // remove some unused data
+            unset($data_ptk[$k]['interviewer3']);
+            unset($data_ptk[$k]['id_entity']);
+            unset($data_ptk[$k]['id_div']);
+            unset($data_ptk[$k]['id_dept']);
+            unset($data_ptk[$k]['id_pos']);
+            unset($data_ptk[$k]['id_time']);
+            unset($data_ptk[$k]['id_ptk_edu']);
+            unset($data_ptk[$k]['id_employee_status']);
+            unset($data_ptk[$k]['status_now']);
+            unset($data_ptk[$k]['internal_who']);
+        }
+
+        export2Excel($data_ptk, 'Employee Requisition Data_'.date('o-m-d_H:i', time()));
+    }
     
     /**
      * function used for save ptk form
      *
      * @return void
      */
+    // NOW
     public function saveForm_post($status_now, $status_data) {
         //timestamp id
         $data['id_time'] = time();
@@ -526,7 +623,8 @@ class Ptk extends SpecialUserAppController {
         } else {
             $data['resources'] = json_encode([
                 "resources"    => $this->input->post('resources'),
-                "internal_who" => ""]);
+                "internal_who" => ""
+            ]);
         }
         // mpp
         $data['req_mpp'] = $this->input->post('mpp_req');
@@ -724,7 +822,7 @@ class Ptk extends SpecialUserAppController {
         $data['division']   = $this->divisi_model->getOnceById($data['id_div'])[0]; // ambil division
         $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
         $data['position']   = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
-        $data['emp_status'] = $this->_general_m->getAll('*', 'master_employee_status', array()); // employee status
+        $data['emp_status'] = $this->_general_m->getAll('*', 'master_employeeStatus', array()); // employee status
         $data['education']  = $this->_general_m->getAll('*', 'ptk_education', array()); // education
         // TODO dari javascript MPP dari table position
         if($data['id_pos'] != 0){

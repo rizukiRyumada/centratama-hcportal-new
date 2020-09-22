@@ -60,7 +60,7 @@
                   </li> -->
                   <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
                     <li class="nav-item">
-                        <a class="nav-link ptk_tableTrigger" id="custom-tabs-four-messages-tab" data-toggle="pill" data-status="2" href="#custom-tabs-four-messages" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">All Data</a>
+                        <a class="nav-link exportPTK" id="custom-tabs-four-messages-tab" href="<?= base_url('ptk/exportHistory'); ?>" aria-selected="false"><i class="fas fa-file-excel"></i> Export Data</a>
                     </li>
                   <?php endif; ?>
                 </ul>

@@ -9,6 +9,15 @@ class Ptk_m extends CI_Model {
     ];
     
     /**
+     * getAll ptk form data
+     *
+     * @return void
+     */
+    function getAll(){
+        return $this->db->get_where($this->table['main'])->result_array();
+    }
+    
+    /**
      * get all ptk status
      *
      * @return void

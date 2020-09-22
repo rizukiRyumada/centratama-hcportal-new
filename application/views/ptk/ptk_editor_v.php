@@ -43,6 +43,7 @@
             <div class="form-group row">
                 <label for="jobLevelForm" class="col-sm-4 col-form-label">Job Level</label>
                 <div class="col-sm-8">
+                    // FIXME get job level from database
                     <select id="jobLevelForm" name="job_level" class="custom-select" required>
                         <option value="" >Select Job Level...</option>
                         <option value="job_level-0" >Staff</option>
