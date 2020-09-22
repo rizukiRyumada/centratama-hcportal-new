@@ -63,8 +63,6 @@
                                 <td>
                                     <div class="btn-group">
                                         <button class="btn btn-success btn-sm editEmp" data-nik="<?= $employe['nik']; ?>" type="button"><i class="fas fa-user-edit"></i></button>
-                                        <!-- //TODO tambah popup sebelum user dapa menghapus employe -->
-                                        <!-- <a href="<?= base_url('master/deleteEmploye') ?>?nik=<?= $employe['nik'] ?>" class="btn btn-danger btn-sm" ><i class="fas fa-trash-alt"></i></a> -->
                                         <button class="btn btn-danger btn-sm deleteEmp" data-nik="<?= $employe['nik']; ?>"><i class="fas fa-user-minus"></i></button>
                                     </div>        
                                 </td>
