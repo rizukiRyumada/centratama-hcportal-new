@@ -1,6 +1,6 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 // TODO ubah nama periode setelah diarchives
 // TODO buat database master job_level
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class AppSettings extends SuperAdminController {
 
@@ -91,7 +91,8 @@ class AppSettings extends SuperAdminController {
         'eng_pertanyaan' => 'survey_eng_pertanyaan',
         '360' => 'survey_f360_hasil',
         '360_pertanyaan' => 'survey_f360_pertanyaan',
-        '360_kategori' => 'survey_f360_kategoripertanyaan'
+        '360_kategori' => 'survey_f360_kategoripertanyaan',
+        'page_title' => 'survey_page_title'
     ];
     public function ajax_survey_newPeriods(){
         // ambil get survey yang mau direset
@@ -151,6 +152,10 @@ class AppSettings extends SuperAdminController {
                 $this->_archives_m->insertAll($this->table_survey['exc'], $vya);
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['exc']);
+                // update judul survey
+                $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 0, array(
+                    'judul' => 'Service Excellence Survey [Periode '.$yearQuarter.' - '.$year.']'
+                ));
 
                 echo(1); // tanda sukses
             } else {
@@ -197,6 +202,10 @@ class AppSettings extends SuperAdminController {
                 $this->_archives_m->insertAll($this->table_survey['eng'], $vya);
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['eng']);
+                // ubah judul survey
+                $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 1, array(
+                    'judul' => 'Employee Engagement Survey [Periode '.$period.' - '.$year.']'
+                ));
 
                 echo(1); // tanda sukses
             } else {
@@ -246,6 +255,10 @@ class AppSettings extends SuperAdminController {
                 $this->_archives_m->insertAll($this->table_survey['360'], $vya);
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['360']);
+                // ubah judul survey
+                $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 2, array(
+                    'judul' => '360° Feedback [Periode '.$period.' - '.$year.']'
+                ));
 
                 echo(1); // tanda sukses
             } else {

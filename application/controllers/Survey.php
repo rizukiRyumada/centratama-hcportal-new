@@ -5,6 +5,10 @@ class Survey extends MainController {
     protected $title_excellence = 'Service Excellence';
     protected $title_engagement = 'Employee Engagement';
     protected $title_f360 = '360° Feedback';
+
+    protected $table = array(
+        'title' => 'survey_page_title'
+    );
     
     public function __construct(){
         // show_error($message, $status_code, $heading = 'An Error Was Encountered')
@@ -66,6 +70,13 @@ class Survey extends MainController {
             'excellence' => $this->title_excellence,
             'engagement' => $this->title_engagement,
             'f360' => $this->title_f360
+        );
+
+        $data_title = $this->_general_m->getAll('*', $this->table['title'], array());
+        $data['survey_title'] = array(
+            'excellence' => $this->title_excellence.'<br/>[Periode'.explode('[Periode', $data_title[0]['judul'])[1],
+            'engagement' => $this->title_engagement.'<br/>[Periode'.explode('[Periode', $data_title[1]['judul'])[1],
+            'f360' => $this->title_f360.'<br/>[Periode'.explode('[Periode', $data_title[2]['judul'])[1]
         );
 
         // main data
@@ -179,15 +190,8 @@ class Survey extends MainController {
             }
         }
 
-        // foreach($jawaban_survey as $v){
-        //     print_r($v);
-        //     echo('<br/>');
-        // }
-
         //simpan dalam database
         $this->_general_m->insertAll('survey_exc_hasil', $jawaban_survey);
-        //ubah is_done karyawan kalau dia sudah selesai mengisi
-        // $this->_general_m->updateOnce('master_employee', array('nik' => $nik) , array('is_done' => 1));
 
         header('location: ' . base_url('survey'));
     }
