@@ -402,8 +402,8 @@ $config['sess_regenerate_destroy'] = FALSE;
 */
 $config['cookie_prefix']	= '';
 $config['cookie_domain']	= '';
-$config['cookie_path']		= '/'; // TODO remove ; samesite=None cause ajax cannot use cookie ont he path with ";" character.
-// TODO Change this to TRUE
+$config['cookie_path']		= '/'; // remove ; samesite=None cause ajax cannot use cookie ont he path with ";" character.
+// PRODUCTION Change 'cookie_secure' to TRUE
 $config['cookie_secure']	= FALSE;
 // $config['cookie_secure']	= TRUE;
 $config['cookie_httponly'] 	= FALSE;
