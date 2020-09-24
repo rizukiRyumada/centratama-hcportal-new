@@ -159,6 +159,16 @@
         }
     });
 
+    // on click export ptk button
+    $('.exportPTK').on('click', () => {
+        Swal.fire({
+            icon: 'info',
+            title: 'Please Wait',
+            html: '<p>'+"The data is being prepared, wait until the download window dialog opened and save it to your local data."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+            allowOutsideClick: false,
+        });
+    });
+
     // open timeline
     function showTimeline(id_entity, id_div, id_dept, id_pos, id_time){
         // get data status dari database dan set status history timeline
