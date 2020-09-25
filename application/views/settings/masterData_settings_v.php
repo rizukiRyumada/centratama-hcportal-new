@@ -17,6 +17,7 @@
                         <h5 class="mb-0 font-weight-bold">Master Position Management</h5>
                         <p class="font-weight-light">Add, edit, or remove master Position Data.</p>
                         <a href="<?= base_url('maintenance'); ?>" class="btn btn-success"><i class="fas fa-sitemap"></i> Manage Position</a>
+                        <!-- <a href="<?= base_url('settings/masterData_position'); ?>" class="btn btn-success"><i class="fas fa-sitemap"></i> Manage Position</a> -->
                     </div>
                 </div>
                 <div class="row mt-3">

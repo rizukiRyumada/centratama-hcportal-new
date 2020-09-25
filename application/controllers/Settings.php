@@ -6,9 +6,9 @@ class Settings extends SuperAdminController {
 
     protected $page_title = [
         'masterData' => 'Master Data Management',
-        'masterData_employee' => 'Master Employee'
+        'masterData_employee' => 'Master Employee',
+        'masterData_position' => 'Master Position'
     ];
-
     
     public function __construct()
     {
@@ -75,7 +75,7 @@ class Settings extends SuperAdminController {
     }
 
 /* -------------------------------------------------------------------------- */
-/*                            master data functions                           */
+/*                            master data employee                            */
 /* -------------------------------------------------------------------------- */
 
     function masterData_employee(){
@@ -200,6 +200,43 @@ class Settings extends SuperAdminController {
             'msg' => 'Your changes has been saved to database.'
         ));
         header('location: ' . base_url('settings/masterData_employee'));
+    }
+
+/* -------------------------------------------------------------------------- */
+/*                             masterdata position                            */
+/* -------------------------------------------------------------------------- */
+
+    function masterData_position() {
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+        $data['page_title'] = $this->page_title['masterData_position'];
+		$data['load_view'] = 'settings/masterData_position_settings_v';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+		// $data['custom_styles'] = array();
+        $data['custom_script'] = array(
+            'plugins/datatables/script_datatables',
+            'plugins/jqueryValidation/script_jqueryValidation',
+            'settings/script_masterData_position_settings'
+        );
+
+		$this->load->view('main_v', $data);
+    }
+
+    function getData_position(){
+        // position data
+        $data_posisi = $this->posisi_m->getAll();
+        // lengkapi data posisi
+        // foreach($data_posisi as $k => $v){
+        //     $data_posisi[$k]['divisi'] = $this->divisi_model->getOnceWhere(['id' => $v['div_id']])['division']; // ambil data divisi
+        //     $data_posisi[$k]['department'] = $this->dept_model->getDetailById(['id' => $v['dept_id']])['nama_departemen']; // ambil data department
+        //     $data_posisi[$k]['nama_atasan1'] = $this-> // ambil data atasan 1
+        //     // ambil data atasan 2
+        //     // ambil data approver 1
+        //     // ambil data approver 2
+        // }
     }
 
 /* -------------------------------------------------------------------------- */
