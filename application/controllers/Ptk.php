@@ -16,7 +16,7 @@ class Ptk extends SpecialUserAppController {
     // table name list
     protected $table = array(
         'employee' => 'master_employee',
-        'employee_status' => 'master_employeeStatus',
+        'employee_status' => 'employee_status',
         'entity' => 'master_entity',
         'department' => 'master_department',
         'division' => 'master_division',
@@ -165,7 +165,7 @@ class Ptk extends SpecialUserAppController {
 
             // form data
             $data['entity'] = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
-            $data['emp_status'] = $this->_general_m->getAll('*', 'master_employeeStatus', array()); // employee status
+            $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status
             $data['education'] = $this->_general_m->getAll('*', 'ptk_education', array()); // education
             // TODO dari javascript MPP dari table position
             $data['data_atasan'] = $this->posisi_m->whoMyAtasanS(); // ambil data atasan 1 dan 2
@@ -822,7 +822,7 @@ class Ptk extends SpecialUserAppController {
         $data['division']   = $this->divisi_model->getOnceById($data['id_div'])[0]; // ambil division
         $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
         $data['position']   = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
-        $data['emp_status'] = $this->_general_m->getAll('*', 'master_employeeStatus', array()); // employee status
+        $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status
         $data['education']  = $this->_general_m->getAll('*', 'ptk_education', array()); // education
         // TODO dari javascript MPP dari table position
         if($data['id_pos'] != 0){
