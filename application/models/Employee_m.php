@@ -13,6 +13,19 @@ class Employee_m extends CI_Model {
     );
     
     /**
+     * count employee with where parameter
+     * 
+     * @param  array $where
+     * @return integer $count_result
+     */
+    function count_where($where){
+        $this->db->from($this->table['employee']);
+        $this->db->join($this->table['position'], $this->table['position'].'.id = '.$this->table['employee'].'.position_id', 'left');
+        $this->db->where($where);
+        return $this->db->count_all_results(); // Produces an integer, like 17
+    }
+    
+    /**
      * get All Employee Data with all details
      *
      * @return void

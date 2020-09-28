@@ -7,9 +7,9 @@ class Divisi_model extends CI_Model {
 
     public function getAll()
     {
-        $this->db->select('master_division.*, master_employee.emp_name');
-        $this->db->from('master_division');
-        $this->db->join('master_employee', 'master_employee.nik = master_division.nik_div_head');
+        $this->db->select($this->table.'.*, master_employee.emp_name');
+        $this->db->from($this->table);
+        $this->db->join('master_employee', 'master_employee.nik = '.$this->table.'.nik_div_head');
         return $this->db->get()->result_array();
     }
 
