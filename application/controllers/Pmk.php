@@ -3,11 +3,15 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pmk extends SpecialUserAppController {
+    // page title variable
     protected $page_title = [
         'index' => 'Penilaian Masa Kontrak',
         'assessment' => 'Assessment Form'
     ];
 
+    protected $table = [
+        'contract' => 'master_employee_contract'
+    ];
     
     public function __construct()
     {
@@ -46,8 +50,8 @@ class Pmk extends SpecialUserAppController {
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
 		// $data['custom_styles'] = array();
         $data['custom_script'] = array(
-            'plugins/datatables/script_datatables'
-            // 'pmk/script_index_pmk',
+            'plugins/datatables/script_datatables',
+            'pmk/script_index_pmk'
         );
         
 		$this->load->view('main_v', $data);
@@ -78,6 +82,34 @@ class Pmk extends SpecialUserAppController {
      */
     function summary(){
         echo($this->input->get('div'));
+    }
+
+/* -------------------------------------------------------------------------- */
+/*                                AJAX FUNCTION                               */
+/* -------------------------------------------------------------------------- */
+    
+    /**
+     * refresh karyawan kontrak yang bulan -2 selesai
+     *
+     * @return void
+     */
+    function pmk_refresh() {
+        // ambil bulan setelah 2 bulan lagi
+        $date = strtotime("+2 month", time());
+        // ambil data contract terakhit dan yg setelah 2 bulan lagi selesai
+        // SELECT MAX(Price) AS LargestPrice FROM Products;
+        $data_contract = $this->db->query("SELECT nik, MAX(contract) AS contract FROM ".$this->table['contract']." GROUP BY nik ORDER BY nik")->result_array();
+        // cari yg datenya udh beberapa bulan lagi
+        $data_pmk = [];
+        // foreach($data_contract as $k => $v){
+        //     $data_pmk[$k] = $this->_general_m->getOnce('nik');
+        // }
+        // liat di
+        // WHERE date_end <= ".$date." GROUP BY nik ORDER BY nik"
+        // ambil nik dan buatkan id pmk
+        print_r($data_contract);
+        
+        // simpan data pmk di database
     }
 
 }
