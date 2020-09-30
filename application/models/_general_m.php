@@ -167,9 +167,7 @@ class _general_m extends CI_Model {
      * @return void
      */
     public function insertAll($table, $data){
-        foreach($data as $v){
-            $this->db->insert($table, $v);
-        }
+        $this->db->insert_batch($table, $data);
     }
 
     // UPDATE    

@@ -55,7 +55,7 @@
                 toastr["warning"]("This will take a few moments.", "Retrieving data...");
                 $('.overlay').fadeIn(); // hapus overlay chart
 
-                ajax_start_time = new Date().getTime();
+                ajax_start_time = new Date().getTime(); // ajax stopwatch
             },
             complete: (data, jqXHR) => { // run function when ajax complete
                 table.columns.adjust();
