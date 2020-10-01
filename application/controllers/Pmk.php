@@ -12,6 +12,7 @@ class Pmk extends SpecialUserAppController {
     protected $table = [
         'contract' => 'master_employee_contract',
         'form'     => 'pmk_form',
+        'position' => 'master_position',
         'status'   => 'pmk_status'
     ];
     
@@ -19,7 +20,7 @@ class Pmk extends SpecialUserAppController {
     {
         parent::__construct();
         // load models
-        $this->load->model(['divisi_model', 'employee_m']);
+        $this->load->model(['divisi_model', 'employee_m', 'posisi_m', 'pmk_m']);
     }
     
 
@@ -40,6 +41,7 @@ class Pmk extends SpecialUserAppController {
             $data_divisi[$k]['emp_total'] = $this->employee_m->count_where(['div_id' => $v['id']]);
         }
 
+        $data['pmk_status'] = $this->pmk_m->getAll_pmkStatus(); // get semua status info
         $data['divisi'] = $data_divisi;
         $data['userApp_admin'] = $this->userApp_admin; // flag apa dia admin atau bukan
 
@@ -107,11 +109,9 @@ class Pmk extends SpecialUserAppController {
         $data_pmk = []; $x = 0; $counter_pmk = 0; $counter_new = 0;
         foreach($data_contract as $k => $v){
             // cek apa data sudah ada di ptk_form
-            $vya = $this->_general_m->getRow($this->table['form'], array('nik' => $v['nik'], 'contract' => $v['contract']));
+            $vya = $this->pmk_m->getRow_form($v['nik'], $v['contract']);
             // cek apa kontraknya mau habis dalam 2 bulan
             $result = $this->_general_m->getOnce('nik, contract', $this->table['contract'], "nik = '".$v['nik']."' AND contract = '".$v['contract']."' AND date_end <= ".$date);
-            if($result)
-
             // cek apa ada pada 2 bulan ke depan dengan kontrak terakhir
             if(!empty($result)){
                 $counter_pmk++; // counter data yg abis di 2 bulan ke depan
@@ -165,6 +165,38 @@ class Pmk extends SpecialUserAppController {
             'counter_new' => $counter_new
         ]));
         // simpan data pmk di database
+    }
+    
+    /**
+     * get list of assesment
+     *
+     * @return void
+     */
+    function ajax_getList() {
+        // ambil data posisi
+        $position_my = $this->posisi_m->getMyPosition();
+
+        // cek apa dia admin, superadmin, hc divhead, atau CEO
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
+            // ambil semua data form
+            $data_pmk = $this->pmk_m->getAll();
+        } elseif($position_my['hirarki_org'] == "N"){
+            // ambil data form di divisi dia aja
+            $data_emp = $this->employee_m->getAllEmp_where($this->table['position'].".div_id = ".$position_my['div_id']);
+            $data_pmk = array(); $x = 0; // siapkan variabel
+            foreach($data_emp as $v){
+                // $result = 
+            }
+            print_r($data_emp);
+        } elseif($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
+            // ambil data di divisi dan departemen dia
+        } else {
+            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            exit;
+        }
+
+        // print_r($data_pmk);
+        
     }
 
 /* -------------------------------------------------------------------------- */

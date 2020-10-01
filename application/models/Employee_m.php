@@ -41,6 +41,22 @@ class Employee_m extends CI_Model {
         
         return $this->db->get()->result_array();
     }
+
+    /**
+     * get All Employee Data with all details PLUS WHERE
+     *
+     * @return void
+     */
+    public function getAllEmp_where($where)
+    {
+        $this->db->select($this->table['employee'].'.nik as id_emp, '.$this->table['employee'].'.emp_name,nik, '.$this->table['position'].'.hirarki_org, position_id, '.$this->table['position'].'.div_id , '.$this->table['position'].'.dept_id, '.$this->table['position'].'.id, position_name, '.$this->table['division'].'.id, division, '.$this->table['department'].'.id, nama_departemen');
+        $this->db->join($this->table['division'], $this->table['division'].'.id = '.$this->table['position'].'.div_id');
+        $this->db->join($this->table['department'], $this->table['department'].'.id = '.$this->table['position'].'.dept_id');
+        $this->db->join($this->table['employee'], $this->table['employee'].'.position_id = '.$this->table['position'].'.id');
+        $this->db->order_by('id_emp', 'asc');
+        
+        return $this->db->get_where($this->table['position'], $where)->result_array();
+    }
     
     /**
      * get dept id and div id from nik
