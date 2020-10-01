@@ -19,11 +19,9 @@ class Pmk extends SpecialUserAppController {
     public function __construct()
     {
         parent::__construct();
-        // PRODUCTION not available
-        redirect('maintenance');
 
         // load models
-        $this->load->model(['divisi_model', 'employee_m', 'posisi_m', 'pmk_m']);
+        $this->load->model(['divisi_model', 'dept_model', 'employee_m', 'posisi_m', 'pmk_m']);
     }
     
 
@@ -66,6 +64,9 @@ class Pmk extends SpecialUserAppController {
     }
 
     public function assessment(){
+        $data['data_assess'] = array($this->input->get('nik'), $this->input->get('contract')); // ambil data nik dan contract di get dari url
+        $data['pertanyaan'] = $this->pmk_m->getAll_pertanyaan();
+
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
@@ -74,10 +75,10 @@ class Pmk extends SpecialUserAppController {
 		$data['load_view'] = 'pmk/assessment_pmk_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
-		$data['custom_styles'] = array('pmk_styles', 'survey_styles');
+		$data['custom_styles'] = array('pmk_styles');
         $data['custom_script'] = array(
-            'plugins/datatables/script_datatables'
-            // 'pmk/script_index_pmk',
+            'plugins/datatables/script_datatables',
+            'pmk/script_assessment_pmk',
         );
         
 		$this->load->view('main_v', $data);
@@ -188,18 +189,55 @@ class Pmk extends SpecialUserAppController {
             $data_emp = $this->employee_m->getAllEmp_where($this->table['position'].".div_id = ".$position_my['div_id']);
             $data_pmk = array(); $x = 0; // siapkan variabel
             foreach($data_emp as $v){
-                // $result = 
+                $result = $this->pmk_m->getOnceWhere_form(array('nik' => $v['id_emp']));
+                if(!empty($result)){
+                    foreach($result as $value){
+                        $data_pmk[$x] = $value;
+                        $x++;
+                    }
+                }
             }
-            print_r($data_emp);
         } elseif($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
+            // ambil data form di divisi dan departemen dia
+            $data_emp = $this->employee_m->getAllEmp_where($this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']);
+            $data_pmk = array(); $x = 0; // siapkan variabel
+            foreach($data_emp as $v){
+                $result = $this->pmk_m->getOnceWhere_form(array('nik' => $v['id_emp']));
+                if(!empty($result)){
+                    foreach($result as $value){
+                        $data_pmk[$x] = $value;
+                        $x++;
+                    }
+                }
+            }
             // ambil data di divisi dan departemen dia
         } else {
             show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
             exit;
         }
 
-        // print_r($data_pmk);
-        
+        // lengkapi data pmk
+        $dataPmk = array(); $x = 0;
+        foreach($data_pmk as $k => $v){
+            $data_pos = $this->employee_m->getDetails_employee($v['nik']);
+            $divisi = $this->divisi_model->getOnceWhere(array('id' => $data_pos['div_id']));
+            $department = $this->dept_model->getDetailById($data_pos['dept_id']);
+            $employee = $this->employee_m->getDetails_employee($v['nik']);
+            $status = $this->pmk_m->getOnceWhere_status(array('id_status' => $v['status_now_id']));
+
+            $dataPmk[$x]['nik']        = $v['nik'];
+            $dataPmk[$x]['divisi']     = $divisi['division'];
+            $dataPmk[$x]['department'] = $department['nama_departemen'];
+            $dataPmk[$x]['position']   = $data_pos['position_name'];
+            $dataPmk[$x]['emp_name']   = $employee['emp_name'];
+            $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => json_encode(array('nik' => $v['nik'], 'contract' => $v['contract']))));
+            $dataPmk[$x]['action']     = json_encode(array('nik' => $v['nik'], 'contract' => $v['contract']));
+            $x++;
+        }
+
+        echo(json_encode([
+            'data' => $dataPmk
+        ]));
     }
 
 /* -------------------------------------------------------------------------- */

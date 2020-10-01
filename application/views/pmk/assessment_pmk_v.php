@@ -53,6 +53,8 @@
     </div>
 </div>
 
+<?php $x = 1; // buat penomoran soal ?>
+
 <form action="<?= base_url('pmk/saveAssessment'); ?>" method="post">
     <div class="row">
         <div class="col">
@@ -64,29 +66,35 @@
                 </div>
                 <div class="card-body">
                     <!-- kompetensi dasar -->
-                    <div class="row row-survey row-survey-striped justify-content-center pr-2 py-2 d-flex">
-                        <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"></div>
-                        <div class="col-5 departemen-name d-flex align-items-center m-0 py-0 pl-0 pr-5 justify-content-center"><div class="text-center">Kompetensi</div></div>
-                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="py-2 badge badge-survey-tag badge-danger">0</span></p></div>
-                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="py-2 badge badge-survey-tag badge-danger">1</span></p></div>
-                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="py-2 badge badge-survey-tag badge-warning">2</span></p></div>
-                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="py-2 badge badge-survey-tag badge-warning">3</span></p></div>
-                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="py-2 badge badge-survey-tag badge-info">4</span></p></div>
-                        <div class="align-self-center col-1 text-center"><p class="card-text text-center"><span class="py-2 badge badge-survey-tag badge-success">5</span></p></div>
+                    <div class="row">
+                        <div class="col-6"><p class="m-0 font-weight-bold">Kompetensi</p></div>
+                        <div class="col-1"><span class="py-2 badge badge-survey-tag w-100 badge-danger">0</span></div>
+                        <div class="col-1"><span class="py-2 badge badge-survey-tag w-100 badge-danger">1</span></div>
+                        <div class="col-1"><span class="py-2 badge badge-survey-tag w-100 badge-warning">2</span></div>
+                        <div class="col-1"><span class="py-2 badge badge-survey-tag w-100 badge-warning">3</span></div>
+                        <div class="col-1"><span class="py-2 badge badge-survey-tag w-100 badge-info">4</span></div>
+                        <div class="col-1"><span class="py-2 badge badge-survey-tag w-100 badge-success">5</span></div>
                     </div>
+                    <?php foreach($pertanyaan as $v): ?>
+                        <?php if($v['id_pertanyaan_tipe'] == "A1"): ?>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div>
+                                        <p class="m-0 font-weight-bold"><?= $v['pertanyaan_judul']; ?></p>
+                                        <p class="m-0"><?= $v['pertanyaan']; ?></p>
+                                    </div>
+                                </div>
+                                <div class="col-1"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="0" required></div></div>
+                                <div class="col-1"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="1" required></div></div>
+                                <div class="col-1"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="2" required></div></div>
+                                <div class="col-1"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="3" required></div></div>
+                                <div class="col-1"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="4" required></div></div>
+                                <div class="col-1"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="5" required></div></div>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach;?>
 
-                    <div class="row row-survey pr-2 py-2">
-                        <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center">
-                            <p class="p-0 m-0">1</p>
-                        </div>
-                        <div class="col-5 departemen-name d-flex align-items-center px-0">sdfdsfds</div>
-                        <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="0" required></div></div>
-                        <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="1" required></div></div>
-                        <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="2" required></div></div>
-                        <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="3" required></div></div>
-                        <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="4" required></div></div>
-                        <div class="col-1 departemen-nilai d-flex align-items-center m-0 p-0 justify-content-center"><div class="form-check d-flex align-items-center justify-content-center m-0 p-0"><input class="form-check-input m-0 p-0" type="radio" name="name" value="5" required></div></div>
-                    </div>
+                    
                     <!-- /kompetensi dasar -->
 
                     <hr/>

@@ -5,7 +5,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Pmk_m extends CI_Model {
     protected $table = [
         "main" => "pmk_form",
-        "status" => "pmk_status"
+        "status" => "pmk_status",
+        "pertanyaan" => "pmk_survey_pertanyaan"
     ];
     
     /**
@@ -15,6 +16,10 @@ class Pmk_m extends CI_Model {
      */
     function getAll(){
         return $this->db->get($this->table['main'])->result_array();
+    }
+
+    function getAll_pertanyaan(){
+        return $this->db->get($this->table['pertanyaan'])->result_array();
     }
     
     /**
@@ -114,7 +119,37 @@ class Pmk_m extends CI_Model {
             'id_time'   => $id_time
         ))->row_array()['status_now'];
     }
-        
+
+    /**
+     * ambil semua data form dengan where
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getAllWhere_form($where){
+        return $this->db->get_where($this->table['main'], $where)->result_array();
+    }
+    
+    /**
+     * ambil satu data form dengan where
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getOnceWhere_form($where){
+        return $this->db->get_where($this->table['main'], $where)->row_array();
+    }
+    
+    /**
+     * getOnceWhere_status
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getOnceWhere_status($where){        
+        return $this->db->get_where($this->table['status'], $where)->row_array();
+    }
+
     /**
      * getRow_form
      *

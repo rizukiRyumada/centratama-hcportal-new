@@ -127,7 +127,7 @@
                                 </div>
                             </div>
                         </div>
-                        <table id="mainTable" class="table table-striped">
+                        <table id="table_indexPMK" class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>NIK</th>
@@ -139,27 +139,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>CG000000</td>
-                                    <td>HC</td>
-                                    <td>HC</td>
-                                    <td>HCIS Specialist</td>
-                                    <td>Wahyudi</td>
-                                    <td><div class="row h-100">
-                                        <div class="col align-self-center text-center">
-                                            <span class="badge badge-danger w-100">Draft</span>
-                                        </div>
-                                    </div></td>
-                                    <td>
-                                        <div class="row h-100">
-                                            <div class="col align-self-center text-center">
-                                                <a href="<?= base_url('pmk/assessment'); ?>" class="btn btn-primary w-100"><i class="fas fa-pencil-alt"></i></a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div> <!-- /Tabel assessment -->
 
