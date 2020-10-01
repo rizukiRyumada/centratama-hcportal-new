@@ -63,6 +63,9 @@ class Ptk extends SpecialUserAppController {
     
     public function __construct() {
         parent::__construct();
+
+        // PRODUCTION not available
+        redirect('maintenance');
         
         // load models
         $this->load->model(['entity_m', 'divisi_model', 'dept_model', 'employee_m', 'posisi_m', 'ptk_m']);

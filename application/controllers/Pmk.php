@@ -19,6 +19,9 @@ class Pmk extends SpecialUserAppController {
     public function __construct()
     {
         parent::__construct();
+        // PRODUCTION not available
+        redirect('maintenance');
+
         // load models
         $this->load->model(['divisi_model', 'employee_m', 'posisi_m', 'pmk_m']);
     }
