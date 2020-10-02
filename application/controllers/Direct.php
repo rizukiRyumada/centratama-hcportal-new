@@ -56,6 +56,13 @@ class Direct extends CI_Controller {
         // arahkan ke halaman login
         header('location: '. base_url('login'));
     }
+
+    function survey(){
+        // set session redirect url code
+        $this->session->set_userdata('redirect', 'survey');
+        // arahkan ke halaman login
+        header('location: '. base_url('login'));
+    }
 }
 
 /* End of file Direct.php */

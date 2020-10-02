@@ -55,3 +55,4 @@ $route['translate_uri_dashes'] = FALSE;
 
 // custim route
 $route['healthreport'] = 'direct/checkhealth';
+$route['cisurvey'] = 'direct/survey';
