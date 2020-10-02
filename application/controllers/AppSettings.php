@@ -154,9 +154,21 @@ class AppSettings extends SuperAdminController {
                 $this->_archives_m->insertAll($this->table_survey['exc'], $vya);
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['exc']);
+                // beri nama pada tiap periode
+                if($yearQuarter_now == 1){
+                    $period_text = "Q1";
+                } elseif($yearQuarter_now == 2){
+                    $period_text = "H1";
+                } elseif($yearQuarter_now == 3){
+                    $period_text = "Q3";
+                } elseif($yearQuarter_now == 4){
+                    $period_text = "FY";
+                } else {
+                    show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+                }
                 // update judul survey
                 $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 0, array(
-                    'judul' => 'Service Excellence Survey [Periode '.$yearQuarter_now.' - '.$year_now.']'
+                    'judul' => 'Service Excellence Survey [Periode '.$period_text.' - '.$year_now.']'
                 ));
 
                 echo(1); // tanda sukses
@@ -206,9 +218,17 @@ class AppSettings extends SuperAdminController {
                 $this->_archives_m->insertAll($this->table_survey['eng'], $vya);
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['eng']);
+                // beri nama pada tiap periode
+                if($period_now == 1){
+                    $period_text = "H1";
+                } elseif($period_now == 2){
+                    $period_text = "FY";
+                } else {
+                    show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+                }
                 // ubah judul survey
                 $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 1, array(
-                    'judul' => 'Employee Engagement Survey [Periode '.$period_now.' - '.$year_now.']'
+                    'judul' => 'Employee Engagement Survey [Periode '.$period_text.' - '.$year_now.']'
                 ));
 
                 echo(1); // tanda sukses
@@ -261,9 +281,17 @@ class AppSettings extends SuperAdminController {
                 $this->_archives_m->insertAll($this->table_survey['360'], $vya);
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['360']);
+                // beri nama pada tiap periode
+                if($period_now == 1){
+                    $period_text = "H1";
+                } elseif($period_now == 2){
+                    $period_text = "FY";
+                } else {
+                    show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+                }
                 // ubah judul survey
                 $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 2, array(
-                    'judul' => '360° Feedback [Periode '.$period_now.' - '.$year_now.']'
+                    'judul' => '360° Feedback [Periode '.$period_text.' - '.$year_now.']'
                 ));
 
                 echo(1); // tanda sukses
