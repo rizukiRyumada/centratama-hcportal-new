@@ -92,13 +92,19 @@ class Employee_m extends CI_Model {
      * @return void
      */
     function getDetails_employee($nik){
-        $this->db->select('nik, emp_name, position_name, id_entity, role_id, akses_surat_id, dept_id, div_id, email');
+        // load models
+        $this->load->model(['divisi_model', 'dept_model']);
+
+        $this->db->select('nik, emp_name, position_name, id_entity, role_id, akses_surat_id, dept_id, div_id, email, hirarki_org');
         $this->db->join(
             $this->table['position'], 
             $this->table['employee'].'.position_id='.$this->table['position'].'.id', 
             'left'
         );
-        return $this->db->get_where($this->table['employee'], array('nik' => $nik))->row_array();
+        $result = $this->db->get_where($this->table['employee'], array('nik' => $nik))->row_array();
+        $result['divisi'] = $this->divisi_model->getDetailById($result['div_id'])['division'];
+        $result['departemen'] = $this->dept_model->getDetailById($result['dept_id'])['nama_departemen'];
+        return $result;
     }
     
     /**

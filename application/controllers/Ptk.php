@@ -467,7 +467,6 @@ class Ptk extends SpecialUserAppController {
         // cek otoritas apa divisi id dan dept idnya sama antara my position dengan id posisi yang dituju
     }
 
-    // NOW tampilan all data, tampilkan semua data form olah dalam bentuk satu table memanjang
     function exportHistory(){
         if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
             // allow access
@@ -566,7 +565,6 @@ class Ptk extends SpecialUserAppController {
      *
      * @return void
      */
-    // NOW
     public function saveForm_post($status_now, $status_data) {
         //timestamp id
         $data['id_time'] = time();

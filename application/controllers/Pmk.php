@@ -64,8 +64,10 @@ class Pmk extends SpecialUserAppController {
     }
 
     public function assessment(){
+        // assessment data
         $data['data_assess'] = array($this->input->get('nik'), $this->input->get('contract')); // ambil data nik dan contract di get dari url
         $data['pertanyaan'] = $this->pmk_m->getAll_pertanyaan();
+        $data['employee'] = $this->employee_m->getDetails_employee($this->input->get('nik'));
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
@@ -256,6 +258,15 @@ class Pmk extends SpecialUserAppController {
             show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
             exit;
         }
+    }
+    
+    /**
+     * save assessment survey data to database
+     *
+     * @return void
+     */
+    function saveAssessment(){
+        print_r($_POST);
     }
 
 }
