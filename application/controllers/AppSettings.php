@@ -1,6 +1,4 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-// TODO ubah nama periode setelah diarchives
-// TODO buat database master job_level
 
 class AppSettings extends SuperAdminController {
 
@@ -119,19 +117,48 @@ class AppSettings extends SuperAdminController {
         $month = date("n", time());
         //Divide that month number by 3 and round up using ceil.
         $yearQuarter = ceil($month / 3);
-        $yearQuarter_now = $yearQuarter;
-        $year_now = date('o', time());
-        if($yearQuarter > 1){ // buat nandain periode sebelumnya
-            $yearQuarter = $yearQuarter - 1;
-            $year = date('o', time());
-        } elseif($yearQuarter == 1){ // jika di periode pertama
-            $yearQuarter = 4;
-            $year = date('o', strtotime("-1 year", time()));
+        // $yearQuarter_now = $yearQuarter;
+        if($yearQuarter == 4 || $yearQuarter == 3){
+            // tentukan periode buat archive dan last
+            if($yearQuarter == 4){
+                $yearQuarter_last = 3; // periode terakhir dari sistem
+                $period_text = "Q3"; // nama periode
+                $yearQuarter_archive = 2; // periode archive dari sistem
+            } elseif($yearQuarter == 3){
+                $yearQuarter_last = 2; // periode terakhir dari sistem
+                $period_text = "H1"; // nama periode
+                $yearQuarter_archive = 1; // periode archive dari sistem
+            } else {
+                show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+                exit;
+            }
+            $year_archive = date('o', time()); // tentukan tahun archive
+            $year_last = $year_archive; // tentukan tahun last quartal
+        } elseif($yearQuarter == 2 || $yearQuarter == 1){
+            if($yearQuarter == 2){
+                $yearQuarter_last = 1; // periode terakhir dari sistem
+                $period_text = "Q1"; // nama periode
+                $yearQuarter_archive = 4; // periode archive dari sistem
+                $year_last = date('o', time()); // tentukan tahun last quartal
+            } elseif($yearQuarter == 1){
+                $yearQuarter_last = 4; // periode terakhir dari sistem
+                $period_text = "FY"; // nama periode
+                $yearQuarter_archive = 3; // periode archive dari sistem
+                $year_last = date('o', strtotime("-1 year", time())); // tentukan tahun last quartal
+            } else {
+                show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+                exit;
+            }
+            $year_archive = date('o', strtotime("-1 year", time())); // tahun archive
+        } else {
+            show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+            exit;
         }
+
         // cek di archives apakah ada data di periode dan tahun ini
         $is_exist = $this->_archives_m->getRow($this->table_survey['exc'], [
-            'tahun' => $year,
-            'periode' => $yearQuarter
+            'tahun' => $year_archive,
+            'periode' => $yearQuarter_archive
         ]);
         // cek jika datanya ada apa engga
         if($is_exist < 1){
@@ -141,8 +168,8 @@ class AppSettings extends SuperAdminController {
             if(!empty($vya)){
                 // lengkapi data
                 foreach($vya as $k => $v){
-                    $vya[$k]['tahun'] = $year;
-                    $vya[$k]['periode'] = $yearQuarter;
+                    $vya[$k]['tahun'] = $year_archive;
+                    $vya[$k]['periode'] = $yearQuarter_archive;
                     $vya[$k]['id_departemen_dinilai'] = $v['id_departemen'];
                     $vya[$k]['departemen_dinilai'] = $this->_general_m->getOnce('nama', $this->table_survey['exc_dept'], array('id' => $v['id_departemen']))['nama'];
                     $vya[$k]['departemen_penilai'] = $v['departemen'];
@@ -154,21 +181,9 @@ class AppSettings extends SuperAdminController {
                 $this->_archives_m->insertAll($this->table_survey['exc'], $vya);
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['exc']);
-                // beri nama pada tiap periode
-                if($yearQuarter_now == 1){
-                    $period_text = "Q1";
-                } elseif($yearQuarter_now == 2){
-                    $period_text = "H1";
-                } elseif($yearQuarter_now == 3){
-                    $period_text = "Q3";
-                } elseif($yearQuarter_now == 4){
-                    $period_text = "FY";
-                } else {
-                    show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
-                }
                 // update judul survey
                 $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 0, array(
-                    'judul' => 'Service Excellence Survey [Periode '.$period_text.' - '.$year_now.']'
+                    'judul' => 'Service Excellence Survey [Periode '.$period_text.' - '.$year_last.']'
                 ));
 
                 echo(1); // tanda sukses
@@ -187,20 +202,32 @@ class AppSettings extends SuperAdminController {
         //Get the month number of the date
         $month = date("n", time());
         //Divide that month number by 3 and round up using ceil.
-        $period = ceil($month / 6);
-        $period_now = $period;
-        $year_now = date('o', time());
-        if($period > 1){ // buat nandain periode sebelumnya
-            $period = $period - 1;
-            $year = date('o', time());
-        } else { // jika di periode pertama
-            $period = 2;
-            $year = date('o', strtotime("-1 year", time()));
+        $period_now = ceil($month / 6);
+        if($period_now ==  1){ // buat nandain periode sebelumnya
+            // tentukan period
+            $period_last = 2; // periode terakhir dari sistem
+            $period_text = "FY"; // nama periode
+            $period_archive = 1; // periode archive dari sistem
+            // tentukan tahunnya
+            $year_last = date('o', strtotime("-1 year", time())); // tahun terakhir dari sistem
+            $year_archive = $year_last; // tahun archive buat sistem
+        } elseif($period_now == 2) { // jika di periode pertama
+            // tentukan period
+            $period_last = 1; // periode terakhir dari sistem
+            $period_text = "H1"; // nama periode
+            $period_archive = 2; // periode archive dari sistem
+            // tentukan tahunnya
+            $year_last = date('o', time()); // tahun terakhir dari sistem
+            $year_archive = date('o', strtotime("-1 year", time())); // tahun archive buat sistem
+        } else {
+            show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+            exit;
         }
+
         // cek di archives apakah ada data di periode dan tahun ini
         $is_exist = $this->_archives_m->getRow($this->table_survey['eng'], [
-            'tahun' => $year,
-            'periode' => $period
+            'tahun' => $year_archive,
+            'periode' => $period_archive
         ]);
         // cek jika datanya ada apa engga
         if($is_exist < 1){
@@ -210,25 +237,17 @@ class AppSettings extends SuperAdminController {
             if(!empty($vya)){
                 // lengkapi data
                 foreach($vya as $k => $v){
-                    $vya[$k]['tahun'] = $year;
-                    $vya[$k]['periode'] = $period;
+                    $vya[$k]['tahun'] = $year_archive;
+                    $vya[$k]['periode'] = $period_archive;
                     $vya[$k]['pertanyaan'] = $this->_general_m->getOnce('pertanyaan', $this->table_survey['eng_pertanyaan'], array('id' => $v['id_pertanyaan']))['pertanyaan'];
                 }
                 // masukkan ke database archives
                 $this->_archives_m->insertAll($this->table_survey['eng'], $vya);
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['eng']);
-                // beri nama pada tiap periode
-                if($period_now == 1){
-                    $period_text = "H1";
-                } elseif($period_now == 2){
-                    $period_text = "FY";
-                } else {
-                    show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
-                }
                 // ubah judul survey
                 $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 1, array(
-                    'judul' => 'Employee Engagement Survey [Periode '.$period_text.' - '.$year_now.']'
+                    'judul' => 'Employee Engagement Survey [Periode '.$period_text.' - '.$year_last.']'
                 ));
 
                 echo(1); // tanda sukses
@@ -247,20 +266,31 @@ class AppSettings extends SuperAdminController {
         //Get the month number of the date
         $month = date("n", time());
         //Divide that month number by 3 and round up using ceil.
-        $period = ceil($month / 6);
-        $period_now = $period;
-        $year_now = date('o', time());
-        if($period > 1){ // buat nandain periode sebelumnya
-            $period = $period - 1;
-            $year = date('o', time());
+        $period_now = ceil($month / 6);
+        if($period_now ==  1){ // buat nandain periode sebelumnya
+            // tentukan period
+            $period_last = 2; // periode terakhir dari sistem
+            $period_text = "FY"; // nama periode
+            $period_archive = 1; // periode archive dari sistem
+            // tentukan tahunnya
+            $year_last = date('o', strtotime("-1 year", time())); // tahun terakhir dari sistem
+            $year_archive = $year_last; // tahun archive buat sistem
+        } elseif($period_now == 2) { // jika di periode pertama
+            // tentukan period
+            $period_last = 1; // periode terakhir dari sistem
+            $period_text = "H1"; // nama periode
+            $period_archive = 2; // periode archive dari sistem
+            // tentukan tahunnya
+            $year_last = date('o', time()); // tahun terakhir dari sistem
+            $year_archive = date('o', strtotime("-1 year", time())); // tahun archive buat sistem
         } else {
-            $period = 2;
-            $year = date('o', strtotime("-1 year", time()));
+            show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+            exit;
         }
         // cek di archives apakah ada data di periode dan tahun ini
         $is_exist = $this->_archives_m->getRow($this->table_survey['360'], [
-            'tahun' => $year,
-            'periode' => $period
+            'tahun' => $year_archive,
+            'periode' => $period_archive
         ]);
         // cek jika datanya ada apa engga
         if($is_exist < 1){
@@ -270,8 +300,8 @@ class AppSettings extends SuperAdminController {
             if(!empty($vya)){
                 // lengkapi data
                 foreach($vya as $k => $v){
-                    $vya[$k]['tahun'] = $year;
-                    $vya[$k]['periode'] = $period;
+                    $vya[$k]['tahun'] = $year_archive;
+                    $vya[$k]['periode'] = $period_archive;
                     $pertanyaan = $this->_general_m->getOnce('id_kategori_pertanyaan, pertanyaan', $this->table_survey['360_pertanyaan'], array('id' => $v['id_pertanyaan']));
                     $vya[$k]['pertanyaan'] = $pertanyaan['pertanyaan'];
                     $vya[$k]['id_kategori_pertanyaan'] = $pertanyaan['id_kategori_pertanyaan'];
@@ -281,17 +311,9 @@ class AppSettings extends SuperAdminController {
                 $this->_archives_m->insertAll($this->table_survey['360'], $vya);
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['360']);
-                // beri nama pada tiap periode
-                if($period_now == 1){
-                    $period_text = "H1";
-                } elseif($period_now == 2){
-                    $period_text = "FY";
-                } else {
-                    show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
-                }
                 // ubah judul survey
                 $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 2, array(
-                    'judul' => '360° Feedback [Periode '.$period_text.' - '.$year_now.']'
+                    'judul' => '360° Feedback [Periode '.$period_text.' - '.$year_last.']'
                 ));
 
                 echo(1); // tanda sukses
@@ -315,31 +337,76 @@ class AppSettings extends SuperAdminController {
         //Get the month number of the date
         $month = date("n", time());
         //Divide that month number by 3 and round up using ceil.
-        $period = ceil($month / 6);
+        $period_now = ceil($month / 6);
         $yearQuarter = ceil($month / 3);
-        if($period > 1){ // buat nandain periode sebelumnya
-            $period = $period - 1;
-            $yearQuarter = $yearQuarter - 1;
-            $year = date('o', time());
-        } else { // jika di periode pertama
-            $period = 2;
-            $yearQuarter = 4;
-            $year = date('o', strtotime("-1 year", time()));
+
+        if($yearQuarter == 4 || $yearQuarter == 3){
+            // tentukan periode buat archive dan last
+            if($yearQuarter == 4){
+                $yearQuarter_last = 3; // periode terakhir dari sistem
+                $yearQuarter_archive = 2; // periode archive dari sistem
+            } elseif($yearQuarter == 3){
+                $yearQuarter_last = 2; // periode terakhir dari sistem
+                $yearQuarter_archive = 1; // periode archive dari sistem
+            } else {
+                show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+                exit;
+            }
+            $year_archive_exc = date('o', time()); // tentukan tahun archive
+            $year_last_exc = $year_archive_exc; // tentukan tahun last quartal
+        } elseif($yearQuarter == 2 || $yearQuarter == 1){
+            if($yearQuarter == 2){
+                $yearQuarter_last = 1; // periode terakhir dari sistem
+                $yearQuarter_archive = 4; // periode archive dari sistem
+                $year_last_exc = date('o', time()); // tentukan tahun last quartal
+            } elseif($yearQuarter == 1){
+                $yearQuarter_last = 4; // periode terakhir dari sistem
+                $yearQuarter_archive = 3; // periode archive dari sistem
+                $year_last_exc = date('o', strtotime("-1 year", time())); // tentukan tahun last quartal
+            } else {
+                show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+                exit;
+            }
+            $year_archive_exc = date('o', strtotime("-1 year", time())); // tahun archive
+        } else {
+            show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+            exit;
         }
+
+        // untuk survey engagement dan f360
+        if($period_now ==  1){ // buat nandain periode sebelumnya
+            // tentukan period
+            $period_last = 2; // periode terakhir dari sistem
+            $period_archive = 1; // periode archive dari sistem
+            // tentukan tahunnya
+            $year_last = date('o', strtotime("-1 year", time())); // tahun terakhir dari sistem
+            $year_archive = $year_last; // tahun archive buat sistem
+        } elseif($period_now == 2) { // jika di periode pertama
+            // tentukan period
+            $period_last = 1; // periode terakhir dari sistem
+            $period_archive = 2; // periode archive dari sistem
+            // tentukan tahunnya
+            $year_last = date('o', time()); // tahun terakhir dari sistem
+            $year_archive = date('o', strtotime("-1 year", time())); // tahun archive buat sistem
+        } else {
+            show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
+            exit;
+        }
+
         // cek di archives apakah ada data di periode dan tahun ini
         $isExist_eng = $this->_archives_m->getRow($this->table_survey['eng'], [
-            'tahun' => $year,
-            'periode' => $period
+            'tahun' => $year_archive,
+            'periode' => $period_archive
         ]);
         // cek di archives apakah ada data di periode dan tahun ini
         $isExist_360 = $this->_archives_m->getRow($this->table_survey['360'], [
-            'tahun' => $year,
-            'periode' => $period
+            'tahun' => $year_archive,
+            'periode' => $period_archive
         ]);
         // cek di archives apakah ada data di periode dan tahun ini
         $isExist_exc = $this->_archives_m->getRow($this->table_survey['exc'], [
-            'tahun' => $year,
-            'periode' => $yearQuarter
+            'tahun' => $year_archive_exc,
+            'periode' => $yearQuarter_archive
         ]);
 
         // cek jika data eng ada di archives

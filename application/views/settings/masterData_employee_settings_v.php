@@ -160,7 +160,7 @@
                     </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-secondary">Add Employe</button>
+                <button id="submitEmployee" type="submit" class="btn btn-secondary">Add Employe</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </form>
             </div>

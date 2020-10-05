@@ -414,6 +414,19 @@
         }
     });
 
+    // submit swal loading for add employee
+    $("#submitEmployee").on('click', () => {
+        Swal.fire({
+            icon: 'info',
+            title: 'Please Wait',
+            html: '<p>'+"Please don't close this tab and the browser, the employee data is being added to the system."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false
+        });
+    });
+
     //validator input typeit
     input_typeit.on('keyup', function(){
         // validate input type it first
