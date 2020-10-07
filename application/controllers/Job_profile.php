@@ -13,10 +13,41 @@ class Job_profile extends MainController {
             'posisi_m'
         ]);
 
+        $this->checkToken(); // cek token
         // load helper
         $this->load->helper('email');
         // $this->load->helper('encryption');
         $this->load->helper('random_string');
+    }
+
+    public function checkToken() {
+        // Token Checker
+        if(!empty($this->session->userdata('token'))){
+            // cek data token
+            if(!empty($data = $this->Jobpro_model->getDetail('data', 'user_token', array('token' => $this->session->userdata('token')))['data'])){
+                $data = json_decode($data, true);
+    
+                if($this->session->userdata('position_id') == $data['id_posisi']){
+                    // hapus token dari database
+                    $this->Jobpro_model->delete('user_token', array('index' => 'token', 'data' => $this->session->userdata('token')));
+    
+                    $this->session->set_userdata('msg', array(
+                        'icon' => 'warning',
+                        'msg' => $data['msg']
+                    ));
+                } else {
+                    // set toastr notification
+                    $this->session->set_userdata('msg', array(
+                        'icon' => 'error',
+                        'title' => 'Error',
+                        'msg' => 'The link token is not yours!'
+                    ));
+                }
+            }
+
+            // hapus session token
+            $this->session->unset_userdata('token');            
+        }
     }
 
 /* -------------------------------------------------------------------------- */
@@ -743,6 +774,15 @@ class Job_profile extends MainController {
      * @return void
      */
     public function notifikasi($nik, $job_profile, $data_penerima_email, $subject_email){
+        // CG000001
+        // Array ( [id_posisi] => 1 [position_name] => Chief Executive Officer [status] => 0 )
+        // Array ( [nama] =>
+
+        //     - Yan Raymond Jafri
+
+        // [email] => Array ( [0] => yan.raymond@centratamagroup.com ) [email_cc] => [id_posisi] => 1 [msg] => Please fill your Job Profile and submit it! )
+        // [Job Profile] Create Job Profile
+
         if($job_profile['status'] != 4){ // cek jika status approval bukan final
             /* ------------------- create webtoken buat penerima email ------------------ */
             $resep = array( // buat resep token agar unik
