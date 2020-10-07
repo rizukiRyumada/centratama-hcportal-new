@@ -59,6 +59,21 @@ class Employee_m extends CI_Model {
     }
     
     /**
+     * get approver 1 or 2 nik with my nik
+     *
+     * @param  mixed $nik
+     * @param  mixed $approver1or2
+     * @return void
+     */
+    function getApprover_nik($nik, $approver1or2 = 1){
+        $id_pos = $this->db->select('position_id')->get_where($this->table['employee'], array('nik' => $nik))->row_array()['position_id'];
+
+        $approver = $this->db->select('id_approver'.$approver1or2)->get_where($this->table['position'], array('id' => $id_pos))->row_array()['id_approver'.$approver1or2];
+
+        return $this->db->select('nik')->get_where($this->table['employee'], array('position_id' => $approver))->row_array()['nik'];
+    }
+    
+    /**
      * get dept id and div id from nik
      * getDeptDivFromNik
      *
@@ -95,7 +110,7 @@ class Employee_m extends CI_Model {
         // load models
         $this->load->model(['divisi_model', 'dept_model']);
 
-        $this->db->select('nik, emp_name, position_name, id_entity, role_id, akses_surat_id, dept_id, div_id, email, hirarki_org');
+        $this->db->select('nik, emp_name, position_name, position_id, id_entity, role_id, akses_surat_id, dept_id, div_id, email, hirarki_org');
         $this->db->join(
             $this->table['position'], 
             $this->table['employee'].'.position_id='.$this->table['position'].'.id', 
@@ -105,6 +120,46 @@ class Employee_m extends CI_Model {
         $result['divisi'] = $this->divisi_model->getDetailById($result['div_id'])['division'];
         $result['departemen'] = $this->dept_model->getDetailById($result['dept_id'])['nama_departemen'];
         return $result;
+    }
+    
+    /**
+     * dapatkan email approve 1 dan 2 dari karyawan hanya dengan NIK
+     *
+     * @param  mixed $nik
+     * @return void
+     */
+    function getEmail_approver12($nik){
+        $id_pos = $this->db->select('position_id')->get_where($this->table['employee'], array('nik' => $nik))->row_array()['position_id'];
+
+        $approver = $this->db->select('id_approver1, id_approver2')->get_where($this->table['position'], array('id' => $id_pos))->row_array();
+
+        $email = array(); $x = 0;
+        foreach($approver as $v){
+            $email[$x] = $this->db->select('email')->get_where($this->table['employee'], array('position_id' => $v))->row_array()['email'];
+            $x++;
+        }
+
+        return($email);
+    }
+
+    /**
+     * dapatkan email approve 1 dari karyawan hanya dengan NIK
+     *
+     * @param  mixed $nik
+     * @return void
+     */
+    function getEmail_approver1($nik){
+        $id_pos = $this->db->select('position_id')->get_where($this->table['employee'], array('nik' => $nik))->row_array()['position_id'];
+
+        $approver = $this->db->select('id_approver1')->get_where($this->table['position'], array('id' => $id_pos))->row_array();
+
+        $email = array(); $x = 0;
+        foreach($approver as $v){
+            $email[$x] = $this->db->select('email')->get_where($this->table['employee'], array('position_id' => $v))->row_array()['email'];
+            $x++;
+        }
+
+        return($email);
     }
     
     /**

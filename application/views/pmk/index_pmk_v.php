@@ -43,24 +43,37 @@
         <!-- <div class="col-md-2 d-md-inline-block d-none">
             <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
         </div> -->
-        <div class="col">
-            <div class="row">
-                <div class="col-md-4 d-md-inline-block d-none">
-                    <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
-                </div>
-                <div class="card col-md-7 col-12 align-self-center mt-3 py-2 mx-2">
-                    <dl class="row m-0">
-                        <dt class="col-10 align-self-center">End of Contract</dt>
-                        <dd id="eoc" class="col-2 align-self-center m-0 text-center"><i class="fas fa-circle-notch fa-spin text-primary"></i></dd>
-                        <dt class="col-10 align-self-center">Active</dt>
-                        <dd id="act" class="col-2 align-self-center m-0 text-center"><i class="fas fa-circle-notch fa-spin text-primary"></i></dd>
-                        <dt class="col-10 align-self-center">Completed</dt>
-                        <dd id="cpt" class="col-2 align-self-center m-0 text-center"><i class="fas fa-circle-notch fa-spin text-primary"></i></dd>
-                    </dl>
+        <div class="col-md-2 d-md-inline-block d-none">
+            <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
+        </div>
+        <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+            <div class="col-md-3 col-12 align-self-center">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <dl class="row m-0">
+                            <dt class="col-10 align-self-center">End of Contract</dt>
+                            <dd id="eoc" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                            <dt class="col-10 align-self-center">Active</dt>
+                            <dd id="act" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                            <dt class="col-10 align-self-center">Completed</dt>
+                            <dd id="cpt" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                        </dl>
+                        <div class="row mt-1">
+                            <div class="col">
+                                <button id="buttonRefreshPMK" class="btn btn-danger w-100"><i id="iconRefreshPMK" class="fa fa-sync"></i> Refresh</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
+        <?php endif; ?>
+        <div class="
+        <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+            col-md-7
+        <?php else: ?>
+            col-md-10    
+        <?php endif; ?>
+        ">
             <div class="row h-100">
                 <div class="col align-self-center">
                     <p class="text m-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, rem amet, ut quia necessitatibus vel, obcaecati maiores natus doloribus aliquid rerum voluptates saepe. Enim commodi, nesciunt laudantium deserunt veniam quod?</p>
@@ -101,23 +114,30 @@
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <!-- Tabel assessment -->
                     <div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-                        <div class="row">
-                            <div class="col-lg-4 col-sm-6">
-                                <div class="form-group">
-                                    <label for="divisi">Division:</label>
-                                    <select id="divisi" class="custom-select form-control form-control-sm">
-                                        <option value="">All</option>
-                                    </select>
+                        <div class="row justify-content-end">
+                            <?php if($position_my['hirarki_org'] == "N" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                                <div class="col-lg-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="divisi">Division:</label>
+                                        <select id="divisi" class="custom-select form-control form-control-sm">
+                                            <option value="">All</option>
+                                            <?php foreach($filter_divisi as $v): ?>
+                                                <option value="div-<?= $v['id']; ?>"><?= $v['division']; ?></option>
+                                            <?php endforeach;?>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-6">
-                                <div class="form-group">
-                                    <label for="departement">Departement:</label>
-                                    <select id="departement" class="custom-select form-control form-control-sm">
-                                        <option value="">All</option>        
-                                    </select>
+                            <?php endif; ?>
+                            <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                                <div class="col-lg-4 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="departement">Departement:</label>
+                                        <select id="departement" class="custom-select form-control form-control-sm">
+                                            <option value="">All</option>        
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php endif; ?>
                             <div class="col-lg-4 col-sm-6">
                                 <div class="form-group">
                                     <label for="status">Status:</label>

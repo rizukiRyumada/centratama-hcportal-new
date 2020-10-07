@@ -280,12 +280,12 @@ class Ptk extends SpecialUserAppController {
             if($position_my['id'] == 1 || $position_my['id'] == 196 || $this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
                 $data_ptk = $this->ptk_m->get_ptkList(array(
                     // 'type' => $getWithStatus
-                ));  
+                ));
             } elseif($position_my['hirarki_org'] == "N"){
                 $data_ptk = $this->ptk_m->get_ptkList(array(
                     // 'type' => $getWithStatus,
                     'id_div' => $deptDiv['div_id']
-                ));    
+                ));
             } elseif($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
                 $data_ptk = $this->ptk_m->get_ptkList(array(
                     // 'type' => $getWithStatus,

@@ -1,110 +1,114 @@
-<div class="row"></div>
-    <div class="col">
-        <div class="card card-outline card-danger">
-            <div class="card-body box-profile">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <i class="fa fa-user-circle fa-5x"></i>
-
-                            <!-- <img class="profile-user-img img-fluid img-circle"
-                            src="../../dist/img/user4-128x128.jpg"
-                            alt="User profile picture"> -->
-                        </div>
-                        <h3 class="profile-username text-center"><?= $employee['emp_name']; ?></h3>
-                    </div>
-                </div>
-
-                <ul class="list-group list-group-unbordered mb-3">
-                    <li class="list-group-item">
-                        <b>Hierarchy</b>
-                        <a class="float-right">
-                            <span class="badge 
-                                <?php switch ($employee['hirarki_org']){
-                                    case "N":
-                                        echo "badge-danger";
-                                        break;
-                                    case "N-1":
-                                        echo "badge-warning";
-                                        break;
-                                    case "N-2":
-                                        echo "badge-success";
-                                        break;
-                                    case "N-3":
-                                        echo "badge-info";
-                                        break;
-                                    default:
-                                        echo "badge-primary";
-                                } ?>
-                            ">
-                                <?= $employee['hirarki_org']; ?>
-                            </span>
-                        </a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Division</b> <a class="float-right"><?= $employee['divisi']; ?></a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Department</b> <a class="float-right"><?= $employee['departemen']; ?></a>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Position</b> <a class="float-right"><?= $employee['position_name']; ?></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- TODO personal Level buat ngatur Kompetensi -->
 <div class="row">
     <div class="col">
-        <div class="card card-primary">
+        <div class="card card-primary card-outline">
             <div class="card-body">
-                <p class="text">Pilihlah skala penilaian di setiap pernyataan yang paling sesuai berdasarkan pada penilaian yang telah dilakukan dengan menggunakan skala penilaian berikut:</p>
                 <div class="row">
-                    <div class="col-lg-7 col-12">
-                        <table id="tabelSkala" >
-                            <thead>
-                                <tr class="text-center">
-                                    <th class="border-right border-primary px-2">Skala</th>
-                                    <th class="border-right border-primary px-2">Keterangan</th>
-                                    <th class="px-2">Batasan Nilai Rata-rata</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-center border-right border-primary px-2"><span class="badge badge-danger">0</span></td>
-                                    <td class="border-right border-primary px-2">Tidak Mencapai/Gagal</td>
-                                    <td class="text-center px-2"><0.50</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center border-right border-primary px-2"><span class="badge badge-danger">1</span></td>
-                                    <td class="border-right border-primary px-2">Kurang Baik</td>
-                                    <td class="text-center px-2">0.50 – 1.50</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center border-right border-primary px-2"><span class="badge badge-warning">2</span></td>
-                                    <td class="border-right border-primary px-2">Cukup Baik</td>
-                                    <td class="text-center px-2">1.51 – 2.50</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center border-right border-primary px-2"><span class="badge badge-warning">3</span></td>
-                                    <td class="border-right border-primary px-2">Baik</td>
-                                    <td class="text-center px-2">2.51 – 3.50</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center border-right border-primary px-2"><span class="badge badge-info">4</span></td>
-                                    <td class="border-right border-primary px-2">Sangat baik</td>
-                                    <td class="text-center px-2">3.51 – 4.50</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center border-right border-primary px-2"><span class="badge badge-success">5</span></td>
-                                    <td class="border-right border-primary px-2">Luar Biasa</td>
-                                    <td class="text-center px-2">4.51 – 5.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="col-lg-3">
+                        <div class="card ">
+                            <div class="card-body box-profile">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="text-center">
+                                            <i class="fa fa-user-circle fa-5x"></i>
+
+                                            <!-- <img class="profile-user-img img-fluid img-circle"
+                                            src="../../dist/img/user4-128x128.jpg"
+                                            alt="User profile picture"> -->
+                                        </div>
+                                        <h3 class="profile-username text-center"><?= $employee['emp_name']; ?></h3>
+                                    </div>
+                                </div>
+
+                                <ul class="list-group list-group-unbordered mb-3">
+                                    <li class="list-group-item">
+                                        <b>NIK</b> <a class="float-right"><?= $employee['nik']; ?></a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Hierarchy</b>
+                                        <a class="float-right">
+                                            <span class="badge 
+                                                <?php switch ($employee['hirarki_org']){
+                                                    case "N":
+                                                        echo "badge-danger";
+                                                        break;
+                                                    case "N-1":
+                                                        echo "badge-warning";
+                                                        break;
+                                                    case "N-2":
+                                                        echo "badge-success";
+                                                        break;
+                                                    case "N-3":
+                                                        echo "badge-info";
+                                                        break;
+                                                    default:
+                                                        echo "badge-primary";
+                                                } ?>
+                                            ">
+                                                <?= $employee['hirarki_org']; ?>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Division</b> <a class="float-right"><?= $employee['divisi']; ?></a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Department</b> <a class="float-right"><?= $employee['departemen']; ?></a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <b>Position</b> <a class="float-right"><?= $employee['position_name']; ?></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <p class="text">Pilihlah skala penilaian di setiap pernyataan yang paling sesuai berdasarkan pada penilaian yang telah dilakukan dengan menggunakan skala penilaian berikut:</p>
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="tabelSkala" >
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th class="border-right border-primary px-2">Skala</th>
+                                            <th class="border-right border-primary px-2">Keterangan</th>
+                                            <th class="px-2">Batasan Nilai Rata-rata</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center border-right border-primary px-2"><span class="badge badge-danger">0</span></td>
+                                            <td class="border-right border-primary px-2">Tidak Mencapai/Gagal</td>
+                                            <td class="text-center px-2"><0.50</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center border-right border-primary px-2"><span class="badge badge-danger">1</span></td>
+                                            <td class="border-right border-primary px-2">Kurang Baik</td>
+                                            <td class="text-center px-2">0.50 – 1.50</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center border-right border-primary px-2"><span class="badge badge-warning">2</span></td>
+                                            <td class="border-right border-primary px-2">Cukup Baik</td>
+                                            <td class="text-center px-2">1.51 – 2.50</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center border-right border-primary px-2"><span class="badge badge-warning">3</span></td>
+                                            <td class="border-right border-primary px-2">Baik</td>
+                                            <td class="text-center px-2">2.51 – 3.50</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center border-right border-primary px-2"><span class="badge badge-info">4</span></td>
+                                            <td class="border-right border-primary px-2">Sangat baik</td>
+                                            <td class="text-center px-2">3.51 – 4.50</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center border-right border-primary px-2"><span class="badge badge-success">5</span></td>
+                                            <td class="border-right border-primary px-2">Luar Biasa</td>
+                                            <td class="text-center px-2">4.51 – 5.00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

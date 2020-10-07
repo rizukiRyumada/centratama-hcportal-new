@@ -99,16 +99,17 @@ function sendEmail($data_penerima_email, $emailText, $subject_email){
 // exit;
 
     $CI =& get_instance();
+    $CI->load->model('Jobpro_model');
 
     // configuration for send email
     // PRODUCTION ubah jadi 1 saat production
     $config = $CI->Jobpro_model->getDetail(
-        'useragent, protocol, smtp_host, smtp_port, smtp_user, smtp_pass, charset, wordwrap, mailtype', 
+        'useragent, protocol, smtp_host, smtp_port, smtp_user, smtp_name, smtp_pass, charset, wordwrap, mailtype', 
         'setting_email', 
         array('id' => 2));
     // configuration for send email
     // $config = $CI->Jobpro_model->getDetail(
-    //     'useragent, protocol, smtp_host, smtp_port, smtp_user, smtp_pass, charset, wordwrap, mailtype, smtp_crypto', 
+    //     'useragent, protocol, smtp_host, smtp_port, smtp_user, smtp_name, smtp_pass, charset, wordwrap, mailtype, smtp_crypto', 
     //     'setting_email', 
     //     array('id' => 1));
     $config['crlf'] = "\r\n";
@@ -118,8 +119,8 @@ function sendEmail($data_penerima_email, $emailText, $subject_email){
 
     // SETTING identitas email
     // PRODUCTION ubah from ke pengaturan server
-    // $CI->email->from($config['smtp_user'], $config['smtp_user']);
-    $CI->email->from('Ryumada@dev.github', 'Ryumada');
+    $CI->email->from($config['smtp_user'], $config['smtp_name']);
+    // $CI->email->from('Ryumada@dev.github', 'Ryumada'); // for testing
     // PRODUCTION ubah to ke pengatauran server
     $CI->email->to($data_penerima_email['email']);
     // $CI->email->to('asd@ss.id'); //for testing
@@ -135,15 +136,16 @@ function sendEmail($data_penerima_email, $emailText, $subject_email){
     $CI->email->message($emailText);
     
     // cek email apa dia punya email
-    if(!empty($data_penerima_email['nama'])){
+    if(!empty($data_penerima_email['email'])){
         //cek apa email kosong
         if($CI->email->send()){
-            echo("success");
+            // echo("success");
         } else {
             echo $CI->email->print_debugger(); //show debugger if error
-        }     
+        }
     } else {
         // gausah kirim email tapi lempengin aja
+        // echo("no email listed to sending email.");
     }
        
 }

@@ -4,9 +4,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pmk_m extends CI_Model {
     protected $table = [
+        "contract" => "master_employee_contract",
         "main" => "pmk_form",
+        "pertanyaan" => "pmk_survey_pertanyaan",
         "status" => "pmk_status",
-        "pertanyaan" => "pmk_survey_pertanyaan"
     ];
     
     /**
@@ -128,6 +129,16 @@ class Pmk_m extends CI_Model {
      */
     function getAllWhere_form($where){
         return $this->db->get_where($this->table['main'], $where)->result_array();
+    }
+
+    /**
+     * ambil satu data contract dengan where
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getOnceWhere_contract($where){
+        return $this->db->get_where($this->table['contract'], $where)->row_array();
     }
     
     /**
