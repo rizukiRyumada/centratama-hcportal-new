@@ -18,6 +18,7 @@ class Survey extends MainController {
         // exit;
         parent::__construct();
         
+        $this->load->model(['posisi_m']);
     }
 
     public function index(){
