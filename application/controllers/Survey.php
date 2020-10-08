@@ -7,7 +7,8 @@ class Survey extends MainController {
     protected $title_f360 = '360° Feedback';
 
     protected $table = array(
-        'title' => 'survey_page_title'
+        'title' => 'survey_setting',
+        'department' => 'master_department'
     );
     
     public function __construct(){
@@ -20,19 +21,20 @@ class Survey extends MainController {
     }
 
     public function index(){
+        $position_my = $this->posisi_m->getMyPosition(); // ambil my position detail
+
         // tambah pengecualian buat GA Driver untuk survey engagement
         if($this->session->userdata('position_id') == 184){
             $data['survey_status']['exc'] = 'closed';
-        }
-
-        // cek apa survey excellence sudah diisi
-        if($this->_general_m->getRow('survey_exc_hasil', array('nik' => $this->session->userdata('nik'))) < 1){
+        } elseif($this->_general_m->getRow('survey_exc_hasil', array('nik' => $this->session->userdata('nik'))) < 1){ // cek apa survey excellence sudah diisi
             //nothing
         } else {
             $data['survey_status']['exc'] = 'closed';
         }
-        // cek apa survey engagement sudah diisi
-        if($this->_general_m->getRow('survey_eng_hasil', array('nik' => $this->session->userdata('nik'))) < 1 ){
+
+        if($position_my['hirarki_org'] == "N"){
+            $data['survey_status']['eng'] = 'closed';
+        } elseif($this->_general_m->getRow('survey_eng_hasil', array('nik' => $this->session->userdata('nik'))) < 1 ){ // cek apa survey engagement sudah diisi
             // nothing
         } else {
             $data['survey_status']['eng'] = 'closed';
@@ -104,13 +106,13 @@ class Survey extends MainController {
             $departemen = $this->_general_m->getAll('*', 'survey_exc_departemen', array());
 
             //  ambil id departemen
-            $my_departemen = $this->_general_m->getJoin2tables('nama_departemen, master_department.id', 'master_position', 'master_department', 'master_position.dept_id = master_department.id', 'master_position.id='.$this->session->userdata('position_id'))[0];
+            $my_departemen = $this->_general_m->getJoin2tables('nama_departemen, '.$this->table['department'].'.id', 'master_position', 'master_department', 'master_position.dept_id = master_department.id', 'master_position.id='.$this->session->userdata('position_id'))[0];
 
             // samain id departemen dan hapus yang sama
             // hapus departemen kalo dia itu berada di departemen itu
             $x = 0; // prepare variable
             foreach($departemen as $dept){
-                if ($my_departemen['nama_departemen'] != $dept['nama']){
+                if ($my_departemen['id'] != $dept['id']){
                     $data['departemen'][$x] = $dept;
                     $x++;
                 }
@@ -128,11 +130,12 @@ class Survey extends MainController {
             // main data
             $load_view = 'survey/exc_survey_v';
         } else { // kalo sudah selesai
+            // buat notifikasi swal kalo karyawan sudah mengisi survey
             header('location: ' . base_url('survey')); // arahkan ke halaman survey index
         }
         
         // survey data
-        $data['survey_title'] = $this->_general_m->getOnce('judul', 'survey_page_title', array('id_survey' => 0))['judul'];
+        $data['survey_title'] = $this->_general_m->getOnce('judul', $this->table['title'], array('id_survey' => 0))['judul'];
 
         // main data
         $data['sidebar'] = getMenu(); // ambil menu
@@ -200,6 +203,11 @@ class Survey extends MainController {
     /*                              Engagement Survey                             */
     /* -------------------------------------------------------------------------- */
     public function engagement(){ // survey engagement main function
+        $position_my = $this->posisi_m->getMyPosition();
+        // tambah pengecualian buat hirarki N
+        if($position_my['hirarki_org'] == "N"){
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        }
         // cek apa karyawan sudah isi survey
         if($this->_general_m->getRow('survey_eng_hasil', array('nik' => $this->session->userdata('nik'))) < 1){
             // siapkan pertanyaan data survey
@@ -211,7 +219,7 @@ class Survey extends MainController {
             header('location: ' . base_url('survey')); // arahkan ke halaman survey index
         }
         // survey data
-        $data['survey_title'] = $this->_general_m->getOnce('judul', 'survey_page_title', array('id_survey' => 1))['judul'];
+        $data['survey_title'] = $this->_general_m->getOnce('judul', $this->table['title'], array('id_survey' => 1))['judul'];
 
         // main data
         $data['sidebar'] = getMenu(); // ambil menu
@@ -376,7 +384,7 @@ class Survey extends MainController {
         }
 
         // survey data
-        $data['survey_title'] = $this->_general_m->getOnce('judul', 'survey_page_title', array('id_survey' => 2))['judul'];
+        $data['survey_title'] = $this->_general_m->getOnce('judul', $this->table['title'], array('id_survey' => 2))['judul'];
         $data['nik_dinilai'] = $nik_dinilai;
         $data['pertanyaan'] = $pertanyaan;
 
@@ -393,7 +401,7 @@ class Survey extends MainController {
         $this->load->view('main_v', $data);
     }
 
-    // tampilan buat karyawan yang buka N-1, N-2, dan N-3
+    // tampilan buat karyawan yang bukan N-1, N-2, dan N-3
     public function f360limitedUser() {
         // main data
         $data['sidebar'] = getMenu(); // ambil menu

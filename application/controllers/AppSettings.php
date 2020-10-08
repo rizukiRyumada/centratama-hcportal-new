@@ -90,7 +90,7 @@ class AppSettings extends SuperAdminController {
         '360' => 'survey_f360_hasil',
         '360_pertanyaan' => 'survey_f360_pertanyaan',
         '360_kategori' => 'survey_f360_kategoripertanyaan',
-        'page_title' => 'survey_page_title'
+        'page_title' => 'survey_setting'
     ];
     public function ajax_survey_newPeriods(){
         // ambil get survey yang mau direset
