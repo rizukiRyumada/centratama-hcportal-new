@@ -38,7 +38,9 @@
                     status360.parent().parent().append('<a href="javascript:changePeriods'+"('360')"+'" class="btn btn-light text-dark w-100"><i class="fas fa-plus-circle text-success"></i> New Period</a>');
                 }
             }
-        })
+        });
+
+        toggleUpdate(); // toggle update view
     });
 
     // untuk menerima event klik dari tag a
@@ -160,6 +162,130 @@
         // validate input type it first
         validate_input_typeit();
     });
+
+    // toggle suvey
+    $("#toggle_eng").on('click', function(){
+        if($(this).prop("checked") == true) {
+            id_survey = $(this).data('survey');
+            is_period = 1;
+        } else if($(this).prop("checked") == false) {
+            id_survey = $(this).data('survey');
+            is_period = 0;
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                footer: '<a href>Why do I have this issue?</a>'
+            });
+            return false;
+        }
+        $(".toggle-loading").show(); // sembunyikan toggle loading
+        $(".toggle-area").hide(); // tampilkan toggle area
+        togglePeriods(id_survey, is_period); 
+    });
+    $("#toggle_exc").on('click', function(){
+        if($(this).prop("checked") == true) {
+            id_survey = $(this).data('survey');
+            is_period = 1;
+        } else if($(this).prop("checked") == false) {
+            id_survey = $(this).data('survey');
+            is_period = 0;
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                footer: '<a href>Why do I have this issue?</a>'
+            });
+            return false;
+        }
+        $(".toggle-loading").show(); // sembunyikan toggle loading
+        $(".toggle-area").hide(); // tampilkan toggle area
+        togglePeriods(id_survey, is_period); 
+    });
+    $("#toggle_360").on('click', function(){
+        if($(this).prop("checked") == true) {
+            id_survey = $(this).data('survey');
+            is_period = 1;
+        } else if($(this).prop("checked") == false) {
+            id_survey = $(this).data('survey');
+            is_period = 0;
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                footer: '<a href>Why do I have this issue?</a>'
+            });
+            return false;
+        }
+        $(".toggle-loading").show(); // sembunyikan toggle loading
+        $(".toggle-area").hide(); // tampilkan toggle area
+        togglePeriods(id_survey, is_period); 
+    });   
+    
+    function togglePeriods(id_survey, is_period){
+        $.ajax({
+            url: "<?= base_url('appSettings/ajax_periodToggle'); ?>",
+            data:{
+                id_survey: id_survey,
+                is_period: is_period
+            },
+            method: "POST",
+            success: function() {
+                toggleUpdate(); // toggle update view
+            }
+        });
+    }
+
+    // this function to change toggle view
+    function toggleUpdate(){
+        $.ajax({
+            url: "<?= base_url("appSettings/ajax_periodToggleIsPeriod"); ?>",
+            beforeSend: () => {
+                // $(".toggle-loading").show(); // sembunyikan toggle loading
+                // $(".toggle-area").hide(); // tampilkan toggle area
+            },
+            success: (data) => {
+                let vya = JSON.parse(data);
+
+                // ganti toggle eng
+                if(vya.eng == 0){
+                    $('#toggle_eng').prop('checked', false).change();
+                    $('#surveyCards_eng').addClass("bg-light");
+                    $('#surveyCards_eng').removeClass("bg-blue");
+                } else {
+                    $('#toggle_eng').prop('checked', true).change();
+                    $('#surveyCards_eng').addClass("bg-blue");
+                    $('#surveyCards_eng').removeClass("bg-light");
+                }
+                // ganti toggle exc
+                if(vya.exc == 0){
+                    $('#toggle_exc').prop('checked', false).change();
+                    $('#surveyCards_exc').addClass("bg-light");
+                    $('#surveyCards_exc').removeClass("bg-orange");
+                } else {
+                    $('#toggle_exc').prop('checked', true).change();
+                    $('#surveyCards_exc').addClass("bg-orange");
+                    $('#surveyCards_exc').removeClass("bg-light");
+                }
+                // ganti toggle f360
+                console.log(vya.f360);
+                if(vya.f360 == 0){
+                    $('#toggle_360').prop('checked', false).change();
+                    $('#surveyCards_360').addClass("bg-light");
+                    $('#surveyCards_360').removeClass("bg-yellow");
+                } else {
+                    $('#toggle_360').prop('checked', true).change();
+                    $('#surveyCards_360').addClass("bg-yellow");
+                    $('#surveyCards_360').removeClass("bg-light");
+                }
+                $(".toggle-loading").hide(); // sembunyikan toggle loading
+                $(".toggle-area").show(); // tampilkan toggle area
+            }
+        });
+    }
 
     function validate_input_typeit(){
         let typed = input_typeit.val(); // ambil data yang diinput

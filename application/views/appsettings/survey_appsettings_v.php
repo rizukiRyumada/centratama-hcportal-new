@@ -12,25 +12,58 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="bg-blue p-3 col-lg-4 col-md-6 col-12 mt-2">
-                        <h5 class="font-weight-bold">Employee Enggagement Survey</h5>
+                    <div id="surveyCards_eng" class="bg-blue p-3 col-lg-4 col-md-6 col-12 mt-2 border border-dark">
+                        <h5 class="font-weight-bold">Employee Enggagement</h5>
+
+                        <!-- toggle to start or stop period -->
+                        <hr/>
+                            <p class="toggle-loading text-center"><i class="fa fa-spinner fa-2x fa-spin"></i></p>
+                            <div class="toggle-area form-group text-center" style="display: none;">
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    <input type="checkbox" class="custom-control-input" id="toggle_eng" data-survey="1">
+                                    <label class="custom-control-label" for="toggle_eng">Start or Stop filling out the Survey</label>
+                                </div>
+                            </div>
+                        <hr/><!-- /toggle to start or stop period -->
                         
                         <ul class="text-decoration-none">
                             <li>Periods: 2x/year (Semester)</li>
                             <li id="statusEng">Status: <i class="fa fa-spinner fa-spin"></i></li>
                         </ul>
                     </div>
-                    <div class="bg-orange p-3 col-lg-4 col-md-6 col-12 mt-2">
-                        <h5 class="font-weight-bold">Service Excellence Survey</h5>
-                            
+                    <div id="surveyCards_exc" class="bg-orange p-3 col-lg-4 col-md-6 col-12 mt-2 border border-dark">
+                        <h5 class="font-weight-bold">Service Excellence</h5>
+                        
+                        <!-- toggle to start or stop period -->
+                        <hr/>
+                            <p class="toggle-loading text-center"><i class="fa fa-spinner fa-2x fa-spin"></i></p>
+                            <div class="toggle-area form-group text-center" style="display: none;">
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    <input type="checkbox" class="custom-control-input" id="toggle_exc" data-survey="0">
+                                    <label class="custom-control-label" for="toggle_exc">Start or Stop filling out the Survey</label>
+                                </div>
+                            </div>
+                        <hr/><!-- /toggle to start or stop period -->
+
                         <ul class="text-decoration-none">
                             <li>Periods: 4x/year (Quartal)</li>
                             <li id="statusExc">Status: <i class="fa fa-spinner fa-spin"></i></li>
                         </ul>
                     </div>
-                    <div class="bg-yellow p-3 col-lg-4 col-md-6 col-12 mt-2">
+                    <div id="surveyCards_360" class="bg-yellow p-3 col-lg-4 col-md-6 col-12 mt-2 border border-dark">
                         <h5 class="font-weight-bold">360° Feedback</h5>
                         
+                        <!-- toggle to start or stop period -->
+                        <hr/>
+                            <p class="toggle-loading text-center"><i class="fa fa-spinner fa-2x fa-spin"></i></p>
+                            <div class="toggle-area form-group text-center" style="display: none;">
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    <input type="checkbox" class="custom-control-input" id="toggle_360" data-survey="2">
+                                    <label class="custom-control-label" for="toggle_360">Start or Stop filling out the Survey</label>
+                                </div>
+                            </div>
+                        <hr/><!-- /toggle to start or stop period -->
+
                         <ul class="text-decoration-none">
                             <li>Periods: 2x/year (Semester)</li>
                             <li id="status360">Status: <i class="fa fa-spinner fa-spin"></i></li>

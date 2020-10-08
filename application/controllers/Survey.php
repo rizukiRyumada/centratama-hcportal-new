@@ -25,7 +25,9 @@ class Survey extends MainController {
         $position_my = $this->posisi_m->getMyPosition(); // ambil my position detail
 
         // tambah pengecualian buat GA Driver untuk survey engagement
-        if($this->session->userdata('position_id') == 184){
+        if($this->checkIsActive(0) == 0){
+            $data['survey_status']['exc'] = 'closed';
+        } elseif($this->session->userdata('position_id') == 184){
             $data['survey_status']['exc'] = 'closed';
         } elseif($this->_general_m->getRow('survey_exc_hasil', array('nik' => $this->session->userdata('nik'))) < 1){ // cek apa survey excellence sudah diisi
             //nothing
@@ -33,7 +35,9 @@ class Survey extends MainController {
             $data['survey_status']['exc'] = 'closed';
         }
 
-        if($position_my['hirarki_org'] == "N"){
+        if($this->checkIsActive(1) == 0){
+            $data['survey_status']['eng'] = 'closed';
+        } elseif($position_my['hirarki_org'] == "N"){
             $data['survey_status']['eng'] = 'closed';
         } elseif($this->_general_m->getRow('survey_eng_hasil', array('nik' => $this->session->userdata('nik'))) < 1 ){ // cek apa survey engagement sudah diisi
             // nothing
@@ -49,8 +53,9 @@ class Survey extends MainController {
             'master_position.id = master_employee.position_id', 
             array('nik' => $this->session->userdata('nik'))
         )[0];
-        // cek hirarki apa dia N-1, N-2, atau N-3
-        if($data_employe['hirarki_org'] == 'N-1' || $data_employe['hirarki_org'] == 'N-2' || $data_employe['hirarki_org'] == 'N-3' || $data_employe['hirarki_org'] == 'Functional-div' || $data_employe['hirarki_org'] == 'Functional-dep') {
+        if($this->checkIsActive(2) == 0){
+            $data['survey_status']['f360'] = 'closed';
+        } elseif($data_employe['hirarki_org'] == 'N-1' || $data_employe['hirarki_org'] == 'N-2' || $data_employe['hirarki_org'] == 'N-3' || $data_employe['hirarki_org'] == 'Functional-div' || $data_employe['hirarki_org'] == 'Functional-dep') { // cek hirarki apa dia N-1, N-2, atau N-3
             $data_survey = $this->f360getData($data_employe); // ambil data survey
             $data_survey_complete_f360 = $this->f360counterStatusOF($data_survey); // ambil data counter survey OF
             // cek jika antara counter survey dan counter complete sama
@@ -100,6 +105,11 @@ class Survey extends MainController {
         // tambah pengecualian buat GA Driver
         if($this->session->userdata('position_id') == 184){
             show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        }
+        // cek apa survey excellence aktif atau engga
+        if($this->checkIsActive(0) == 0){
+            // show_error('Sorry, but the survey period has ended, this survey not accept any respondent anymore.', 451, 'Survey Period Ended');
+            show_404();
         }
         //cek apakah karyawan sudah mengisi Service Excellence Survey
         if($this->_general_m->getRow('survey_exc_hasil', array('nik' => $this->session->userdata('nik'))) < 1 ){
@@ -209,6 +219,11 @@ class Survey extends MainController {
         if($position_my['hirarki_org'] == "N"){
             show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
         }
+        // cek apa survey excellence aktif atau engga
+        if($this->checkIsActive(1) == 0){
+            // show_error('Sorry, but the survey period has ended, this survey not accept any respondent anymore.', 451, 'Survey Period Ended');
+            show_404();
+        }
         // cek apa karyawan sudah isi survey
         if($this->_general_m->getRow('survey_eng_hasil', array('nik' => $this->session->userdata('nik'))) < 1){
             // siapkan pertanyaan data survey
@@ -308,6 +323,12 @@ class Survey extends MainController {
             $data_survey = $this->f360getData($data_employe); // ambil data survey
         } else {
             header('location: ' . base_url('survey/f360limitedUser')); // arahkan ke pesan blocked
+        }
+
+        // cek apa survey excellence aktif atau engga
+        if($this->checkIsActive(2) == 0){
+            // show_error('Sorry, but the survey period has ended, this survey not accept any respondent anymore.', 451, 'Survey Period Ended');
+            show_404();
         }
 
         //cek status pengisian survey
@@ -1076,6 +1097,10 @@ class Survey extends MainController {
         }
 
         header('location: ' . base_url($this->input->get('url')));
+    }
+
+    function checkIsActive($id_survey){
+        return $this->_general_m->getOnce('is_period', $this->table['title'], array('id_survey' => $id_survey))['is_period'];
     }
 
     // test

@@ -90,7 +90,7 @@ class AppSettings extends SuperAdminController {
         '360' => 'survey_f360_hasil',
         '360_pertanyaan' => 'survey_f360_pertanyaan',
         '360_kategori' => 'survey_f360_kategoripertanyaan',
-        'page_title' => 'survey_setting'
+        'setting' => 'survey_setting'
     ];
     public function ajax_survey_newPeriods(){
         // ambil get survey yang mau direset
@@ -182,7 +182,7 @@ class AppSettings extends SuperAdminController {
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['exc']);
                 // update judul survey
-                $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 0, array(
+                $this->_general_m->update($this->table_survey['setting'], 'id_survey', 0, array(
                     'judul' => 'Service Excellence Survey [Periode '.$period_text.' - '.$year_last.']'
                 ));
 
@@ -246,7 +246,7 @@ class AppSettings extends SuperAdminController {
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['eng']);
                 // ubah judul survey
-                $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 1, array(
+                $this->_general_m->update($this->table_survey['setting'], 'id_survey', 1, array(
                     'judul' => 'Employee Engagement Survey [Periode '.$period_text.' - '.$year_last.']'
                 ));
 
@@ -312,7 +312,7 @@ class AppSettings extends SuperAdminController {
                 //hapus data dari database utama
                 $this->_general_m->truncate($this->table_survey['360']);
                 // ubah judul survey
-                $this->_general_m->update($this->table_survey['page_title'], 'id_survey', 2, array(
+                $this->_general_m->update($this->table_survey['setting'], 'id_survey', 2, array(
                     'judul' => '360° Feedback [Periode '.$period_text.' - '.$year_last.']'
                 ));
 
@@ -434,6 +434,21 @@ class AppSettings extends SuperAdminController {
             'exc' => $exist_exc,
             'f360' => $exist_360
         ]));
+    }
+
+    function ajax_periodToggle(){
+        // ubah is_period dari database
+        $this->_general_m->update($this->table_survey['setting'], 'id_survey', $this->input->post('id_survey'), array('is_period' => $this->input->post('is_period')));
+    }
+
+    function ajax_periodToggleIsPeriod(){
+        $vya_period = $this->_general_m->getAll("is_period", $this->table_survey['setting'], array());
+
+        echo(json_encode(array(
+            'eng' => $vya_period[1]['is_period'],
+            'exc' => $vya_period[0]['is_period'],
+            'f360' => $vya_period[2]['is_period']
+        )));
     }
 
 }
