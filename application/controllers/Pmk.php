@@ -3,6 +3,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pmk extends SpecialUserAppController {
+    protected $id_menu = 12; // id menu
+
     // page title variable
     protected $page_title = [
         'index' => 'Penilaian Masa Kontrak',
@@ -21,7 +23,7 @@ class Pmk extends SpecialUserAppController {
         parent::__construct();
 
         // load models
-        $this->load->model(['divisi_model', 'dept_model', 'email_m', 'employee_m', 'posisi_m', 'pmk_m']);
+        $this->load->model(['divisi_model', 'dept_model', 'email_m', 'employee_m', 'posisi_m', 'pmk_m', "user_m"]);
         
         // Token Checker
         if(!empty($this->session->userdata('token'))){
@@ -57,7 +59,7 @@ class Pmk extends SpecialUserAppController {
         $position_my = $this->posisi_m->getMyPosition();
         $data['position_my'] = $position_my;
 
-        if($position_my['hirarki_org'] == "N" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1){
+        if($position_my['hirarki_org'] == "N" || $this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
             $data['filter_divisi'] = $this->divisi_model->getDivisi();
         }
 
@@ -72,6 +74,7 @@ class Pmk extends SpecialUserAppController {
 		// $data['custom_styles'] = array();
         $data['custom_script'] = array(
             'plugins/datatables/script_datatables',
+            'plugins/daterange-picker/script_daterange-picker', 
             'pmk/script_index_pmk'
         );
         
@@ -149,8 +152,7 @@ class Pmk extends SpecialUserAppController {
                 if($vya == 0){
                     $counter_new++; // counter new data
                     // prepare data
-                    $data_pmk[$x] = $result;
-                    $data_pmk[$x]['created'] = time();
+                    $data_pmk[$x]['id'] = $this->pmk_m->getId_form($result['nik'], $result['contract']);
                     $data_pmk[$x]['status'] = json_encode([
                         0 => [
                             'id_status' => 1,
@@ -158,6 +160,9 @@ class Pmk extends SpecialUserAppController {
                         ]
                     ]);
                     $data_pmk[$x]['status_now_id'] = 1;
+                    $data_pmk[$x]['created'] = time();
+                    $data_pmk[$x]['modified'] = time();
+
                     // $data_pmk[$x]['pmk_id'] = ""; // pmk_id nanti setelah hc divhead melakukan pembuatan summary
                     $x++;
 
@@ -173,69 +178,6 @@ class Pmk extends SpecialUserAppController {
                     //     show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                     //     exit;
                     // }
-
-                    $approver_nik = $this->employee_m->getApprover_nik($v['nik']);
-                    $approver_data = $this->employee_m->getDetails_employee($approver_nik);
-                    
-                    $email = $approver_data['email']; // emailin ke approver 1
-                    // $email_cc = $data_employee['email']; // cc ke karyawannya sendiri
-                    $email_cc = "";
-                    $penerima_nama = $approver_data['emp_name'];
-                    $subject_email = "Employee Evaluation has been Started";
-                    $status = "Status: Draft";
-                    $details = '<tr>
-                                    <td>Employee Name</td>
-                                    <td>:</td>
-                                    <td>'. $data_employee['emp_name'] .'</td>
-                                </tr>
-                                <tr>
-                                    <td>NIK</td>
-                                    <td>:</td>
-                                    <td>'. $data_employee['nik'] .'</td>
-                                </tr>
-                                <tr>
-                                    <td>Division</td>
-                                    <td>:</td>
-                                    <td>'. $data_employee['divisi'] .'</td>
-                                </tr>
-                                <tr>
-                                    <td>Department</td>
-                                    <td>:</td>
-                                    <td>'. $data_employee['departemen'] .'</td>
-                                </tr>
-                                <tr>
-                                    <td>Position</td>
-                                    <td>:</td>
-                                    <td>'. $data_employee['position_name'] .'</td>
-                                </tr>';
-                    $msg = "This Employee Contract will be ended in 2 months after now, please fill the employee evaluation assessment below.";
-
-                    /* ------------------- create webtoken buat penerima email ------------------ */
-                    $resep = array( // buat resep token agar unik
-                        'nik' => $data_employee['nik'],
-                        'id_posisi' => $data_employee['position_id'],
-                        'date' => date('d-m-Y, H:i:s:v:u', time())
-                    );
-                    $token = md5(json_encode($resep)); // md5 encrypt buat id token
-                    
-                    $data_temp_token  = array( // data buat disave di token
-                        'direct'    => 'pmk'
-                    );
-                    $data_token = json_encode($data_temp_token);
-
-                    // masukkan data token ke database
-                    $this->_general_m->insert(
-                        'user_token',
-                        array(
-                            'token'        => $token,
-                            'data'         => $data_token,
-                            'date_created' => date('Y-m-d H:i:s', time())
-                        )
-                    ); 
-                    $url_token = urlencode($token);
-                    $link = base_url('direct').'?token='.$url_token;
-                    
-                    $this->email_m->general_sendEmail($email, $email_cc, $penerima_nama, $subject_email, $status, $details, $msg, $link);
                 } else {
                     // nothing
                 }
@@ -246,6 +188,76 @@ class Pmk extends SpecialUserAppController {
         // masukkan ke table pmk_form
         if(!empty($data_pmk)){
             $this->_general_m->insertAll($this->table['form'], $data_pmk);
+
+            foreach($data_pmk as $v){
+                $data_employee = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8)); // ambil detail data employee
+                $approver_nik = $this->employee_m->getApprover_nik(substr($v['id'], 0, 8));
+                
+                // jika dia gapunya atasan kirim email ke superadmin dan admin
+                if(empty($approver_nik)){
+                    $approver_data = $this->user_m->get_admin($this->id_menu);
+                } else {
+                    $approver_data = $this->employee_m->getDetails_employee($approver_nik);
+                }
+                
+                $email = $approver_data['email']; // emailin ke approver 1
+                // $email_cc = $data_employee['email']; // cc ke karyawannya sendiri
+                $email_cc = "";
+                $penerima_nama = $approver_data['emp_name'];
+                $subject_email = "Employee Evaluation has been Started";
+                $status = "Status: Draft";
+                $details = '<tr>
+                                <td>Employee Name</td>
+                                <td>:</td>
+                                <td>'. $data_employee['emp_name'] .'</td>
+                            </tr>
+                            <tr>
+                                <td>NIK</td>
+                                <td>:</td>
+                                <td>'. $data_employee['nik'] .'</td>
+                            </tr>
+                            <tr>
+                                <td>Division</td>
+                                <td>:</td>
+                                <td>'. $data_employee['divisi'] .'</td>
+                            </tr>
+                            <tr>
+                                <td>Department</td>
+                                <td>:</td>
+                                <td>'. $data_employee['departemen'] .'</td>
+                            </tr>
+                            <tr>
+                                <td>Position</td>
+                                <td>:</td>
+                                <td>'. $data_employee['position_name'] .'</td>
+                            </tr>';
+                $msg = "This Employee Contract will be ended in 2 months after now, please fill the employee evaluation assessment below.";
+                /* ------------------- create webtoken buat penerima email ------------------ */
+                $resep = array( // buat resep token agar unik
+                    'nik' => $data_employee['nik'],
+                    'id_posisi' => $data_employee['position_id'],
+                    'date' => date('d-m-Y, H:i:s:v:u', time())
+                );
+                $token = md5(json_encode($resep)); // md5 encrypt buat id token
+                
+                $data_temp_token  = array( // data buat disave di token
+                    'direct'    => 'pmk'
+                );
+                $data_token = json_encode($data_temp_token);
+                // masukkan data token ke database
+                $this->_general_m->insert(
+                    'user_token',
+                    array(
+                        'token'        => $token,
+                        'data'         => $data_token,
+                        'date_created' => date('Y-m-d H:i:s', time())
+                    )
+                ); 
+                $url_token = urlencode($token);
+                $link = base_url('direct').'?token='.$url_token;
+                
+                $this->email_m->general_sendEmail($email, $email_cc, $penerima_nama, $subject_email, $status, $details, $msg, $link);
+            }
         }
 
         // ambil status aktif
@@ -279,61 +291,17 @@ class Pmk extends SpecialUserAppController {
      * @return void
      */
     function ajax_getList() {
+        // Array ( [showhat] => 0 [divisi] => [departemen] => [status] => [daterange] => 08/11/2020 - 12/11/2020 )
+        $showhat = $this->input->post('showhat');
+        $divisi = $this->input->post('divisi');
+        $departemen = $this->input->post('departemen');
+        $status = $this->input->post('status');
+        $daterange = $this->input->post('daterange');
+
         // ambil data posisi
         $position_my = $this->posisi_m->getMyPosition();
 
-        // cek apa dia admin, superadmin, hc divhead, atau CEO
-        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
-            // ambil semua data form
-            $data_pmk = $this->pmk_m->getAll();
-        } else {
-            if($position_my['hirarki_org'] == "N"){
-                // ambil data form di divisi dia aja
-                $data_emp = $this->employee_m->getAllEmp_where($this->table['position'].".div_id = ".$position_my['div_id']);
-            } elseif($position_my['hirarki_org'] == "N-1"){
-                // ambil data form di divisi dan departemen dia
-                $data_emp = $this->employee_m->getAllEmp_where($this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']);
-                // ambil data di divisi dan departemen dia
-            } elseif($position_my['hirarki_org'] == "N-2"){
-                $data_emp = $this->employee_m->getAllEmp_where($this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']." AND ".$this->table['position'].".id_approver1 = ".$position_my['id']);
-            } else {
-                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                exit;
-            }
-
-            // buat data pmk dari data employee di atas
-            $data_pmk = array(); $x = 0; // siapkan variabel
-            foreach($data_emp as $v){
-                $result = $this->pmk_m->getOnceWhere_form(array('nik' => $v['id_emp']));
-                if(!empty($result)){
-                    $data_pmk[$x] = $result;
-                    $x++;
-                }
-            }
-        }
-
-        // lengkapi data pmk
-        $dataPmk = array(); $x = 0;
-        foreach($data_pmk as $k => $v){
-            $data_pos   = $this->employee_m->getDetails_employee($v['nik']);
-            $divisi     = $this->divisi_model->getOnceWhere(array('id' => $data_pos['div_id']));
-            $department = $this->dept_model->getDetailById($data_pos['dept_id']);
-            $employee   = $this->employee_m->getDetails_employee($v['nik']);
-            $status     = $this->pmk_m->getOnceWhere_status(array('id_status' => $v['status_now_id']));
-
-            $dataPmk[$x]['nik']        = $v['nik'];
-            $dataPmk[$x]['divisi']     = $divisi['division'];
-            $dataPmk[$x]['department'] = $department['nama_departemen'];
-            $dataPmk[$x]['position']   = $data_pos['position_name'];
-            $dataPmk[$x]['emp_name']   = $employee['emp_name'];
-            $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => json_encode(array('nik' => $v['nik'], 'contract' => $v['contract']))));
-            $dataPmk[$x]['action']     = json_encode(array('nik' => $v['nik'], 'contract' => $v['contract']));
-            $x++;
-        }
-
-        echo(json_encode([
-            'data' => $dataPmk
-        ]));
+        
     }
 
 /* -------------------------------------------------------------------------- */
@@ -397,6 +365,10 @@ class Pmk extends SpecialUserAppController {
      */
     function saveAssessment(){
         print_r($_POST);
+    }
+
+    function test(){
+        
     }
 
 }

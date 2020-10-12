@@ -1,100 +1,83 @@
-
-<!-- Admin Panel -->
-<?php if(($this->session->userdata('role_id') == 1 || $userApp_admin == 1)): ?>
-    <!-- <div class="row">
-        <div class="col">
-            <div class="card card-danger">
-                <div class="card-header">
-                    <h5 class="m-0"><i class="fas fa-user-shield"></i>Admin Panel</h5>
-                </div>
-                <div class="card-body pt-0">
-                    <div class="row">
-                        <div class="col-md-2 d-md-inline-block d-none mt-3">
-                            <img src="<?= base_url('/assets/img/illustration/contract.svg'); ?>" alt="pmk illustration" class="responsive-image">
-                        </div>
-                        <div class="col-md-7 col-12 align-self-center mt-3">
-                            <dl class="row m-0">
-                                <dt class="col-sm-4">End of Contract</dt>
-                                <dd class="col-sm-8">44</dd>
-                                <dt class="col-sm-4">Active</dt>
-                                <dd class="col-sm-8">33</dd>
-                                <dt class="col-sm-4">Completed</dt>
-                                <dd class="col-sm-8">2</dd>
-                            </dl>
-                        </div>
-                        <div class="col-lg-5 col-12 align-self-center mt-3">
-                            <button id="cekKontrak" class="w-100 btn btn-warning">
-                                <div class="row h-100">
-                                    <div class="col-auto align-self-center text-center">
-                                        <img src="<?= base_url('/assets/img/illustration/contract.svg'); ?>" alt="add-document" class="img-lg">
-                                    </div>
-                                    <div class="col align-self-center text-center">
-                                        <p class="text m-0">Check for employee who have 2 months before the End of Contract Date</p>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+<!-- <div class="row">
+    <div class="col">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h5 class="m-0"><i class="fas fa-user-shield"></i>Admin Panel</h5>
             </div>
-        </div>
-    </div> -->
-    <div class="row mb-3">
-        <!-- <div class="col-md-2 d-md-inline-block d-none">
-            <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
-        </div> -->
-        <div class="col-md-2 d-md-inline-block d-none">
-            <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
-        </div>
-        <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
-            <div class="col-md-3 col-12 align-self-center">
-                <div class="card">
-                    <div class="card-body p-2">
+            <div class="card-body pt-0">
+                <div class="row">
+                    <div class="col-md-2 d-md-inline-block d-none mt-3">
+                        <img src="<?= base_url('/assets/img/illustration/contract.svg'); ?>" alt="pmk illustration" class="responsive-image">
+                    </div>
+                    <div class="col-md-7 col-12 align-self-center mt-3">
                         <dl class="row m-0">
-                            <dt class="col-10 align-self-center">End of Contract</dt>
-                            <dd id="eoc" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
-                            <dt class="col-10 align-self-center">Active</dt>
-                            <dd id="act" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
-                            <dt class="col-10 align-self-center">Completed</dt>
-                            <dd id="cpt" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                            <dt class="col-sm-4">End of Contract</dt>
+                            <dd class="col-sm-8">44</dd>
+                            <dt class="col-sm-4">Active</dt>
+                            <dd class="col-sm-8">33</dd>
+                            <dt class="col-sm-4">Completed</dt>
+                            <dd class="col-sm-8">2</dd>
                         </dl>
-                        <div class="row mt-1">
-                            <div class="col">
-                                <button id="buttonRefreshPMK" class="btn btn-danger w-100"><i id="iconRefreshPMK" class="fa fa-sync"></i> Refresh</button>
+                    </div>
+                    <div class="col-lg-5 col-12 align-self-center mt-3">
+                        <button id="cekKontrak" class="w-100 btn btn-warning">
+                            <div class="row h-100">
+                                <div class="col-auto align-self-center text-center">
+                                    <img src="<?= base_url('/assets/img/illustration/contract.svg'); ?>" alt="add-document" class="img-lg">
+                                </div>
+                                <div class="col align-self-center text-center">
+                                    <p class="text m-0">Check for employee who have 2 months before the End of Contract Date</p>
+                                </div>
                             </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="row mb-3">
+    <!-- <div class="col-md-2 d-md-inline-block d-none">
+        <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
+    </div> -->
+    <div class="col-md-2 d-md-inline-block d-none">
+        <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
+    </div>
+    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+        <div class="col-md-3 col-12 align-self-center">
+            <div class="card">
+                <div class="card-body p-2">
+                    <dl class="row m-0">
+                        <dt class="col-10 align-self-center">End of Contract</dt>
+                        <dd id="eoc" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                        <dt class="col-10 align-self-center">Active</dt>
+                        <dd id="act" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                        <dt class="col-10 align-self-center">Completed</dt>
+                        <dd id="cpt" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                    </dl>
+                    <div class="row mt-1">
+                        <div class="col">
+                            <button id="buttonRefreshPMK" class="btn btn-danger w-100"><i id="iconRefreshPMK" class="fa fa-sync"></i> Refresh</button>
                         </div>
                     </div>
                 </div>
             </div>
-        <?php endif; ?>
-        <div class="
-        <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
-            col-md-7
-        <?php else: ?>
-            col-md-10    
-        <?php endif; ?>
-        ">
-            <div class="row h-100">
-                <div class="col align-self-center">
-                    <p class="text m-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, rem amet, ut quia necessitatibus vel, obcaecati maiores natus doloribus aliquid rerum voluptates saepe. Enim commodi, nesciunt laudantium deserunt veniam quod?</p>
-                </div>
+        </div>
+    <?php endif; ?>
+    <div class="
+    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+        col-md-7
+    <?php else: ?>
+        col-md-10    
+    <?php endif; ?>
+    ">
+        <div class="row h-100">
+            <div class="col align-self-center">
+                <p class="text m-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, rem amet, ut quia necessitatibus vel, obcaecati maiores natus doloribus aliquid rerum voluptates saepe. Enim commodi, nesciunt laudantium deserunt veniam quod?</p>
             </div>
         </div>
     </div>
-<?php else: ?>
-    <div class="row mb-3">
-        <div class="col-md-2 d-md-inline-block d-none">
-            <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
-        </div>
-        <div class="col-md-10">
-            <div class="row h-100">
-                <div class="col align-self-center">
-                    <p class="text m-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, rem amet, ut quia necessitatibus vel, obcaecati maiores natus doloribus aliquid rerum voluptates saepe. Enim commodi, nesciunt laudantium deserunt veniam quod?</p>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
+</div>
 
 <div class="row">
     <div class="col">
@@ -114,8 +97,28 @@
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <!-- Tabel assessment -->
                     <div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                        <!-- data view chooser -->
+                        <div class="row mb-2">
+                            <div class="col bg-light py-2">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Choose data to view:</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <ul class="nav nav-pills ml-auto p-2">
+                                            <li class="nav-item"><a id="chooserData1" class="nav-link active" href="javascript:void(0)" data-choosewhat="0"><i class="fas fa-clipboard-list"></i> My Task</a></li>
+                                            <li class="nav-item"><a id="chooserData2" class="nav-link" href="javascript:void(0)" data-choosewhat="1"><i class="fas fa-history"></i> History</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- filter table -->
                         <div class="row justify-content-end">
-                            <?php if($position_my['hirarki_org'] == "N" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                            <?php if($position_my['id'] == "1" || $position_my['id'] == "196" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="form-group">
                                         <label for="divisi">Division:</label>
@@ -128,12 +131,12 @@
                                     </div>
                                 </div>
                             <?php endif; ?>
-                            <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                            <?php if($position_my['hirarki_org'] == "N" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="form-group">
-                                        <label for="departement">Departement:</label>
-                                        <select id="departement" class="custom-select form-control form-control-sm">
-                                            <option value="">All</option>        
+                                        <label for="departemen">Department:</label>
+                                        <select id="departemen" class="custom-select form-control form-control-sm">
+                                            <option value="">Please choose division first</option>        
                                         </select>
                                     </div>
                                 </div>
@@ -143,10 +146,33 @@
                                     <label for="status">Status:</label>
                                     <select id="status" class="custom-select form-control form-control-sm">
                                         <option value="">All</option>
+                                        <?php foreach($pmk_status as $v): ?>
+                                            <option value="<?= $v['id_status']; ?>"><?= $v['name_text']; ?></option>
+                                        <?php endforeach;?>
                                     </select>
                                 </div>
                             </div>
+                            <div id="daterangeChooser" class="col-lg-4 col-sm-6" style="display: none">
+                                <div class="form-group">
+                                    <label for="daterange">Pick a daterange:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                        <input class="form-control" type="text" name="dateChooser" id="daterange">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <div class="row justify-content-end">
+                            <div class="col-sm-2">
+                                <button id="resetFilterAsses" class="btn btn-danger w-100"><i class="fa fa-filter fa-rotate-180"></i> Reset</button>
+                            </div>
+                        </div><!-- /filter table -->
+
+                        <hr/>
+
+                        <!-- tabel index pmk -->
                         <table id="table_indexPMK" class="table table-striped">
                             <thead>
                                 <tr>
@@ -160,7 +186,7 @@
                                 </tr>
                             </thead>
                             <tbody></tbody>
-                        </table>
+                        </table><!-- /tabel index pmk -->
                     </div> <!-- /Tabel assessment -->
 
                     <!-- Tabel Summary -->

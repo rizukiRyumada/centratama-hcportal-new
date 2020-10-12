@@ -38,6 +38,10 @@ html body.sidebar-mini.layout-fixed.layout-navbar-fixed div.wrapper div.content-
     border-radius: 1.5em 0 0 1.5em;
 }
 
+div.input-group-prepend span.input-group-text{
+    border-radius: 1.5em 0 0 1.5em;
+}
+
 /* custom color and hover */
 .link-primary{
     color: #0072C6;
