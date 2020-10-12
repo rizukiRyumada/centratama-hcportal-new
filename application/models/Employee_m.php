@@ -67,10 +67,14 @@ class Employee_m extends CI_Model {
      */
     function getApprover_nik($nik, $approver1or2 = 1){
         $id_pos = $this->db->select('position_id')->get_where($this->table['employee'], array('nik' => $nik))->row_array()['position_id'];
-
         $approver = $this->db->select('id_approver'.$approver1or2)->get_where($this->table['position'], array('id' => $id_pos))->row_array()['id_approver'.$approver1or2];
-
-        return $this->db->select('nik')->get_where($this->table['employee'], array('position_id' => $approver))->row_array()['nik'];
+        $result = $this->db->select('nik')->get_where($this->table['employee'], array('position_id' => $approver))->row_array();
+        if(!empty($result)){
+            $return = $result['nik'];
+        } else {
+            $return = "";
+        }
+        return $return;
     }
     
     /**
