@@ -34,6 +34,18 @@ class Divisi_model extends CI_Model {
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('master_division', $data);
     }
+    
+    /**
+     * ambil divisi head dengan 1 id
+     *
+     * @param  mixed $id_div
+     * @return void
+     */
+    function get_divHead($id_div){
+        $this->load->model('employee_m');
+        $divhead_nik = $this->db->select("nik_div_head")->get_where($this->table, array('id' => $id_div))->row_array()['nik_div_head'];
+        return $this->employee_m->getDetails_employee($divhead_nik);
+    }
 
     public function getDIvByOrg()
     {

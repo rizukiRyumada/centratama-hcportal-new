@@ -8,7 +8,8 @@ class Pmk_m extends CI_Model {
         "counter" => "_counter_trans",
         "main" => "pmk_form",
         "pertanyaan" => "pmk_survey_pertanyaan",
-        "status" => "pmk_status",
+        "position" => "master_position",
+        "status" => "pmk_status"
     ];
     
     /**
@@ -55,57 +56,94 @@ class Pmk_m extends CI_Model {
         return $this->db->get_where($this->table['main'], $where)->result_array();
     }
 
-    function getComplete_pmkList($position_my, $showhat, $divisi, $departemen, $status, $daterange){
+    function getComplete_pmkList($position_my, $showhat, $filter_divisi, $filter_departemen, $filter_status, $filter_daterange){
         // cek apa dia admin, superadmin, hc divhead, atau CEO
+        // TODO bagaimana buat divhead HC sama CEO, tampilkan modul assessment
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
-            // ambil semua data form
-            $data_pmk = $this->pmk_m->getAll();
+            // ambil semua data form dengan filter
+            $where = ""; // where untuk filtering
+            if(!empty($filter_divisi)){
+                $where += $this->table['position'].".div_id = ".$position_my['div_id'];
+            }
+            if(!empty($filter_departemen)){
+                $where += " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
+            }
         } else {
+            // ambil data form di divisi dia aja
             if($position_my['hirarki_org'] == "N"){
                 $where = $this->table['position'].".div_id = ".$position_my['div_id'];
-                if(!empty($this->input->post('departemen'))){
-                    $where += " AND ".$this->table['position'].".dept_id = ".explode("-", $this->input->post('departemen'));
+                if(!empty($filter_departemen)){
+                    $where += " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
                 }
                 // ambil data form di divisi dia aja
-                $data_emp = $this->employee_m->getAllEmp_where($where);
             } elseif($position_my['hirarki_org'] == "N-1"){
                 // ambil data form di divisi dan departemen dia
-                $data_emp = $this->employee_m->getAllEmp_where($this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']);
+                $where = $this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id'];
                 // ambil data di divisi dan departemen dia
             } elseif($position_my['hirarki_org'] == "N-2"){
-                $data_emp = $this->employee_m->getAllEmp_where($this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']." AND ".$this->table['position'].".id_approver1 = ".$position_my['id']);
+                $where = $this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']." AND ".$this->table['position'].".id_approver1 = ".$position_my['id'];
             } else {
                 show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                 exit;
             }
+        }
+        $data_emp = $this->employee_m->getAllEmp_where($where); // get data employee dari where yang sudah dibuat
 
-            // buat data pmk dari data employee di atas
-            $data_pmk = array(); $x = 0; // siapkan variabel
-            foreach($data_emp as $v){
-                $result = $this->pmk_m->getOnceWhere_form(array('nik' => $v['id_emp']));
-                if(!empty($result)){
-                    $data_pmk[$x] = $result;
-                    $x++;
-                }
+        // NOW bikin biar ngambil data pmk dengan filter
+        // siapkan variabel
+        $where = "";
+        if($showhat == 0){ // ambil data mytask
+            // if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1){
+            if($position_my['hirarki_org'] == "N") {
+                $where .= " AND status_now_id = '8'";
+            } elseif($position_my['hirarki_org'] == "N-1"){
+                $where .= " AND (status_now_id = '2' OR status_now_id = '1')";
+            } elseif($position_my['hirarki_org'] == "N-2"){
+                $where .= " AND status_now_id = '1'";
+            } else {
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                exit;
+            }
+        } elseif($showhat == 1){ // ambil data history
+            $daterange = explode(" - ", $filter_daterange); // pisahkan dulu daterangenya
+            $daterange[0] = strtotime($daterange[0]);
+            $daterange[1] = strtotime($daterange[1]);
+            $where .= " AND created >= ".$daterange[0]." AND created <= ".$daterange[1]; // tambahkan where tanggal buat ngebatesin view biar ga load lama
+            // ada filter status?
+            if(!empty($filter_status)){
+                $where .= " AND status_now_id = ".$filter_status;
+            }
+        } else { // tampilkan error
+            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            exit;
+        }
+
+        // buat data pmk dari data employee di atas
+        $data_pmk = array(); $x = 0; // siapkan variabel
+        foreach($data_emp as $v){
+            $result = $this->pmk_m->getOnceWhere_form("id LIKE '".$v['id_emp']."%'".$where);
+            if(!empty($result)){
+                $data_pmk[$x] = $result;
+                $x++;
             }
         }
 
         // lengkapi data pmk
         $dataPmk = array(); $x = 0;
         foreach($data_pmk as $k => $v){
-            $data_pos   = $this->employee_m->getDetails_employee($v['nik']);
+            $data_pos   = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
             $divisi     = $this->divisi_model->getOnceWhere(array('id' => $data_pos['div_id']));
             $department = $this->dept_model->getDetailById($data_pos['dept_id']);
-            $employee   = $this->employee_m->getDetails_employee($v['nik']);
+            $employee   = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
             $status     = $this->pmk_m->getOnceWhere_status(array('id_status' => $v['status_now_id']));
 
-            $dataPmk[$x]['nik']        = $v['nik'];
+            $dataPmk[$x]['nik']        = substr($v['id'], 0, 8);
             $dataPmk[$x]['divisi']     = $divisi['division'];
             $dataPmk[$x]['department'] = $department['nama_departemen'];
             $dataPmk[$x]['position']   = $data_pos['position_name'];
             $dataPmk[$x]['emp_name']   = $employee['emp_name'];
-            $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => json_encode(array('nik' => $v['nik'], 'contract' => $v['contract']))));
-            $dataPmk[$x]['action']     = json_encode(array('nik' => $v['nik'], 'contract' => $v['contract']));
+            $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => json_encode(array('nik' => substr($v['id'], 0, 8), 'contract' => substr($v['id'], 8, 2)))));
+            $dataPmk[$x]['action']     = json_encode(array('nik' => substr($v['id'], 0, 8), 'contract' => substr($v['id'], 8, 2)));
             $x++;
         }
 

@@ -3,7 +3,7 @@
     // jika dia divhead, admin, hc divhead, atau ceo jalankan skrip ini
     var table = $('#table_indexPMK').DataTable({
         responsive: true,
-        processing: true,
+        // processing: true,
         language : { 
             processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div><p class="m-0">Retrieving Data...</p>',
             zeroRecords: '<p class="m-0 text-danger font-weight-bold">No Data.</p>'
@@ -53,6 +53,7 @@
                 toastr["warning"]("This will take a few moments.", "Retrieving data...");
                 $('.overlay').fadeIn(); // hapus overlay chart
                 ajax_start_time = new Date().getTime(); // ajax stopwatch
+                $(".overlay").fadeIn();
             },
             complete: (data, jqXHR) => { // run function when ajax complete
                 table.columns.adjust();
@@ -60,6 +61,8 @@
                 // ajax data counter
                 var ajax_request_time = new Date().getTime() - ajax_start_time;
                 toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
+
+                $(".overlay").fadeOut();
                 
                 $('.overlay').fadeOut(); // hapus overlay chart
             }
@@ -139,6 +142,11 @@
             status = $(this).val(); // ubah variabel departemen
             table.ajax.reload(); // reload table
         });
+        // filter daterange
+        $("#daterange").on('change', function(){
+            daterange = $(this).val(); // ubah variabel daterange
+            table.ajax.reload(); // reload table
+        });
         // tombol reset filter
         $('#resetFilterAsses').on('click', function(){
             // reset division filter
@@ -206,7 +214,9 @@
         if($(this).hasClass('active') == false){
             $('#chooserData2').removeClass('active');
             $('#chooserData1').addClass('active');
-            $('#daterangeChooser').slideUp();
+            $('#daterangeChooser').hide();
+            $("#statusChooser").hide();
+            $("#filterTools").removeClass("justify-content-end");
 
             chooseIt($(this).data('choosewhat'));
         }
@@ -215,7 +225,9 @@
         if($(this).hasClass('active') == false){
             $('#chooserData1').removeClass('active');
             $('#chooserData2').addClass('active');
+            $("#statusChooser").slideDown();
             $('#daterangeChooser').slideDown();
+            $("#filterTools").addClass("justify-content-end");
             
             chooseIt($(this).data('choosewhat'));
         }

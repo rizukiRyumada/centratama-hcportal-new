@@ -52,11 +52,31 @@ class Pmk extends SpecialUserAppController {
             $data_divisi[$k]['emp_total'] = $this->employee_m->count_where(['div_id' => $v['id']]);
         }
 
-        $data['pmk_status'] = $this->pmk_m->getAll_pmkStatus(); // get semua status info
+        $position_my = $this->posisi_m->getMyPosition();
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
+            // ambil semua data pmk_status
+            $data['pmk_status'] = $this->pmk_m->getAll_pmkStatus(); // get semua status info
+
+        } else {
+            // ambil data form di divisi dia aja
+            $data['pmk_status'] = array(); $x = 0;
+            $pmk_status = $this->pmk_m->getAll_pmkStatus(); // get semua status info
+            foreach($pmk_status as $v){
+                if(!empty($v['pic'])){
+                    $pic = json_decode($v['pic'], true);
+                    foreach($pic as $value){
+                        if($value == $position_my['hirarki_org']){
+                            $data['pmk_status'][$x] = $v;
+                            $x++;
+                        }
+                    }
+                }
+            }
+        }
+
         $data['divisi'] = $data_divisi;
         $data['userApp_admin'] = $this->userApp_admin; // flag apa dia admin atau bukan
         
-        $position_my = $this->posisi_m->getMyPosition();
         $data['position_my'] = $position_my;
 
         if($position_my['hirarki_org'] == "N" || $this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
@@ -150,16 +170,29 @@ class Pmk extends SpecialUserAppController {
                 $counter_pmk++; // counter data yg abis di 2 bulan ke depan
                 // cek apa tidak ada datanya di kontrak terakhir
                 if($vya == 0){
+                    // cek apa dia punya approver
+                    $approver_nik = $this->employee_m->getApprover_nik($v['nik']); // ambil nik approver 1nya dia
+
                     $counter_new++; // counter new data
                     // prepare data
                     $data_pmk[$x]['id'] = $this->pmk_m->getId_form($result['nik'], $result['contract']);
-                    $data_pmk[$x]['status'] = json_encode([
-                        0 => [
-                            'id_status' => 1,
-                            'text' => 'Form generated.'
-                        ]
-                    ]);
-                    $data_pmk[$x]['status_now_id'] = 1;
+                    if(!empty($approver_nik)){
+                        $data_pmk[$x]['status'] = json_encode([
+                            0 => [
+                                'id_status' => 1,
+                                'text' => 'Form generated.'
+                            ]
+                        ]);
+                        $data_pmk[$x]['status_now_id'] = 1;
+                    } else {
+                        $data_pmk[$x]['status'] = json_encode([
+                            0 => [
+                                'id_status' => 8,
+                                'text' => 'The System cannot found approver 1, so the assessment for this employee adressed to Division Head.'
+                            ]
+                        ]);
+                        $data_pmk[$x]['status_now_id'] = 8;
+                    }
                     $data_pmk[$x]['created'] = time();
                     $data_pmk[$x]['modified'] = time();
 
@@ -191,11 +224,11 @@ class Pmk extends SpecialUserAppController {
 
             foreach($data_pmk as $v){
                 $data_employee = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8)); // ambil detail data employee
-                $approver_nik = $this->employee_m->getApprover_nik(substr($v['id'], 0, 8));
+                $approver_nik = $this->employee_m->getApprover_nik(substr($v['id'], 0, 8)); // ambil nik approver 1nya dia
                 
-                // jika dia gapunya atasan kirim email ke superadmin dan admin
+                // jika dia gapunya atasan kirim email ke division head
                 if(empty($approver_nik)){
-                    $approver_data = $this->user_m->get_admin($this->id_menu);
+                    $approver_data = $this->divisi_model->get_divHead($data_employee['div_id']); // ambil data divhead
                 } else {
                     $approver_data = $this->employee_m->getDetails_employee($approver_nik);
                 }
@@ -293,15 +326,17 @@ class Pmk extends SpecialUserAppController {
     function ajax_getList() {
         // Array ( [showhat] => 0 [divisi] => [departemen] => [status] => [daterange] => 08/11/2020 - 12/11/2020 )
         $showhat = $this->input->post('showhat');
-        $divisi = $this->input->post('divisi');
-        $departemen = $this->input->post('departemen');
-        $status = $this->input->post('status');
-        $daterange = $this->input->post('daterange');
+        $filter_divisi = $this->input->post('divisi');
+        $filter_departemen = $this->input->post('departemen');
+        $filter_status = $this->input->post('status');
+        $filter_daterange = $this->input->post('daterange');
 
         // ambil data posisi
         $position_my = $this->posisi_m->getMyPosition();
 
-        
+        echo(json_encode(array(
+            "data" => $this->pmk_m->getComplete_pmkList($position_my, $showhat, $filter_divisi, $filter_departemen, $filter_status, $filter_daterange)
+        )));
     }
 
 /* -------------------------------------------------------------------------- */

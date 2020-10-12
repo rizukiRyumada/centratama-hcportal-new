@@ -82,6 +82,7 @@
 <div class="row">
     <div class="col">
         <div class="card card-primary card-outline card-outline-tabs">
+            <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
                     <!-- TODO tambahkan if jika dia atasan HC atau bukan buat aktifin mana dulu -->
@@ -117,7 +118,7 @@
                         </div>
 
                         <!-- filter table -->
-                        <div class="row justify-content-end">
+                        <div id="filterTools" class="row">
                             <?php if($position_my['id'] == "1" || $position_my['id'] == "196" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="form-group">
@@ -141,7 +142,7 @@
                                     </div>
                                 </div>
                             <?php endif; ?>
-                            <div class="col-lg-4 col-sm-6">
+                            <div id="statusChooser" class="col-lg-4 col-sm-6" style="display: none;">
                                 <div class="form-group">
                                     <label for="status">Status:</label>
                                     <select id="status" class="custom-select form-control form-control-sm">
@@ -152,7 +153,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div id="daterangeChooser" class="col-lg-4 col-sm-6" style="display: none">
+                            <div id="daterangeChooser" class="col-lg-4 col-sm-6" style="display: none;">
                                 <div class="form-group">
                                     <label for="daterange">Pick a daterange:</label>
                                     <div class="input-group">
