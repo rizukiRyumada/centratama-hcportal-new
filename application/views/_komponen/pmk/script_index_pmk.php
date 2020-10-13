@@ -1,14 +1,17 @@
 <script>
-    <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"): ?>
+    // buat kalo dia bukan N, N-1, N-2 tampilkan historynya aja
+    <?php if(($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2") && $position_my['id'] != 1): ?>
         var showhat =  0; 
     <?php else: ?>
         var showhat =  1;     
     <?php endif; ?>
     
+    // buat memunculkan tombol reset saat ada filternya aja
+
     var divisi = ""; var departemen = ""; var status = ""; var daterange = "<?= date('m/d/o', strtotime("-2 month", time())) ?> - <?= date('m/d/o', strtotime("+2 month", time())); ?>";
-    // jika dia divhead, admin, hc divhead, atau ceo jalankan skrip ini
     var table = $('#table_indexPMK').DataTable({
         responsive: true,
+        autoWidth: false,
         // processing: true,
         language : { 
             processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div><p class="m-0">Retrieving Data...</p>',
@@ -67,9 +70,6 @@
                 // ajax data counter
                 var ajax_request_time = new Date().getTime() - ajax_start_time;
                 toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
-
-                $(".overlay").fadeOut();
-                
                 $('.overlay').fadeOut(); // hapus overlay chart
             }
         },
@@ -105,7 +105,21 @@
     });
 
     $(document).ready(() => {
-        // table.ajax.reload();
+        // sembunyikan tombol reset filter apabila tidak ada filter tools
+        if(flag_filter == 0){
+            $("#buttonResetFilter").slideUp();
+        }
+        // sembunyikan divisi filter di my task hc divhead
+        <?php if($position_my['id'] == 196): ?>
+            divisi = "div-<?= $position_my['div_id']; ?>";
+            getDepartemen("div-<?= $position_my['div_id']; ?>");
+            $("#division_wrapper").slideUp();
+        <?php endif; ?>
+        
+        // jalankan get departemen jika dia N tapi buka hc divhead
+        <?php if($position_my['hirarki_org'] == "N" && $position_my['id'] != 196 && $position_my['id'] != 1): ?>
+            getDepartemen("div-<?= $position_my['div_id']; ?>");
+        <?php endif; ?>
 
     /* -------------------------------------------------------------------------- */
     /*                    Assessment Survey Filtering Function                    */
@@ -115,26 +129,10 @@
         $('#divisi').change(function(){
             divisi = $(this).val(); // ubah variable divisi
             // get department from the server
-            $.ajax({
-                url: "<?php echo base_url('job_profile/ajax_getdepartement'); ?>",
-                data: { //kirim ke server php
-                    divisi: divisi,
-                },
-                method: "POST",
-                beforeSend: () => {
-                    $('#departemen').empty().append('<option value="">Loading...</option>'); //kosongkan selection value dan tambahkan satu selection option
-                },
-                success: function(data) { //jadi nanti dia balikin datanya dengan variable data
-                    if(divisi == ""){
-                        $('#departemen').empty().append('<option value="">Please choose division first</option>'); //kosongkan selection value dan tambahkan satu selection option
-                    } else {
-                        $('#departemen').empty().append('<option value="">All</option>'); //kosongkan selection value dan tambahkan satu selection option
-                        $.each(JSON.parse(data), function(i, v) {
-                            $('#departemen').append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
-                        });
-                    }
-                }
-            });
+            getDepartemen(divisi);
+            if(divisi == ""){
+                departemen = "";
+            }
             table.ajax.reload(); // reload table
         });
         // filter departemen
@@ -221,7 +219,17 @@
             $('#chooserData1').addClass('active');
             $('#daterangeChooser').hide();
             $("#statusChooser").hide();
-            $("#filterTools").removeClass("justify-content-end");
+            // $("#filterTools").removeClass("justify-content-end");
+
+            if(flag_filter == 0){
+                $("#buttonResetFilter").slideUp();
+            }
+
+            <?php if($position_my['id'] == 196): ?>
+                divisi = "div-<?= $position_my['div_id']; ?>";
+                getDepartemen("div-<?= $position_my['div_id']; ?>");
+                $("#division_wrapper").slideUp();
+            <?php endif; ?>
 
             chooseIt($(this).data('choosewhat'));
         }
@@ -232,7 +240,17 @@
             $('#chooserData2').addClass('active');
             $("#statusChooser").slideDown();
             $('#daterangeChooser').slideDown();
-            $("#filterTools").addClass("justify-content-end");
+            // $("#filterTools").addClass("justify-content-end");
+
+            if(flag_filter == 0){
+                $("#buttonResetFilter").slideDown();
+            }
+
+            <?php if($position_my['id'] == 196): ?>
+                divisi = "";
+                getDepartemen("");
+                $("#division_wrapper").slideDown();
+            <?php endif; ?>
             
             chooseIt($(this).data('choosewhat'));
         }
@@ -241,6 +259,29 @@
     function chooseIt(choose){
         showhat = choose; // ganti flag view data
         table.ajax.reload(); // reload table
+    }
+
+    function getDepartemen(divisi){
+        $.ajax({
+            url: "<?php echo base_url('job_profile/ajax_getdepartement'); ?>",
+            data: { //kirim ke server php
+                divisi: divisi,
+            },
+            method: "POST",
+            beforeSend: () => {
+                $('#departemen').empty().append('<option value="">Loading...</option>'); //kosongkan selection value dan tambahkan satu selection option
+            },
+            success: function(data) { //jadi nanti dia balikin datanya dengan variable data
+                if(divisi == ""){
+                    $('#departemen').empty().append('<option value="">Please choose division first</option>'); //kosongkan selection value dan tambahkan satu selection option
+                } else {
+                    $('#departemen').empty().append('<option value="">All</option>'); //kosongkan selection value dan tambahkan satu selection option
+                    $.each(JSON.parse(data), function(i, v) {
+                        $('#departemen').append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
+                    });
+                }
+            }
+        });
     }
 
 /* -------------------------------------------------------------------------- */

@@ -173,17 +173,29 @@ class Pmk extends SpecialUserAppController {
                     // cek apa dia punya approver
                     $approver_nik = $this->employee_m->getApprover_nik($v['nik']); // ambil nik approver 1nya dia
 
+                    $emp_data = $this->employee_m->getDetails_employee($v['nik']);
+
                     $counter_new++; // counter new data
                     // prepare data
                     $data_pmk[$x]['id'] = $this->pmk_m->getId_form($result['nik'], $result['contract']);
                     if(!empty($approver_nik)){
-                        $data_pmk[$x]['status'] = json_encode([
-                            0 => [
-                                'id_status' => 1,
-                                'text' => 'Form generated.'
-                            ]
-                        ]);
-                        $data_pmk[$x]['status_now_id'] = 1;
+                        if($emp_data['hirarki_org'] == "Functional-div" || $emp_data['hirarki_org'] == "Functional-adm"){
+                            $data_pmk[$x]['status'] = json_encode([
+                                0 => [
+                                    'id_status' => 8,
+                                    'text' => 'Form Generated and the assessment for this employee adressed to Division Head.'
+                                ]
+                            ]);
+                            $data_pmk[$x]['status_now_id'] = 8;
+                        } else {
+                            $data_pmk[$x]['status'] = json_encode([
+                                0 => [
+                                    'id_status' => 1,
+                                    'text' => 'Form generated.'
+                                ]
+                            ]);
+                            $data_pmk[$x]['status_now_id'] = 1;
+                        }
                     } else {
                         $data_pmk[$x]['status'] = json_encode([
                             0 => [

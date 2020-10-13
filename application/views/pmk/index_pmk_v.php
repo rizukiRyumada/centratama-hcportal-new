@@ -87,18 +87,31 @@
                 <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
                     <!-- TODO tambahkan if jika dia atasan HC atau bukan buat aktifin mana dulu -->
                     <li class="nav-item">
-                        <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false"><i class="fas fa-file-alt"></i> Assessment</a>
+                        <a class="nav-link 
+                            <?php if($position_my['id'] != 1): ?>
+                                active
+                            <?php endif; ?>
+                        " id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false"><i class="fas fa-file-alt"></i> Assessment</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="true"><i class="fas fa-file-signature"></i> Summary</a>
+                        <a class="nav-link 
+                            <?php if($position_my['id'] == 1): ?>
+                                active
+                            <?php endif; ?>
+                        " id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="true"><i class="fas fa-file-signature"></i> Summary</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <!-- Tabel assessment -->
-                    <div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-                        <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"): ?>    
+                    <?php $flag_filter = 0; // buat penanda apa ada item tool buat filter ?>
+                    <div class="tab-pane fade 
+                            <?php if($position_my['id'] != 1): ?>
+                                active show
+                            <?php endif; ?>
+                        " id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                        <?php if(($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2") && $position_my['id'] != 1): ?>    
                             <!-- data view chooser -->
                             <div class="row mb-2">
                                 <div class="col bg-light py-2">
@@ -120,13 +133,14 @@
                         <?php endif; ?>
 
                         <!-- filter table -->
-                        <div id="filterTools" class="row 
+                        <div id="filterTools" class="row justify-content-end
                             <?php if($this->session->userdata('role_id') == 1): ?>
-                               justify-content-end
+                               <?php $flag_filter++; // tandai filter flag buat munculin tombol apa dia ada filter toolsnya ?>
                             <?php endif; ?>
-                        ">
+                            ">
                             <?php if($position_my['id'] == "1" || $position_my['id'] == "196" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
-                                <div class="col-lg-4 col-sm-6">
+                                <?php $flag_filter++; // tandai filter flag buat munculin tombol apa dia ada filter toolsnya ?>
+                                <div id="division_wrapper" class="col-lg-4 col-sm-6">
                                     <div class="form-group">
                                         <label for="divisi">Division:</label>
                                         <select id="divisi" class="custom-select form-control form-control-sm">
@@ -139,6 +153,7 @@
                                 </div>
                             <?php endif; ?>
                             <?php if($position_my['hirarki_org'] == "N" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                                <?php $flag_filter++; // tandai filter flag buat munculin tombol apa dia ada filter toolsnya ?>
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="form-group">
                                         <label for="departemen">Department:</label>
@@ -149,10 +164,10 @@
                                 </div>
                             <?php endif; ?>
                             <div id="statusChooser" class="col-lg-4 col-sm-6" 
-                                <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"): ?>
+                                <?php if(($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2") && $position_my['id'] != 1): ?>
                                     style="display: none;"
                                 <?php endif; ?>
-                            >
+                                >
                                 <div class="form-group">
                                     <label for="status">Status:</label>
                                     <select id="status" class="custom-select form-control form-control-sm">
@@ -164,10 +179,10 @@
                                 </div>
                             </div>
                             <div id="daterangeChooser" class="col-lg-4 col-sm-6" 
-                                <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"): ?>
+                                <?php if(($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2") && $position_my['id'] != 1): ?>
                                     style="display: none;"
                                 <?php endif; ?>
-                            >
+                                >
                                 <div class="form-group">
                                     <label for="daterange">Pick a daterange:</label>
                                     <div class="input-group">
@@ -179,7 +194,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row justify-content-end">
+                        <div id="buttonResetFilter" class="row justify-content-end">
                             <div class="col-sm-2">
                                 <button id="resetFilterAsses" class="btn btn-danger w-100"><i class="fa fa-filter fa-rotate-180"></i> Reset</button>
                             </div>
@@ -207,7 +222,11 @@
                     </div> <!-- /Tabel assessment -->
 
                     <!-- Tabel Summary -->
-                    <div class="tab-pane fade" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                    <div class="tab-pane fade
+                            <?php if($position_my['id'] == 1): ?>
+                                active show
+                            <?php endif; ?>
+                        " id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
                         <div class="row d-flex align-items-stretch">
                             <?php foreach($divisi as $v): ?>
                                 <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
@@ -240,3 +259,7 @@
         </div>
     </div>
 </div>
+
+<script>
+    var flag_filter = <?= $flag_filter; ?>;
+</script>
