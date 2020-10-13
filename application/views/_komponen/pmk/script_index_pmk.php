@@ -1,5 +1,11 @@
 <script>
-    var showhat =  0; var divisi = ""; var departemen = ""; var status = ""; var daterange = "<?= date('m/d/o', strtotime("-2 month", time())) ?> - <?= date('m/d/o', strtotime("+2 month", time())); ?>";
+    <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"): ?>
+        var showhat =  0; 
+    <?php else: ?>
+        var showhat =  1;     
+    <?php endif; ?>
+    
+    var divisi = ""; var departemen = ""; var status = ""; var daterange = "<?= date('m/d/o', strtotime("-2 month", time())) ?> - <?= date('m/d/o', strtotime("+2 month", time())); ?>";
     // jika dia divhead, admin, hc divhead, atau ceo jalankan skrip ini
     var table = $('#table_indexPMK').DataTable({
         responsive: true,
@@ -79,8 +85,7 @@
                 render: (data, type) => {
                     if(type === 'display'){
                         let vya = JSON.parse(data);
-                        let vya_trigger = JSON.parse(vya.trigger);
-                        return '<a href="javascript:showTimeline('+vya_trigger.nik+', '+vya_trigger.contract+')" ><span class="w-100 badge badge-'+vya.status.css_color+'">'+vya.status.name_text+'</span></a>';
+                        return '<a href="javascript:showTimeline('+vya.trigger+')" ><span class="w-100 badge badge-'+vya.status.css_color+'">'+vya.status.name+'</span></a>';
                     }
                     return data;
                 }
@@ -91,7 +96,7 @@
                 render: (data, type) => {
                     if(type === 'display'){
                         let vya = JSON.parse(data);
-                        return '<div class="container h-100 m-0 px-auto"> <div class="row justify-content-center align-self-center w-100 m-0"><a class="btn btn-primary w-100" href="<?= base_url('pmk/assessment'); ?>?nik='+vya.nik+'&contract='+vya.contract+'"><i class="fa fa-search mx-auto"></i></a></div></div>';
+                        return '<div class="container h-100 m-0 px-auto"> <div class="row justify-content-center align-self-center w-100 m-0"><a class="btn btn-primary w-100" href="<?= base_url('pmk/assessment'); ?>?id='+vya.id+'"><i class="fa fa-search mx-auto"></i></a></div></div>';
                     }
                     return data;
                 }

@@ -63,17 +63,22 @@ class Pmk_m extends CI_Model {
             // ambil semua data form dengan filter
             $where = ""; // where untuk filtering
             if(!empty($filter_divisi)){
-                $where += $this->table['position'].".div_id = ".$position_my['div_id'];
+                $where .= $this->table['position'].".div_id = ".explode("-", $filter_divisi)[1];
             }
             if(!empty($filter_departemen)){
-                $where += " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
+                $where .= " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
+            }
+            if(!empty($where)){
+                $data_emp = $this->employee_m->getAllEmp_where($where); // get data employee dari where yang sudah dibuat
+            } else {
+                $data_emp = $this->employee_m->getAllEmp(); // get data employee dari where yang sudah dibuat
             }
         } else {
             // ambil data form di divisi dia aja
             if($position_my['hirarki_org'] == "N"){
                 $where = $this->table['position'].".div_id = ".$position_my['div_id'];
                 if(!empty($filter_departemen)){
-                    $where += " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
+                    $where .= " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
                 }
                 // ambil data form di divisi dia aja
             } elseif($position_my['hirarki_org'] == "N-1"){
@@ -86,10 +91,9 @@ class Pmk_m extends CI_Model {
                 show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                 exit;
             }
+            $data_emp = $this->employee_m->getAllEmp_where($where); // get data employee dari where yang sudah dibuat
         }
-        $data_emp = $this->employee_m->getAllEmp_where($where); // get data employee dari where yang sudah dibuat
 
-        // NOW bikin biar ngambil data pmk dengan filter
         // siapkan variabel
         $where = "";
         if($showhat == 0){ // ambil data mytask
@@ -100,9 +104,10 @@ class Pmk_m extends CI_Model {
                 $where .= " AND (status_now_id = '2' OR status_now_id = '1')";
             } elseif($position_my['hirarki_org'] == "N-2"){
                 $where .= " AND status_now_id = '1'";
-            } else {
-                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                exit;
+            } else { // ambil yang tidak ada statusnya di database biar hasilnya null
+                $where .= " AND status_now_id = '999'";
+                // show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                // exit;
             }
         } elseif($showhat == 1){ // ambil data history
             $daterange = explode(" - ", $filter_daterange); // pisahkan dulu daterangenya
@@ -142,8 +147,8 @@ class Pmk_m extends CI_Model {
             $dataPmk[$x]['department'] = $department['nama_departemen'];
             $dataPmk[$x]['position']   = $data_pos['position_name'];
             $dataPmk[$x]['emp_name']   = $employee['emp_name'];
-            $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => json_encode(array('nik' => substr($v['id'], 0, 8), 'contract' => substr($v['id'], 8, 2)))));
-            $dataPmk[$x]['action']     = json_encode(array('nik' => substr($v['id'], 0, 8), 'contract' => substr($v['id'], 8, 2)));
+            $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
+            $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
             $x++;
         }
 

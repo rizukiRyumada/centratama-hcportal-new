@@ -98,27 +98,33 @@
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <!-- Tabel assessment -->
                     <div class="tab-pane fade active show" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
-                        <!-- data view chooser -->
-                        <div class="row mb-2">
-                            <div class="col bg-light py-2">
-                                <div class="row">
-                                    <div class="col">
-                                        <label>Choose data to view:</label>
+                        <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"): ?>    
+                            <!-- data view chooser -->
+                            <div class="row mb-2">
+                                <div class="col bg-light py-2">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label>Choose data to view:</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <ul class="nav nav-pills ml-auto p-2">
-                                            <li class="nav-item"><a id="chooserData1" class="nav-link active" href="javascript:void(0)" data-choosewhat="0"><i class="fas fa-clipboard-list"></i> My Task</a></li>
-                                            <li class="nav-item"><a id="chooserData2" class="nav-link" href="javascript:void(0)" data-choosewhat="1"><i class="fas fa-history"></i> History</a></li>
-                                        </ul>
+                                    <div class="row">
+                                        <div class="col">
+                                            <ul class="nav nav-pills ml-auto p-2">
+                                                <li class="nav-item"><a id="chooserData1" class="nav-link active" href="javascript:void(0)" data-choosewhat="0"><i class="fas fa-clipboard-list"></i> My Task</a></li>
+                                                <li class="nav-item"><a id="chooserData2" class="nav-link" href="javascript:void(0)" data-choosewhat="1"><i class="fas fa-history"></i> History</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php endif; ?>
 
                         <!-- filter table -->
-                        <div id="filterTools" class="row">
+                        <div id="filterTools" class="row 
+                            <?php if($this->session->userdata('role_id') == 1): ?>
+                               justify-content-end
+                            <?php endif; ?>
+                        ">
                             <?php if($position_my['id'] == "1" || $position_my['id'] == "196" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="form-group">
@@ -142,7 +148,11 @@
                                     </div>
                                 </div>
                             <?php endif; ?>
-                            <div id="statusChooser" class="col-lg-4 col-sm-6" style="display: none;">
+                            <div id="statusChooser" class="col-lg-4 col-sm-6" 
+                                <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"): ?>
+                                    style="display: none;"
+                                <?php endif; ?>
+                            >
                                 <div class="form-group">
                                     <label for="status">Status:</label>
                                     <select id="status" class="custom-select form-control form-control-sm">
@@ -153,7 +163,11 @@
                                     </select>
                                 </div>
                             </div>
-                            <div id="daterangeChooser" class="col-lg-4 col-sm-6" style="display: none;">
+                            <div id="daterangeChooser" class="col-lg-4 col-sm-6" 
+                                <?php if($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"): ?>
+                                    style="display: none;"
+                                <?php endif; ?>
+                            >
                                 <div class="form-group">
                                     <label for="daterange">Pick a daterange:</label>
                                     <div class="input-group">
@@ -173,21 +187,23 @@
 
                         <hr/>
 
-                        <!-- tabel index pmk -->
-                        <table id="table_indexPMK" class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>NIK</th>
-                                    <th>Division</th>
-                                    <th>Department</th>
-                                    <th>Position</th>
-                                    <th>Employee Name</th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table><!-- /tabel index pmk -->
+                        <div class="table-responsive">
+                            <!-- tabel index pmk -->
+                            <table id="table_indexPMK" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>NIK</th>
+                                        <th>Division</th>
+                                        <th>Department</th>
+                                        <th>Position</th>
+                                        <th>Employee Name</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table><!-- /tabel index pmk -->
+                        </div>
                     </div> <!-- /Tabel assessment -->
 
                     <!-- Tabel Summary -->
