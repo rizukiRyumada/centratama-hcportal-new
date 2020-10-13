@@ -141,7 +141,7 @@ function sendEmail($data_penerima_email, $emailText, $subject_email){
         if($CI->email->send()){
             // echo("success");
         } else {
-            echo $CI->email->print_debugger(); //show debugger if error
+            // echo $CI->email->print_debugger(); //show debugger if error
         }
     } else {
         // gausah kirim email tapi lempengin aja
