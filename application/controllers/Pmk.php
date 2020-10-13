@@ -102,19 +102,21 @@ class Pmk extends SpecialUserAppController {
     }
 
     public function assessment(){
+        $nik = substr($this->input->get("id"), 0, 8);
         // data posisi
         $position_my = $this->posisi_m->getMyPosition();
-        $position = $this->employee_m->getDetails_employee($this->input->get('nik'));
+        $position = $this->employee_m->getDetails_employee($nik);
         // cek akses assessment
         $this->cekAkses_pmk($position_my, $position);
 
         // cek ketersediaan survey
 
         // assessment data
-        $data['data_assess'] = array($this->input->get('nik'), $this->input->get('contract')); // ambil data nik dan contract di get dari url
+        $data['id_pmk'] = $this->input->get('id'); // ambil data nik dan contract di get dari url
         $data['pertanyaan'] = $this->pmk_m->getAll_pertanyaan();
-        $data['employee'] = $this->employee_m->getDetails_employee($this->input->get('nik'));
-        $data['contract'] = $this->pmk_m->getOnceWhere_contract(array('nik' => $this->input->get('nik'), 'contract' => $this->input->get('contract')));
+        $data['employee'] = $position;
+        //NOW
+        $data['contract'] = $this->pmk_m->getOnce_LastContractByNik($nik);
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
@@ -157,7 +159,7 @@ class Pmk extends SpecialUserAppController {
         // ambil bulan setelah 2 bulan lagi
         $date = strtotime("+2 month", time());
         // ambil data contract terakhir
-        $data_contract = $this->db->query("SELECT nik, MAX(contract) AS contract FROM ".$this->table['contract']." GROUP BY nik ORDER BY nik")->result_array();
+        $data_contract = $this->pmk_m->getAll_LastContract();
         // cari yg datenya udh beberapa bulan lagi
         $data_pmk = []; $x = 0; $counter_pmk = 0; $counter_new = 0;
         foreach($data_contract as $k => $v){

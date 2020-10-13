@@ -21,6 +21,20 @@ class Pmk_m extends CI_Model {
         return $this->db->get($this->table['main'])->result_array();
     }
 
+    /**
+     * ambil semua data contract yang terakhir di setiap karyawan
+     *
+     * @return void
+     */
+    function getAll_LastContract(){
+        return $this->db->query("SELECT nik, MAX(contract) AS contract FROM ".$this->table['contract']." GROUP BY nik ORDER BY nik")->result_array();
+    }
+    
+    /**
+     * get semua pertanyaan assessment
+     *
+     * @return void
+     */
     function getAll_pertanyaan(){
         return $this->db->get($this->table['pertanyaan'])->result_array();
     }
@@ -55,7 +69,18 @@ class Pmk_m extends CI_Model {
         $this->db->join($this->table['status'], $this->table['main'].".status_now = ".$this->table['status'].".id", 'left');
         return $this->db->get_where($this->table['main'], $where)->result_array();
     }
-
+    
+    /**
+     * get list of assessment using ajax
+     *
+     * @param  mixed $position_my
+     * @param  mixed $showhat
+     * @param  mixed $filter_divisi
+     * @param  mixed $filter_departemen
+     * @param  mixed $filter_status
+     * @param  mixed $filter_daterange
+     * @return void
+     */
     function getComplete_pmkList($position_my, $showhat, $filter_divisi, $filter_departemen, $filter_status, $filter_daterange){
         // cek apa dia admin, superadmin, hc divhead, atau CEO
         // TODO bagaimana buat divhead HC sama CEO, tampilkan modul assessment
@@ -231,7 +256,14 @@ class Pmk_m extends CI_Model {
     function getAllWhere_form($where){
         return $this->db->get_where($this->table['main'], $where)->result_array();
     }
-
+    
+    /**
+     * this function is used for generate pmk id form
+     *
+     * @param  mixed $nik
+     * @param  mixed $contract
+     * @return void
+     */
     function getId_form($nik, $contract){
         // ambil counter dan update ke table counter
         $counter = $this->db->get_where($this->table['counter'], array("id" => "pmk"))->row_array();
@@ -256,13 +288,13 @@ class Pmk_m extends CI_Model {
     }
 
     /**
-     * ambil satu data contract dengan where
+     * ambil satu data contract dengan nik
      *
-     * @param  mixed $where
+     * @param  mixed[8] $nik
      * @return void
      */
-    function getOnceWhere_contract($where){
-        return $this->db->get_where($this->table['contract'], $where)->row_array();
+    function getOnce_LastContractByNik($nik){
+        return $this->db->query("SELECT nik, MAX(contract) AS contract FROM ".$this->table['contract']." WHERE nik = '".$nik."' GROUP BY nik ORDER BY nik")->row_array();
     }
     
     /**
