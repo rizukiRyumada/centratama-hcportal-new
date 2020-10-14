@@ -22,7 +22,7 @@ class Ptk extends SpecialUserAppController {
         'division' => 'master_division',
         'position' => 'master_position',
         'location' => 'master_location',
-        'joblevel' => 'master_joblevel',
+        'joblevel' => 'master_personallevel',
         'ptk_status' => 'ptk_status',
         'ptk_status_pj' => 'ptk_status-pj',
         'ptk_education' => 'ptk_education'
