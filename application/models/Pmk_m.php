@@ -85,10 +85,30 @@ class Pmk_m extends CI_Model {
         // cek apa dia admin, superadmin, hc divhead, atau CEO
         // TODO bagaimana buat divhead HC sama CEO, tampilkan modul assessment
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
-            // ambil semua data form dengan filter
             $where = ""; // where untuk filtering
+            // filter divisi dan departemen khusus admin dan hc divhead
+            if($position_my['id'] == 196 && $showhat == 0){
+                $where .= $this->table['position'].".div_id = '6'";
+            } elseif($position_my['hirarki_org'] == "N" && $showhat == 0){ // ambil data form di divisi dia aja
+                $where = $this->table['position'].".div_id = ".$position_my['div_id'];
+                // if(!empty($filter_departemen)){
+                //     $where .= " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
+                // }
+            } elseif($position_my['hirarki_org'] == "N-1" && $showhat == 0){
+                // ambil data form di divisi dan departemen dia
+                $where = $this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id'];
+                // ambil data di divisi dan departemen dia
+            } elseif($position_my['hirarki_org'] == "N-2" && $showhat == 0){
+                $where = $this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']." AND ".$this->table['position'].".id_approver1 = ".$position_my['id'];
+            }
+
+            // ambil semua data form dengan filter
             if(!empty($filter_divisi)){
-                $where .= $this->table['position'].".div_id = ".explode("-", $filter_divisi)[1];
+                if(empty($where)){ // jika where sebelumnya kosong
+                    $where .= $this->table['position'].".div_id = ".explode("-", $filter_divisi)[1];
+                } else {
+                    $where .= " AND ".$this->table['position'].".div_id = ".explode("-", $filter_divisi)[1];
+                }
             }
             if(!empty($filter_departemen)){
                 $where .= " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
