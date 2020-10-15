@@ -15,7 +15,8 @@ class Pmk extends SpecialUserAppController {
         'contract' => 'master_employee_contract',
         'form'     => 'pmk_form',
         'position' => 'master_position',
-        'status'   => 'pmk_status'
+        'status'   => 'pmk_status',
+        'survey'   => 'pmk_survey_hasil'
     ];
     
     public function __construct()
@@ -115,7 +116,6 @@ class Pmk extends SpecialUserAppController {
         $data['id_pmk'] = $this->input->get('id'); // ambil data nik dan contract di get dari url
         $data['pertanyaan'] = $this->pmk_m->getAll_pertanyaan();
         $data['employee'] = $position;
-        //NOW
         $contract_last = $this->pmk_m->getOnce_LastContractByNik($nik);
         $data['contract'] = $this->pmk_m->getOnce_contract($contract_last['nik'], $contract_last['contract']);
 
@@ -186,6 +186,9 @@ class Pmk extends SpecialUserAppController {
                             $data_pmk[$x]['status'] = json_encode([
                                 0 => [
                                     'id_status' => 8,
+                                    'by' => 'system',
+                                    'nik' => '',
+                                    'time' => time(),
                                     'text' => 'Form Generated and the assessment for this employee adressed to Division Head.'
                                 ]
                             ]);
@@ -194,6 +197,9 @@ class Pmk extends SpecialUserAppController {
                             $data_pmk[$x]['status'] = json_encode([
                                 0 => [
                                     'id_status' => 1,
+                                    'by' => 'system',
+                                    'nik' => '',
+                                    'time' => time(),
                                     'text' => 'Form generated.'
                                 ]
                             ]);
@@ -203,6 +209,9 @@ class Pmk extends SpecialUserAppController {
                         $data_pmk[$x]['status'] = json_encode([
                             0 => [
                                 'id_status' => 8,
+                                'by' => 'system',
+                                'nik' => '',
+                                'time' => time(),
                                 'text' => 'The System cannot found approver 1, so the assessment for this employee adressed to Division Head.'
                             ]
                         ]);
@@ -410,11 +419,117 @@ class Pmk extends SpecialUserAppController {
     
     /**
      * save assessment survey data to database
-     *
+     * 
      * @return void
      */
+    // NOW
     function saveAssessment(){
-        print_r($_POST);
+        // proses data post
+        $data_survey = $this->saveAssessment_post();
+
+        // ambil form detail
+        $pmk_data = $this->pmk_m->getOnceWhere_form(array('id' => $this->input->post('id')));
+        $status_new = json_decode($pmk_data['status'], true); // ubah status detailnya
+        $penilai = $this->employee_m->getDetails_employee($this->session->userdata('nik'));
+        
+        // data posisi
+        $nik = substr($this->input->post("id"), 0, 8);
+        $position_my = $this->posisi_m->getMyPosition();
+        $position = $this->employee_m->getDetails_employee($nik);
+        // cek akses assessment
+        $this->cekAkses_pmk($position_my, $position);
+
+        if($this->input->post('action') == 0){ // jika actionnya save
+            $status_now_id = "1";
+            $status_new[array_key_last($status_new)+1] = array(
+                'id_status' => "1",
+                'by' => $penilai['emp_name'],
+                'nik' => $penilai['nik'],
+                'time' => time(),
+                'text' => 'Assessment form was changed.'
+            );
+        } else { // jika actionnya submit
+            $status_now_id = "3";
+            if($penilai['hirarki_org'] == "N-2"){
+                $status_new[array_key_last($status_new)+1] = array(
+                    'id_status' => "3",
+                    'by' => $penilai['emp_name'],
+                    'nik' => $penilai['nik'],
+                    'time' => time(),
+                    'text' => 'Assessment form was submitted by N-2.'
+                );
+            } elseif($penilai['hirarki_org'] == "N-1"){
+                $status_new[array_key_last($status_new)+1] = array(
+                    'id_status' => "3",
+                    'by' => $penilai['emp_name'],
+                    'nik' => $penilai['nik'],
+                    'time' => time(),
+                    'text' => 'Assessment form was submitted by N-1.'
+                );
+            } elseif($penilai['hirarki_org'] == "N"){
+                $status_new[array_key_last($status_new)+1] = array(
+                    'id_status' => "3",
+                    'by' => $penilai['emp_name'],
+                    'nik' => $penilai['nik'],
+                    'time' => time(),
+                    'text' => 'Assessment form was submitted by N.'
+                );
+            } else {
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            }
+        }
+
+        // masukkan ke database
+        if($this->_general_m->getRow($this->table['survey'], array('id' => $this->input->post('id'))) > 0){ // cek jika ada isi surveynya
+            $this->pmk_m->delete_assessment($this->input->post('id'));
+        }
+        $this->pmk_m->insertAll_surveyHasil($data_survey);
+
+        // prepare updated data
+        $update_pmk = array(
+            'status' => json_encode($status_new),
+            'status_now_id' => $status_now_id,
+            'modified' => time()
+        );
+        // update pmk data form
+        $this->pmk_m->updateForm($update_pmk, array('id' => $this->input->post('id')));
+
+        redirect('pmk');
+    }
+
+    function saveAssessment_post(){
+        // ambil tipe pertanyaan
+        $pertanyaan = $this->pmk_m->getAll_surveyPertanyaan();
+
+        $pmk_survey = array(); $x = 0;
+        foreach($pertanyaan as $v){
+            foreach($this->input->post() as $key => $value){
+                if($v['id_pertanyaan'] == $key){
+                    $pmk_survey[$x]['id'] = $this->input->post('id');
+                    $pmk_survey[$x]['id_pertanyaan'] = $key;
+                    $pmk_survey[$x]['jawaban'] = $value;
+                    $pmk_survey[$x]['pertanyaan_kustom'] = "";
+                    $x++;
+                }
+            }
+        }
+
+        $y = 0;
+        foreach($this->input->post() as $k => $v){
+            if(fnmatch("B0*", $k)){ // cek apa dia technical competency assessment
+                if(!fnmatch("*_pertanyaan", $k)){ // cek jika bukan pertanyaan
+                    if(!empty($this->input->post($k."_pertanyaan"))){ // cek apa pertanyaannya kosong
+                        $pmk_survey[$x]['id'] = $this->input->post('id');
+                        $pmk_survey[$x]['id_pertanyaan'] = "B0-".str_pad($y, 2, '0', STR_PAD_LEFT);
+                        $pmk_survey[$x]['jawaban'] = $v;
+                        $pmk_survey[$x]['pertanyaan_kustom'] = $this->input->post($k."_pertanyaan");
+                        $x++; $y++;
+                    }
+                }
+            }
+        }
+
+        return($pmk_survey);
     }
 
     function test(){

@@ -423,4 +423,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Hidden input for saving some data -->
+    <input type="hidden" name="id" value="<?= $id_pmk; ?>">
+    <input type="hidden" name="action">
 </form>

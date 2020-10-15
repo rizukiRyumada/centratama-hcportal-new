@@ -8,20 +8,55 @@
     // tooltip validation
     // var msg_choose = '<div class="invalid-tooltip" style="display: block">'+choose+'</div>' ;
     var msg_fill   = '<div class="invalid-tooltip" style="display: block">'+fill+'</div>' ;
-    var msg_number = '<div class="invalid-tooltip" style="display: block">'+number+'</div>'
-    var msg_choose = '<div class="error-message row mt-2 py-2 bg-danger" ><div class="col text-center">'+choose+'</div></div>'
+    var msg_number = '<div class="invalid-tooltip" style="display: block">'+number+'</div>';
+    var msg_choose = '<div class="error-message row mt-2 py-2 bg-danger" ><div class="col text-center">'+choose+'</div></div>';
 
     // form validation
-    $("#button_save").on("click", function(){
+    $("#button_save").on("click", function(e){
+        e.preventDefault(); // prevent default action
+        $('input[name="action"]').val("0"); // tandai flag action kalo form disave
         if(formValidate() == 0){ // jika tidak ada error
-            return true; // kirimkan form ke server
+            // return true; // kirimkan form ke server
+            $("#form_assessment").submit();
         } else {
             return false; // jangan kirimkan form
         }
     });
-    $("#button_submit").on("click", function(){
+    $("#button_submit").on("click", function(e){
+        e.preventDefault(); // prevent default action
+        $('input[name="action"]').val("0");
+
         if(formValidate() == 0){ // jika tidak ada error
-            return true; // kirimkan form ke server
+            Swal.fire({ 
+                title: 'Are you sure?',
+                text: "This assessment will be addressed to your superior, please give the assessment carefully, your assessment will have an effect for this employee in the future.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, I really sure!',
+                cancelButtonText: 'No, give me more time'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Please Wait',
+                        html: '<p>'+"Please don't close this tab and the browser, your assessment for this employee is being submitted."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false
+                    });
+                    $("#form_assessment").submit(); // submit form
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel) {
+                        Swal.fire(
+                            'Okay',
+                            'Please have a more time to review this employee assessment.',
+                            'info'
+                        )
+                        return false;
+                    }
+            });
         } else {
             return false; // jangan kirimkan form
         }

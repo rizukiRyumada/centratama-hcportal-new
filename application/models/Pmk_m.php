@@ -8,9 +8,22 @@ class Pmk_m extends CI_Model {
         "counter" => "_counter_trans",
         "main" => "pmk_form",
         "pertanyaan" => "pmk_survey_pertanyaan",
+        "pertanyaan_tipe" => "pmk_survey_pertanyaan_tipe",
         "position" => "master_position",
-        "status" => "pmk_status"
+        "status" => "pmk_status",
+        "survey" => "pmk_survey_hasil"
     ];
+    
+    /**
+     * hapus hasil survey assessment
+     * ini digunakan sebelum melakukan save supaya tidak terjadi duplikat data
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    function delete_assessment($id){
+        $this->db->delete($this->table['survey'], array('id' => $id));  // Produces: // DELETE FROM mytable  // WHERE id = $id
+    }
     
     /**
      * getAll pmk form data
@@ -56,6 +69,28 @@ class Pmk_m extends CI_Model {
     function getAll_pmkList(){
         $this->db->select($this->table['main'].".id_entity, ".$this->table['main'].".id_div, ".$this->table['main'].".id_dept, ".$this->table['main'].".id_pos, ".$this->table['main'].".id_time, ".$this->table['main'].".time_modified, ".$this->table['main'].".status, ".$this->table['main'].".status_now");
         return $this->db->get_where($this->table['main'])->result_array();
+    }
+    
+    /**
+     * ambil semua tipe pertanyaan survey assessment dari database
+     *
+     * @return void
+     */
+    function getAll_IdSurveyPertanyaanTipe(){
+        $result = array();
+        foreach($this->db->select('id_pertanyaan_tipe')->get($this->table['pertanyaan_tipe'])->result_array() as $k => $v){
+            $result[$k] = $v['id_pertanyaan_tipe'];
+        }
+        return $result;
+    }
+    
+    /**
+     * ambil semua pertanyaan assessment
+     *
+     * @return void
+     */
+    function getAll_surveyPertanyaan(){
+        return $this->db->get($this->table['pertanyaan'])->result_array();
     }
 
     /**
@@ -350,6 +385,17 @@ class Pmk_m extends CI_Model {
      */
     function getRow_form($nik, $contract){
         return $this->db->from($this->table['main'])->like('id', $nik.str_pad($contract, 2, "0", STR_PAD_LEFT), 'after')->get()->num_rows();
+    }
+
+    /**
+     * simpan semua jawaban survey
+     *
+     * @param  mixed $table
+     * @param  mixed $data
+     * @return void
+     */
+    public function insertAll_surveyHasil($data){
+        $this->db->insert_batch($this->table['survey'], $data);
     }
     
     /**
