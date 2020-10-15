@@ -45,8 +45,7 @@ class Pmk extends SpecialUserAppController {
      *
      * @return void
      */
-    public function index()
-    {
+    public function index(){
         // pmk data
         $data_divisi = $this->divisi_model->getAll(); // get all data divisi
         foreach($data_divisi as $k => $v){
@@ -111,9 +110,19 @@ class Pmk extends SpecialUserAppController {
         $this->cekAkses_pmk($position_my, $position);
 
         // cek ketersediaan survey
+        $data['id_pmk'] = $this->input->get('id'); // ambil data nik dan contract di get dari url
+        $data_pmk = $this->pmk_m->getOnceWhere_form(array('id' => $data['id_pmk']));
+        if($data_pmk['status_now_id'] == 1 || $data_pmk['status_now_id'] == 2 || $data_pmk['status_now_id'] == 8){
+            // akses edit
+            $data['load_view'] = 'pmk/assessment_editor_pmk_v';
+            $script_assessment = 'pmk/script_assessment_editor_pmk';
+        } else {
+            // akses preview
+		    $data['load_view'] = 'pmk/assessment_viewer_pmk_v';
+            $script_assessment = 'pmk/script_assessment_viewer_pmk';
+        }
 
         // assessment data
-        $data['id_pmk'] = $this->input->get('id'); // ambil data nik dan contract di get dari url
         $data['pertanyaan'] = $this->pmk_m->getAll_pertanyaan();
         $data['employee'] = $position;
         $contract_last = $this->pmk_m->getOnce_LastContractByNik($nik);
@@ -124,13 +133,13 @@ class Pmk extends SpecialUserAppController {
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
         $data['page_title'] = $this->page_title['assessment'];
-		$data['load_view'] = 'pmk/assessment_pmk_v';
+		// $data['load_view'] = 'pmk/assessment__editor_pmk_v';
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
 		$data['custom_styles'] = array('pmk_styles');
         $data['custom_script'] = array(
             'plugins/datatables/script_datatables',
-            'pmk/script_assessment_pmk',
+            $script_assessment
         );
         
 		$this->load->view('main_v', $data);
@@ -148,6 +157,56 @@ class Pmk extends SpecialUserAppController {
 /* -------------------------------------------------------------------------- */
 /*                                AJAX FUNCTION                               */
 /* -------------------------------------------------------------------------- */
+    
+    /**
+     * get assessment survey hasil data
+     *
+     * @return void
+     */
+    function ajax_getAssessmentData(){
+        $id = $this->input->post('id');
+
+        // cek akses
+        $nik = substr($id, 0, 8);
+        $position_my = $this->posisi_m->getMyPosition();
+        $position = $this->employee_m->getDetails_employee($nik);
+        // cek akses assessment
+        $this->cekAkses_pmk($position_my, $position);
+
+        if($this->_general_m->getRow($this->table['survey'], array('id' => $id)) > 0){ // cek jika ada isi surveynya
+            $data = $this->pmk_m->getAllWhere_assessment($id); // ambil data jawaban survey
+            $status = 1; // beri tanda status
+        } else {
+            $data = ""; // set kosong data
+            $status = 0; // beri tanda status
+        }
+        
+        echo(json_encode(array(
+            'data' => $data,
+            'status' => $status
+        )));
+    }
+
+    /**
+     * get list of assesment
+     *
+     * @return void
+     */
+    function ajax_getList() {
+        // Array ( [showhat] => 0 [divisi] => [departemen] => [status] => [daterange] => 08/11/2020 - 12/11/2020 )
+        $showhat = $this->input->post('showhat');
+        $filter_divisi = $this->input->post('divisi');
+        $filter_departemen = $this->input->post('departemen');
+        $filter_status = $this->input->post('status');
+        $filter_daterange = $this->input->post('daterange');
+
+        // ambil data posisi
+        $position_my = $this->posisi_m->getMyPosition();
+
+        echo(json_encode(array(
+            "data" => $this->pmk_m->getComplete_pmkList($position_my, $showhat, $filter_divisi, $filter_departemen, $filter_status, $filter_daterange)
+        )));
+    }
     
     /**
      * refresh karyawan kontrak yang bulan -2 selesai
@@ -341,27 +400,6 @@ class Pmk extends SpecialUserAppController {
         ]));
         // simpan data pmk di database
     }
-    
-    /**
-     * get list of assesment
-     *
-     * @return void
-     */
-    function ajax_getList() {
-        // Array ( [showhat] => 0 [divisi] => [departemen] => [status] => [daterange] => 08/11/2020 - 12/11/2020 )
-        $showhat = $this->input->post('showhat');
-        $filter_divisi = $this->input->post('divisi');
-        $filter_departemen = $this->input->post('departemen');
-        $filter_status = $this->input->post('status');
-        $filter_daterange = $this->input->post('daterange');
-
-        // ambil data posisi
-        $position_my = $this->posisi_m->getMyPosition();
-
-        echo(json_encode(array(
-            "data" => $this->pmk_m->getComplete_pmkList($position_my, $showhat, $filter_divisi, $filter_departemen, $filter_status, $filter_daterange)
-        )));
-    }
 
 /* -------------------------------------------------------------------------- */
 /*                               OTHER FUNCTION                               */
@@ -422,7 +460,6 @@ class Pmk extends SpecialUserAppController {
      * 
      * @return void
      */
-    // NOW
     function saveAssessment(){
         // proses data post
         $data_survey = $this->saveAssessment_post();

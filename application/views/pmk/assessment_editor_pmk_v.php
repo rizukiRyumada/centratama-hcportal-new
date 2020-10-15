@@ -137,6 +137,7 @@
     <div class="row">
         <div class="col">
             <div class="card card-primary card-outline">
+                <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
                 <div class="card-header">
                     <h5 class="m-0">
                         Soft Competency
@@ -338,6 +339,7 @@
             </div>
 
             <div class="card card-warning card-outline">
+                <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
                 <div class="card-header">
                     <h5 class="m-0">
                         Technical Competency
@@ -361,7 +363,7 @@
                                     <div class="col-6">
                                         <div>
                                             <p class="m-0 font-weight-bold">
-                                                <input class="form-control" type="text" name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan" id="">
+                                                <input class="form-control" type="text" name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan" >
                                             </p>
                                         </div>
                                     </div>
@@ -410,6 +412,7 @@
             </div>
 
             <div class="card">
+                <div class="overlay"></div>
                 <div class="card-body">
                     <div class="row justify-content-end">
                         <div class="col-lg-4">

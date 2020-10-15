@@ -24,6 +24,18 @@ class Pmk_m extends CI_Model {
     function delete_assessment($id){
         $this->db->delete($this->table['survey'], array('id' => $id));  // Produces: // DELETE FROM mytable  // WHERE id = $id
     }
+
+    /**
+     * get pmk list with status
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function get_pmkList($where){
+        $this->db->select($this->table['main'].".id_entity, ".$this->table['main'].".id_div, ".$this->table['main'].".id_dept, ".$this->table['main'].".id_pos, ".$this->table['main'].".id_time, ".$this->table['main'].".time_modified, ".$this->table['main'].".status, ".$this->table['main'].".status_now");
+        $this->db->join($this->table['status'], $this->table['main'].".status_now = ".$this->table['status'].".id", 'left');
+        return $this->db->get_where($this->table['main'], $where)->result_array();
+    }
     
     /**
      * getAll pmk form data
@@ -91,18 +103,6 @@ class Pmk_m extends CI_Model {
      */
     function getAll_surveyPertanyaan(){
         return $this->db->get($this->table['pertanyaan'])->result_array();
-    }
-
-    /**
-     * get pmk list with status
-     *
-     * @param  mixed $where
-     * @return void
-     */
-    function get_pmkList($where){
-        $this->db->select($this->table['main'].".id_entity, ".$this->table['main'].".id_div, ".$this->table['main'].".id_dept, ".$this->table['main'].".id_pos, ".$this->table['main'].".id_time, ".$this->table['main'].".time_modified, ".$this->table['main'].".status, ".$this->table['main'].".status_now");
-        $this->db->join($this->table['status'], $this->table['main'].".status_now = ".$this->table['status'].".id", 'left');
-        return $this->db->get_where($this->table['main'], $where)->result_array();
     }
     
     /**
@@ -310,6 +310,16 @@ class Pmk_m extends CI_Model {
      */
     function getAllWhere_form($where){
         return $this->db->get_where($this->table['main'], $where)->result_array();
+    }
+    
+    /**
+     * ambil semua data assessment dengan id
+     *
+     * @param  varchar[16] $id
+     * @return void
+     */
+    function getAllWhere_assessment($id){
+        return $this->db->get_where($this->table['survey'], array('id' => $id))->result_array();
     }
     
     /**

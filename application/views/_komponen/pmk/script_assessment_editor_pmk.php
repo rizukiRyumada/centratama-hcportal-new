@@ -1,5 +1,7 @@
 <script>
     // preparation
+    var id_pmk = "<?= $id_pmk; ?>";
+
     // message validation
     var choose = "Please choose one value.";
     var fill   = "This field is required.";
@@ -11,12 +13,60 @@
     var msg_number = '<div class="invalid-tooltip" style="display: block">'+number+'</div>';
     var msg_choose = '<div class="error-message row mt-2 py-2 bg-danger" ><div class="col text-center">'+choose+'</div></div>';
 
+    $(document).ready(() => {
+        $.ajax({
+            url: '<?= base_url("pmk/ajax_getAssessmentData"); ?>',
+            data: {
+                id: id_pmk
+            },
+            method: "POST",
+            beforeSend: function(){
+                $('.overlay').fadeIn();
+            },
+            complete: function(){
+                $('.overlay').fadeOut();
+            },
+            success: function(data){
+                let vya = JSON.parse(data);
+                if(vya.status == 1){
+                    $.each(vya.data, function(index, value){
+                        if(value.id_pertanyaan.substring(0,2) == "B0"){ // liat wildcard
+                            $('input[name="'+value.id_pertanyaan+'_pertanyaan"]').val(value.pertanyaan_kustom); // masukkan pertanyaan kustomnya
+                            $('input[name="'+value.id_pertanyaan+'"][value="'+value.jawaban+'"]').attr('checked',true); // tandai jawaban yang dipilih
+                        } else {
+                            $('input[name="'+value.id_pertanyaan+'"][value="'+value.jawaban+'"]').attr('checked',true); // tandai jawaban yang dipilih
+                        }
+                    });
+                } else {
+                    console.log('no data');
+                }
+            },
+            error: function(){
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                footer: '<a class="font-weight-bold" href="https://wa.me/6281384740074/?text=*%5BHC%20Portal%5D*" target="_blank"><i class="fa fa-whatsapp"></i> Contact HC Care</a>'
+                })
+            }
+        });
+    });
+
     // form validation
     $("#button_save").on("click", function(e){
         e.preventDefault(); // prevent default action
         $('input[name="action"]').val("0"); // tandai flag action kalo form disave
         if(formValidate() == 0){ // jika tidak ada error
             // return true; // kirimkan form ke server
+            Swal.fire({
+                icon: 'info',
+                title: 'Please Wait',
+                html: '<p>'+"Please don't close this tab and the browser, your assessment for this employee is being saved."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            });
             $("#form_assessment").submit();
         } else {
             return false; // jangan kirimkan form
@@ -24,7 +74,7 @@
     });
     $("#button_submit").on("click", function(e){
         e.preventDefault(); // prevent default action
-        $('input[name="action"]').val("0");
+        $('input[name="action"]').val("1");
 
         if(formValidate() == 0){ // jika tidak ada error
             Swal.fire({ 
