@@ -257,7 +257,7 @@ class Pmk_m extends CI_Model {
      * @return void
      */
     function getDetail_pmkStatusDetailByStatusId($id_status){
-        return $this->db->get_where($this->table['status'], array('id' => $id_status))->row_array();
+        return $this->db->get_where($this->table['status'], array('id_status' => $id_status))->row_array();
     }
     
     /**
@@ -270,14 +270,10 @@ class Pmk_m extends CI_Model {
      * @param  mixed $id_time
      * @return void
      */
-    function getDetail_pmkStatus($id_entity, $id_div, $id_dept, $id_pos, $id_time){
+    function getDetail_pmkStatus($id){
         $this->db->select('status');
         return json_decode($this->db->get_where($this->table['main'], array(
-            'id_entity' => $id_entity,
-            'id_div'    => $id_div,
-            'id_dept'   => $id_dept,
-            'id_pos'    => $id_pos,
-            'id_time'   => $id_time
+            'id' => $id
         ))->row_array()['status'], true);
     }
 

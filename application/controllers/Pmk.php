@@ -401,6 +401,32 @@ class Pmk extends SpecialUserAppController {
         // simpan data pmk di database
     }
 
+    function ajax_getTimeline(){
+        // $id = $this->input->post('id');
+        $id = "CG00030901200103";
+
+        // cek akses
+        $nik = substr($id, 0, 8);
+        $position_my = $this->posisi_m->getMyPosition();
+        $position = $this->employee_m->getDetails_employee($nik);
+        // cek akses assessment
+        $this->cekAkses_pmk($position_my, $position);
+
+        $temp_status_data = $this->pmk_m->getDetail_pmkStatus($id); // ambil data jawaban survey
+        $status_data = array_reverse($temp_status_data);
+
+        foreach($status_data as $k => $v){
+            $el = $this->pmk_m->getDetail_pmkStatusDetailByStatusId($v['id_status']);
+            // get status data attribute
+            $status_data[$k]['time'] = date("j M o<~>H:i", $v['time']);
+            $status_data[$k]['name_text'] = $el['name_text'];
+            $status_data[$k]['css_color'] = $el['css_color'];
+            $status_data[$k]['icon'] = $el['icon'];
+        }
+
+        echo(json_encode($status_data));
+    }
+
 /* -------------------------------------------------------------------------- */
 /*                               OTHER FUNCTION                               */
 /* -------------------------------------------------------------------------- */
