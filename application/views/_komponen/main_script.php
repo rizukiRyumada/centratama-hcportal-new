@@ -1,6 +1,7 @@
 <!-- script file -->
 <!-- jquery -->
 <script src="<?= base_url('/assets/vendor/node_modules/jquery/dist/jquery.min.js') ?>"></script>
+<script src="<?= base_url('/assets/vendor/node_modules/jquery-ui-dist/jquery-ui.min.js'); ?>"></script>
 <!-- Moment js -->
 <script src="<?= base_url('/assets/vendor/node_modules/moment/min/moment.min.js'); ?>"></script>
 <!-- bootstrap -->

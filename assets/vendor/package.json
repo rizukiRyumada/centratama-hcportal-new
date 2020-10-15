@@ -17,6 +17,7 @@
     "bootstrap-steps": "^1.0.3",
     "chartjs-plugin-datalabels": "^0.7.0",
     "ckeditor4": "^4.15.0",
+    "jquery-ui": "^1.12.1",
     "orgchart": "^2.1.10",
     "pdfobject": "^2.2.3",
     "popper.js": "^1.16.1",

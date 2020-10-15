@@ -116,7 +116,8 @@ class Pmk extends SpecialUserAppController {
         $data['pertanyaan'] = $this->pmk_m->getAll_pertanyaan();
         $data['employee'] = $position;
         //NOW
-        $data['contract'] = $this->pmk_m->getOnce_LastContractByNik($nik);
+        $contract_last = $this->pmk_m->getOnce_LastContractByNik($nik);
+        $data['contract'] = $this->pmk_m->getOnce_contract($contract_last['nik'], $contract_last['contract']);
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu

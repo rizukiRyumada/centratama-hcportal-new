@@ -307,6 +307,10 @@ class Pmk_m extends CI_Model {
 
     }
 
+    function getOnce_contract($nik, $contract){
+        return $this->db->get_where($this->table['contract'], array('nik' => $nik, 'contract' => $contract))->row_array();
+    }
+
     /**
      * ambil satu data contract dengan nik
      *
