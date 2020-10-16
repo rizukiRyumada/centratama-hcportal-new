@@ -112,6 +112,71 @@
         }
     });
 
+    // button used for delette pertanyaan form and its answer
+    $('.btn-delete').on('click', function(){
+        let data = $(this).data('input');
+        let vya = data.substring(0,5);
+        $('input[name="'+data+'"]').val('');
+        $('input[name="'+vya+'"]').val(''); // hapus tanda jawaban
+
+        removePesanError(vya); // hapus pesan error
+        
+    });
+
+    // validator
+    <?php foreach($pertanyaan as $k => $v): ?>
+        <?php $id_name = explode("-", $v['id_pertanyaan']); ?>
+        // $('input[name="<?= $v['id_pertanyaan']; ?>"]:checked')
+        $('input[name="<?= $v['id_pertanyaan']; ?>"]').on('change', function() {
+            $(this).parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
+            $(this).parent().parent().parent().parent().parent().addClass('py-2');
+            // $(this).parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
+            $(this).parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
+                $(this).parent().parent().parent().siblings('.error-message').remove(); // show error tooltip
+            });
+        });
+    <?php endforeach;?>
+
+    // ini untuk form pertanyaan technical
+    <?php for($x = 0; $x < 5; $x++): ?>
+        $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').on('change', function() {
+            $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
+            $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2');
+            // $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
+            $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').remove(); // show error tooltip
+            });
+        });
+
+        // cek buat pertanyaan kustom
+        $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan"]').on('keyup', function(){
+            if($('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]:checked').val() == undefined){
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2'); // takut duplikat jadinya dihapus dulu
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('border border-danger my-3 pt-2'); // tambahkan kelas yang diperlukan
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('py-2'); // hapus padding
+                if($('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').is('div.error-message') == false){
+                    $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().append(msg_choose) // show error tooltip
+                }
+            } else {
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2');
+                // $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
+                    $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').remove(); // show error tooltip
+                });
+            }
+
+            if($('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan"]').val() == ""){
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2');
+                // $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
+                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
+                    $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').remove(); // show error tooltip
+                });
+            }
+        });
+    <?php endfor; ?>
+
     // function form validate
     function formValidate(){
         var validate = 0;
@@ -190,59 +255,13 @@
         return validate;
     }
 
-    // validator
-    <?php foreach($pertanyaan as $k => $v): ?>
-        <?php $id_name = explode("-", $v['id_pertanyaan']); ?>
-        // $('input[name="<?= $v['id_pertanyaan']; ?>"]:checked')
-        $('input[name="<?= $v['id_pertanyaan']; ?>"]').on('change', function() {
-            $(this).parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
-            $(this).parent().parent().parent().parent().parent().addClass('py-2');
-            // $(this).parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
-            $(this).parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
-                $(this).parent().parent().parent().siblings('.error-message').remove(); // show error tooltip
-            });
+    // untuk menghapus pesan error pertanyaan kustom
+    function removePesanError(input_name){
+        $('input[name="'+input_name+'"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
+        $('input[name="'+input_name+'"]').parent().parent().parent().parent().parent().addClass('py-2');
+        // $('input[name="'+input_name+'"]').parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
+        $('input[name="'+input_name+'"]').parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
+            $('input[name="'+input_name+'"]').parent().parent().parent().siblings('.error-message').remove(); // show error tooltip
         });
-    <?php endforeach;?>
-
-    // ini untuk form pertanyaan technical
-    <?php for($x = 0; $x < 5; $x++): ?>
-        $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').on('change', function() {
-            $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
-            $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2');
-            // $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
-            $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').remove(); // show error tooltip
-            });
-        });
-
-        // cek buat 
-        $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan"]').on('keyup', function(){
-            if($('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]:checked').val() == undefined){
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2'); // takut duplikat jadinya dihapus dulu
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('border border-danger my-3 pt-2'); // tambahkan kelas yang diperlukan
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('py-2'); // hapus padding
-                if($('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').is('div.error-message') == false){
-                    $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().append(msg_choose) // show error tooltip
-                }
-            } else {
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2');
-                // $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
-                    $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').remove(); // show error tooltip
-                });
-            }
-
-            if($('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan"]').val() == ""){
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2');
-                // $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
-                $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
-                    $('input[name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>"]').parent().parent().parent().siblings('.error-message').remove(); // show error tooltip
-                });
-            }
-        });
-
-        
-    <?php endfor; ?>
+    }
 </script>

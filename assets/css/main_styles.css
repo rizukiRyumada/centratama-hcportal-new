@@ -42,6 +42,11 @@ div.input-group-prepend span.input-group-text{
     border-radius: 1.5em 0 0 1.5em;
 }
 
+div.input-group span.input-group-append button.btn{
+    border-radius: 0 1.5em 1.5em 0;
+
+}
+
 /* custom color and hover */
 .link-primary{
     color: #0072C6;

@@ -402,8 +402,8 @@ class Pmk extends SpecialUserAppController {
     }
 
     function ajax_getTimeline(){
-        // $id = $this->input->post('id');
-        $id = "CG00030901200103";
+        $id = $this->input->post('id');
+        // $id = "CG00030901200103";
 
         // cek akses
         $nik = substr($id, 0, 8);
@@ -512,33 +512,36 @@ class Pmk extends SpecialUserAppController {
                 'text' => 'Assessment form was changed.'
             );
         } else { // jika actionnya submit
-            $status_now_id = "3";
             if($penilai['hirarki_org'] == "N-2"){
+                $status_now_id = "2";
                 $status_new[array_key_last($status_new)+1] = array(
-                    'id_status' => "3",
+                    'id_status' => "2",
                     'by' => $penilai['emp_name'],
                     'nik' => $penilai['nik'],
                     'time' => time(),
                     'text' => 'Assessment form was submitted by N-2.'
                 );
-            } elseif($penilai['hirarki_org'] == "N-1"){
-                $status_new[array_key_last($status_new)+1] = array(
-                    'id_status' => "3",
-                    'by' => $penilai['emp_name'],
-                    'nik' => $penilai['nik'],
-                    'time' => time(),
-                    'text' => 'Assessment form was submitted by N-1.'
-                );
-            } elseif($penilai['hirarki_org'] == "N"){
-                $status_new[array_key_last($status_new)+1] = array(
-                    'id_status' => "3",
-                    'by' => $penilai['emp_name'],
-                    'nik' => $penilai['nik'],
-                    'time' => time(),
-                    'text' => 'Assessment form was submitted by N.'
-                );
-            } else {
-                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            } else{
+                $status_now_id = "3";
+                if($penilai['hirarki_org'] == "N-1"){
+                    $status_new[array_key_last($status_new)+1] = array(
+                        'id_status' => "3",
+                        'by' => $penilai['emp_name'],
+                        'nik' => $penilai['nik'],
+                        'time' => time(),
+                        'text' => 'Assessment form was submitted by N-1.'
+                    );
+                } elseif($penilai['hirarki_org'] == "N"){
+                    $status_new[array_key_last($status_new)+1] = array(
+                        'id_status' => "3",
+                        'by' => $penilai['emp_name'],
+                        'nik' => $penilai['nik'],
+                        'time' => time(),
+                        'text' => 'Assessment form was submitted by N.'
+                    );
+                } else {
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                }
             }
         }
 
