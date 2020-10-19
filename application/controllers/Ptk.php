@@ -158,7 +158,7 @@ class Ptk extends SpecialUserAppController {
             if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
                 $data['division'] = $this->divisi_model->getDivisi(); // ambil division
             } else {
-                $data['division'] = $this->divisi_model->getOnceById($detail_emp['div_id'])[0]; // ambil division
+                $data['division'] = $this->divisi_model->getOnceById($detail_emp['div_id']); // ambil division
                 $data['department'] = $this->dept_model->getDetailById($detail_emp['dept_id']); // ambil departemen
                 $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $detail_emp['div_id'], 'dept_id' => $detail_emp['dept_id'])); // position
             }
@@ -817,7 +817,7 @@ class Ptk extends SpecialUserAppController {
         $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
         $data['status_detail'] = $this->ptk_m->getDetail_ptkStatusDetailByStatusId($data['status_form']); // get status details
         $data['entity']     = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
-        $data['division']   = $this->divisi_model->getOnceById($data['id_div'])[0]; // ambil division
+        $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
         $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
         $data['position']   = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
         $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status

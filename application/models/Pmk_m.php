@@ -11,6 +11,8 @@ class Pmk_m extends CI_Model {
         "pertanyaan_tipe" => "pmk_survey_pertanyaan_tipe",
         "position" => "master_position",
         "status" => "pmk_status",
+        "status_summary" => "pmk_status_summary",
+        "summary" => "pmk_form_summary",
         "survey" => "pmk_survey_hasil"
     ];
     
@@ -373,13 +375,23 @@ class Pmk_m extends CI_Model {
     }
     
     /**
-     * getOnceWhere_status
+     * ambil status pmk form
      *
      * @param  mixed $where
      * @return void
      */
     function getOnceWhere_status($where){        
         return $this->db->get_where($this->table['status'], $where)->row_array();
+    }
+
+    /**
+     * ambil status pmk summary
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getOnceWhere_statusSummary($where){        
+        return $this->db->get_where($this->table['status_summary'], $where)->row_array();
     }
 
     /**
@@ -412,6 +424,16 @@ class Pmk_m extends CI_Model {
      */
     function saveForm($data){
         $this->db->insert($this->table['main'], $data);
+    }
+
+    /**
+     * saveForm
+     *
+     * @param  mixed $data
+     * @return void
+     */
+    function saveSummary($data){
+        $this->db->insert($this->table['summary'], $data);
     }
     
     /**

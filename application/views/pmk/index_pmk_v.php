@@ -82,26 +82,29 @@
 <div class="row">
     <div class="col">
         <div class="card card-primary card-outline card-outline-tabs">
+                        <div id="overlay_statusHistory" class="overlay" ></div>
             <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
-            <div class="card-header p-0 border-bottom-0">
-                <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
-                    <!-- TODO tambahkan if jika dia atasan HC atau bukan buat aktifin mana dulu -->
-                    <li class="nav-item">
-                        <a class="nav-link 
-                            <?php if($position_my['id'] != 1): ?>
-                                active
-                            <?php endif; ?>
-                        " id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false"><i class="fas fa-file-alt"></i> Assessment</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link 
-                            <?php if($position_my['id'] == 1): ?>
-                                active
-                            <?php endif; ?>
-                        " id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="true"><i class="fas fa-file-signature"></i> Summary</a>
-                    </li>
-                </ul>
-            </div>
+            <?php if(!empty($summary)): ?>
+                <div class="card-header p-0 border-bottom-0">
+                    <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                        <!-- TODO tambahkan if jika dia atasan HC atau bukan buat aktifin mana dulu -->
+                        <li class="nav-item">
+                            <a class="nav-link 
+                                <?php if($position_my['id'] != 1): ?>
+                                    active
+                                <?php endif; ?>
+                            " id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false"><i class="fas fa-file-alt"></i> Assessment</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link 
+                                <?php if($position_my['id'] == 1): ?>
+                                    active
+                                <?php endif; ?>
+                            " id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="true"><i class="fas fa-file-signature"></i> Summary</a>
+                        </li>
+                    </ul>
+                </div>
+            <?php endif; ?>
             <div class="card-body">
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <!-- Tabel assessment -->
@@ -221,41 +224,42 @@
                         </div>
                     </div> <!-- /Tabel assessment -->
 
-                    <!-- Tabel Summary -->
-                    <div class="tab-pane fade
-                            <?php if($position_my['id'] == 1): ?>
-                                active show
-                            <?php endif; ?>
-                        " id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-                        <div class="row d-flex align-items-stretch">
-                            <?php foreach($divisi as $v): ?>
-                                <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
-                                    <a href="<?= base_url('pmk/summary'); ?>?div=<?= $v['id']; ?>" class="card bg-light w-100">
-                                        <!-- <div class="card-header text-muted border-bottom-0">
-                                            Digital Strategist
-                                        </div> -->
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-7">
-                                                    <h2 class="lead"><b><?= $v['division']; ?></b></h2>
-                                                    <p class="text-sm badge badge-<?= $v['color']; ?>"><b>Need Attention: </b> 4 </p>
-                                                    <p class="text-muted text-sm m-0"><b>Employees: </b> <?= $v['emp_total']; ?> </p>
-                                                    <p class="text-muted text-sm m-0"><b>Divhead: </b> <?= $v['emp_name']; ?> </p>
-                                                </div>
-                                                <div class="col-5 text-center align-self-center">
-                                                    <!-- <img src="../../dist/img/user1-128x128.jpg" alt="" class="img-circle img-fluid"> -->
-                                                    <i class="fas fa-users fa-5x text-<?= $v['color']; ?>"></i>
+                    <?php if(!empty($summary)): ?>
+                        <!-- Tabel Summary -->
+                        <div class="tab-pane fade
+                                <?php if($position_my['id'] == 1): ?>
+                                    active show
+                                <?php endif; ?>
+                            " id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                            <div class="row d-flex align-items-stretch">
+                                <?php foreach($divisi as $v): ?>
+                                    <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
+                                        <a href="<?= base_url('pmk/summary'); ?>?div=<?= $v['id']; ?>" class="card bg-light w-100">
+                                            <!-- <div class="card-header text-muted border-bottom-0">
+                                                Digital Strategist
+                                            </div> -->
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <h2 class="lead"><b><?= $v['division']; ?></b></h2>
+                                                        <p class="text-sm badge badge-<?= $v['color']; ?>"><b>Need Attention: </b> <?= $v['count_summary']; ?> </p>
+                                                        <p class="text-muted text-sm m-0"><b>Employees: </b> <?= $v['emp_total']; ?> </p>
+                                                        <p class="text-muted text-sm m-0"><b>Divhead: </b> <?= $v['emp_name']; ?> </p>
+                                                    </div>
+                                                    <div class="col-5 text-center align-self-center">
+                                                        <!-- <img src="../../dist/img/user1-128x128.jpg" alt="" class="img-circle img-fluid"> -->
+                                                        <i class="fas fa-users fa-5x text-<?= $v['color']; ?>"></i>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            <?php endforeach;?>
-                        </div>
-                    </div> <!-- /Tabel Summary -->
+                                        </a>
+                                    </div>
+                                <?php endforeach;?>
+                            </div>
+                        </div> <!-- /Tabel Summary -->
+                    <?php endif; ?>
                 </div>
-            </div>
-            <!-- /.card -->
+            </div><!-- /.card -->
         </div>
     </div>
 </div>

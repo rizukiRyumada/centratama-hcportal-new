@@ -13,11 +13,18 @@ class Divisi_model extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+    public function getAll_where($where)
+    {
+        $this->db->select($this->table.'.*, master_employee.emp_name');
+        $this->db->join('master_employee', 'master_employee.nik = '.$this->table.'.nik_div_head');
+        return $this->db->get_where($this->table, $where)->result_array();
+    }
+
     public function getOnceById($id){
-        $this->db->select('id, division');
+        $this->db->select('id, division, nik_div_head, color');
         $this->db->from($this->table);
         $this->db->where('id', $id);
-        return $this->db->get()->result_array();
+        return $this->db->get()->row_array();
     }
 
     public function getOnceWhere($where){

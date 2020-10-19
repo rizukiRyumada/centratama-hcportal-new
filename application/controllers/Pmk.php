@@ -7,8 +7,9 @@ class Pmk extends SpecialUserAppController {
 
     // page title variable
     protected $page_title = [
-        'index' => 'Penilaian Masa Kontrak',
-        'assessment' => 'Assessment Form'
+        'index' => 'Evaluasi Masa Kontrak',
+        'assessment' => 'Assessment Form',
+        'summary' => 'Summary Evaluasi Masa Kontrak'
     ];
 
     protected $table = [
@@ -16,6 +17,8 @@ class Pmk extends SpecialUserAppController {
         'form'     => 'pmk_form',
         'position' => 'master_position',
         'status'   => 'pmk_status',
+        'summary'  => "pmk_form_summary",
+        'summary_status' => 'pmk_status_summary',
         'survey'   => 'pmk_survey_hasil'
     ];
     
@@ -46,12 +49,6 @@ class Pmk extends SpecialUserAppController {
      * @return void
      */
     public function index(){
-        // pmk data
-        $data_divisi = $this->divisi_model->getAll(); // get all data divisi
-        foreach($data_divisi as $k => $v){
-            $data_divisi[$k]['emp_total'] = $this->employee_m->count_where(['div_id' => $v['id']]);
-        }
-
         $position_my = $this->posisi_m->getMyPosition();
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
             // ambil semua data pmk_status
@@ -74,9 +71,41 @@ class Pmk extends SpecialUserAppController {
             }
         }
 
-        $data['divisi'] = $data_divisi;
+        // pmk data
+
+        // ambil data summary dengan cek dia userapp admins, superadmin, 1, 196, N
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196 || $position_my['hirarki_org'] == "N"){
+            // cek jika dia 196, 1, atau N
+            if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
+                $data_divisi = $this->divisi_model->getAll(); // get all data divisi
+            } elseif($position_my['hirarki_org'] == "N"){
+                $data_divisi = $this->divisi_model->getAll_where(array('id' => $position_my['div_id']));
+            }
+            $data['summary'] = 1; // flag bahwa karyawan ini berhak melihat summary
+            foreach($data_divisi as $k => $v){
+                $data_divisi[$k]['emp_total'] = $this->employee_m->count_where(['div_id' => $v['id']]);
+                // ambil summary yang sesuai dengan status dan jabatam
+                if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+                    $myTask = $this->_general_m->getAll('id', $this->table['summary_status'], "pic='N' OR pic='1' OR pic='196'");
+                } elseif($position_my['hirarki_org'] == "N"){
+                    $myTask = $this->_general_m->getAll('id', $this->table['summary_status'], "pic='N'");
+                } elseif($position_my['id'] == "196"){
+                    $myTask = $this->_general_m->getAll('id', $this->table['summary_status'], "pic='196'");
+                } elseif($position_my['id'] == "1"){
+                    $myTask = $this->_general_m->getAll('id', $this->table['summary_status'], "pic='1'");                    
+                } else {
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                }
+
+                $data_divisi[$k]["count_summary"] = 0;
+                foreach($myTask as $value){
+                    $data_divisi[$k]["count_summary"] += $this->_general_m->getRow($this->table['summary'], array('status_now_id' => $value['id'], 'id_div' => $v['id']));
+                }
+            }
+            $data['divisi'] = $data_divisi;
+        }
+
         $data['userApp_admin'] = $this->userApp_admin; // flag apa dia admin atau bukan
-        
         $data['position_my'] = $position_my;
 
         if($position_my['hirarki_org'] == "N" || $this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
@@ -151,7 +180,41 @@ class Pmk extends SpecialUserAppController {
      * @return void
      */
     function summary(){
-        echo($this->input->get('div'));
+        $position_my = $this->posisi_m->getMyPosition(); // ambil data my position
+        // cek akses apa user ini diperbolehkan akses summary
+        $this->cekAkses_summary($position_my);
+        
+        // ambil detail divisi
+        $detail_divisi = $this->divisi_model->getOnceById($this->input->get('div'));
+        $detail_divisi['divhead_name'] = $this->employee_m->getDetails_employee($detail_divisi['nik_div_head'])['emp_name']; // ambil nama divhead
+        
+        // summary data
+        $data['divisi'] = $detail_divisi;
+        $data['id_div'] = $this->input->get('div');
+        $data['status_summary'] = $this->_general_m->getAll('id, name_text', $this->table['summary_status'], array());
+
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+        $data['page_title'] = $this->page_title['summary'];
+		$data['load_view'] = 'pmk/summary_index_pmk_v';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+		$data['custom_styles'] = array('pmk_styles');
+        $data['custom_script'] = array(
+            'plugins/datatables/script_datatables',
+            'plugins/daterange-picker/script_daterange-picker',
+            'pmk/script_summary_pmk'
+        );
+        
+		$this->load->view('main_v', $data);
+    }
+
+    function summary_process(){
+        $id_summary = $this->input->get('id');
+
+        print_r($id_summary);
     }
 
 /* -------------------------------------------------------------------------- */
@@ -217,7 +280,9 @@ class Pmk extends SpecialUserAppController {
         // cek akses admin
         $this->cekAkses_admin();
         // ambil bulan setelah 2 bulan lagi
-        $date = strtotime("+2 month", time());
+        // $date = strtotime("+2 month", time());
+        // ambil hari terakhir di dua bulan lagi
+        $date = strtotime(date('t-m-Y', strtotime("+2 month", time())));
         // ambil data contract terakhir
         $data_contract = $this->pmk_m->getAll_LastContract();
         // cari yg datenya udh beberapa bulan lagi
@@ -236,7 +301,6 @@ class Pmk extends SpecialUserAppController {
                     $approver_nik = $this->employee_m->getApprover_nik($v['nik']); // ambil nik approver 1nya dia
 
                     $emp_data = $this->employee_m->getDetails_employee($v['nik']);
-
                     $counter_new++; // counter new data
                     // prepare data
                     $data_pmk[$x]['id'] = $this->pmk_m->getId_form($result['nik'], $result['contract']);
@@ -279,10 +343,10 @@ class Pmk extends SpecialUserAppController {
                     $data_pmk[$x]['created'] = time();
                     $data_pmk[$x]['modified'] = time();
 
-                    // $data_pmk[$x]['pmk_id'] = ""; // pmk_id nanti setelah hc divhead melakukan pembuatan summary
-                    $x++;
-
                     $data_employee = $this->employee_m->getDetails_employee($v['nik']); // ambil detail data employee
+                    $data_pmk[$x]['id_summary'] = date("Ym").$data_employee['div_id']; // pmk_id nanti setelah hc divhead melakukan pembuatan summary
+                    $this->cekPmkSummary($data_pmk[$x]['id_summary'], $date, $data_employee['div_id']); // lakukan pemeriksaan summary
+                    $x++;
                     // cek apa dia N-3, N-4, N-2, N-1, Functional-dept
                     // if($data_employee['hirarki_org'] == "N-3" || $data_employee['hirarki_org'] == "N-4"){
                     //     $email = $this->employee_m->getEmail_approver12($v['nik']); // ambil data email approver 1 dan 2 (N-2, N-1)                        
@@ -400,7 +464,12 @@ class Pmk extends SpecialUserAppController {
         ]));
         // simpan data pmk di database
     }
-
+    
+    /**
+     * get assessment per employee timeline
+     *
+     * @return void
+     */
     function ajax_getTimeline(){
         $id = $this->input->post('id');
         // $id = "CG00030901200103";
@@ -426,10 +495,109 @@ class Pmk extends SpecialUserAppController {
 
         echo(json_encode($status_data));
     }
+    
+    /**
+     * get summary list
+     *
+     * @return void
+     */
+    function ajax_getSummaryList(){
+        $divisi = $this->input->post('divisi');
+        $switchData = $this->input->post('switchData');
+        $filter_status = $this->input->post('filter_status');
+        $filter_daterange = $this->input->post('filter_daterange');
+// NOW
+
+        $position_my = $this->posisi_m->getMyPosition();
+        // cek apa datanya ambil history atau mytask
+        if($switchData == 0){
+            // cek hirarki
+            if($position_my['hirarki_org'] == "N"){
+                // cek akses buat N
+                if($position_my['div_id'] != $divisi){
+                    show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+                }
+                $status = "pmksum-01";
+            } elseif($position_my['id'] == 196){
+                $status = "pmksum-02";
+            } elseif($position_my['id'] == 1){
+                $status = "pmksum-03";
+            } else {
+                show_error("This respons/e is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            }
+            $data = $this->_general_m->getAll('*', $this->table['summary'], array('id_div' => $divisi, 'status_now_id' => $status));
+        } elseif($switchData == 1){
+            $where = "id_div=$divisi";
+
+            // filtering if
+            if(!empty($filter_status)){
+                $where .= " AND status_now_id = '$filter_status'";
+            }
+            if(!empty($filter_daterange)){
+                $daterange = explode(" - ", $filter_daterange); // pisahkan dulu daterangenya
+                $daterange[0] = strtotime($daterange[0]);
+                $daterange[1] = strtotime($daterange[1]);
+                $where .= " AND created >= ".$daterange[0]." AND created <= ".$daterange[1]; // tambahkan where tanggal buat ngebatesin view biar ga load lama
+            }
+
+            $data = $this->_general_m->getAll('*', $this->table['summary'], $where);
+        } else {
+            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+        }
+
+        // lengkapi data
+        foreach($data as $k => $v){
+            // data divisi
+            $result_data = $this->divisi_model->getOnceById($v['id_div']);
+            $data[$k]['divisi_name'] = $result_data['division'];
+            
+            // data status
+            $status = $this->pmk_m->getOnceWhere_statusSummary(array('id' => $v['status_now_id']));
+            $data[$k]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id_summary']));
+
+            // olah data tanggal
+            $data[$k]['created'] = date('j M Y, H:i', $v['created']);
+            $data[$k]['modified'] = date('j M Y, H:i', $v['modified']);
+        }
+
+        echo(json_encode(array(
+            'data' => $data
+        )));
+
+        // print_r($detail_divisi);
+        // echo("<br/>");
+        // echo("<br/>");
+        // print_r($data);
+        // persiapkan data
+    }
+    
 
 /* -------------------------------------------------------------------------- */
 /*                               OTHER FUNCTION                               */
-/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */    
+    
+    /**
+     * cek akses dengan admin previledge
+     *
+     * @return void
+     */
+    function cekAkses_admin(){
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+            // perbolehkan akses
+        } else {
+            // tolak izin
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+            exit;
+        }
+    }
+
+    /**
+     * cek akses siapa aja yang boleh akses pmk
+     *
+     * @param  mixed $position_my
+     * @param  mixed $position
+     * @return void
+     */
     function cekAkses_pmk($position_my, $position){
         // cek apa dia admin atau userapp admin
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 196 || $position_my['id'] == 1){
@@ -465,19 +633,48 @@ class Pmk extends SpecialUserAppController {
         }
         // cek otoritas apa divisi id dan dept idnya sama antara my position dengan id posisi yang dituju
     }
-
+    
     /**
-     * cek akses dengan admin previledge
+     * cek akses siapa aja yang boleh akses summary
      *
      * @return void
      */
-    function cekAkses_admin(){
-        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+    function cekAkses_summary($position_my){
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196 || $position_my['hirarki_org'] == "N"){
             // perbolehkan akses
         } else {
-            // tolak izin
             show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
-            exit;
+        }
+    }
+    
+    /**
+     * cek summary pmk jika ada buat pmk summary baru di 2 bulan ke depan
+     *
+     * @return void
+     */
+    function cekPmkSummary($id_summary, $date, $id_div){
+        if($this->_general_m->getRow($this->table['summary'], array('id_summary' => $id_summary)) < 1){
+            // buat data status summary pmk
+            $data['id_summary'] = $id_summary;
+            $data['bulan']  = date("m", $date);
+            $data['tahun']  = date("Y", $date);
+            $data['id_div'] = $id_div;
+            $data['status'] = json_encode([
+                0 => [
+                    'id_status' => "pmksum-01",
+                    'by' => 'system',
+                    'nik' => '',
+                    'time' => time(),
+                    'text' => 'Summary form generated.'
+                ]
+            ]);
+            $data['status_now_id'] = "pmksum-01";
+            $data['created'] = time();
+            $data['modified'] = time();
+
+            $this->pmk_m->saveSummary($data);
+        } else {
+            // nothing
         }
     }
     
@@ -599,7 +796,11 @@ class Pmk extends SpecialUserAppController {
     }
 
     function test(){
+        $date = strtotime(date('t-m-Y', strtotime("+2 month", time())));
         
+        
+        print_r($date);
+        echo("<br/>".date('d-m-Y', $date));
     }
 
 }
