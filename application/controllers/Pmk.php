@@ -212,9 +212,29 @@ class Pmk extends SpecialUserAppController {
     }
 
     function summary_process(){
-        $id_summary = $this->input->get('id');
+        // $id_summary = $this->input->get('id');
 
-        print_r($id_summary);
+        // print_r($id_summary);
+
+        // summary data
+        $data['id_summary'] = $this->input->get('id');
+
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+        $data['page_title'] = $this->page_title['summary'];
+		$data['load_view'] = 'pmk/summary_process_pmk_v';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+		// $data['custom_styles'] = array('pmk_styles');
+        $data['custom_script'] = array(
+            'plugins/datatables/script_datatables',
+            // 'plugins/daterange-picker/script_daterange-picker',
+            'pmk/script_summary_process_pmk'
+        );
+        
+		$this->load->view('main_v', $data);
     }
 
 /* -------------------------------------------------------------------------- */
@@ -506,8 +526,6 @@ class Pmk extends SpecialUserAppController {
         $switchData = $this->input->post('switchData');
         $filter_status = $this->input->post('filter_status');
         $filter_daterange = $this->input->post('filter_daterange');
-// NOW
-
         $position_my = $this->posisi_m->getMyPosition();
         // cek apa datanya ambil history atau mytask
         if($switchData == 0){
@@ -556,6 +574,8 @@ class Pmk extends SpecialUserAppController {
             $data[$k]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id_summary']));
 
             // olah data tanggal
+            $data[$k]['tahun'] = date('Y', $v['created']);
+            $data[$k]['bulan'] = date('m (F)', $v['created']);
             $data[$k]['created'] = date('j M Y, H:i', $v['created']);
             $data[$k]['modified'] = date('j M Y, H:i', $v['modified']);
         }
@@ -563,14 +583,42 @@ class Pmk extends SpecialUserAppController {
         echo(json_encode(array(
             'data' => $data
         )));
-
-        // print_r($detail_divisi);
-        // echo("<br/>");
-        // echo("<br/>");
-        // print_r($data);
-        // persiapkan data
     }
-    
+        
+    /**
+     * ambil data summary list process
+     *
+     * @return void
+     */
+    function ajax_getSummaryListProcess(){
+        $id_summary = $this->input->post('id_summary');
+
+        // ambil detail data form summarynya
+        $data_summary = $this->pmk_m->getDetail_summary($id_summary);
+
+        // data divisi
+        $result_data = $this->divisi_model->getOnceById($data_summary['id_div']);
+        $data_summary['divisi_name'] = $result_data['division'];
+        
+        // data status
+        $status = $this->pmk_m->getOnceWhere_statusSummary(array('id' => $data_summary['status_now_id']));
+        $data_summary['status_now'] = json_encode(array('status' => $status, 'trigger' => $data_summary['id_summary']));
+
+        // olah data tanggal
+        $data_summary['bulan'] = date('F (m)', $data_summary['created']);
+        $data_summary['tahun'] = date('Y', $data_summary['created']);
+        $data_summary['created'] = date('j M Y, H:i', $data_summary['created']);
+        $data_summary['modified'] = date('j M Y, H:i', $data_summary['modified']);
+
+        // ambil data form
+        $pmk = $this->pmk_m->getAllWhere_form(array('id_summary' => $id_summary));
+        $data_form = $this->pmk_m->detail_pmk($pmk);
+
+        echo(json_encode(array(
+            'data' => $data_form,
+            'summary' => $data_summary
+        )));
+    }
 
 /* -------------------------------------------------------------------------- */
 /*                               OTHER FUNCTION                               */
@@ -676,6 +724,31 @@ class Pmk extends SpecialUserAppController {
         } else {
             // nothing
         }
+    }
+    
+    /**
+     * get summary detail data
+     *
+     * @param  mixed $data_summary
+     * @return void
+     */
+    function detailSummary($data_summary){
+        // lengkapi data
+        foreach($data_summary as $k => $v){
+            // data divisi
+            $result_data = $this->divisi_model->getOnceById($v['id_div']);
+            $data[$k]['divisi_name'] = $result_data['division'];
+            
+            // data status
+            $status = $this->pmk_m->getOnceWhere_statusSummary(array('id' => $v['status_now_id']));
+            $data[$k]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id_summary']));
+
+            // olah data tanggal
+            $data[$k]['created'] = date('j M Y, H:i', $v['created']);
+            $data[$k]['modified'] = date('j M Y, H:i', $v['modified']);
+        }
+
+        return $data;
     }
     
     /**

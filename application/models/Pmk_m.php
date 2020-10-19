@@ -6,6 +6,7 @@ class Pmk_m extends CI_Model {
     protected $table = [
         "contract" => "master_employee_contract",
         "counter" => "_counter_trans",
+        "form_summary" => "pmk_form_summary",
         "main" => "pmk_form",
         "pertanyaan" => "pmk_survey_pertanyaan",
         "pertanyaan_tipe" => "pmk_survey_pertanyaan_tipe",
@@ -215,6 +216,12 @@ class Pmk_m extends CI_Model {
             }
         }
 
+        $dataPmk = $this->detail_pmk($data_pmk);
+
+        return $dataPmk;
+    }
+
+    function detail_pmk($data_pmk){
         // lengkapi data pmk
         $dataPmk = array(); $x = 0;
         foreach($data_pmk as $k => $v){
@@ -298,6 +305,10 @@ class Pmk_m extends CI_Model {
             'id_pos'    => $id_pos,
             'id_time'   => $id_time
         ))->row_array()['status_now'];
+    }
+
+    function getDetail_summary($id){
+        return $this->db->get_where($this->table['form_summary'], array('id_summary' => $id))->row_array();
     }
 
     /**
