@@ -122,7 +122,7 @@
         $('input[name="'+pertanyaan+'"]').val('');
         $('input[name="'+jawaban+'"]').prop("checked", false);
         removeVariableB($(this).data('input_choose'));
-        removePesanError(pertanyaan); // hapus pesan error
+        removePesanError(pertanyaan, jawaban); // hapus pesan error
         hitungRerataB();
     });
 
@@ -419,20 +419,21 @@
     }
 
     // untuk menghapus pesan error pertanyaan kustom
-    function removePesanError(input_name){
+    function removePesanError(input_name, input_answer){
         let pertanyaan_kustom = $('input[name="'+input_name+'_pertanyaan"]').val();
-        if(pertanyaan_kustom == ""){
-            $('input[name="'+input_name+'"]:checked').prop("checked", false);
-            $('input[name="'+input_name+'"]').attr('disabled', true);
+        console.log(pertanyaan_kustom);
+        if(pertanyaan_kustom == undefined){
+            $('input[name="'+input_answer+'"]:checked').prop("checked", false);
+            $('input[name="'+input_answer+'"]').attr('disabled', true);
         } else {
-            $('input[name="'+input_name+'"]').removeAttr('disabled');
+            $('input[name="'+input_answer+'"]').removeAttr('disabled');
         }
         hitungRerataB(); // hitung reratanya
-        $('input[name="'+input_name+'"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
-        $('input[name="'+input_name+'"]').parent().parent().parent().parent().parent().addClass('py-2');
-        // $('input[name="'+input_name+'"]').parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
-        $('input[name="'+input_name+'"]').parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
-            $('input[name="'+input_name+'"]').parent().parent().parent().siblings('.error-message').remove(); // remove error message
+        $('input[name="'+input_answer+'"]').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2');
+        $('input[name="'+input_answer+'"]').parent().parent().parent().parent().parent().addClass('py-2');
+        // $('input[name="'+input_answer+'"]').parent().parent().parent().parent().parent().addClass('py-2', {duration:500,effect:'fade'});
+        $('input[name="'+input_answer+'"]').parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
+            $('input[name="'+input_answer+'"]').parent().parent().parent().siblings('.error-message').remove(); // remove error message
         });
     }
 
