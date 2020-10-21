@@ -64,10 +64,23 @@
                                                 <b>Position</b> <a class="float-right"><?= $employee['position_name']; ?></a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>Start of Contract</b> <a class="float-right"><?= date("d-m-o", $contract['date_start']); ?></a>
+                                                <b>Personal Level</b> <a class="float-right">
+                                                    <div class="badge
+                                                        <?php if($employee['level_personal'] < 10): ?>
+                                                            badge-primary
+                                                        <?php elseif($employee['level_personal'] < 18): ?>
+                                                            bg-orange
+                                                        <?php else: ?>
+                                                            bg-purple    
+                                                        <?php endif; ?>
+                                                    "><?= $employee['level_personal']; ?></div>
+                                                </a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>End of Contract</b> <a class="float-right"><?= date("d-m-o", $contract['date_end']); ?></a>
+                                                <b>Start of Contract</b> <a class="float-right"><?= date("j F o", $contract['date_start']); ?></a>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <b>End of Contract</b> <a class="float-right"><?= date("j F o", $contract['date_end']); ?></a>
                                             </li>
                                         </ul>
                                     </div>
@@ -204,135 +217,142 @@
                         </div>
                     <?php endif; ?>
                 <?php endforeach;?>
+                <div class="row border border-bottom">
+                    <div class="col">sadshadjvbhejwadce</div>
+                </div>
                 <!-- /kompetensi dasar -->
 
-                <!-- tambahan kompetensi untuk supervisor - manager level -->
-                <div class="row py-2 bg-orange mt-4">
-                    <div class="col-6"><p class="m-0 font-weight-bold text-center">Tambahan Kompetensi untuk Supervisor<br/>Manager level</p></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">0</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">1</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">2</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">3</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-info">4</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">5</span></div>
-                </div>
-                <?php foreach($pertanyaan as $v): ?>
-                    <?php if($v['id_pertanyaan_tipe'] == "A2"): ?>
-                        <div class="row border-bottom border-orange py-2">
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div>
-                                            <p class="m-0 font-weight-bold"><?= $v['pertanyaan_judul']; ?></p>
-                                            <p class="m-0"><?= $v['pertanyaan']; ?></p>
+                <?php if($level_personal > 9): ?>
+                    <!-- tambahan kompetensi untuk supervisor - manager level -->
+                    <div class="row py-2 bg-orange mt-4">
+                        <div class="col-6"><p class="m-0 font-weight-bold text-center">Tambahan Kompetensi untuk Supervisor<br/>Manager level</p></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">0</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">1</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">2</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">3</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-info">4</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">5</span></div>
+                    </div>
+                    <?php foreach($pertanyaan as $v): ?>
+                        <?php if($v['id_pertanyaan_tipe'] == "A2"): ?>
+                            <div class="row border-bottom border-orange py-2">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div>
+                                                <p class="m-0 font-weight-bold"><?= $v['pertanyaan_judul']; ?></p>
+                                                <p class="m-0"><?= $v['pertanyaan']; ?></p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-danger">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>1" name="<?= $v['id_pertanyaan']; ?>" value="0" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>1"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-danger">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>1" name="<?= $v['id_pertanyaan']; ?>" value="0" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>1"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-danger">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>2" name="<?= $v['id_pertanyaan']; ?>" value="1" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>2"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-danger">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>2" name="<?= $v['id_pertanyaan']; ?>" value="1" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>2"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-warning">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>3" name="<?= $v['id_pertanyaan']; ?>" value="2" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>3"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-warning">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>3" name="<?= $v['id_pertanyaan']; ?>" value="2" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>3"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-warning">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>4" name="<?= $v['id_pertanyaan']; ?>" value="3" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>4"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-warning">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>4" name="<?= $v['id_pertanyaan']; ?>" value="3" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>4"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-info">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>5" name="<?= $v['id_pertanyaan']; ?>" value="4" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>5"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-info">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>5" name="<?= $v['id_pertanyaan']; ?>" value="4" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>5"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-success">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>6" name="<?= $v['id_pertanyaan']; ?>" value="5" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>6"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-success">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>6" name="<?= $v['id_pertanyaan']; ?>" value="5" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>6"></label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endif; ?>
-                <?php endforeach;?>
-                <!-- tambahan kompetensi untuk supervisor - manager level -->
+                        <?php endif; ?>
+                    <?php endforeach;?>
+                    <!-- tambahan kompetensi untuk supervisor - manager level -->
+                <?php endif; ?>
 
-                <!-- tambahan kompetensi untuk supervisor - manager level -->
-                <div class="row py-2 bg-purple mt-4">
-                    <div class="col-6"><p class="m-0 font-weight-bold text-center">Tambahan Kompetensi untuk General Manager<br/>Vice President Level</p></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">0</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">1</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">2</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">3</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-info">4</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">5</span></div>
-                </div>
-                <?php foreach($pertanyaan as $v): ?>
-                    <?php if($v['id_pertanyaan_tipe'] == "A3"): ?>
-                        <div class="row border-bottom border-purple py-2">
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div>
-                                            <p class="m-0 font-weight-bold"><?= $v['pertanyaan_judul']; ?></p>
-                                            <p class="m-0"><?= $v['pertanyaan']; ?></p>
+                <!-- tambahan kompetensi untuk General Manager Vice President Level -->
+                <?php if($level_personal > 17): ?>
+                    <div class="row py-2 bg-purple mt-4">
+                        <div class="col-6"><p class="m-0 font-weight-bold text-center">Tambahan Kompetensi untuk General Manager<br/>Vice President Level</p></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">0</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">1</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">2</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">3</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-info">4</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">5</span></div>
+                    </div>
+                    <?php foreach($pertanyaan as $v): ?>
+                        <?php if($v['id_pertanyaan_tipe'] == "A3"): ?>
+                            <div class="row border-bottom border-purple py-2">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div>
+                                                <p class="m-0 font-weight-bold"><?= $v['pertanyaan_judul']; ?></p>
+                                                <p class="m-0"><?= $v['pertanyaan']; ?></p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-danger">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>1" name="<?= $v['id_pertanyaan']; ?>" value="0" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>1"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-danger">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>1" name="<?= $v['id_pertanyaan']; ?>" value="0" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>1"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-danger">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>2" name="<?= $v['id_pertanyaan']; ?>" value="1" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>2"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-danger">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>2" name="<?= $v['id_pertanyaan']; ?>" value="1" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>2"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-warning">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>3" name="<?= $v['id_pertanyaan']; ?>" value="2" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>3"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-warning">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>3" name="<?= $v['id_pertanyaan']; ?>" value="2" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>3"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-warning">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>4" name="<?= $v['id_pertanyaan']; ?>" value="3" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>4"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-warning">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>4" name="<?= $v['id_pertanyaan']; ?>" value="3" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>4"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-info">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>5" name="<?= $v['id_pertanyaan']; ?>" value="4" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>5"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-info">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>5" name="<?= $v['id_pertanyaan']; ?>" value="4" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>5"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-success">
-                                            <input type="radio" id="<?= $v['id_pertanyaan']; ?>6" name="<?= $v['id_pertanyaan']; ?>" value="5" disabled="true" />
-                                            <label for="<?= $v['id_pertanyaan']; ?>6"></label>
+                                        <div class="col-1 text-center align-self-center px-0 px-sm-2">
+                                            <div class="icheck-success">
+                                                <input type="radio" id="<?= $v['id_pertanyaan']; ?>6" name="<?= $v['id_pertanyaan']; ?>" value="5" disabled="true" />
+                                                <label for="<?= $v['id_pertanyaan']; ?>6"></label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endif; ?>
-                <?php endforeach;?>
-                <!-- tambahan kompetensi untuk supervisor - manager level -->
+                        <?php endif; ?>
+                    <?php endforeach;?>
+                    <!-- tambahan kompetensi untuk General Manager Vice President Level -->
+                <?php endif; ?>
             </div>
         </div>
 

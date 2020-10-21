@@ -152,8 +152,18 @@ class Pmk extends SpecialUserAppController {
         }
 
         // assessment data
-        $data['pertanyaan'] = $this->pmk_m->getAll_pertanyaan();
+        $detail_emp = $this->employee_m->getDetails_employee($nik);
+        if($detail_emp['level_personal'] < 10){
+            $where = "id_pertanyaan_tipe = 'A1'";
+        } elseif($detail_emp['level_personal'] < 18){
+            $where = "id_pertanyaan_tipe = 'A1' OR id_pertanyaan_tipe = 'A2'";
+        } else {
+            $where = "id_pertanyaan_tipe = 'A1' OR id_pertanyaan_tipe = 'A2' OR id_pertanyaan_tipe = 'A3'";
+        }
+        $data['pertanyaan'] = $this->pmk_m->getAllWhere_pertanyaan($where);
+        $data['level_personal'] = $detail_emp['level_personal'];
         $data['employee'] = $position;
+        $data['employee']['level_personal'] = $detail_emp['level_personal'];
         $contract_last = $this->pmk_m->getOnce_LastContractByNik($nik);
         $data['contract'] = $this->pmk_m->getOnce_contract($contract_last['nik'], $contract_last['contract']);
 

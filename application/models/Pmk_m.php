@@ -59,15 +59,6 @@ class Pmk_m extends CI_Model {
     }
     
     /**
-     * get semua pertanyaan assessment
-     *
-     * @return void
-     */
-    function getAll_pertanyaan(){
-        return $this->db->get($this->table['pertanyaan'])->result_array();
-    }
-    
-    /**
      * get all pmk status
      *
      * @return void
@@ -100,12 +91,12 @@ class Pmk_m extends CI_Model {
     }
     
     /**
-     * ambil semua pertanyaan assessment
+     * get semua pertanyaan assessment
      *
      * @return void
      */
-    function getAll_surveyPertanyaan(){
-        return $this->db->get($this->table['pertanyaan'])->result_array();
+    function getAllWhere_pertanyaan($where){
+        return $this->db->get_where($this->table['pertanyaan'], $where)->result_array();
     }
     
     /**

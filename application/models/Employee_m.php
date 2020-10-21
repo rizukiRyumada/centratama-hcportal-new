@@ -114,7 +114,7 @@ class Employee_m extends CI_Model {
         // load models
         $this->load->model(['divisi_model', 'dept_model']);
 
-        $this->db->select('nik, emp_name, position_name, position_id, id_entity, role_id, akses_surat_id, dept_id, div_id, email, hirarki_org, id_atasan1, id_atasan2, id_approver1, id_approver2');
+        $this->db->select('nik, emp_name, position_name, position_id, id_entity, role_id, akses_surat_id, level_personal, dept_id, div_id, email, hirarki_org, id_atasan1, id_atasan2, id_approver1, id_approver2');
         $this->db->join(
             $this->table['position'], 
             $this->table['employee'].'.position_id='.$this->table['position'].'.id', 
