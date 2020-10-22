@@ -72,6 +72,7 @@ class Pmk extends SpecialUserAppController {
         }
 
         // pmk data
+        $data['status_summary'] = $this->_general_m->getAll('id, name_text', $this->table['summary_status'], array());
 
         // ambil data summary dengan cek dia userapp admins, superadmin, 1, 196, N
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196 || $position_my['hirarki_org'] == "N"){
@@ -137,6 +138,8 @@ class Pmk extends SpecialUserAppController {
         $position = $this->employee_m->getDetails_employee($nik);
         // cek akses assessment
         $this->cekAkses_pmk($position_my, $position);
+
+        $data['exist_empPhoto'] = $this->employee_m->check_empPhoto($nik); // check employee photo exist or not
 
         // cek ketersediaan survey
         $data['id_pmk'] = $this->input->get('id'); // ambil data nik dan contract di get dari url
@@ -768,7 +771,7 @@ class Pmk extends SpecialUserAppController {
      */
     function saveAssessment(){
         // proses data post
-        $data_survey = $this->saveAssessment_post();
+        $data_assess = $this->saveAssessment_post();
 
         // ambil form detail
         $pmk_data = $this->pmk_m->getOnceWhere_form(array('id' => $this->input->post('id')));
@@ -829,23 +832,29 @@ class Pmk extends SpecialUserAppController {
         if($this->_general_m->getRow($this->table['survey'], array('id' => $this->input->post('id'))) > 0){ // cek jika ada isi surveynya
             $this->pmk_m->delete_assessment($this->input->post('id'));
         }
-        $this->pmk_m->insertAll_surveyHasil($data_survey);
+        $this->pmk_m->insertAll_surveyHasil($data_assess['data_assess']); // masukkan data penilaian assessment
 
         // prepare updated data
         $update_pmk = array(
             'status' => json_encode($status_new),
             'status_now_id' => $status_now_id,
-            'modified' => time()
+            'modified' => time(),
+            'survey_rerata' => json_encode($data_assess['data_rerata'])
         );
         // update pmk data form
         $this->pmk_m->updateForm($update_pmk, array('id' => $this->input->post('id')));
 
         redirect('pmk');
     }
-
+    
+    /**
+     * this function used to process data from post to a ready-to-insert variable to database
+     *
+     * @return void
+     */
     function saveAssessment_post(){
         // ambil tipe pertanyaan
-        $pertanyaan = $this->pmk_m->getAll_surveyPertanyaan();
+        $pertanyaan = $this->pmk_m->getAll_pertanyaan();
 
         $pmk_survey = array(); $x = 0;
         foreach($pertanyaan as $v){
@@ -860,6 +869,7 @@ class Pmk extends SpecialUserAppController {
             }
         }
 
+        // khusus untuk pertanyaan technical
         $y = 0;
         foreach($this->input->post() as $k => $v){
             if(fnmatch("B0*", $k)){ // cek apa dia technical competency assessment
@@ -875,7 +885,19 @@ class Pmk extends SpecialUserAppController {
             }
         }
 
-        return($pmk_survey);
+        // ambil semua tipe pertanyaan
+        $pertanyaan_tipe = $this->pmk_m->getAll_IdSurveyPertanyaanTipe(); $y = 0; $rerata = array();
+        // ambil data rata-rata
+        foreach($pertanyaan_tipe as $v){
+            $rerata[$v] = $this->input->post('rerata_'.$v);
+        }
+        $rerata['B0'] = $this->input->post('rerata_B0'); // ambil data rata-rata khusus technical pertanyaan
+        $rerata['total'] = $this->input->post('rerata_keseluruhan'); // ambil rerata keseluruhan khusus technical pertanyaan
+
+        return(array(
+            'data_assess' => $pmk_survey,
+            'data_rerata' => $rerata
+        ));
     }
 
     function test(){

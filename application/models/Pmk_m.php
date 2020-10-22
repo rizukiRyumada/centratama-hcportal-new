@@ -57,6 +57,15 @@ class Pmk_m extends CI_Model {
     function getAll_LastContract(){
         return $this->db->query("SELECT nik, MAX(contract) AS contract FROM ".$this->table['contract']." GROUP BY nik ORDER BY nik")->result_array();
     }
+
+    /**
+     * get semua pertanyaan assessment
+     *
+     * @return void
+     */
+    function getAll_pertanyaan(){
+        return $this->db->get_where($this->table['pertanyaan'])->result_array();
+    }
     
     /**
      * get all pmk status

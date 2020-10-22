@@ -13,11 +13,10 @@
                                             <div class="col align-self-center">
                                                 <div>
                                                 <div class="text-center">
-                                                    <i class="fa fa-user-circle fa-5x"></i>
+                                                    <!-- <i class="fa fa-user-circle fa-5x"></i> -->
 
-                                                    <!-- <img class="profile-user-img img-fluid img-circle"
-                                                    src="../../dist/img/user4-128x128.jpg"
-                                                    alt="User profile picture"> -->
+                                                    
+                                                    <img class="profile-user-img img-fluid img-circle" src="<?php if($exist_empPhoto == true){ echo base_url('/assets/img/employee/'.$employee['nik'].'.jpeg'); } else { echo base_url('/assets/img/user.svg'); } ?>" alt="User profile picture">
                                                 </div>
                                                 <h3 class="profile-username text-center"><?= $employee['emp_name']; ?></h3>
                                                 </div>
@@ -220,11 +219,11 @@
                         <?php endif; ?>
                     <?php endforeach;?>
                     <!-- rata-rata nilai -->
-                    <div class="row border-bottom py-2">
+                    <div class="row border-bottom py-2 bg-gray">
                         <div class="col">
                             <div class="row justify-content-end">
-                                <div class="col-auto align-self-center font-weight-bold">Nilai Rata-Rata (1) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
-                                <div class="col-2 text-right">
+                                <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (1) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                                <div class="col-md-2 text-right mt-2 mt-md-0">
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="rerata_A1" readonly>
                                         <div class="input-group-append">
@@ -302,11 +301,11 @@
                         <?php endforeach;?>
                     <?php endif; ?>
                     <!-- rata-rata nilai -->
-                    <div class="row border-bottom py-2">
+                    <div class="row border-bottom py-2 bg-gray">
                         <div class="col">
                             <div class="row justify-content-end">
-                                <div class="col-auto align-self-center font-weight-bold">Nilai Rata-Rata (2) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
-                                <div class="col-2 text-right">
+                                <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (2) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                                <div class="col-md-2 text-right mt-2 mt-md-0">
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="rerata_A2" readonly>
                                         <div class="input-group-append">
@@ -384,11 +383,11 @@
                         <?php endforeach;?>
                     <?php endif; ?>
                     <!-- rata-rata nilai -->
-                    <div class="row border-bottom py-2">
+                    <div class="row border-bottom py-2 bg-gray">
                         <div class="col">
                             <div class="row justify-content-end">
-                                <div class="col-auto align-self-center font-weight-bold">Nilai Rata-Rata (3) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
-                                <div class="col-2 text-right">
+                                <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (3) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                                <div class="col-md-2 text-right mt-2 mt-md-0">
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="rerata_A3" readonly>
                                         <div class="input-group-append">
@@ -406,8 +405,8 @@
                     <div class="row py-2">
                         <div class="col">
                             <div class="row justify-content-end">
-                                <div class="col-auto align-self-center font-weight-bold">Total Performance Value <sub>[Total Nilai Rata-Rata (1+2+3) / Sub Level Kompetensi]</sub> </div>
-                                <div class="col-2 text-right">
+                                <div class="col-md-auto align-self-center font-weight-bold">Total Performance Value <sub>[Total Nilai Rata-Rata (1+2+3) / Sub Level Kompetensi]</sub> </div>
+                                <div class="col-md-2 text-right mt-2 mt-md-0">
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="rerata_A" readonly>
                                         <div class="input-group-append">
@@ -495,11 +494,11 @@
                         </div>
                     <?php endfor;?>
                     <!-- rata-rata nilai -->
-                    <div class="row border-bottom py-2">
+                    <div class="row border-bottom py-2 bg-gray">
                         <div class="col">
                             <div class="row justify-content-end">
-                                <div class="col-auto align-self-center font-weight-bold">Nilai Rata-Rata <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
-                                <div class="col-2 text-right">
+                                <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                                <div class="col-md-2 text-right mt-2 mt-md-0">
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="rerata_B0" readonly>
                                         <div class="input-group-append">
@@ -521,12 +520,12 @@
                     <div class="row py-2">
                         <div class="col">
                             <div class="row justify-content-end">
-                                <div class="col-auto align-self-center font-weight-bold">Total Performance Value All Competency <sub>[(A+B)/2]</sub></div>
-                                <div class="col-2 text-right">
+                                <div class="col-md-auto align-self-center font-weight-bold">Total Performance Value All Competency <sub>[(A+B)/2]</sub></div>
+                                <div class="col-md-2 text-right mt-2 mt-md-0">
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="rerata_keseluruhan" readonly>
                                         <div class="input-group-append">
-                                            <span id="jumlah_keseluruhan" class="input-group-text"></span>
+                                            <span id="jumlah_keseluruhan" class="input-group-text">/2</span>
                                         </div>
                                     </div>
                                 </div>

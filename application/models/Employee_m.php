@@ -213,6 +213,39 @@ class Employee_m extends CI_Model {
         $this->db->where($where);
         $this->db->update($this->table['employee'], $data);
     }
+
+/* -------------------------------------------------------------------------- */
+/*                               OTHER FUNCTION                               */
+/* -------------------------------------------------------------------------- */    
+    /**
+     * cek apa foto tersedia atau tidak denga url file
+     *
+     * @param  mixed $nik
+     * @return void
+     */
+    function check_empPhoto($nik){
+        $file = base_url('/assets/img/employee/'.$nik.'.jpeg');
+        $file_headers = @get_headers($file);
+        if($file_headers[0] == 'HTTP/1.1 404 Not Found') {
+            return false;
+        }
+        else {
+            return true;
+        }
+
+        // $filename = base_url('/assets/img/employee/'.$nik.'.jpeg');
+
+        // print_r($filename);
+        // exit;
+
+        // // cek apa filenya ada atau engga
+        // if (file_exists($filename)) {
+        //     return 1; // jika ada beri tanda ada
+        // } else {
+        //     return 0; // jika tidak ada beri tanda tidak ada}
+        // }
+    }
+
 }
 
 /* End of file Employee_m.php */

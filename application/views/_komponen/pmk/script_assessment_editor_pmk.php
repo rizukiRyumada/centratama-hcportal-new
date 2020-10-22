@@ -206,9 +206,11 @@
     $('#jumlah_A').text("/"+soal_assessment); // letakkan jumlah soal assessment
 
     // menghitung rerata di form A
+    var rerata_A = 0;
     function hitungRerata(){
-        let rerata_keseluruhan = <?php if($level_personal < 10): ?>(jawaban_rerata1)<?php elseif($level_personal < 18): ?>(jawaban_rerata1 + jawaban_rerata2)<?php else: ?>(jawaban_rerata1 + jawaban_rerata2 + jawaban_rerata3)<?php endif; ?>/ soal_assessment;
-        $('input[name="rerata_A"]').val(rerata_keseluruhan.toFixed(2));
+        rerata_A = <?php if($level_personal < 10): ?>(jawaban_rerata1)<?php elseif($level_personal < 18): ?>(jawaban_rerata1 + jawaban_rerata2)<?php else: ?>(jawaban_rerata1 + jawaban_rerata2 + jawaban_rerata3)<?php endif; ?>/ soal_assessment;
+        $('input[name="rerata_A"]').val(rerata_A.toFixed(2));
+        hitungRerataTotal(); // panggil function rerata total
     }
 
     // menghitung rerata di form B
@@ -234,6 +236,7 @@
     }
 
     // hitung rerata B
+    var rerata_B = 0;
     function hitungRerataB(){
         let jawabanB_total = 0;
         <?php for($x = 0; $x < 5; $x++): ?>
@@ -242,10 +245,19 @@
             }
         <?php endfor; ?>
 
-        var jawabanB_rerata = (<?php for($x = 0; $x < 5; $x++): ?> parseInt(jawabanB0<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>) <?php if($x == 4): ?> <?php else: ?> + <?php endif; ?><?php endfor; ?>)/parseInt(jawabanB_total);
+        rerata_B = (<?php for($x = 0; $x < 5; $x++): ?> parseInt(jawabanB0<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>) <?php if($x == 4): ?> <?php else: ?> + <?php endif; ?><?php endfor; ?>)/parseInt(jawabanB_total);
 
         $("#jumlah_B0").text("/"+jawabanB_total);
-        $('input[name="rerata_B0"]').val(jawabanB_rerata);
+        $('input[name="rerata_B0"]').val(rerata_B.toFixed(2));
+
+        hitungRerataTotal(); // panggil function rerata total
+    }
+
+    // function untuk rerata jawaban assessment
+    var semua_rerata = 0;
+    function hitungRerataTotal(){
+        var semua_rerata = (rerata_A + rerata_B)/2; // ambil nilai rerata A dan B lalu dibagi 2
+        $('input[name="rerata_keseluruhan"]').val(semua_rerata.toFixed(2));
     }
 
 /* -------------------------------------------------------------------------- */
@@ -421,7 +433,6 @@
     // untuk menghapus pesan error pertanyaan kustom
     function removePesanError(input_name, input_answer){
         let pertanyaan_kustom = $('input[name="'+input_name+'_pertanyaan"]').val();
-        console.log(pertanyaan_kustom);
         if(pertanyaan_kustom == undefined){
             $('input[name="'+input_answer+'"]:checked').prop("checked", false);
             $('input[name="'+input_answer+'"]').attr('disabled', true);
