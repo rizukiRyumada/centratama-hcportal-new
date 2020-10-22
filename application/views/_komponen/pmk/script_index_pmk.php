@@ -129,7 +129,7 @@
         $('#divisi').change(function(){
             divisi = $(this).val(); // ubah variable divisi
             // get department from the server
-            getDepartemen(divisi);
+            getDepartemen(divisi, 'departemen');
             if(divisi == ""){
                 departemen = "";
             }
@@ -262,7 +262,7 @@
     }
 
     // this function used for get department from choosen division
-    function getDepartemen(divisi){
+    function getDepartemen(divisi, selector_departemen){
         $.ajax({
             url: "<?php echo base_url('job_profile/ajax_getdepartement'); ?>",
             data: { //kirim ke server php
@@ -270,15 +270,15 @@
             },
             method: "POST",
             beforeSend: () => {
-                $('#departemen').empty().append('<option value="">Loading...</option>'); //kosongkan selection value dan tambahkan satu selection option
+                $('#'+selector_departemen).empty().append('<option value="">Loading...</option>'); //kosongkan selection value dan tambahkan satu selection option
             },
             success: function(data) { //jadi nanti dia balikin datanya dengan variable data
                 if(divisi == ""){
-                    $('#departemen').empty().append('<option value="">Please choose division first</option>'); //kosongkan selection value dan tambahkan satu selection option
+                    $('#'+selector_departemen).empty().append('<option value="">Please choose division first</option>'); //kosongkan selection value dan tambahkan satu selection option
                 } else {
-                    $('#departemen').empty().append('<option value="">All</option>'); //kosongkan selection value dan tambahkan satu selection option
+                    $('#'+selector_departemen).empty().append('<option value="">All</option>'); //kosongkan selection value dan tambahkan satu selection option
                     $.each(JSON.parse(data), function(i, v) {
-                        $('#departemen').append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
+                        $('#'+selector_departemen).append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                     });
                 }
             }
@@ -348,8 +348,7 @@
 /* -------------------------------------------------------------------------- */
 /*                              daterange picker                              */
 /* -------------------------------------------------------------------------- */
-
-    $('#daterange').daterangepicker({
+    $('.daterange-chooser').daterangepicker({
         "showDropdowns": true,
         "minYear": 1989,
         "maxYear": 2580,
@@ -365,8 +364,8 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
         "alwaysShowCalendars": true,
-        "startDate": "<?= date('m/d/o', strtotime("-2 month", time())) ?>",
-        "endDate": "<?= date('m/d/o', strtotime("+2 month", time())); ?>",
+        "startDate": "<?= date('m/01/o', strtotime("-2 month", time())) ?>",
+        "endDate": "<?= date('m/t/o', strtotime("+2 month", time())); ?>",
         "minDate": "YYYY-MM-DD",
         "maxDate": "YYYY-MM-DD",
         "drops": "auto",

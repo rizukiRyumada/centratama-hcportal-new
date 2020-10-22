@@ -192,7 +192,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                         </div>
-                                        <input class="form-control" type="text" name="dateChooser" id="daterange">
+                                        <input class="form-control daterange-chooser" type="text" name="dateChooser" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -231,30 +231,90 @@
                                     active show
                                 <?php endif; ?>
                             " id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-                            <div class="row d-flex align-items-stretch">
-                                <?php foreach($divisi as $v): ?>
-                                    <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
-                                        <a href="<?= base_url('pmk/summary'); ?>?div=<?= $v['id']; ?>" class="card bg-light w-100">
-                                            <!-- <div class="card-header text-muted border-bottom-0">
-                                                Digital Strategist
-                                            </div> -->
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-7">
-                                                        <h2 class="lead"><b><?= $v['division']; ?></b></h2>
-                                                        <p class="text-sm badge badge-<?= $v['color']; ?>"><b>Need Attention: </b> <?= $v['count_summary']; ?> </p>
-                                                        <p class="text-muted text-sm m-0"><b>Employees: </b> <?= $v['emp_total']; ?> </p>
-                                                        <p class="text-muted text-sm m-0"><b>Divhead: </b> <?= $v['emp_name']; ?> </p>
-                                                    </div>
-                                                    <div class="col-5 text-center align-self-center">
-                                                        <!-- <img src="../../dist/img/user1-128x128.jpg" alt="" class="img-circle img-fluid"> -->
-                                                        <i class="fas fa-users fa-5x text-<?= $v['color']; ?>"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
+                            <div class="row mb-2">
+                                <div class="col bg-light py-2">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label>Choose data to view:</label>
+                                        </div>
                                     </div>
-                                <?php endforeach;?>
+                                    <div class="row">
+                                        <div class="col">
+                                            <ul class="nav nav-pills ml-auto p-2">
+                                                <li class="nav-item"><a id="summary_switchData1" class="switch-data nav-link active" href="javascript:void(0)" data-choosewhat="0"><i class="fas fa-clipboard-list"></i> My Task</a></li>
+                                                <li class="nav-item"><a id="summary_switchData2" class="switch-data nav-link" href="javascript:void(0)" data-choosewhat="1"><i class="fas fa-history"></i> History</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <!-- filter table -->
+                                <div class="row justify-content-end" >
+                                    <?php if($position_my['id'] == "1" || $position_my['id'] == "196" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                                        <?php $flag_filter++; // tandai filter flag buat munculin tombol apa dia ada filter toolsnya ?>
+                                        <div id="division_wrapper" class="col-lg-4 col-sm-6">
+                                            <div class="form-group">
+                                                <label for="divisiSummary">Division:</label>
+                                                <select id="divisiSummary" class="custom-select form-control form-control-sm">
+                                                    <option value="">All</option>
+                                                    <?php foreach($filter_divisi as $v): ?>
+                                                        <option value="div-<?= $v['id']; ?>"><?= $v['division']; ?></option>
+                                                    <?php endforeach;?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="col-lg-4 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="departemenSummary">Department:</label>
+                                            <select id="departemenSummary" class="custom-select form-control form-control-sm">
+                                                <option value="">Please choose division first</option>        
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-6" >
+                                        <div class="form-group">
+                                            <label for="status">Status:</label>
+                                            <select id="status" class="custom-select form-control form-control-sm">
+                                                <option value="">All</option>
+                                                <?php foreach($status_summary as $v): ?>
+                                                    <option value="<?= $v['id']; ?>"><?= $v['name_text']; ?></option>
+                                                <?php endforeach;?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="summaryDateChooser" class="col-lg-4 col-sm-6" style="display: none;" >
+                                        <div class="form-group">
+                                            <label for="daterange">Pick a daterange:</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input id="daterange_summary" class="form-control daterange-chooser" type="text" name="dateChooser" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="buttonResetFilter" class="row justify-content-end" >
+                                    <div class="col-sm-2">
+                                        <button id="resetFilterAsses" class="btn btn-danger w-100"><i class="fa fa-filter fa-rotate-180"></i> Reset</button>
+                                    </div>
+                                </div><!-- /filter table -->
+                                <hr/>
+                                <table id="table_indexSummary" class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Year</th>
+                                            <th>Month</th>
+                                            <th>Status</th>
+                                            <th>Created</th>
+                                            <th>Modified</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div> <!-- /Tabel Summary -->
                     <?php endif; ?>

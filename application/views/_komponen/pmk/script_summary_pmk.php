@@ -1,11 +1,11 @@
 <script>
     // prepare variables
     var switchData = 0;
-    var divisi = "<?= $id_div; ?>";
-    var filter_status = "";
-    var filter_daterange = $('#daterange').val();
+    var summary_divisi = "<?= $chooseDivisi; ?>";
+    var filter_summary_status = "";
+    var filter_summary_daterange = $('#daterange_summary').val();
 
-    var table = $('#table_indexSummary').DataTable({
+    var table_summary = $('#table_indexSummary').DataTable({
         responsive: true,
         autoWidth: false,
         // processing: true,
@@ -48,9 +48,9 @@
             data: function(data) {
                 // kirim data ke server
                 data.switchData = switchData;
-                data.divisi = divisi;
-                data.filter_status = filter_status;
-                data.filter_daterange = filter_daterange;
+                data.divisi = summary_divisi;
+                data.filter_status = filter_summary_status;
+                data.filter_daterange = filter_summary_daterange;
             },
             beforeSend: () => {
                 // $('.overlay').removeClass('d-none'); // hapus class d-none
@@ -60,7 +60,7 @@
                 $(".overlay").fadeIn();
             },
             complete: (data, jqXHR) => { // run function when ajax complete
-                table.columns.adjust();
+                table_summary.columns.adjust();
                 
                 // ajax data counter
                 var ajax_request_time = new Date().getTime() - ajax_start_time;
@@ -99,61 +99,65 @@
     });
 
     // switch data button
+    // $('.switch-data').on('click', function(){
+    //     if($(this).hasClass('active') == false){
+    //         switchData = vya; // ganti switchData
+    //         // tampilkan sembunyikan filter saat menu history atau my task
+    //         if(vya == 0){
+    //             $('#filterTools').slideUp();
+    //             $('#buttonResetFilter').slideUp();
+    //             $('#filter_divider').slideUp();
+    //         } else {
+    //             $('#filterTools').slideDown();
+    //             $('#buttonResetFilter').slideDown();
+    //             $('#filter_divider').slideDown();
+    //         }
+
+    //         table_summary.ajax.reload();
+    //     }
+    // });
     $('.switch-data').on('click', function(){
+        let vya = $(this).data('choosewhat');
         if($(this).hasClass('active') == false){
-            let vya = $(this).data('switch');
             switchData = vya; // ganti switchData
             // tampilkan sembunyikan filter saat menu history atau my task
             if(vya == 0){
-                $('#filterTools').slideUp();
-                $('#buttonResetFilter').slideUp();
-                $('#filter_divider').slideUp();
+                $('#summary_switchData2').removeClass('active');
+                $('#summary_switchData1').addClass('active');
+
+                $('#summaryDateChooser').fadeOut(); // summary date chooser
             } else {
-                $('#filterTools').slideDown();
-                $('#buttonResetFilter').slideDown();
-                $('#filter_divider').slideDown();
+                $('#summary_switchData1').removeClass('active');
+                $('#summary_switchData2').addClass('active');
+
+                $('#summaryDateChooser').fadeIn(); // summary date chooser
             }
 
-            table.ajax.reload();
+            table_summary.ajax.reload();
         }
     });
 
-    // filter status
+    // filter divisi 
+    $('#divisiSummary').change(function(){
+        summary_divisi = $(this).val(); // ubah variable divisi
+        // get department from the server
+        getDepartemen(summary_divisi, 'departemenSummary');
+        if(summary_divisi == ""){
+            summary_departemen = "";
+        }
+        table_summary.ajax.reload(); // reload table
+    });
     // filter status
     $("#status").on('change', function() {
         filter_status = $(this).val(); // ubah variabel departemen
-        table.ajax.reload(); // reload table
+        table_summary.ajax.reload(); // reload table_summary
     });
     // filter daterange
     $("#daterange").on('change', function(){
         filter_daterange = $(this).val(); // ubah variabel daterange
-        table.ajax.reload(); // reload table
+        table_summary.ajax.reload(); // reload table_summary
     });
 
     /* ---------------------------- daterange script ---------------------------- */
-    $('#daterange').daterangepicker({
-        "showDropdowns": true,
-        "minYear": 1989,
-        "maxYear": 2580,
-        "showWeekNumbers": true,
-        "showISOWeekNumbers": true,
-        "autoApply": true,
-        ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        },
-        "alwaysShowCalendars": true,
-        "startDate": "<?= date('m/01/o', strtotime("-2 month", time())) ?>",
-        "endDate": "<?= date('m/t/o', strtotime("+2 month", time())); ?>",
-        "minDate": "YYYY-MM-DD",
-        "maxDate": "YYYY-MM-DD",
-        "drops": "auto",
-        "applyButtonClasses": "btn-success"
-    }, function(start, end, label) {
-        console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-    });
+    // moved to script_index_pmk.php
 </script>

@@ -53,7 +53,6 @@ class Pmk extends SpecialUserAppController {
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
             // ambil semua data pmk_status
             $data['pmk_status'] = $this->pmk_m->getAll_pmkStatus(); // get semua status info
-
         } else {
             // ambil data form di divisi dia aja
             $data['pmk_status'] = array(); $x = 0;
@@ -79,10 +78,13 @@ class Pmk extends SpecialUserAppController {
             // cek jika dia 196, 1, atau N
             if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
                 $data_divisi = $this->divisi_model->getAll(); // get all data divisi
+                $data['chooseDivisi'] = ""; // set data buat choose divisi
             } elseif($position_my['hirarki_org'] == "N"){
                 $data_divisi = $this->divisi_model->getAll_where(array('id' => $position_my['div_id']));
+                $data['chooseDivisi'] = $position_my['div_id']; // set data buat choose divisi
+            } else {
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
             }
-            $data['summary'] = 1; // flag bahwa karyawan ini berhak melihat summary
             foreach($data_divisi as $k => $v){
                 $data_divisi[$k]['emp_total'] = $this->employee_m->count_where(['div_id' => $v['id']]);
                 // ambil summary yang sesuai dengan status dan jabatam
@@ -103,7 +105,23 @@ class Pmk extends SpecialUserAppController {
                     $data_divisi[$k]["count_summary"] += $this->_general_m->getRow($this->table['summary'], array('status_now_id' => $value['id'], 'id_div' => $v['id']));
                 }
             }
+            // more advance pmk data
+            $data['summary'] = 1; // flag bahwa karyawan ini berhak melihat summary
             $data['divisi'] = $data_divisi;
+            // beri script dengan summary script
+            $data['custom_script'] = array(
+                'plugins/datatables/script_datatables',
+                'plugins/daterange-picker/script_daterange-picker', 
+                'pmk/script_index_pmk',
+                'pmk/script_summary_pmk'
+            );
+        } else {
+            // beri script tanpa summary script
+            $data['custom_script'] = array(
+                'plugins/datatables/script_datatables',
+                'plugins/daterange-picker/script_daterange-picker', 
+                'pmk/script_index_pmk'
+            );
         }
 
         $data['userApp_admin'] = $this->userApp_admin; // flag apa dia admin atau bukan
@@ -122,11 +140,11 @@ class Pmk extends SpecialUserAppController {
 		// additional styles and custom script
         $data['additional_styles'] = array('plugins/datatables/styles_datatables');
 		// $data['custom_styles'] = array();
-        $data['custom_script'] = array(
-            'plugins/datatables/script_datatables',
-            'plugins/daterange-picker/script_daterange-picker', 
-            'pmk/script_index_pmk'
-        );
+        // $data['custom_script'] = array(
+        //     'plugins/datatables/script_datatables',
+        //     'plugins/daterange-picker/script_daterange-picker', 
+        //     'pmk/script_index_pmk'
+        // );
         
 		$this->load->view('main_v', $data);
     }
@@ -535,46 +553,76 @@ class Pmk extends SpecialUserAppController {
      * @return void
      */
     function ajax_getSummaryList(){
-        $divisi = $this->input->post('divisi');
         $switchData = $this->input->post('switchData');
         $filter_status = $this->input->post('filter_status');
         $filter_daterange = $this->input->post('filter_daterange');
         $position_my = $this->posisi_m->getMyPosition();
+
+        if(!empty($this->input->post('divisi'))){
+            $divisi = explode('-', $this->input->post('divisi'))[1];
+            $where = "id_div=".$divisi;
+        } else {
+            $where = "";
+        }
+
         // cek apa datanya ambil history atau mytask
         if($switchData == 0){
+            // cek apa wherenya empty
+            if(empty($where)){
+                // nothing
+            } else {
+                $where .= " AND ";
+            }
+
             // cek hirarki
-            if($position_my['hirarki_org'] == "N"){
+            if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){ // apakah dia admin?
+                $where .= "status_now_id='pmksum-01' OR status_now_id='pmksum-02' OR status_now_id='pmksum-03'";
+            } elseif($position_my['id'] == 196){ // apakah dia hc divhead?
+                // $status = "pmksum-02";
+                $where .= "status_now_id='pmksum-02'";
+            } elseif($position_my['id'] == 1){ // apakah dia CEO?
+                // $status = "pmksum-03";
+                $where .= "status_now_id='pmksum-03'";
+            } elseif($position_my['hirarki_org'] == "N"){ // apakah dia divhead?
                 // cek akses buat N
                 if($position_my['div_id'] != $divisi){
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                 }
-                $status = "pmksum-01";
-            } elseif($position_my['id'] == 196){
-                $status = "pmksum-02";
-            } elseif($position_my['id'] == 1){
-                $status = "pmksum-03";
-            } else {
-                show_error("This respons/e is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                // $status = "pmksum-01";
+                $where .= "status_now_id='pmksum-01'";
+            } else { // bukan siapa-siapa?
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
             }
-            $data = $this->_general_m->getAll('*', $this->table['summary'], array('id_div' => $divisi, 'status_now_id' => $status));
+
         } elseif($switchData == 1){
-            $where = "id_div=$divisi";
+            // $where = "id_div=$divisi";
 
             // filtering if
             if(!empty($filter_status)){
-                $where .= " AND status_now_id = '$filter_status'";
+                if(empty($where)){
+                    // nothing
+                } else {
+                    $where .= " AND ";
+                }
+                $where .= "status_now_id = '$filter_status'";
             }
             if(!empty($filter_daterange)){
+                if(empty($where)){
+                    // nothing
+                } else {
+                    $where .= " AND ";
+                }
                 $daterange = explode(" - ", $filter_daterange); // pisahkan dulu daterangenya
                 $daterange[0] = strtotime($daterange[0]);
                 $daterange[1] = strtotime($daterange[1]);
-                $where .= " AND created >= ".$daterange[0]." AND created <= ".$daterange[1]; // tambahkan where tanggal buat ngebatesin view biar ga load lama
+                $where .= "created >= ".$daterange[0]." AND created <= ".$daterange[1]; // tambahkan where tanggal buat ngebatesin view biar ga load lama
             }
-
-            $data = $this->_general_m->getAll('*', $this->table['summary'], $where);
         } else {
             show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
         }
+        
+        // ambil data summary
+        $data = $this->_general_m->getAll('*', $this->table['summary'], $where);
 
         // lengkapi data
         foreach($data as $k => $v){
