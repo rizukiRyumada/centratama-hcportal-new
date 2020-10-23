@@ -8,7 +8,7 @@
                         <div class="card ">
                             <div class="card-body box-profile">
                                 <div class="row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-2">
                                         <div class="row h-100">
                                             <div class="col align-self-center">
                                                 <div>
@@ -16,14 +16,14 @@
                                                     <!-- <i class="fa fa-user-circle fa-5x"></i> -->
 
                                                     
-                                                    <img class="profile-user-img img-fluid img-circle" src="<?php if($exist_empPhoto == true){ echo base_url('/assets/img/employee/'.$employee['nik'].'.jpeg'); } else { echo base_url('/assets/img/user.svg'); } ?>" alt="User profile picture">
+                                                    <img class="border border-gray-dark img-fluid" src="<?php if($exist_empPhoto == true){ echo base_url('/assets/img/employee/'.$employee['nik'].'.jpeg'); } else { echo base_url('/assets/img/user.svg'); } ?>" alt="User profile picture">
                                                 </div>
                                                 <h3 class="profile-username text-center"><?= $employee['emp_name']; ?></h3>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-5">
                                         <ul class="list-group list-group-unbordered mb-3">
                                             <li class="list-group-item">
                                                 <b>NIK</b> <a class="float-right"><?= $employee['nik']; ?></a>
@@ -59,6 +59,10 @@
                                             <li class="list-group-item">
                                                 <b>Department</b> <a class="float-right"><?= $employee['departemen']; ?></a>
                                             </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <ul class="list-group list-group-unbordered mb-3">
                                             <li class="list-group-item">
                                                 <b>Position</b> <a class="float-right"><?= $employee['position_name']; ?></a>
                                             </li>

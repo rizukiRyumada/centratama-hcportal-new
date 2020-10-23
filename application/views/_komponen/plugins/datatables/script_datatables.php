@@ -6,6 +6,8 @@
 <script src="<?= base_url('/assets/vendor/node_modules/datatables.net-buttons/js/buttons.html5.min.js'); ?>"></script>
 <script src="<?= base_url('/assets/vendor/node_modules/datatables.net-responsive/js/dataTables.responsive.min.js'); ?>"></script>
 <script src="<?= base_url('/assets/vendor/node_modules/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js'); ?>"></script>
+<script src="<?= base_url('/assets/vendor/node_modules/datatables.net-fixedcolumns/js/dataTables.fixedColumns.min.js'); ?>"></script>
+<script src="<?= base_url('/assets/vendor/node_modules/datatables.net-fixedcolumns-bs4/js/fixedColumns.bootstrap4.min.js'); ?>"></script>
 <script>
     var table = $("#mainTable").DataTable({
       responsive: true,

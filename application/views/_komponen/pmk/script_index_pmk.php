@@ -8,7 +8,7 @@
     
     // buat memunculkan tombol reset saat ada filternya aja
 
-    var divisi = ""; var departemen = ""; var status = ""; var daterange = "<?= date('m/d/o', strtotime("-2 month", time())) ?> - <?= date('m/d/o', strtotime("+2 month", time())); ?>";
+    var divisi = ""; var departemen = ""; var status = ""; var daterange = "<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>";
     var table = $('#table_indexPMK').DataTable({
         responsive: true,
         autoWidth: false,
@@ -161,6 +161,8 @@
             // reset status filter
             $('#status').prop('selectedIndex',0);
             status = "";
+            // reset daterange status
+            $('#daterange').val('<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>');
             table.ajax.reload(); // reload table
         });
 

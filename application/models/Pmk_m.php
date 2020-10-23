@@ -6,6 +6,7 @@ class Pmk_m extends CI_Model {
     protected $table = [
         "contract" => "master_employee_contract",
         "counter" => "_counter_trans",
+        "employee_pa" => 'master_employee_pa',
         "form_summary" => "pmk_form_summary",
         "main" => "pmk_form",
         "pertanyaan" => "pmk_survey_pertanyaan",
@@ -16,6 +17,13 @@ class Pmk_m extends CI_Model {
         "summary" => "pmk_form_summary",
         "survey" => "pmk_survey_hasil"
     ];
+    
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model(['entity_m']); // load model
+    }
+    
     
     /**
      * hapus hasil survey assessment
@@ -106,6 +114,36 @@ class Pmk_m extends CI_Model {
      */
     function getAllWhere_pertanyaan($where){
         return $this->db->get_where($this->table['pertanyaan'], $where)->result_array();
+    }
+    
+    /**
+     * ambil semua data assessment dengan id
+     *
+     * @param  varchar[16] $id
+     * @return void
+     */
+    function getAllWhere_assessment($id){
+        return $this->db->get_where($this->table['survey'], array('id' => $id))->result_array();
+    }
+
+    /**
+     * ambil semua data form dengan where
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getAllWhere_form($where){
+        return $this->db->get_where($this->table['main'], $where)->result_array();
+    }
+    
+    /**
+     * ambil semua pa employee dengan where
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getAllWhere_pa($where){
+        return $this->db->get_where($this->table['employee_pa'], $where)->result_array();
     }
     
     /**
@@ -225,23 +263,167 @@ class Pmk_m extends CI_Model {
         // lengkapi data pmk
         $dataPmk = array(); $x = 0;
         foreach($data_pmk as $k => $v){
-            $data_pos   = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
-            $divisi     = $this->divisi_model->getOnceWhere(array('id' => $data_pos['div_id']));
-            $department = $this->dept_model->getDetailById($data_pos['dept_id']);
-            $employee   = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
-            $status     = $this->pmk_m->getOnceWhere_status(array('id_status' => $v['status_now_id']));
+            // $data_pos      = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
+            $employee      = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
+            $divisi        = $this->divisi_model->getOnceWhere(array('id' => $employee['div_id']));
+            $department    = $this->dept_model->getDetailById($employee['dept_id']);
+            $status        = $this->pmk_m->getOnceWhere_status(array('id_status' => $v['status_now_id']));
+            $entity        = $this->entity_m->getOnce(array('id' => $employee['id_entity']));
 
+            // ambil data penilaian
+            $pa_last = $this->getLast_pa(substr($v['id'], 0, 8));
+            if(!empty($pa_last)){
+                $pa_data = $this->getAllWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_last['tahun']));
+                $pa_yearBefore = date('Y', strtotime('1-1-'.$pa_last['tahun'].' -1 year'));
+            } else {
+                $pa_data = "";
+            }
+
+            if(empty($pa_data)){
+                $dummy_pa = Array(
+                    'nik' => 'CG000309',
+                    'periode' => 'H1/FY',
+                    'tahun' => '2727',
+                    'score' => '4.00',
+                    'rating' => 'A-'
+                );
+                $dataPmk[$x]['pa1'] = json_encode(array('pa_data' => $dummy_pa, 'pa_name' => 'SPSP'));
+                $dataPmk[$x]['pa2'] = json_encode(array('pa_data' => $dummy_pa, 'pa_name' => 'SPSP'));
+                $dataPmk[$x]['pa3'] = json_encode(array('pa_data' => $dummy_pa, 'pa_name' => 'SPSP'));
+            } else {
+                $x = 0;
+                if(count($pa_data) == 2){
+                    $pa_dataBefore = $this->getOnceWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_yearBefore, 'periode' => 'FY'));
+                    $dataPmk[$x]['pa1'] = json_encode(array('pa_data' => $pa_dataBefore, 'pa_name' => 'SPFY'));
+                    // ambil 2 data penilaian berikutnya
+                    foreach($pa_data as $key => $value){
+                        if($value['periode'] == 'H1'){
+                            $dataPmk[$x]['pa2'] = json_encode(array('pa_data' => $pa_data[$key], 'pa_name' => 'SPAH'));
+                        }
+                        if($value['periode'] == 'FY'){
+                            $dataPmk[$x]['pa3'] = json_encode(array('pa_data' => $pa_data[$key], 'pa_name' => 'SPFY'));
+                        }
+                    }
+                } elseif(count($pa_data) == 1){
+                    $pa_dataBefore = $this->getAllWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_yearBefore));
+                    // ambil 2 data penilaian berikutnya
+                    foreach($pa_dataBefore as $key => $value){
+                        if($value['periode'] == 'H1'){
+                            $dataPmk[$x]['pa1'] = json_encode(array('pa_data' => $pa_dataBefore[$key], 'pa_name' => 'SPAH'));
+                        }
+                        if($value['periode'] == 'FY'){
+                            $dataPmk[$x]['pa2'] = json_encode(array('pa_data' => $pa_dataBefore[$key], 'pa_name' => 'SPFY'));
+                        }
+                    }
+                    $dataPmk[$x]['pa3'] = json_encode(array('pa_data' => $pa_data[0], 'pa_name' => 'SPAH'));
+                } else {
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                }
+            }
+
+            // if(count($pa_data) == 2){
+            //     $pa_dataBefore = $this->getOnceWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_yearBefore, 'periode' => 'FY'));
+            //     $dataPmk[$x]['spfy1']['score'] = $pa_dataBefore['score'];
+            //     $dataPmk[$x]['spfy1']['rating'] = $pa_dataBefore['rating'];
+            //     $dataPmk[$x]['spfy1']['year'] = $pa_dataBefore['tahun'];
+            //     // ambil 2 data penilaian berikutnya
+            //     foreach($pa_data as $key => $value){
+            //         if($value['periode'] == 'H1'){
+            //             $dataPmk[$x]['spfy2']['score'] = $pa_data[$key]['score'];
+            //             $dataPmk[$x]['spfy2']['periode'] = $pa_data[$key]['periode'];
+            //             $dataPmk[$x]['spfy2']['rating'] = $pa_data[$key]['rating'];
+            //             $dataPmk[$x]['spfy2']['year'] = $pa_data[$key]['tahun'];
+            //         }
+            //         if($value['periode'] == 'FY'){
+            //             $dataPmk[$x]['spfy3']['score'] = $pa_data[$key]['score'];
+            //             $dataPmk[$x]['spfy3']['periode'] = $pa_data[$key]['periode'];
+            //             $dataPmk[$x]['spfy3']['rating'] = $pa_data[$key]['rating'];
+            //             $dataPmk[$x]['spfy3']['year'] = $pa_data[$key]['tahun'];
+            //         }
+            //     }
+            // } elseif(count($pa_data) == 1){
+            //     $pa_dataBefore = $this->getAllWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_yearBefore));
+            //     // ambil 2 data penilaian berikutnya
+            //     foreach($pa_dataBefore as $key => $value){
+            //         if($value['periode'] == 'H1'){
+            //             $dataPmk[$x]['spfy1']['score'] = $pa_dataBefore[$key]['score'];
+            //             $dataPmk[$x]['spfy1']['periode'] = $pa_dataBefore[$key]['periode'];
+            //             $dataPmk[$x]['spfy1']['rating'] = $pa_dataBefore[$key]['rating'];
+            //             $dataPmk[$x]['spfy1']['year'] = $pa_dataBefore[$key]['tahun'];
+            //         }
+            //         if($value['periode'] == 'FY'){
+            //             $dataPmk[$x]['spfy2']['score'] = $pa_dataBefore[$key]['score'];
+            //             $dataPmk[$x]['spfy2']['periode'] = $pa_dataBefore[$key]['periode'];
+            //             $dataPmk[$x]['spfy2']['rating'] = $pa_dataBefore[$key]['rating'];
+            //             $dataPmk[$x]['spfy2']['year'] = $pa_dataBefore[$key]['tahun'];
+            //         }
+            //     }
+            //     $dataPmk[$x]['spfy3']['score'] = $pa_data[0]['score'];
+            //     $dataPmk[$x]['spfy3']['periode'] = $pa_data[0]['periode'];
+            //     $dataPmk[$x]['spfy3']['rating'] = $pa_data[0]['rating'];
+            //     $dataPmk[$x]['spfy3']['year'] = $pa_data[0]['tahun'];
+            // } else {
+            //     show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            // }
+
+            // data kontrak
+            $contract_last = $this->pmk_m->getOnce_LastContractByNik(substr($v['id'], 0, 8));
+            $contract_detail = $this->pmk_m->getDetailWhere_contract(array(
+                'nik' => $contract_last['nik'],
+                'contract' => $contract_last['contract']
+            ));
+            
             $dataPmk[$x]['nik']        = substr($v['id'], 0, 8);
-            $dataPmk[$x]['divisi']     = $divisi['division'];
-            $dataPmk[$x]['department'] = $department['nama_departemen'];
-            $dataPmk[$x]['position']   = $data_pos['position_name'];
             $dataPmk[$x]['emp_name']   = $employee['emp_name'];
+            $dataPmk[$x]['date_birth'] = $employee['date_birth'];
+            $dataPmk[$x]['date_join']  = $employee['date_join'];
+            $dataPmk[$x]['emp_stats']  = $employee['emp_stats'];
+            $dataPmk[$x]['eoc_probation'] = date("j M'y", $contract_detail['date_end']);
+            $dataPmk[$x]['contract']   = $contract_last['contract'];
+            $dataPmk[$x]['yoc_probation'] = date("j M'y", $contract_detail['date_start'])." - ".date("j M'y", $contract_detail['date_end']);
+            $dataPmk[$x]['position']   = $employee['position_name'];
+            $dataPmk[$x]['department'] = $department['nama_departemen'];
+            $dataPmk[$x]['divisi']     = $divisi['division'];
+            $dataPmk[$x]['entity']     = $entity['nama_entity'];
             $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
             $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
             $x++;
+
+            // data yg diperlukan
+            /**
+             * nik
+             * full name
+             * BOD (date_birth)
+             * Join Date
+             * Employee Status
+             * 
+             * Year of Contract/Probation
+             * Contract #
+             * Year of Contract
+             * 
+             * Job Position
+             * Departement
+             * Division
+             * Entity
+             * 
+             * SPFY 3 perioe
+             * 
+             * Terminated, Extended, Permanent
+             * Extended milih entity baru
+             */
         }
 
         return $dataPmk;
+    }
+    
+    /**
+     * get all detail with where parameter
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getDetailWhere_contract($where){
+        return $this->db->get_where($this->table['contract'], $where)->row_array();
     }
     
     /**
@@ -310,26 +492,6 @@ class Pmk_m extends CI_Model {
     function getDetail_summary($id){
         return $this->db->get_where($this->table['form_summary'], array('id_summary' => $id))->row_array();
     }
-
-    /**
-     * ambil semua data form dengan where
-     *
-     * @param  mixed $where
-     * @return void
-     */
-    function getAllWhere_form($where){
-        return $this->db->get_where($this->table['main'], $where)->result_array();
-    }
-    
-    /**
-     * ambil semua data assessment dengan id
-     *
-     * @param  varchar[16] $id
-     * @return void
-     */
-    function getAllWhere_assessment($id){
-        return $this->db->get_where($this->table['survey'], array('id' => $id))->result_array();
-    }
     
     /**
      * this function is used for generate pmk id form
@@ -360,6 +522,16 @@ class Pmk_m extends CI_Model {
     function getId_summary(){
 
     }
+    
+    /**
+     * ambil pa karyawan paling akhir
+     *
+     * @param  mixed $nik
+     * @return void
+     */
+    function getLast_pa($nik){
+        return $this->db->query("SELECT nik, MAX(tahun) AS tahun FROM ".$this->table['employee_pa']." WHERE nik = '".$nik."' GROUP BY nik ORDER BY nik")->row_array();
+    }
 
     function getOnce_contract($nik, $contract){
         return $this->db->get_where($this->table['contract'], array('nik' => $nik, 'contract' => $contract))->row_array();
@@ -383,6 +555,16 @@ class Pmk_m extends CI_Model {
      */
     function getOnceWhere_form($where){
         return $this->db->get_where($this->table['main'], $where)->row_array();
+    }
+
+    /**
+     * ambil semua pa employee dengan where
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getOnceWhere_pa($where){
+        return $this->db->get_where($this->table['employee_pa'], $where)->row_array();
     }
     
     /**

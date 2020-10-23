@@ -22,7 +22,7 @@
             [5, 10, 25, 50, 100, -1 ],
             ['5 Rows', '10 Rows', '25 Rows', '50 Rows', '100 Rows', 'All' ]
         ],
-        order: [[0, 'desc']],
+        order: [[1, 'desc']],
         // buttons
         buttons: [
             'pageLength', // place custom length menu when add buttons
@@ -69,6 +69,7 @@
             }
         },
         columns: [
+            {data: 'divisi_name'},
             {data: 'tahun'},
             {data: 'bulan'},
             {
@@ -82,8 +83,8 @@
                     return data;
                 }
             },
-            {data: 'created'},
-            {data: 'modified'},
+            // {data: 'created'},
+            // {data: 'modified'},
             {
                 className: "",
                 data: 'id_summary',
@@ -126,11 +127,13 @@
                 $('#summary_switchData1').addClass('active');
 
                 $('#summaryDateChooser').fadeOut(); // summary date chooser
+                $('#summary_status').fadeOut(); // filter summary status
             } else {
                 $('#summary_switchData1').removeClass('active');
                 $('#summary_switchData2').addClass('active');
 
                 $('#summaryDateChooser').fadeIn(); // summary date chooser
+                $('#summary_status').fadeIn(); // filter summary status
             }
 
             table_summary.ajax.reload();
@@ -148,14 +151,27 @@
         table_summary.ajax.reload(); // reload table
     });
     // filter status
-    $("#status").on('change', function() {
+    $("#summary_status").on('change', function() {
         filter_status = $(this).val(); // ubah variabel departemen
         table_summary.ajax.reload(); // reload table_summary
     });
     // filter daterange
-    $("#daterange").on('change', function(){
+    $("#daterange_summary").on('change', function(){
         filter_daterange = $(this).val(); // ubah variabel daterange
         table_summary.ajax.reload(); // reload table_summary
+    });
+    // button for reset filter
+    $('#summaryButton_resetFilter').on('click', function(){
+        // reset divisi filter
+        $('#divisiSummary').prop('selectedIndex',0);
+        summary_divisi = "";
+        // reset status filter
+        $('#status').prop('selectedIndex',0);
+        filter_summary_status = "";
+        // reset daterange filter
+        filter_summary_daterange = "<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>";
+        $('#daterange_summary').val('<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>');
+        table_summary.ajax.reload(); // reload table
     });
 
     /* ---------------------------- daterange script ---------------------------- */

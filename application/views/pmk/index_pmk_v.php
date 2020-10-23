@@ -1,3 +1,5 @@
+<?php $redirect_summary = false; ?>
+
 <!-- <div class="row">
     <div class="col">
         <div class="card card-danger">
@@ -90,14 +92,14 @@
                         <!-- TODO tambahkan if jika dia atasan HC atau bukan buat aktifin mana dulu -->
                         <li class="nav-item">
                             <a class="nav-link 
-                                <?php if($position_my['id'] != 1): ?>
+                                <?php if($position_my['id'] != 1 || $redirect_summary != true): ?>
                                     active
                                 <?php endif; ?>
                             " id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false"><i class="fas fa-file-alt"></i> Assessment</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link 
-                                <?php if($position_my['id'] == 1): ?>
+                                <?php if($position_my['id'] == 1 || $redirect_summary == true): ?>
                                     active
                                 <?php endif; ?>
                             " id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="true"><i class="fas fa-file-signature"></i> Summary</a>
@@ -110,7 +112,7 @@
                     <!-- Tabel assessment -->
                     <?php $flag_filter = 0; // buat penanda apa ada item tool buat filter ?>
                     <div class="tab-pane fade 
-                            <?php if($position_my['id'] != 1): ?>
+                            <?php if($position_my['id'] != 1 || $redirect_summary != true): ?>
                                 active show
                             <?php endif; ?>
                         " id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
@@ -192,7 +194,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                         </div>
-                                        <input class="form-control daterange-chooser" type="text" name="dateChooser" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
+                                        <input id="daterange" class="form-control daterange-chooser" type="text" name="dateChooser" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -227,7 +229,7 @@
                     <?php if(!empty($summary)): ?>
                         <!-- Tabel Summary -->
                         <div class="tab-pane fade
-                                <?php if($position_my['id'] == 1): ?>
+                                <?php if($position_my['id'] == 1 || $redirect_summary == true): ?>
                                     active show
                                 <?php endif; ?>
                             " id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
@@ -248,9 +250,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body table-responsive">
-                                <!-- filter table -->
-                                <div class="row justify-content-end" >
+                            <!-- filter table -->
+                            <div class="row justify-content-end" >
                                     <?php if($position_my['id'] == "1" || $position_my['id'] == "196" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
                                         <?php $flag_filter++; // tandai filter flag buat munculin tombol apa dia ada filter toolsnya ?>
                                         <div id="division_wrapper" class="col-lg-4 col-sm-6">
@@ -265,15 +266,15 @@
                                             </div>
                                         </div>
                                     <?php endif; ?>
-                                    <div class="col-lg-4 col-sm-6">
+                                    <!-- <div class="col-lg-4 col-sm-6">
                                         <div class="form-group">
                                             <label for="departemenSummary">Department:</label>
                                             <select id="departemenSummary" class="custom-select form-control form-control-sm">
                                                 <option value="">Please choose division first</option>        
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-4 col-sm-6" >
+                                    </div> -->
+                                    <div id="summary_status" class="col-lg-4 col-sm-6" style="display: none;">
                                         <div class="form-group">
                                             <label for="status">Status:</label>
                                             <select id="status" class="custom-select form-control form-control-sm">
@@ -291,25 +292,27 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                                 </div>
-                                                <input id="daterange_summary" class="form-control daterange-chooser" type="text" name="dateChooser" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
+                                                <input id="daterange_summary" class="form-control daterange-chooser" type="text" name="dateChooser_summary" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
                                             </div>
                                         </div>
                                     </div>
+                            </div>
+                            <div id="summaryButton_resetFilter" class="row justify-content-end" >
+                                <div class="col-sm-2">
+                                    <button id="resetFilterAsses" class="btn btn-danger w-100"><i class="fa fa-filter fa-rotate-180"></i> Reset</button>
                                 </div>
-                                <div id="buttonResetFilter" class="row justify-content-end" >
-                                    <div class="col-sm-2">
-                                        <button id="resetFilterAsses" class="btn btn-danger w-100"><i class="fa fa-filter fa-rotate-180"></i> Reset</button>
-                                    </div>
-                                </div><!-- /filter table -->
-                                <hr/>
+                            </div><!-- /filter table -->
+                            <hr/>
+                            <div class="table-responsive">
                                 <table id="table_indexSummary" class="table table-striped table-hover">
                                     <thead>
                                         <tr>
+                                            <th>Divisi</th>
                                             <th>Year</th>
                                             <th>Month</th>
                                             <th>Status</th>
-                                            <th>Created</th>
-                                            <th>Modified</th>
+                                            <!-- <th>Created</th>
+                                            <th>Modified</th> -->
                                             <th></th>
                                         </tr>
                                     </thead>

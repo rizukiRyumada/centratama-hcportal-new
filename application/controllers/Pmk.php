@@ -653,6 +653,7 @@ class Pmk extends SpecialUserAppController {
      */
     function ajax_getSummaryListProcess(){
         $id_summary = $this->input->post('id_summary');
+        // $id_summary = "2020104"; // FIXME Remove
 
         // ambil detail data form summarynya
         $data_summary = $this->pmk_m->getDetail_summary($id_summary);
