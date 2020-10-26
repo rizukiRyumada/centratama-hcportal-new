@@ -57,7 +57,7 @@ class Posisi_m extends CI_Model {
      * @return void
      */
     public function whoIsOnThisPosition($id){
-        $this->db->select("id, position_name, dept_id, div_id, id_atasan1, id_atasan2, assistant, id_approver1, id_approver2, mpp, hirarki_org, job_grade, nik, emp_name, is_active, position_id, id_entity, role_id, email");
+        $this->db->select("id, position_name, dept_id, div_id, id_atasan1, id_atasan2, assistant, id_approver1, id_approver2, mpp, hirarki_org, job_grade, nik, emp_name, position_id, id_entity, role_id, email");
         $this->db->join($this->table_employee, "$this->table_employee.position_id = $this->table.id", 'left');
         return $this->db->get_where($this->table, array("$this->table_employee.position_id" => $id))->result_array();
     }
