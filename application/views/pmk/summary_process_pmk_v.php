@@ -4,7 +4,7 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-md-2">
-                        <a href="<?= base_url('pmk'); ?>" class="btn btn-primary"><i class="fas fa-chevron-left"></i></a>
+                        <a href="<?= base_url('pmk/index?direct=sumhis'); ?>" class="btn btn-primary"><i class="fas fa-chevron-left"></i></a>
                     </div>
                 </div>
                 <div class="row">

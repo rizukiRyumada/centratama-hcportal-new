@@ -81,7 +81,7 @@ class Pmk extends SpecialUserAppController {
                 $data['chooseDivisi'] = ""; // set data buat choose divisi
             } elseif($position_my['hirarki_org'] == "N"){
                 $data_divisi = $this->divisi_model->getAll_where(array('id' => $position_my['div_id']));
-                $data['chooseDivisi'] = $position_my['div_id']; // set data buat choose divisi
+                $data['chooseDivisi'] = 'div-'.$position_my['div_id']; // set data buat choose divisi
             } else {
                 show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
             }
@@ -126,6 +126,13 @@ class Pmk extends SpecialUserAppController {
 
         $data['userApp_admin'] = $this->userApp_admin; // flag apa dia admin atau bukan
         $data['position_my'] = $position_my;
+
+        // ambil data redirect
+        if(!empty($this->input->get('direct'))){
+            if($this->input->get('direct') == "sumhis"){
+                $data['redirect_summary'] = 1;
+            }
+        }
 
         if($position_my['hirarki_org'] == "N" || $this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
             $data['filter_divisi'] = $this->divisi_model->getDivisi();
@@ -579,7 +586,7 @@ class Pmk extends SpecialUserAppController {
                 $where .= "status_now_id='pmksum-01' OR status_now_id='pmksum-02' OR status_now_id='pmksum-03'";
             } elseif($position_my['id'] == 196){ // apakah dia hc divhead?
                 // $status = "pmksum-02";
-                $where .= "status_now_id='pmksum-02'";
+                $where .= "status_now_id='pmksum-02' OR (status_now_id='pmksum-01' AND id_div='6')";
             } elseif($position_my['id'] == 1){ // apakah dia CEO?
                 // $status = "pmksum-03";
                 $where .= "status_now_id='pmksum-03'";

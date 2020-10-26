@@ -1,5 +1,3 @@
-<?php $redirect_summary = false; ?>
-
 <!-- <div class="row">
     <div class="col">
         <div class="card card-danger">
@@ -92,15 +90,23 @@
                         <!-- TODO tambahkan if jika dia atasan HC atau bukan buat aktifin mana dulu -->
                         <li class="nav-item">
                             <a class="nav-link 
-                                <?php if($position_my['id'] != 1 || $redirect_summary != true): ?>
-                                    active
+                                <?php if(!empty($redirect_summary)): ?>
+                                    <?php // biarkan kosong ?>
+                                <?php else: ?>
+                                    <?php if($position_my['id'] != 1): ?>
+                                        active
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             " id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false"><i class="fas fa-file-alt"></i> Assessment</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link 
-                                <?php if($position_my['id'] == 1 || $redirect_summary == true): ?>
+                                <?php if(!empty($redirect_summary)): ?>
                                     active
+                                <?php else: ?>
+                                    <?php if($position_my['id'] == 1): ?>
+                                        active
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             " id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="true"><i class="fas fa-file-signature"></i> Summary</a>
                         </li>
@@ -112,8 +118,12 @@
                     <!-- Tabel assessment -->
                     <?php $flag_filter = 0; // buat penanda apa ada item tool buat filter ?>
                     <div class="tab-pane fade 
-                            <?php if($position_my['id'] != 1 || $redirect_summary != true): ?>
-                                active show
+                            <?php if(!empty($redirect_summary)): ?>
+                                <?php // biarkan kosong ?>
+                            <?php else: ?>
+                                <?php if($position_my['id'] != 1): ?>
+                                    active show
+                                <?php endif; ?>
                             <?php endif; ?>
                         " id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
                         <?php if(($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2") && $position_my['id'] != 1): ?>    
@@ -229,8 +239,12 @@
                     <?php if(!empty($summary)): ?>
                         <!-- Tabel Summary -->
                         <div class="tab-pane fade
-                                <?php if($position_my['id'] == 1 || $redirect_summary == true): ?>
+                                <?php if(!empty($redirect_summary)): ?>
                                     active show
+                                <?php else: ?>
+                                    <?php if($position_my['id'] == 1): ?>
+                                        active show
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             " id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
                             <div class="row mb-2">
