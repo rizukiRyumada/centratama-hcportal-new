@@ -61,6 +61,9 @@
     // validation job_level
     let validate_job_level = $('select[name="' + input_select[1].input + '"]');
 
+    // variable man power required
+    let input_mpp = $('input[name="mpp_req"]');
+
     // validation emp_stats
     let validate_empstats = $('select[name="' + input_select[2].input + '"]');
 

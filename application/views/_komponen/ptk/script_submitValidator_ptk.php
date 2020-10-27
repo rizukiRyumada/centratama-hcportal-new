@@ -111,8 +111,6 @@
             counter_validate++; // validate counter add
         }
 
-        // variable man power required
-        let input_mpp = $('input[name="mpp_req"]');
         // validate Man Power Required
         if(input_mpp.val() == ""){
             input_mpp.addClass('is-invalid'); // add class invalid
@@ -121,6 +119,20 @@
             counter_validate++; // validate counter add
         } else {
             // nothing
+        }
+
+        // cek apa man power requirednya lebih besar dari Number of Incumbent
+        let mpp = input_mpp.val();
+        let noiReq = $('#noiReq').val();
+        if(noiReq != '-'){
+            if(mpp > 0 && mpp <= noiReq){
+            // nothing
+            } else {
+                input_mpp.addClass('is-invalid'); // tambah kelas invalid
+                input_mpp.parent().append('<div class="invalid-tooltip">The man power required that you input should be in range one to less or equal to number of incumbent.</div>'); // show error tooltip
+                msg_validate += "<li>Man Power Required is more higher than Number of incumbent.</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            }
         }
 
         let input_preferage = $('input[name="preferred_age"]');
