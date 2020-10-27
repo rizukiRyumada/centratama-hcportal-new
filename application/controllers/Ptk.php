@@ -152,7 +152,7 @@ class Ptk extends SpecialUserAppController {
         $this->form_validation->set_rules($this->config_formValidation); // load settings
         if($this->form_validation->run() == FALSE){ // jalankan validasi
             // Form Data
-            $detail_emp = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik')); // ambil posisi dianya
+            $detail_emp = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik')); // ambil informasi departemen dan divisi dianya
 
             // Form Data
             if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
@@ -372,6 +372,12 @@ class Ptk extends SpecialUserAppController {
             'statuses' => $myStatus,
             'data' => $data_ptk
         ]));
+    }
+
+    function ajax_getPositionMpp(){
+        echo json_encode(array(
+            'mpp' => $this->_general_m->getOnce('mpp', $this->table['position'], array('id' => $this->input->post('id_posisi')))['mpp']
+        ));
     }
     
     /**

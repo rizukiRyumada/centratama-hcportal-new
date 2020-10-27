@@ -178,8 +178,7 @@
                 <label for="mppReq" class="col-sm-5 col-form-label">Manpower required</label>
                 <div class="col-sm-7">
                     <div class="input-group">
-                        <!-- TODO tambah fungsi max mengikuti di database -->
-                        <input type="number" class="form-control" id="mppReq" name="mpp_req" min="1" max="5">
+                        <input type="number" class="form-control" id="mppReq" name="mpp_req" min="1" disabled>
                         <div class="input-group-append">
                             <span class="input-group-text">person(s)</span>
                         </div>

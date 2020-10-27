@@ -11,6 +11,10 @@
         $('#unbudgettedRadio').siblings('.invalid-tooltip').remove(); // hapus tooltip invalid 
         
         console.log($('input[name="budget"]:checked').val());
+
+        // number of incumbent
+        $('#noiReq').val('-');
+        input_mpp.val('');
         
         if($('input[name="budget"]:checked').val() == 0) { // cek jika unbudgeted
             input_jptext.fadeIn(); // tampilkan free text buat nulis nama job 
@@ -43,12 +47,16 @@
         input_jptext.removeClass('is-invalid'); // remove class invalid
         // input_jptext.removeClass('is-valid'); // remove class invalid
         input_jptext.siblings('.invalid-tooltip').remove(); // remove class invalid
+        input_mpp.removeAttr('max'); //  hapus attribute max
         if($(this).val() != ""){
             // input_jptext.addClass('is-valid'); // remove class invalid
             input_jptext.siblings('.invalid-tooltip').remove(); // remove class invalid
+            input_mpp.removeAttr('disabled'); // hapus attribute disable
         } else {
             input_jptext.addClass('is-invalid'); // remove class invalid
             input_jptext.parent().append(msg_fill); // show error tooltip
+            input_mpp.val(''); // kosongkan value mpp
+            input_mpp.attr('disabled', true); // tambahkan atribute disable
         }
     });
     // validate job profile chooser
@@ -57,11 +65,52 @@
         input_jpchoose.removeClass('is-valid'); // remove class invalid
         input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
+            $.ajax({
+                url: '<?= base_url("ptk/ajax_getPositionMpp"); ?>',
+                data: {
+                    id_posisi: $(this).val()
+                },
+                method: "POST",
+                success: function(data){
+                    let vya = JSON.parse(data);
+                    $('#noiReq').val(vya.mpp);
+                    input_mpp.attr('max', vya.mpp);
+                    input_mpp.removeAttr('disabled');
+                }
+            });
+
             input_jpchoose.addClass('is-valid'); // remove class invalid
             input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
+            $('#noiReq').val('-');
+            input_mpp.val(''); // kosongkan value mpp
+            input_mpp.attr('max', '1');
+            input_mpp.attr('disabled', true);
+
             input_jpchoose.addClass('is-invalid'); // remove class invalid
             input_jpchoose.parent().append(msg_choose); // show error tooltip
+        }
+    });
+
+    //validate mpp request
+    input_mpp.on('keyup', function(){
+        input_mpp.removeClass('is-invalid');
+        input_mpp.removeClass('valid');
+        input_mpp.siblings('.invalid-tooltip').remove();
+        // cek jika mpp request < number of incumbent
+
+        console.log($(this).val());
+        console.log($('#noiReq').val());
+
+        let mpp = $(this).val();
+        let noiReq = $('#noiReq').val();
+        if(noiReq != '-'){
+            if(mpp > 0 && mpp <= noiReq){
+            // nothing
+            } else {
+                input_mpp.addClass('is-invalid'); // tambah kelas invalid
+                input_mpp.parent().append('<div class="invalid-tooltip">The man power required that you input should be number and in range one to less or equal to number of incumbent.</div>'); // show error tooltip
+            }
         }
     });
 
@@ -455,21 +504,21 @@
     <?php endif; ?>
 
     // input type number validation
-    $('input[type="number"]').on('change keyup', function() {
-        $(this).removeClass('is-invalid'); // remove class invalid
-        $(this).siblings('.invalid-tooltip').remove(); // remove error tooltip
-        if($.isNumeric($(this).val()) != true) { // cek jika value kosong
-            if($(this).val() == ""){ // cek value yang diinput user
-                $(this).addClass('is-invalid'); // add class invalid
-                $(this).parent().append(msg_number); // show error tooltip
-            } else {
-                $(this).addClass('is-invalid'); // add class invalid
-                $(this).parent().append(msg_number); // show error tooltip
-            }
-        } else {
-            // nothing
-        }
-    });
+    // $('input[type="number"]').on('change keyup', function() {
+    //     $(this).removeClass('is-invalid'); // remove class invalid
+    //     $(this).siblings('.invalid-tooltip').remove(); // remove error tooltip
+    //     if($.isNumeric($(this).val()) != true) { // cek jika value kosong
+    //         if($(this).val() == ""){ // cek value yang diinput user
+    //             $(this).addClass('is-invalid'); // add class invalid
+    //             $(this).parent().append(msg_number); // show error tooltip
+    //         } else {
+    //             $(this).addClass('is-invalid'); // add class invalid
+    //             $(this).parent().append(msg_number); // show error tooltip
+    //         }
+    //     } else {
+    //         // nothing
+    //     }
+    // });
 
     /* -------------------------------------------------------------------------- */
     /*                           Job Profile Tab Trigger                          */
