@@ -155,14 +155,19 @@ class Pmk extends SpecialUserAppController {
         
 		$this->load->view('main_v', $data);
     }
-
+    
+    /**
+     * assessment page of PMK Module
+     *
+     * @return void
+     */
     public function assessment(){
         $nik = substr($this->input->get("id"), 0, 8);
         // data posisi
         $position_my = $this->posisi_m->getMyPosition();
         $position = $this->employee_m->getDetails_employee($nik);
         // cek akses assessment
-        $this->cekAkses_pmk($position_my, $position);
+        $data['is_access'] = $this->cekAkses_pmk($position_my, $position);
 
         $data['exist_empPhoto'] = $this->employee_m->check_empPhoto($nik); // check employee photo exist or not
 
@@ -176,7 +181,9 @@ class Pmk extends SpecialUserAppController {
         } else {
             // akses preview
 		    $data['load_view'] = 'pmk/assessment_viewer_pmk_v';
-            $script_assessment = 'pmk/script_assessment_viewer_pmk';
+            $script_assessment = 'pmk/script_assessment_editor_pmk';
+            // TODO fix assessment viewer script
+            // $script_assessment = 'pmk/script_assessment_viewer_pmk';
         }
 
         // assessment data
@@ -248,7 +255,12 @@ class Pmk extends SpecialUserAppController {
         
 		$this->load->view('main_v', $data);
     }
-
+    
+    /**
+     * summary process
+     *
+     * @return void
+     */
     function summary_process(){
         // $id_summary = $this->input->get('id');
 
@@ -660,7 +672,6 @@ class Pmk extends SpecialUserAppController {
      */
     function ajax_getSummaryListProcess(){
         $id_summary = $this->input->post('id_summary');
-        // $id_summary = "2020104"; // FIXME Remove
 
         // ambil detail data form summarynya
         $data_summary = $this->pmk_m->getDetail_summary($id_summary);
@@ -682,6 +693,11 @@ class Pmk extends SpecialUserAppController {
         // ambil data form
         $pmk = $this->pmk_m->getAllWhere_form(array('id_summary' => $id_summary));
         $data_form = $this->pmk_m->detail_pmk($pmk);
+
+        // return array(
+        //     'data' => $data_form,
+        //     'summary' => $data_summary
+        // );
 
         echo(json_encode(array(
             'data' => $data_form,
@@ -719,11 +735,13 @@ class Pmk extends SpecialUserAppController {
         // cek apa dia admin atau userapp admin
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 196 || $position_my['id'] == 1){
             // perbolehkan akses bebas
+            $value = 2; // flag bisa akses tapi ga berhak submit
         } else {
             // cek berdasarkan hirarki
             if($position_my['hirarki_org'] == "N"){
                 if($position_my['div_id'] == $position['div_id']){
                     // perbolehkan akses
+                    $value = 1;
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                     exit;
@@ -732,6 +750,7 @@ class Pmk extends SpecialUserAppController {
                 // cek berdasarkan kesamaan divisi dan department
                 if($position_my['div_id'] == $position['div_id'] && $position_my['dept_id'] == $position['dept_id']){
                     // perbolehkan akses
+                    $value = 1;
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                     exit;
@@ -739,6 +758,7 @@ class Pmk extends SpecialUserAppController {
             } elseif($position_my['hirarki_org'] == "N-2"){
                 if($position_my['id'] == $position['id_approver1']){
                     // perbolehkan akses
+                    $value = 1;
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                     exit;
@@ -748,6 +768,7 @@ class Pmk extends SpecialUserAppController {
                 exit;
             }
         }
+        return $value;
         // cek otoritas apa divisi id dan dept idnya sama antara my position dengan id posisi yang dituju
     }
     

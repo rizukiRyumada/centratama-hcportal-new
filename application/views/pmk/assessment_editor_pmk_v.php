@@ -303,23 +303,23 @@
                                 </div>
                             <?php endif; ?>
                         <?php endforeach;?>
-                    <?php endif; ?>
-                    <!-- rata-rata nilai -->
-                    <div class="row border-bottom py-2 bg-gray">
-                        <div class="col">
-                            <div class="row justify-content-end">
-                                <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (2) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
-                                <div class="col-md-2 text-right mt-2 mt-md-0">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="rerata_A2" readonly>
-                                        <div class="input-group-append">
-                                            <span id="jumlah_A2" class="input-group-text"></span>
+                        <!-- rata-rata nilai -->
+                        <div class="row border-bottom py-2 bg-gray">
+                            <div class="col">
+                                <div class="row justify-content-end">
+                                    <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (2) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                                    <div class="col-md-2 text-right mt-2 mt-md-0">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="rerata_A2" readonly>
+                                            <div class="input-group-append">
+                                                <span id="jumlah_A2" class="input-group-text"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div><!-- /rata-rata nilai -->
+                        </div><!-- /rata-rata nilai -->
+                    <?php endif; ?>
                     <!-- /tambahan kompetensi untuk supervisor - manager level -->
 
                     <!-- tambahan kompetensi untuk General Manager Vice President Level -->
@@ -385,23 +385,23 @@
                                 </div>
                             <?php endif; ?>
                         <?php endforeach;?>
-                    <?php endif; ?>
-                    <!-- rata-rata nilai -->
-                    <div class="row border-bottom py-2 bg-gray">
-                        <div class="col">
-                            <div class="row justify-content-end">
-                                <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (3) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
-                                <div class="col-md-2 text-right mt-2 mt-md-0">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="rerata_A3" readonly>
-                                        <div class="input-group-append">
-                                            <span id="jumlah_A3" class="input-group-text"></span>
+                        <!-- rata-rata nilai -->
+                        <div class="row border-bottom py-2 bg-gray">
+                            <div class="col">
+                                <div class="row justify-content-end">
+                                    <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (3) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                                    <div class="col-md-2 text-right mt-2 mt-md-0">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="rerata_A3" readonly>
+                                            <div class="input-group-append">
+                                                <span id="jumlah_A3" class="input-group-text"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div><!-- /rata-rata nilai -->
+                        </div><!-- /rata-rata nilai -->
+                    <?php endif; ?>
                     <!-- /tambahan kompetensi untuk General Manager Vice President Level -->
                 </div>
                 <!-- rata-rata nilai soal A -->
@@ -541,7 +541,9 @@
                     <div class="row justify-content-end">
                         <div class="col-lg-4">
                             <div class="btn-group w-100">
-                                <button id="button_submit" class="btn btn-lg btn-success"><i class="fas fa-paper-plane"></i> Submit</button>
+                                <?php if($is_access == 1): ?>
+                                    <button id="button_submit" class="btn btn-lg btn-success"><i class="fas fa-paper-plane"></i> Submit</button>
+                                <?php endif; ?>
                                 <button id="button_save" class="btn btn-lg btn-warning"><i class="fas fa-save"></i> Save</button>
                             </div>
                         </div>

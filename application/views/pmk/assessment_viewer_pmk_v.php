@@ -8,23 +8,22 @@
                         <div class="card ">
                             <div class="card-body box-profile">
                                 <div class="row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-2">
                                         <div class="row h-100">
                                             <div class="col align-self-center">
                                                 <div>
                                                 <div class="text-center">
-                                                    <i class="fa fa-user-circle fa-5x"></i>
+                                                    <!-- <i class="fa fa-user-circle fa-5x"></i> -->
 
-                                                    <!-- <img class="profile-user-img img-fluid img-circle"
-                                                    src="../../dist/img/user4-128x128.jpg"
-                                                    alt="User profile picture"> -->
+                                                    
+                                                    <img class="border border-gray-dark img-fluid" src="<?php if($exist_empPhoto == true){ echo base_url('/assets/img/employee/'.$employee['nik'].'.jpeg'); } else { echo base_url('/assets/img/user.svg'); } ?>" alt="User profile picture">
                                                 </div>
                                                 <h3 class="profile-username text-center"><?= $employee['emp_name']; ?></h3>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-8">
+                                    <div class="col-sm-5">
                                         <ul class="list-group list-group-unbordered mb-3">
                                             <li class="list-group-item">
                                                 <b>NIK</b> <a class="float-right"><?= $employee['nik']; ?></a>
@@ -60,6 +59,10 @@
                                             <li class="list-group-item">
                                                 <b>Department</b> <a class="float-right"><?= $employee['departemen']; ?></a>
                                             </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <ul class="list-group list-group-unbordered mb-3">
                                             <li class="list-group-item">
                                                 <b>Position</b> <a class="float-right"><?= $employee['position_name']; ?></a>
                                             </li>
@@ -217,13 +220,26 @@
                         </div>
                     <?php endif; ?>
                 <?php endforeach;?>
-                <div class="row border border-bottom">
-                    <div class="col">sadshadjvbhejwadce</div>
-                </div>
+                <!-- rata-rata nilai -->
+                <div class="row border-bottom py-2 bg-gray">
+                    <div class="col">
+                        <div class="row justify-content-end">
+                            <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (1) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                            <div class="col-md-2 text-right mt-2 mt-md-0">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="rerata_A1" readonly>
+                                    <div class="input-group-append">
+                                        <span id="jumlah_A1" class="input-group-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /rata-rata nilai -->
                 <!-- /kompetensi dasar -->
 
+                <!-- tambahan kompetensi untuk supervisor - manager level -->
                 <?php if($level_personal > 9): ?>
-                    <!-- tambahan kompetensi untuk supervisor - manager level -->
                     <div class="row py-2 bg-orange mt-4">
                         <div class="col-6"><p class="m-0 font-weight-bold text-center">Tambahan Kompetensi untuk Supervisor<br/>Manager level</p></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">0</span></div>
@@ -285,8 +301,24 @@
                             </div>
                         <?php endif; ?>
                     <?php endforeach;?>
-                    <!-- tambahan kompetensi untuk supervisor - manager level -->
+                    <!-- rata-rata nilai -->
+                    <div class="row border-bottom py-2 bg-gray">
+                        <div class="col">
+                            <div class="row justify-content-end">
+                                <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (2) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                                <div class="col-md-2 text-right mt-2 mt-md-0">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="rerata_A2" readonly>
+                                        <div class="input-group-append">
+                                            <span id="jumlah_A2" class="input-group-text"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /rata-rata nilai -->
                 <?php endif; ?>
+                <!-- tambahan kompetensi untuk supervisor - manager level -->
 
                 <!-- tambahan kompetensi untuk General Manager Vice President Level -->
                 <?php if($level_personal > 17): ?>
@@ -351,9 +383,43 @@
                             </div>
                         <?php endif; ?>
                     <?php endforeach;?>
-                    <!-- tambahan kompetensi untuk General Manager Vice President Level -->
+                    <!-- rata-rata nilai -->
+                    <div class="row border-bottom py-2 bg-gray">
+                        <div class="col">
+                            <div class="row justify-content-end">
+                                <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata (3) <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                                <div class="col-md-2 text-right mt-2 mt-md-0">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="rerata_A3" readonly>
+                                        <div class="input-group-append">
+                                            <span id="jumlah_A3" class="input-group-text"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /rata-rata nilai -->
                 <?php endif; ?>
+                <!-- tambahan kompetensi untuk General Manager Vice President Level -->
             </div>
+            <!-- rata-rata nilai soal A -->
+            <div class="card-footer bg-danger">
+                <div class="row py-2">
+                    <div class="col">
+                        <div class="row justify-content-end">
+                            <div class="col-md-auto align-self-center font-weight-bold">Total Performance Value <sub>[Total Nilai Rata-Rata (1+2+3) / Sub Level Kompetensi]</sub> </div>
+                            <div class="col-md-2 text-right mt-2 mt-md-0">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="rerata_A" readonly>
+                                    <div class="input-group-append">
+                                        <span id="jumlah_A" class="input-group-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /rata-rata nilai soal A -->
         </div>
 
         <div class="card card-warning card-outline">
@@ -364,7 +430,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <!-- kompetensi dasar -->
+                <!-- kompetensi teknikal -->
                 <div class="row py-2 bg-maroon">
                     <div class="col-6"><p class="m-0 font-weight-bold text-center">Kompetensi</p></div>
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">0</span></div>
@@ -378,11 +444,15 @@
                     <div class="row border-bottom border-gray-light py-2">
                         <div class="col">
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-6 align-self-center">
                                     <div>
-                                        <p class="m-0 font-weight-bold">
-                                            <input class="form-control" type="text" name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan" readonly>
-                                        </p>
+                                        <!-- <input class="form-control" type="text" name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan" > -->
+                                        <div class="input-group input-group">
+                                            <input type="text" class="form-control" name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan">
+                                            <span class="input-group-append">
+                                                <button type="button" class="btn btn-danger btn-delete" data-input="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan" data-input_choose="B0<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>" data-input_answer="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>" ><i class="fa fa-trash"></i></button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-1 text-center align-self-center px-0 px-sm-2">
@@ -425,7 +495,45 @@
                         </div>
                     </div>
                 <?php endfor;?>
-                <!-- /kompetensi dasar -->
+                <!-- rata-rata nilai -->
+                <div class="row border-bottom py-2 bg-gray">
+                    <div class="col">
+                        <div class="row justify-content-end">
+                            <div class="col-md-auto align-self-center font-weight-bold">Nilai Rata-Rata <sub>[Jumlah Skala/Jumlah Kompetensi]</sub></div>
+                            <div class="col-md-2 text-right mt-2 mt-md-0">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="rerata_B0" readonly>
+                                    <div class="input-group-append">
+                                        <span id="jumlah_B0" class="input-group-text">/0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /rata-rata nilai -->
+                <!-- /kompetensi teknikal -->
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="overlay"></div>
+            <div class="card-body bg-danger">
+                <!-- rata-rata nilai -->
+                <div class="row py-2">
+                    <div class="col">
+                        <div class="row justify-content-end">
+                            <div class="col-md-auto align-self-center font-weight-bold">Total Performance Value All Competency <sub>[(A+B)/2]</sub></div>
+                            <div class="col-md-2 text-right mt-2 mt-md-0">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="rerata_keseluruhan" readonly>
+                                    <div class="input-group-append">
+                                        <span id="jumlah_keseluruhan" class="input-group-text">/2</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /rata-rata nilai -->
             </div>
         </div>
     </div>
