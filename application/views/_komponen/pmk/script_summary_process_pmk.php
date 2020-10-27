@@ -174,23 +174,79 @@
             },
             {
                 className: "",
-                data: 'action',
+                data: 'approval',
                 render: (data, type) => {
                     if(type === 'display'){
-                        // let vya = JSON.parse(data);
-                        return '<input class="form-control" type="text" name="sadsawwd" id="" style="width: 200px;">';
+                        let vya = JSON.parse(data);
+                        let return_data = "";
+                        return_data = '<select class="custom-select" name="approval" id="chooser_approval'+vya.id+'" data-id="'+vya.id+'" style="width: 200px;"><option value="">Select Action </option>';
+                        // cek per value buat dipresentasiin dalam bentuk dropdown
+                        if(vya.value == 0){
+                            return_data += '<option value="0" selected>Terminated</option>';
+                        } else {
+                            return_data += '<option value="0">Terminated</option>';
+                        }
+                        if(vya.value == 1){
+                            return_data += '<option value="1" selected>Extended</option>';
+                        } else {
+                            return_data += '<option value="1">Extended</option>';
+                        }
+                        if(vya.value == 2){
+                            return_data += '<option value="2" selected>Permanent</option>';
+                        } else {
+                            return_data += '<option value="2">Permanent</option>';
+                        }
+                        return_data += '</select>';
+
+                        // if(vya.value != ""){
+                        //     return_data = '<select class="custom-select" name="approval" id="chooser_approval" style="width: 200px;"><option value="">Select Action </option>';
+                        //     // cek per value buat dipresentasiin dalam bentuk dropdown
+                        //     if(vya.value == 0){
+                        //         return_data += '<option value="0" selected>Terminated</option>';
+                        //     } else {
+                        //         return_data += '<option value="0">Terminated</option>';
+                        //     }
+                        //     if(vya.value == 1){
+                        //         return_data += '<option value="1" selected>Extended</option>';
+                        //     } else {
+                        //         return_data += '<option value="1">Extended</option>';
+                        //     }
+                        //     if(vya.value == 2){
+                        //         return_data += '<option value="2" selected>Permanent</option>';
+                        //     } else {
+                        //         return_data += '<option value="2">Permanent</option>';
+                        //     }
+                        //     return_data += '</select>';
+                        // } else {
+                        //     return_data = '<select class="custom-select" name="approval" id="chooser_approval" style="width: 200px;"><option value="">Select Action </option><option value="0">Terminated</option><option value="1">Extended</option><option value="2">Permanent</option>'
+                        // }
+
+                        return return_data;
                     }
                     return data;
                 }
             },
             {
                 className: "",
-                data: 'action',
+                data: 'entity_new',
                 render: (data, type) => {
                     if(type === 'display'){
-                        // let vya = JSON.parse(data);
-                        return '<input class="form-control" type="text" name="sadsawwd" id="" style="width: 200px;">';
-                        // return '<div. class="container h-100 m-0 px-auto"> <div class="row justify-content-center align-self-center w-100 m-0"><a class="btn btn-primary w-100" href="<?= base_url('pmk/assessment'); ?>?id='+vya.id+'"><i class="fa fa-search mx-auto"></i></a></div></div>';
+                        let vya = JSON.parse(data);
+                        let return_data = "";
+                        return_data = '<select class="custom-select" name="entity_new" id="chooser_entityNew'+vya.id+'" data-id="'+vya.id+'" style="width: 200px;" disabled><option value="">Select Entity</option>';
+                        // cek per value buat dipresentasiin dalam bentuk dropdown
+
+                        $.each(vya.entity, function(index, value){
+                            if(vya.value == value.id){
+                                return_data += '<option value="'+value.id+'" selected>'+value.nama_entity+'</option>';
+                            } else {
+                                return_data += '<option value="'+value.id+'" >'+value.nama_entity+'</option>';
+                            }
+                        });
+
+                        return_data += '</select>';
+
+                        return return_data;
                     }
                     return data;
                 }
@@ -207,5 +263,12 @@
                 }
             }
         ]
+    });
+
+    $('select[name="approval"]').on('change', function () { 
+        let id = $(this).data('id');
+        $('#chooser_entityNew'+id).removeAttr('disabled');
+
+        console.log(id);
     });
 </script>

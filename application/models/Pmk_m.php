@@ -387,7 +387,55 @@ class Pmk_m extends CI_Model {
             $dataPmk[$x]['entity']     = $entity['nama_entity'];
             $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
             $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
-            $x++;
+            
+            $position_my = $this->posisi_m->getMyPosition(); // get position my
+            $entity = $this->entity_m->getAll(); // get semua entity
+            if(!empty($v['approval'])){
+                $approval = json_decode($v['approval'], true); // decode approval
+                // persiapkan data untuk interpretasi data
+                if($position_my['id'] == 1){ // jika dia CEO
+                    $dataPmk[$x]['approval'] = json_encode(array(
+                        'id' => $v['id'],
+                        'value' => $approval[0]['approval']
+                    ));
+                    $dataPmk[$x]['entity_new'] = json_encode(array(
+                        'id' => $v['id'],
+                        'value' => $approval[0]['entity_new'],
+                        'entity' => $entity
+                    ));
+                } elseif($position_my['id'] == 196){ // jika dia hc division head
+                    $dataPmk[$x]['approval'] = json_encode(array(
+                        'id' => $v['id'],
+                        'value' => $approval[1]['approval']
+                    ));
+                    $dataPmk[$x]['entity_new'] = json_encode(array(
+                        'id' => $v['id'],
+                        'value' => $approval[1]['entity_new'],
+                        'entity' => $entity
+                    ));
+                } elseif($position_my['hirarki_org'] == "N" && $position_my['id'] != 196){ // jika dia divhead dan bukan hc divhead
+                    $dataPmk[$x]['approval'] = json_encode(array(
+                        'id' => $v['id'],
+                        'value' => $approval[2]['approval']
+                    ));
+                    $dataPmk[$x]['entity_new'] = json_encode(array(
+                        'id' => $v['id'],
+                        'value' => $approval[2]['entity_new'],
+                        'entity' => $entity
+                    ));
+                }
+            } else {
+                $dataPmk[$x]['approval'] = json_encode(array(
+                    'id' => $v['id'],
+                    'value' => ""
+                ));
+                $dataPmk[$x]['entity_new'] = json_encode(array(
+                    'id' => $v['id'],
+                    'value' => "",
+                    'entity' => $entity
+                ));
+            }
+            $x++; // increament the index
 
             // data yg diperlukan
             /**
