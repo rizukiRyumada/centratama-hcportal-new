@@ -143,8 +143,10 @@ function getBreadcrumb(){
  */
 function getDetailUser(){
     $CI = get_instance();
-
-    return $CI->_general_m->getOnce('emp_name, position_id', 'master_employee', array('nik' => $CI->session->userdata('nik')));
+    $CI->load->model('employee_m');
+    $result = $CI->_general_m->getOnce('emp_name, position_id', 'master_employee', array('nik' => $CI->session->userdata('nik')));
+    $result['exist_empPhoto'] = $CI->employee_m->check_empPhoto($CI->session->userdata('nik')); // check employee photo exist or not
+    return $result;
 }
 
 /**

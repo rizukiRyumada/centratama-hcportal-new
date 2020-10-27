@@ -33,7 +33,7 @@
         </li> -->
         <li class="nav-item dropdown user-menu">
             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <img src="<?= base_url('assets/img/user.svg'); ?>" class="user-image img-circle elevation-2" alt="img" width="160px" height="160px">
+                <img src="<?php if($user['exist_empPhoto'] == true){ echo base_url('/assets/img/employee/'.$this->session->userdata('nik').'.jpeg'); } else { echo base_url('/assets/img/user.svg'); } ?>" class="user-image img-circle elevation-2" alt="img" width="160px" height="160px">
                 <span class="d-none d-md-inline"><?= $user['emp_name'] ?> <i class="fa fa-angle-down ml-2"></i></span>
             </a>
             <ul aria-labelledby="userDropDown" class="dropdown-menu border-0 shadow" style="left: 0px; right: inherit;">

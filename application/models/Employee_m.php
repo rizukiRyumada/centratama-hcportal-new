@@ -226,7 +226,7 @@ class Employee_m extends CI_Model {
     function check_empPhoto($nik){
         $file = base_url('/assets/img/employee/'.$nik.'.jpeg');
         $file_headers = @get_headers($file);
-        if($file_headers[0] == 'HTTP/1.1 404 Not Found') {
+        if($file_headers[0] == 'HTTP/1.1 404 Not Found' || $file_headers[0] == 'HTTP/1.0 500 Internal Server Error') {
             return false;
         }
         else {
