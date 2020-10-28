@@ -21,14 +21,19 @@
                         if(value.id_pertanyaan.substring(0,2) == "B0"){ // liat wildcard
                             $('input[name="'+value.id_pertanyaan+'_pertanyaan"]').val(value.pertanyaan_kustom); // masukkan pertanyaan kustomnya
                             jawabanB0[x] = value.jawaban; // taruh jawaban B di variabel
-                            $('input[name="B0-'+String("00" + x).slice(-2)+'"]').removeAttr('disabled');
+                            // flag buat liat itu dari halaman editor atau viewer
+                            if(flag_page == 0){ // jika flag_page adalah editor
+                                $('input[name="B0-'+String("00" + x).slice(-2)+'"]').removeAttr('disabled'); // aktifkan semua radio button
+                            } else { // jika flag_page adalah viewer
+                                // do nothing
+                            }
                             x++; // increment
                         } else {
                             jawabanA[y] = value.jawaban; // taruh jawaban A di variabel
                             y++; // increment
                         }
                         $('input[name="'+value.id_pertanyaan+'"][value="'+value.jawaban+'"]').attr('checked',true); // tandai jawaban yang dipilih
-                        $('input[name="'+value.id_pertanyaan+'"][value="'+value.jawaban+'"]').removeAttr('disabled');
+                        $('input[name="'+value.id_pertanyaan+'"][value="'+value.jawaban+'"]').removeAttr('disabled'); // aktifkan radio button yang dicentang aja
                     });
                     hitungSekarang1();
                     hitungSekarang2();

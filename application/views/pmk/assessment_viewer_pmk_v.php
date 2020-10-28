@@ -449,13 +449,7 @@
                             <div class="row">
                                 <div class="col-6 align-self-center">
                                     <div>
-                                        <!-- <input class="form-control" type="text" name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan" > -->
-                                        <div class="input-group input-group">
-                                            <input type="text" class="form-control" name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan">
-                                            <span class="input-group-append">
-                                                <button type="button" class="btn btn-danger btn-delete" data-input="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan" data-input_choose="B0<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>" data-input_answer="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>" ><i class="fa fa-trash"></i></button>
-                                            </span>
-                                        </div>
+                                        <input class="form-control" type="text" name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>_pertanyaan" readonly >
                                     </div>
                                 </div>
                                 <div class="col-1 text-center align-self-center px-0 px-sm-2">
