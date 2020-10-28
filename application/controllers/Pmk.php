@@ -255,7 +255,7 @@ class Pmk extends SpecialUserAppController {
         
 		$this->load->view('main_v', $data);
     }
-    
+
     /**
      * summary process
      *
@@ -282,6 +282,37 @@ class Pmk extends SpecialUserAppController {
             'plugins/datatables/script_datatables',
             // 'plugins/daterange-picker/script_daterange-picker',
             'pmk/script_summary_process_pmk'
+        );
+        
+		$this->load->view('main_v', $data);
+    }
+    
+    /**
+     * summary process, the data loaded using ajax
+     *
+     * @return void
+     */
+    function summary_process_ajax(){
+        // $id_summary = $this->input->get('id');
+
+        // print_r($id_summary);
+
+        // summary data
+        $data['id_summary'] = $this->input->get('id');
+
+        // main data
+		$data['sidebar'] = getMenu(); // ambil menu
+		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+		$data['user'] = getDetailUser(); //ambil informasi user
+        $data['page_title'] = $this->page_title['summary'];
+		$data['load_view'] = 'pmk/summary_process_pmk_v_ajax';
+		// additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+		// $data['custom_styles'] = array('pmk_styles');
+        $data['custom_script'] = array(
+            'plugins/datatables/script_datatables',
+            // 'plugins/daterange-picker/script_daterange-picker',
+            'pmk/script_summary_process_pmk_ajax'
         );
         
 		$this->load->view('main_v', $data);
