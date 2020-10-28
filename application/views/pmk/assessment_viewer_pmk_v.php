@@ -18,7 +18,7 @@
                                                     
                                                     <img class="border border-gray-dark img-fluid" src="<?php if($exist_empPhoto == true){ echo base_url('/assets/img/employee/'.$employee['nik'].'.jpeg'); } else { echo base_url('/assets/img/user.svg'); } ?>" alt="User profile picture">
                                                 </div>
-                                                <h3 class="profile-username text-center"><?= $employee['emp_name']; ?></h3>
+                                                <!-- <h3 class="profile-username text-center"></h3> -->
                                                 </div>
                                             </div>
                                         </div>
@@ -27,6 +27,9 @@
                                         <ul class="list-group list-group-unbordered mb-3">
                                             <li class="list-group-item">
                                                 <b>NIK</b> <a class="float-right"><?= $employee['nik']; ?></a>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <b>Nama</b> <a class="float-right"><?= $employee['emp_name']; ?></a>
                                             </li>
                                             <li class="list-group-item">
                                                 <b>Hierarchy</b>
@@ -54,19 +57,19 @@
                                                 </a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>Division</b> <a class="float-right"><?= $employee['divisi']; ?></a>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <b>Department</b> <a class="float-right"><?= $employee['departemen']; ?></a>
+                                                <b>Position</b> <a class="float-right"><?= $employee['position_name']; ?></a>
                                             </li>
                                         </ul>
                                     </div>
                                     <div class="col-sm-5">
                                         <ul class="list-group list-group-unbordered mb-3">
                                             <li class="list-group-item">
-                                                <b>Position</b> <a class="float-right"><?= $employee['position_name']; ?></a>
+                                                <b>Department</b> <a class="float-right"><?= $employee['departemen']; ?></a>
                                             </li>
                                             <li class="list-group-item">
+                                                <b>Division</b> <a class="float-right"><?= $employee['divisi']; ?></a>
+                                            </li>
+                                            <!-- <li class="list-group-item">
                                                 <b>Personal Level</b> <a class="float-right">
                                                     <div class="badge
                                                         <?php if($employee['level_personal'] < 10): ?>
@@ -78,7 +81,7 @@
                                                         <?php endif; ?>
                                                     "><?= $employee['level_personal']; ?></div>
                                                 </a>
-                                            </li>
+                                            </li> -->
                                             <li class="list-group-item">
                                                 <b>Start of Contract</b> <a class="float-right"><?= date("j F o", $contract['date_start']); ?></a>
                                             </li>

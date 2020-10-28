@@ -321,9 +321,10 @@
                                 <table id="table_indexSummary" class="table table-striped table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Divisi</th>
                                             <th>Year</th>
                                             <th>Month</th>
+                                            <th>Divisi</th>
+                                            <th>Employee Total</th>
                                             <th>Status</th>
                                             <!-- <th>Created</th>
                                             <th>Modified</th> -->

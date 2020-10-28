@@ -69,9 +69,10 @@
             }
         },
         columns: [
-            {data: 'divisi_name'},
             {data: 'tahun'},
             {data: 'bulan'},
+            {data: 'divisi_name'},
+            {data: 'employee_total'},
             {
                 className: "",
                 data: 'status_now',

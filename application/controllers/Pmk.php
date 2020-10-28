@@ -585,7 +585,7 @@ class Pmk extends SpecialUserAppController {
         }
 
         // cek apa datanya ambil history atau mytask
-        if($switchData == 0){
+        if($switchData == 0){ // apabila mytask
             // cek apa wherenya empty
             if(empty($where)){
                 // nothing
@@ -613,7 +613,7 @@ class Pmk extends SpecialUserAppController {
                 show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
             }
 
-        } elseif($switchData == 1){
+        } elseif($switchData == 1){ // apabila history
             // $where = "id_div=$divisi";
 
             // filtering if
@@ -658,6 +658,7 @@ class Pmk extends SpecialUserAppController {
             $data[$k]['bulan'] = date('m (F)', $v['created']);
             $data[$k]['created'] = date('j M Y, H:i', $v['created']);
             $data[$k]['modified'] = date('j M Y, H:i', $v['modified']);
+            $data[$k]['employee_total'] = $this->_general_m->getRow($this->table['form'], array('id_summary' => $v['id_summary']));
         }
 
         echo(json_encode(array(
