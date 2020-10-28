@@ -181,9 +181,7 @@ class Pmk extends SpecialUserAppController {
         } else {
             // akses preview
 		    $data['load_view'] = 'pmk/assessment_viewer_pmk_v';
-            $script_assessment = 'pmk/script_assessment_editor_pmk';
-            // TODO fix assessment viewer script
-            // $script_assessment = 'pmk/script_assessment_viewer_pmk';
+            $script_assessment = 'pmk/script_assessment_viewer_pmk';
         }
 
         // assessment data
@@ -702,8 +700,8 @@ class Pmk extends SpecialUserAppController {
      *
      * @return void
      */
-    function ajax_getSummaryListProcess(){
-        $id_summary = $this->input->post('id_summary');
+    function ajax_getSummaryListProcess($id_summary){
+        // $id_summary = $this->input->post('id_summary');
 
         // ambil detail data form summarynya
         $data_summary = $this->pmk_m->getDetail_summary($id_summary);
@@ -726,15 +724,16 @@ class Pmk extends SpecialUserAppController {
         $pmk = $this->pmk_m->getAllWhere_form(array('id_summary' => $id_summary));
         $data_form = $this->pmk_m->detail_pmk($pmk);
 
-        // return array(
-        //     'data' => $data_form,
-        //     'summary' => $data_summary
-        // );
-
-        echo(json_encode(array(
+        return array(
             'data' => $data_form,
             'summary' => $data_summary
-        )));
+        );
+
+        // this is used if using ajax
+        // echo(json_encode(array(
+        //     'data' => $data_form,
+        //     'summary' => $data_summary
+        // )));
     }
 
 /* -------------------------------------------------------------------------- */
