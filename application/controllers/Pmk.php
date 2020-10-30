@@ -261,11 +261,11 @@ class Pmk extends SpecialUserAppController {
      */
     function summary_process(){
         // summary data
-        $data['id_summary'] = $this->input->get('id');
+        $data['id_summary'] = $this->input->get('id'); // id summary
         $data_summary = $this->getSummaryListProcess($this->input->get('id'));
-        $data['data_summary'] = $data_summary['data'];
-        $data['summary'] = $data_summary['summary'];
-        $data['pa_year'] = $data_summary['pa_year'];
+        $data['data_summary'] = $data_summary['data']; // data summary for table
+        $data['summary'] = $data_summary['summary']; // summary identities
+        $data['pa_year'] = $data_summary['pa_year']; // data year pa
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
@@ -727,7 +727,46 @@ class Pmk extends SpecialUserAppController {
             'data' => $data_form,
             'summary' => $data_summary
         )));
-    }    
+    }
+    
+    /**
+     * ajax update approval
+     *
+     * @return void
+     */
+    function ajax_updateApproval(){
+        // cek akses
+        $this->cekAkses_summary($this->posisi_m->getMyPosition());
+        
+        $id = $this->input->post('id');
+        $value = $this->input->post('value');
+        $entity = $this->input->post('entity');
+
+        // cek untuk menentukan identitas user
+        $position_my = $this->posisi_m->getMyPosition();
+
+        // ambil data approval
+        $approval_result = $this->pmk_m->getOnceWhereSelect_form('approval', array('id' => $id));
+        if(empty($approval_result)){ // jika approval resultnya kosong
+            $approval_data = array(); // siapkan array kosong
+        } else {
+            $approval_data = json_decode($approval_result['approval'], true); // keluarkan approval
+        }
+
+        // update data approval
+        $approval_data['entity'] = $entity;
+        $approval_data['summary'] = $value;
+
+        // update ke database
+        $this->pmk_m->updateForm(
+            array(
+                'approval' => json_encode($approval_data),
+                'modified' => time()
+            ),
+            array('id' => $id)
+        );
+
+    }
 
 /* -------------------------------------------------------------------------- */
 /*                                DATA FUNCTION                               */

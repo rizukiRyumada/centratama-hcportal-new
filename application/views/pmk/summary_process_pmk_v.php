@@ -65,9 +65,10 @@
                             <th>Departement</th>
                             <th>Division</th>
                             <th>Entity</th>
-                            <th style="width: 60px;">Score<br/><span id="pa1_score"><?= $pa_year[0]['year']." (".$pa_year[0]['periode'].")"; ?></span></th>
-                            <th style="width: 60px;">Score<br/><span id="pa2_score"><?= $pa_year[1]['year']." (".$pa_year[1]['periode'].")"; ?></span></th>
-                            <th style="width: 60px;">Score<br/><span id="pa3_score"><?= $pa_year[2]['year']." (".$pa_year[2]['periode'].")"; ?></span></th>
+                            <th>Assessment</th>
+                            <th style="width: 60px;"><?= "PA ".$pa_year[0]['periode']; ?><br/><span id="pa1_score"><?= $pa_year[0]['year']; ?></span></th>
+                            <th style="width: 60px;"><?= "PA ".$pa_year[1]['periode']; ?><br/><span id="pa2_score"><?= $pa_year[1]['year']; ?></span></th>
+                            <th style="width: 60px;"><?= "PA ".$pa_year[2]['periode']; ?><br/><span id="pa3_score"><?= $pa_year[2]['year']; ?></span></th>
                             <th>Status</th>
                             <th>Summary</th>
                             <th>Choose New Entity</th>
@@ -89,6 +90,7 @@
                                 <td><?= $v['department']; ?></td>
                                 <td><?= $v['divisi']; ?></td>
                                 <td><?= $v['entity']; ?></td>
+                                <td><?= $v['survey_rerata']; ?></td>
                                 <td>
                                     <?php if(!empty($v['pa1']['score'])): ?>
                                         <?=$v['pa1']['score']." (".$v['pa1']['rating'].")"; ?>
@@ -108,26 +110,30 @@
                                     ?>    
                                 </td>
                                 <td>
-                                    <?php 
-                                        $approval = json_decode($v['approval'], true);
-                                    ?>
-                                    <select class="custom-select" name="approval" id="chooser_approval<?= $approval['id']; ?>" data-id="<?= $approval['id']; ?>" style="width: 200px;">
+                                    <select class="custom-select" name="approval" id="chooser_approval<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['approval']; ?>" style="width: 200px;" >
                                         <option value="">Select Action</option>
                                         <option value="0">Terminated</option>
                                         <option value="1">Extended</option>
                                         <option value="2">Permanent</option>
                                     </select>
+                                    <div class="pmk-indicator row justify-content-center" style="display: none;">
+                                        <div class="col text-center">
+                                            <i class="fa fa-circle-notch fa-spin text-primary"></i>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
-                                    <?php 
-                                        $entity_new = json_decode($v['entity_new'], true);
-                                    ?>
-                                    <select class="custom-select" name="entity_new" id="chooser_entityNew<?= $entity_new['id']; ?>" data-id="<?= $entity_new['id']; ?>" style="width: 200px;">
+                                    <select class="custom-select" name="entity_new" id="chooser_entityNew<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['entity_new']; ?>" style="width: 200px;" disabled>
                                         <option value="">Choose Entity</option>
                                         <?php foreach($entity_new['entity'] as $value): ?>
                                             <option value="<?= $value['id']; ?>"><?= $value['nama_entity']; ?></option>
                                         <?php endforeach;?>
                                     </select>
+                                    <div class="pmk-indicator row justify-content-center" style="display: none;">
+                                        <div class="col text-center">
+                                            <i class="fa fa-circle-notch fa-spin text-primary"></i>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td></td>
                             </tr>
