@@ -260,12 +260,12 @@ class Pmk extends SpecialUserAppController {
      * @return void
      */
     function summary_process(){
-        // $id_summary = $this->input->get('id');
-
-        // print_r($id_summary);
-
         // summary data
         $data['id_summary'] = $this->input->get('id');
+        $data_summary = $this->getSummaryListProcess($this->input->get('id'));
+        $data['data_summary'] = $data_summary['data'];
+        $data['summary'] = $data_summary['summary'];
+        $data['pa_year'] = $data_summary['pa_year'];
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
@@ -683,8 +683,7 @@ class Pmk extends SpecialUserAppController {
             $data[$k]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id_summary']));
 
             // olah data tanggal
-            $data[$k]['tahun'] = date('Y', $v['created']);
-            $data[$k]['bulan'] = date('m (F)', $v['created']);
+            $data[$k]['date'] = date('F (Y)', $v['created']);
             $data[$k]['created'] = date('j M Y, H:i', $v['created']);
             $data[$k]['modified'] = date('j M Y, H:i', $v['modified']);
             $data[$k]['employee_total'] = $this->_general_m->getRow($this->table['form'], array('id_summary' => $v['id_summary']));
@@ -700,8 +699,8 @@ class Pmk extends SpecialUserAppController {
      *
      * @return void
      */
-    function ajax_getSummaryListProcess($id_summary){
-        // $id_summary = $this->input->post('id_summary');
+    function ajax_getSummaryListProcess(){
+        $id_summary = $this->input->post('id_summary');
 
         // ambil detail data form summarynya
         $data_summary = $this->pmk_m->getDetail_summary($id_summary);
@@ -724,16 +723,47 @@ class Pmk extends SpecialUserAppController {
         $pmk = $this->pmk_m->getAllWhere_form(array('id_summary' => $id_summary));
         $data_form = $this->pmk_m->detail_pmk($pmk);
 
-        return array(
+        echo(json_encode(array(
             'data' => $data_form,
             'summary' => $data_summary
-        );
+        )));
+    }    
 
-        // this is used if using ajax
-        // echo(json_encode(array(
-        //     'data' => $data_form,
-        //     'summary' => $data_summary
-        // )));
+/* -------------------------------------------------------------------------- */
+/*                                DATA FUNCTION                               */
+/* -------------------------------------------------------------------------- */
+    /**
+     * ambil data summary list process
+     *
+     * @return void
+     */
+    function getSummaryListProcess($id_summary){
+        // ambil detail data form summarynya
+        $data_summary = $this->pmk_m->getDetail_summary($id_summary);
+
+        // data divisi
+        $result_data = $this->divisi_model->getOnceById($data_summary['id_div']);
+        $data_summary['divisi_name'] = $result_data['division'];
+        
+        // data status
+        $status = $this->pmk_m->getOnceWhere_statusSummary(array('id' => $data_summary['status_now_id']));
+        $data_summary['status_now'] = json_encode(array('status' => $status, 'trigger' => $data_summary['id_summary']));
+
+        // olah data tanggal
+        $data_summary['bulan'] = date('F (m)', $data_summary['created']);
+        $data_summary['tahun'] = date('Y', $data_summary['created']);
+        $data_summary['created'] = date('j M Y, H:i', $data_summary['created']);
+        $data_summary['modified'] = date('j M Y, H:i', $data_summary['modified']);
+
+        // ambil data form
+        $pmk = $this->pmk_m->getAllWhere_form(array('id_summary' => $id_summary));
+        $data_form = $this->pmk_m->detail_pmk($pmk);
+
+        return array(
+            'data'    => $data_form['data_pmk'],
+            'pa_year' => $data_form['pa_year'],
+            'summary' => $data_summary
+        );
     }
 
 /* -------------------------------------------------------------------------- */

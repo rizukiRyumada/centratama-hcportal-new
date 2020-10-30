@@ -235,7 +235,7 @@ class Pmk_m extends CI_Model {
             $daterange[0] = strtotime($daterange[0]);
             $daterange[1] = strtotime($daterange[1]);
             $where .= " AND created >= ".$daterange[0]." AND created <= ".$daterange[1]; // tambahkan where tanggal buat ngebatesin view biar ga load lama
-            // ada filter status?
+                                            // ada filter status?
             if(!empty($filter_status)){
                 $where .= " AND status_now_id = ".$filter_status;
             }
@@ -258,9 +258,85 @@ class Pmk_m extends CI_Model {
 
         return $dataPmk;
     }
+    
+    /**
+     * Melengkapi data pmk dengan PA dan informasi selengkapnya
+     *
+     * @param  mixed $data_pmk
+     * @return void
+     */
+    function detail_pmk($data_pmk){       
+        $time = date('d-m-Y', time()); $counter_data = 2; $pa_year = array(); // variabel untuk mencari pa
+        // cek data pa per data pmk
+        $counter_pa_employee = 0;
+        foreach($data_pmk as $value){
+            if($this->_general_m->getRow($this->table['employee_pa'], array('nik' => substr($value['id'], 0, 8))) > 0){
+                // $pa_data['pa'.$counter_data] = $this->getOnceWhere_pa(array('nik' => substr($value['id'], 0, 8), 'tahun' => date('Y', strtotime($time)), 'periode' => 'FY'));                        
+                $counter_pa_employee++; // tandai kalo counter pa employee ada
+            }
+        }
+        // cek jika di data pmk ini ada data pa nya
+        if($counter_pa_employee != 0){
+            // lakukan do..while() sampai tidak counter data 3
+            do {
+                $counter_ada_tahun = 0;
+                // cari di masing2 data pmk dengan melihat tahun dan periodenya
+                for($x = 2; $x > 0; $x--){
+                    if($x == 2){
+                        $period = "FY";
+                    } else {
+                        $period = "H1";
+                    }
+                    $counter_ada_semester = 0;
+                    foreach($data_pmk as $value){
+                        if($this->_general_m->getRow($this->table['employee_pa'], array('nik' => substr($value['id'], 0, 8), 'tahun' => date('Y', strtotime($time)), 'periode' => $period)) > 0){
+                            // $pa_data['pa'.$counter_data] = $this->getOnceWhere_pa(array('nik' => substr($value['id'], 0, 8), 'tahun' => date('Y', strtotime($time)), 'periode' => 'FY'));                        
+                            $counter_ada_semester++; // tandai kalo di tahun ini ada penilaian akhir (pa)
+                        }
+                    }
+                    if($counter_ada_semester != 0 && $counter_data >= 0){
+                        $pa_year[$counter_data] = array(
+                            'year' => date('Y', strtotime($time)),
+                            'periode' => $period
+                        );
+                        $counter_data--; $counter_ada_tahun++; // kurangi index counter data dan counter tahun
+                    }
+                }
+    
+                if($counter_ada_tahun == 0){ // jika flag counter ada adalah nol, pakai tahun sebelumnya
+                    $time = date('d-m-Y', strtotime($time.' -1 year'));
+                    // $counter
+                } elseif($counter_data != 3 && $counter_ada_tahun != 0){
+                    $time = date('d-m-Y', strtotime($time.' -1 year'));
+                }
+            } while ($counter_data >= 0); // jika counter datanya nol akhiri do...while()
+        } else {
+            // lakukan do..while() sampai tidak counter data 3
+            do {
+                // cari di masing2 data pmk dengan melihat tahun dan periodenya
+                for($x = 2; $x > 0; $x--){
+                    if($x == 2){
+                        $period = "FY";
+                    } else {
+                        $period = "H1";
+                    }
+                    
+                    if($counter_data >= 0){
+                        $pa_year[$counter_data] = array(
+                            'year' => date('Y', strtotime($time)),
+                            'periode' => $period
+                        );
+                        $counter_data--; // kurangi index counter data 
+                    }
+                }
+    
+                if($counter_data != 3){
+                    $time = date('d-m-Y', strtotime($time.' -1 year'));
+                }
+            } while ($counter_data >= 0); // jika counter datanya nol akhiri do...while()
+        }
 
-    function detail_pmk($data_pmk){
-        // lengkapi data pmk
+        // melengkapi data pmk
         $dataPmk = array(); $x = 0;
         foreach($data_pmk as $k => $v){
             // $data_pos      = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
@@ -270,101 +346,19 @@ class Pmk_m extends CI_Model {
             $status        = $this->pmk_m->getOnceWhere_status(array('id_status' => $v['status_now_id']));
             $entity        = $this->entity_m->getOnce(array('id' => $employee['id_entity']));
 
-            // ambil data penilaian
-            $pa_last = $this->getLast_pa(substr($v['id'], 0, 8));
-            if(!empty($pa_last)){
-                $pa_data = $this->getAllWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_last['tahun']));
-                $pa_yearBefore = date('Y', strtotime('1-1-'.$pa_last['tahun'].' -1 year'));
-            } else {
-                $pa_data = "";
-            }
-
-            if(empty($pa_data)){
-                $dummy_pa = Array(
-                    'nik' => 'CG000309',
-                    'periode' => 'H1/FY',
-                    'tahun' => '2727',
-                    'score' => '4.00',
-                    'rating' => 'A-'
-                );
-                $dataPmk[$x]['pa1'] = json_encode(array('pa_data' => $dummy_pa, 'pa_name' => 'SPSP'));
-                $dataPmk[$x]['pa2'] = json_encode(array('pa_data' => $dummy_pa, 'pa_name' => 'SPSP'));
-                $dataPmk[$x]['pa3'] = json_encode(array('pa_data' => $dummy_pa, 'pa_name' => 'SPSP'));
-            } else {
-                $x = 0;
-                if(count($pa_data) == 2){
-                    $pa_dataBefore = $this->getOnceWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_yearBefore, 'periode' => 'FY'));
-                    $dataPmk[$x]['pa1'] = json_encode(array('pa_data' => $pa_dataBefore, 'pa_name' => 'SPFY'));
-                    // ambil 2 data penilaian berikutnya
-                    foreach($pa_data as $key => $value){
-                        if($value['periode'] == 'H1'){
-                            $dataPmk[$x]['pa2'] = json_encode(array('pa_data' => $pa_data[$key], 'pa_name' => 'SPAH'));
-                        }
-                        if($value['periode'] == 'FY'){
-                            $dataPmk[$x]['pa3'] = json_encode(array('pa_data' => $pa_data[$key], 'pa_name' => 'SPFY'));
-                        }
-                    }
-                } elseif(count($pa_data) == 1){
-                    $pa_dataBefore = $this->getAllWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_yearBefore));
-                    // ambil 2 data penilaian berikutnya
-                    foreach($pa_dataBefore as $key => $value){
-                        if($value['periode'] == 'H1'){
-                            $dataPmk[$x]['pa1'] = json_encode(array('pa_data' => $pa_dataBefore[$key], 'pa_name' => 'SPAH'));
-                        }
-                        if($value['periode'] == 'FY'){
-                            $dataPmk[$x]['pa2'] = json_encode(array('pa_data' => $pa_dataBefore[$key], 'pa_name' => 'SPFY'));
-                        }
-                    }
-                    $dataPmk[$x]['pa3'] = json_encode(array('pa_data' => $pa_data[0], 'pa_name' => 'SPAH'));
+            $vya = 3; // penanda
+            foreach($pa_year as $key => $value){
+                $pa_result = $this->getOnceWhere_pa(array('nik' => substr($v['id'], 0, 8), 'tahun' => $value['year'], 'periode' => $value['periode']));
+                if(!empty($pa_result)){
+                    $dataPmk[$x]['pa'.$vya] = $pa_result;
                 } else {
-                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                    $dataPmk[$x]['pa'.$vya] = array(
+                        'score' => "",
+                        'rating' => ""
+                    );
                 }
+                $vya--;
             }
-
-            // if(count($pa_data) == 2){
-            //     $pa_dataBefore = $this->getOnceWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_yearBefore, 'periode' => 'FY'));
-            //     $dataPmk[$x]['spfy1']['score'] = $pa_dataBefore['score'];
-            //     $dataPmk[$x]['spfy1']['rating'] = $pa_dataBefore['rating'];
-            //     $dataPmk[$x]['spfy1']['year'] = $pa_dataBefore['tahun'];
-            //     // ambil 2 data penilaian berikutnya
-            //     foreach($pa_data as $key => $value){
-            //         if($value['periode'] == 'H1'){
-            //             $dataPmk[$x]['spfy2']['score'] = $pa_data[$key]['score'];
-            //             $dataPmk[$x]['spfy2']['periode'] = $pa_data[$key]['periode'];
-            //             $dataPmk[$x]['spfy2']['rating'] = $pa_data[$key]['rating'];
-            //             $dataPmk[$x]['spfy2']['year'] = $pa_data[$key]['tahun'];
-            //         }
-            //         if($value['periode'] == 'FY'){
-            //             $dataPmk[$x]['spfy3']['score'] = $pa_data[$key]['score'];
-            //             $dataPmk[$x]['spfy3']['periode'] = $pa_data[$key]['periode'];
-            //             $dataPmk[$x]['spfy3']['rating'] = $pa_data[$key]['rating'];
-            //             $dataPmk[$x]['spfy3']['year'] = $pa_data[$key]['tahun'];
-            //         }
-            //     }
-            // } elseif(count($pa_data) == 1){
-            //     $pa_dataBefore = $this->getAllWhere_pa(array('nik' => $pa_last['nik'], 'tahun' => $pa_yearBefore));
-            //     // ambil 2 data penilaian berikutnya
-            //     foreach($pa_dataBefore as $key => $value){
-            //         if($value['periode'] == 'H1'){
-            //             $dataPmk[$x]['spfy1']['score'] = $pa_dataBefore[$key]['score'];
-            //             $dataPmk[$x]['spfy1']['periode'] = $pa_dataBefore[$key]['periode'];
-            //             $dataPmk[$x]['spfy1']['rating'] = $pa_dataBefore[$key]['rating'];
-            //             $dataPmk[$x]['spfy1']['year'] = $pa_dataBefore[$key]['tahun'];
-            //         }
-            //         if($value['periode'] == 'FY'){
-            //             $dataPmk[$x]['spfy2']['score'] = $pa_dataBefore[$key]['score'];
-            //             $dataPmk[$x]['spfy2']['periode'] = $pa_dataBefore[$key]['periode'];
-            //             $dataPmk[$x]['spfy2']['rating'] = $pa_dataBefore[$key]['rating'];
-            //             $dataPmk[$x]['spfy2']['year'] = $pa_dataBefore[$key]['tahun'];
-            //         }
-            //     }
-            //     $dataPmk[$x]['spfy3']['score'] = $pa_data[0]['score'];
-            //     $dataPmk[$x]['spfy3']['periode'] = $pa_data[0]['periode'];
-            //     $dataPmk[$x]['spfy3']['rating'] = $pa_data[0]['rating'];
-            //     $dataPmk[$x]['spfy3']['year'] = $pa_data[0]['tahun'];
-            // } else {
-            //     show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-            // }
 
             // data kontrak
             $contract_last = $this->pmk_m->getOnce_LastContractByNik(substr($v['id'], 0, 8));
@@ -461,7 +455,10 @@ class Pmk_m extends CI_Model {
              */
         }
 
-        return $dataPmk;
+        return array(
+            'data_pmk' => $dataPmk,
+            'pa_year' => $pa_year
+        );
     }
     
     /**
@@ -606,7 +603,7 @@ class Pmk_m extends CI_Model {
     }
 
     /**
-     * ambil semua pa employee dengan where
+     * ambil satu pa employee dengan where
      *
      * @param  mixed $where
      * @return void

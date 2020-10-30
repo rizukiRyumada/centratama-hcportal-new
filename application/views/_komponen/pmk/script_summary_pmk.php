@@ -69,9 +69,8 @@
             }
         },
         columns: [
-            {data: 'tahun'},
-            {data: 'bulan'},
             {data: 'divisi_name'},
+            {data: 'date'},
             {data: 'employee_total'},
             {
                 className: "",

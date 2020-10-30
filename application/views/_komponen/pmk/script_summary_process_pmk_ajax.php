@@ -265,6 +265,7 @@
         ]
     });
 
+    // this script cannot be triggered by ajax data render
     $('select[name="approval"]').on('change', function () { 
         let id = $(this).data('id');
         $('#chooser_entityNew'+id).removeAttr('disabled');
