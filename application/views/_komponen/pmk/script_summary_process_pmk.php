@@ -6,6 +6,9 @@
         <?php foreach($data_summary as $v): ?>
             $('#chooser_approval<?= $v['id']; ?>').val('<?= $v['approval']; ?>');
             $('#chooser_entityNew<?= $v['id']; ?>').val('<?= $v['entity_new']; ?>');
+            if($('#chooser_entityNew<?= $v['id']; ?>').val() != ""){
+                $('#chooser_entityNew<?= $v['id']; ?>').removeAttr('disabled', true);
+            }
         <?php endforeach;?>
     });
 
@@ -64,6 +67,7 @@
             $('#chooser_entityNew'+id).removeAttr('disabled');
         } else {
             $('#chooser_entityNew'+id).attr('disabled', true);
+            $('#chooser_entityNew'+id).val('');
             pmk_updateApproval(id, value); // update approval summary
         }
     });
@@ -88,9 +92,9 @@
             },
             method: "POST",
             beforeSend: function(){
-                $('select[name="approval"]').hide();
-                $('select[name="entity_new"]').hide();
-                $('.pmk-indicator').fadeIn();
+                $('select[name="approval"]').attr('disabled', true);
+                $('select[name="entity_new"]').attr('disabled', true);
+                toastr["warning"]("Your changes is being saved.", "Saving...");
             },
             success: function(data){
                 toastr["success"]("Summary action has been saved.", "Saved");
@@ -103,8 +107,10 @@
                 });
             },
             complete: function(){
-                $('select[name="approval"]').fadeIn();
-                $('select[name="entity_new"]').fadeIn();
+                $('select[name="approval"]').removeAttr('disabled');
+                if(entity != ""){
+                    $('select[name="entity_new"]').removeAttr('disabled');
+                }
                 $('.pmk-indicator').hide();
             }
         });

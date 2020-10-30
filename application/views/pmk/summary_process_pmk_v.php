@@ -116,24 +116,14 @@
                                         <option value="1">Extended</option>
                                         <option value="2">Permanent</option>
                                     </select>
-                                    <div class="pmk-indicator row justify-content-center" style="display: none;">
-                                        <div class="col text-center">
-                                            <i class="fa fa-circle-notch fa-spin text-primary"></i>
-                                        </div>
-                                    </div>
                                 </td>
                                 <td>
                                     <select class="custom-select" name="entity_new" id="chooser_entityNew<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['entity_new']; ?>" style="width: 200px;" disabled>
                                         <option value="">Choose Entity</option>
-                                        <?php foreach($entity_new['entity'] as $value): ?>
+                                        <?php foreach($entity as $value): ?>
                                             <option value="<?= $value['id']; ?>"><?= $value['nama_entity']; ?></option>
                                         <?php endforeach;?>
                                     </select>
-                                    <div class="pmk-indicator row justify-content-center" style="display: none;">
-                                        <div class="col text-center">
-                                            <i class="fa fa-circle-notch fa-spin text-primary"></i>
-                                        </div>
-                                    </div>
                                 </td>
                                 <td></td>
                             </tr>

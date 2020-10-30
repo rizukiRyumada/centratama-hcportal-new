@@ -266,6 +266,7 @@ class Pmk extends SpecialUserAppController {
         $data['data_summary'] = $data_summary['data']; // data summary for table
         $data['summary'] = $data_summary['summary']; // summary identities
         $data['pa_year'] = $data_summary['pa_year']; // data year pa
+        $data['entity'] = $this->entity_m->getAll(); // semua data entity
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
