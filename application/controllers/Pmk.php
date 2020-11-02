@@ -268,6 +268,19 @@ class Pmk extends SpecialUserAppController {
         $data['pa_year'] = $data_summary['pa_year']; // data year pa
         $data['entity'] = $this->entity_m->getAll(); // semua data entity
 
+        // ambil data my position
+        $position_my = $this->posisi_m->getMyPosition();
+        $data['position_my'] =  $position_my; 
+
+        // cek akses buat ngubah summary action, ngisi notes dan submit summary
+        if(($data_summary['summary']['status_now_id'] == "pmksum-01" && $position_my['hirarki_org'] == "N") ||
+           ($data_summary['summary']['status_now_id'] == "pmksum-02" && $position_my['id'] == 196) ||
+           ($data_summary['summary']['status_now_id'] == "pmksum-03" && $position_my['id'] == 1)){
+            $data['is_akses'] = 1;
+        } else {
+            $data['is_akses'] = 0;
+        }
+
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
@@ -280,6 +293,7 @@ class Pmk extends SpecialUserAppController {
         $data['custom_script'] = array(
             'plugins/datatables/script_datatables',
             // 'plugins/daterange-picker/script_daterange-picker',
+            'plugins/ckeditor/script_ckeditor',
             'pmk/script_summary_process_pmk'
         );
         
@@ -731,7 +745,7 @@ class Pmk extends SpecialUserAppController {
     }
     
     /**
-     * ajax update approval
+     * ajax update summary
      *
      * @return void
      */
@@ -746,22 +760,22 @@ class Pmk extends SpecialUserAppController {
         // cek untuk menentukan identitas user
         $position_my = $this->posisi_m->getMyPosition();
 
-        // ambil data approval
-        $approval_result = $this->pmk_m->getOnceWhereSelect_form('approval', array('id' => $id));
-        if(empty($approval_result)){ // jika approval resultnya kosong
-            $approval_data = array(); // siapkan array kosong
+        // ambil data summary
+        $summary_result = $this->pmk_m->getOnceWhereSelect_form('summary', array('id' => $id));
+        if(empty($summary_result)){ // jika summary resultnya kosong
+            $summary_data = array(); // siapkan array kosong
         } else {
-            $approval_data = json_decode($approval_result['approval'], true); // keluarkan approval
+            $summary_data = json_decode($summary_result['summary'], true); // keluarkan summary
         }
 
-        // update data approval
-        $approval_data['entity'] = $entity;
-        $approval_data['summary'] = $value;
+        // update data summary
+        $summary_data['entity'] = $entity;
+        $summary_data['summary'] = $value;
 
         // update ke database
         $this->pmk_m->updateForm(
             array(
-                'approval' => json_encode($approval_data),
+                'summary' => json_encode($summary_data),
                 'modified' => time()
             ),
             array('id' => $id)
@@ -1076,6 +1090,104 @@ class Pmk extends SpecialUserAppController {
             'data_assess' => $pmk_survey,
             'data_rerata' => $rerata
         ));
+    }
+    
+    /**
+     * fungsi untuk mengupdate process summary
+     *
+     * @return void
+     */
+    function updateSummaryProcess(){
+        $notes = $this->input->post('notes');
+        $id_summary = $this->input->post('id_summary');
+
+        // ambil data pribadi
+        $whoami = $this->employee_m->getDetails_employee($this->session->userdata('nik'));
+        // result for summary
+        $result_summary = $this->_general_m->getOnce('status, notes', $this->table['summary'], array('id_summary' => $id_summary));
+        // ambil status dari summary
+        $summary_status_new = json_decode($result_summary['status'], true);
+        // ambil data pesan
+        if(!empty($result_summary['notes'])){
+            $summary_notes = json_decode($result_summary['notes'], true);
+        } else {
+            $summary_notes = array(
+                'N' => "",
+                196 => "",
+                1   => ""
+            );
+        }
+        // atur status now
+        if($whoami['position_id'] == 196){
+            $summary_status_now_id = "pmksum-03";
+            $summary_status_text = "Summary form was submitted by HC Divhead.";
+            $summary_notes[$whoami['position_id']] = $notes;
+        } elseif($whoami['position_id'] == 1){
+            $summary_status_now_id = "pmksum-04";
+            $summary_status_text = "Contract Evaluation has been Completed.";
+            $summary_notes[$whoami['position_id']] = $notes;
+        } elseif($whoami['hirarki_org'] == "N"){
+            $summary_status_now_id = "pmksum-02";
+            $summary_status_text = "Summary form was submitted by N.";
+            $summary_notes[$whoami['hirarki_org']] = $notes;
+        } else {
+            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+        }
+        // update status summary
+        $summary_status_new[array_key_last($summary_status_new)+1] = array(
+            'id_status' => $summary_status_now_id,
+            'by' => $whoami['emp_name'],
+            'nik' => $whoami['nik'],
+            'time' => time(),
+            'text' => $summary_status_text
+        );
+        // prepare updated summary data
+        $update_pmkSummary = array(
+            'notes' => json_encode($summary_notes),
+            'status' => json_encode($summary_status_new),
+            'status_now_id' => $summary_status_now_id,
+            'modified' => time()
+        );
+        // update pmk data form
+        $this->pmk_m->updateForm_summary($update_pmkSummary, array('id_summary' => $id_summary));
+
+        // update satu persatu data form karyawan
+        $form = $this->pmk_m->getAllWhereSelect_form('id, status', array('id_summary' => $id_summary));
+        foreach($form as $v){
+            $status_new = json_decode($v['status'], true);
+            // beri status now id sesuai dengan siapa yang menilai
+            if($whoami['position_id'] == 196){
+                $status_now_id = 5;
+                $status_text = $notes;
+            } elseif($whoami['position_id'] == 1){
+                $status_now_id = 7;
+                $status_text = $notes;
+            } elseif($whoami['hirarki_org'] == "N"){
+                $status_now_id = 4;
+                $status_text = $notes;
+            } else {
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            }
+            // update status form karyawan
+            $status_new[array_key_last($status_new)+1] = array(
+                'id_status' => $status_now_id,
+                'by' => $whoami['emp_name'],
+                'nik' => $whoami['nik'],
+                'time' => time(),
+                'text' => $status_text
+            );
+            // prepare updated form data
+            $update_pmk = array(
+                'status' => json_encode($status_new),
+                'status_now_id' => $status_now_id,
+                'modified' => time()
+            );
+            // update ke database
+            $this->pmk_m->updateForm($update_pmk, array('id' => $v['id']));
+        }
+
+        // redirect ke pmk summary
+        header('location: ' . base_url('pmk').'?direct=sumhis');
     }
 
     function test(){

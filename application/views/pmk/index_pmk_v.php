@@ -37,7 +37,7 @@
     </div>
 </div> -->
 <div class="row mb-3">
-    <!-- <div class="col-md-2 d-md-inline-block d-none">
+    <!--<div class="col-md-2 d-md-inline-block d-none">
         <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
     </div> -->
     <div class="col-md-2 d-md-inline-block d-none">
@@ -306,7 +306,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                                 </div>
-                                                <input id="daterange_summary" class="form-control daterange-chooser" type="text" name="dateChooser_summary" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
+                                                <input id="daterange_summary" class="form-control daterange-chooser" type="text" name="dateChooser_summary" value="<?= date('m/01/Y', strtotime("-2 month", time())) ?> - <?= date('m/t/Y', strtotime("+2 month", time())); ?>">
                                             </div>
                                         </div>
                                     </div>

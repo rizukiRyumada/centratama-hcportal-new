@@ -8,7 +8,7 @@
     
     // buat memunculkan tombol reset saat ada filternya aja
 
-    var divisi = ""; var departemen = ""; var status = ""; var daterange = "<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>";
+    var divisi = ""; var departemen = ""; var status = ""; var daterange = "<?= date('m/01/Y', strtotime("-2 month", time())) ?> - <?= date('m/t/Y', strtotime("+2 month", time())); ?>";
     var table = $('#table_indexPMK').DataTable({
         responsive: true,
         autoWidth: false,

@@ -152,12 +152,12 @@
     });
     // filter status
     $("#summary_status").on('change', function() {
-        filter_status = $(this).val(); // ubah variabel departemen
+        filter_summary_status = $(this).val(); // ubah variabel departemen
         table_summary.ajax.reload(); // reload table_summary
     });
     // filter daterange
     $("#daterange_summary").on('change', function(){
-        filter_daterange = $(this).val(); // ubah variabel daterange
+        filter_summary_daterange = $(this).val(); // ubah variabel daterange
         table_summary.ajax.reload(); // reload table_summary
     });
     // button for reset filter

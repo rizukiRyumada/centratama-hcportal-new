@@ -169,8 +169,8 @@
 
         let gulir = 0;
 
+        // untuk pertanyaan soft competency
         $.each(input_value, (index, value) => {
-            // untuk pertanyaan soft competency
             if(value.value == undefined){ // jika ada jawaban yang kosong
                 // $('#'+value.key+'1').addClass('is-invalid');
                 $('#'+value.key+'1').parent().parent().parent().parent().parent().removeClass('border border-danger my-3 pt-2'); // takut duplikat jadinya dihapus dulu

@@ -145,6 +145,17 @@ class Pmk_m extends CI_Model {
     function getAllWhere_pa($where){
         return $this->db->get_where($this->table['employee_pa'], $where)->result_array();
     }
+
+    /**
+     * ambil satu item dengan memilih mana yang mau ditampilkan dari form table
+     *
+     * @param  mixed $select
+     * @param  mixed $where
+     * @return void
+     */
+    function getAllWhereSelect_form($select, $where){
+        return $this->db->select($select)->get_where($this->table['main'], $where)->result_array();
+    }
     
     /**
      * get list of assessment using ajax
@@ -254,7 +265,36 @@ class Pmk_m extends CI_Model {
             }
         }
 
-        $dataPmk = $this->detail_pmk($data_pmk);
+        $dataPmk = $this->detail_assessment($data_pmk);
+
+        return $dataPmk;
+    }
+    
+    /**
+     * function to complete assessment list detail
+     *
+     * @param  mixed $data_pmk
+     * @return void
+     */
+    function detail_assessment($data_pmk){
+        // lengkapi data pmk
+        $dataPmk = array(); $x = 0;
+        foreach($data_pmk as $k => $v){
+            $data_pos   = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
+            $divisi     = $this->divisi_model->getOnceWhere(array('id' => $data_pos['div_id']));
+            $department = $this->dept_model->getDetailById($data_pos['dept_id']);
+            $employee   = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
+            $status     = $this->pmk_m->getOnceWhere_status(array('id_status' => $v['status_now_id']));
+
+            $dataPmk[$x]['nik']        = substr($v['id'], 0, 8);
+            $dataPmk[$x]['divisi']     = $divisi['division'];
+            $dataPmk[$x]['department'] = $department['nama_departemen'];
+            $dataPmk[$x]['position']   = $data_pos['position_name'];
+            $dataPmk[$x]['emp_name']   = $employee['emp_name'];
+            $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
+            $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
+            $x++;
+        }
 
         return $dataPmk;
     }
@@ -384,17 +424,24 @@ class Pmk_m extends CI_Model {
             $dataPmk[$x]['entity']     = $entity['nama_entity'];
             $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
             $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
-            $dataPmk[$x]['survey_rerata'] = json_decode($v['survey_rerata'], true)['total'];
+
+            // jika survey rerata kosong
+            if(empty($v['survey_rerata'])){
+                $survey_rerata = 0.00;
+            } else {
+                $survey_rerata = json_decode($v['survey_rerata'], true)['total'];
+            }
+            $dataPmk[$x]['survey_rerata'] = $survey_rerata;
             
             $position_my = $this->posisi_m->getMyPosition(); // get position my
             $entity = $this->entity_m->getAll(); // get semua entity
-            if(!empty($v['approval'])){
-                $approval = json_decode($v['approval'], true); // decode approval
+            if(!empty($v['summary'])){
+                $summary = json_decode($v['summary'], true); // decode summary
                 // persiapkan variable untuk interpretasi data
-                $dataPmk[$x]['approval'] = $approval['summary'];
-                $dataPmk[$x]['entity_new'] = $approval['entity'];
+                $dataPmk[$x]['summary'] = $summary['summary'];
+                $dataPmk[$x]['entity_new'] = $summary['entity'];
             } else {
-                $dataPmk[$x]['approval'] = "";
+                $dataPmk[$x]['summary'] = "";
                 $dataPmk[$x]['entity_new'] = "";
             }
             $x++; // increament the index
@@ -663,6 +710,18 @@ class Pmk_m extends CI_Model {
     public function updateForm($data, $where){
         $this->db->where($where);
         $this->db->update($this->table['main'], $data);
+    }
+
+    /**
+     * updateForm
+     *
+     * @param  mixed $data
+     * @param  mixed $where
+     * @return void
+     */
+    public function updateForm_summary($data, $where){
+        $this->db->where($where);
+        $this->db->update($this->table['summary'], $data);
     }
 
 }
