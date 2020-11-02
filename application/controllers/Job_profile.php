@@ -139,7 +139,7 @@ class Job_profile extends MainController {
 		    // $data['page_title'] = $this->_general_m->getOnce('title', 'user_menu_sub', array('url' => $this->uri->segment(1).'/'.$this->uri->segment(2)))['title']; // for submenu
             $data['load_view'] = 'job_profile/myjp_editor_jobprofile_v';
             // additional styles and custom script
-            $data['custom_script'] = array('plugins/datatables/script_datatables', 'plugins/ckeditor/script_ckeditor.php', 'job_profile/script_jobprofile','job_profile/script_edit_jobprofile');
+            $data['custom_script'] = array('plugins/datatables/script_datatables', 'plugins/ckeditor/script_ckeditor', 'job_profile/script_jobprofile', 'job_profile/script_edit_jobprofile');
         } else {
             $data['approval'] = $approval;
 
