@@ -36,48 +36,42 @@
         </div>
     </div>
 </div> -->
-<div class="row mb-3">
-    <!--<div class="col-md-2 d-md-inline-block d-none">
-        <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
-    </div> -->
-    <div class="col-md-2 d-md-inline-block d-none">
-        <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
-    </div>
-    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
-        <div class="col-md-3 col-12 align-self-center">
-            <div class="card">
-                <div class="card-body p-2">
-                    <dl class="row m-0">
-                        <dt class="col-10 align-self-center">End of Contract</dt>
-                        <dd id="eoc" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
-                        <dt class="col-10 align-self-center">Active</dt>
-                        <dd id="act" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
-                        <dt class="col-10 align-self-center">Completed</dt>
-                        <dd id="cpt" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
-                    </dl>
-                    <div class="row mt-1">
-                        <div class="col">
-                            <button id="buttonRefreshPMK" class="btn btn-danger w-100"><i id="iconRefreshPMK" class="fa fa-sync"></i> Refresh</button>
+<?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+    <div class="row mb-3">
+        <!--<div class="col-md-2 d-md-inline-block d-none">
+            <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
+        </div> -->
+        <div class="col-md-2 d-md-inline-block d-none">
+            <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
+        </div>
+            <div class="col-md-3 col-12 align-self-center">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <dl class="row m-0">
+                            <dt class="col-10 align-self-center">End of Contract</dt>
+                            <dd id="eoc" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                            <dt class="col-10 align-self-center">Active</dt>
+                            <dd id="act" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                            <dt class="col-10 align-self-center">Completed</dt>
+                            <dd id="cpt" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                        </dl>
+                        <div class="row mt-1">
+                            <div class="col">
+                                <button id="buttonRefreshPMK" class="btn btn-danger w-100"><i id="iconRefreshPMK" class="fa fa-sync"></i> Refresh</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    <?php endif; ?>
-    <div class="
-    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
-        col-md-7
-    <?php else: ?>
-        col-md-10    
-    <?php endif; ?>
-    ">
-        <div class="row h-100">
-            <div class="col align-self-center">
-                <p class="text m-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit, rem amet, ut quia necessitatibus vel, obcaecati maiores natus doloribus aliquid rerum voluptates saepe. Enim commodi, nesciunt laudantium deserunt veniam quod?</p>
+        <div class="col-md-7">
+            <div class="row h-100">
+                <div class="col align-self-center">
+                    <p class="text m-0">The card on the left is used for refresh the near-to-end employee contract, please click the button at least once a month to keep on track the employee contract.</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
+<?php endif; ?>
 
 <div class="row">
     <div class="col">

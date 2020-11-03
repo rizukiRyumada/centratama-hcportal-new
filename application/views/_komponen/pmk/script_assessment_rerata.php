@@ -153,7 +153,33 @@
 
     // function untuk rerata jawaban assessment
     function hitungRerataTotal(){
+        $("#nilai_keterangan").empty(); // hapus child keterangan
         var rerata_semua = (rerata_A + rerata_B)/2; // ambil nilai rerata A dan B lalu dibagi 2
         $('input[name="rerata_keseluruhan"]').val(rerata_semua.toFixed(2));
+        // beri keterangan nilai dari hasil total nilai
+        let keterangan = "NaN"; let warna = "danger";
+        if(rerata_semua < 0.50){
+            keterangan = "Tidak Mencapai/Gagal";
+            warna = "danger";
+        } else if(rerata_semua >= 0.50 && rerata_semua <= 1.50){
+            keterangan = "Kurang Baik";
+            warna = "danger";
+        } else if(rerata_semua >= 1.51 && rerata_semua <= 2.50){
+            keterangan = "Cukup Baik";
+            warna = "warning";
+        } else if(rerata_semua >= 2.51 && rerata_semua <= 3.50){
+            keterangan = "Baik";
+            warna = "warning";
+        } else if(rerata_semua >= 3.51 && rerata_semua <= 4.50){
+            keterangan = "Sangat baik";
+            warna = "info";
+        } else if(rerata_semua >= 4.51 && rerata_semua <= 5.00){
+            keterangan = "Luar Biasa";
+            warna = "success";
+        } else {
+            // nothing
+        }
+        $("#nilai_keterangan").append('<span class="rerata-keterangan badge badge-'+warna+'">'+keterangan+'</span>'); // tambah keterangan
     }
 </script>
+

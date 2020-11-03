@@ -519,12 +519,14 @@
                 <div class="row py-2">
                     <div class="col">
                         <div class="row justify-content-end">
-                            <div class="col-md-auto align-self-center font-weight-bold">Total Performance Value All Competency <sub>[(A+B)/2]</sub></div>
-                            <div class="col-md-2 text-right mt-2 mt-md-0">
+                            <div class="col-md-auto align-self-center font-weight-bold">
+                                Total Performance Value All Competency <sub>[(A+B)/2]</sub>
+                            </div>
+                            <div class="col-md-4 text-right mt-2 mt-md-0">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="rerata_keseluruhan" readonly>
                                     <div class="input-group-append">
-                                        <span id="jumlah_keseluruhan" class="input-group-text">/2</span>
+                                        <span id="jumlah_keseluruhan" class="input-group-text"><span id="nilai_keterangan"></span></span>
                                     </div>
                                 </div>
                             </div>

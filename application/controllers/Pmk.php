@@ -396,6 +396,7 @@ class Pmk extends SpecialUserAppController {
         // ambil bulan setelah 2 bulan lagi
         // $date = strtotime("+2 month", time());
         // ambil hari terakhir di dua bulan lagi
+        // TODO buat range pengambilan tanggal by setting
         $date = strtotime(date('t-m-Y', strtotime("+2 month", time())));
         // ambil data contract terakhir
         $data_contract = $this->pmk_m->getAll_LastContract();
@@ -458,20 +459,9 @@ class Pmk extends SpecialUserAppController {
                     $data_pmk[$x]['modified'] = time();
 
                     $data_employee = $this->employee_m->getDetails_employee($v['nik']); // ambil detail data employee
-                    $data_pmk[$x]['id_summary'] = date("Ym").$data_employee['div_id']; // pmk_id nanti setelah hc divhead melakukan pembuatan summary
+                    $data_pmk[$x]['id_summary'] = date("Ym", $date).$data_employee['div_id']; // pmk_id nanti setelah hc divhead melakukan pembuatan summary
                     $this->cekPmkSummary($data_pmk[$x]['id_summary'], $date, $data_employee['div_id']); // lakukan pemeriksaan summary
                     $x++;
-                    // cek apa dia N-3, N-4, N-2, N-1, Functional-dept
-                    // if($data_employee['hirarki_org'] == "N-3" || $data_employee['hirarki_org'] == "N-4"){
-                    //     $email = $this->employee_m->getEmail_approver12($v['nik']); // ambil data email approver 1 dan 2 (N-2, N-1)                        
-                    // } elseif($data_employee['hirarki_org'] == "N-2" || $data_employee['hirarki_org'] == "Functional-dept"){
-                    //     $email = $this->employee_m->getEmail_approver1($v['nik']); // ambil data email dri approver1 (N-1)
-                    // } elseif($data_employee['hirarki_org'] == "N-1" || $data_employee['hirarki_org'] == "Functional-div" || $data_employee['hirarki_org'] == "Functional-adm"){
-                    //     $email = $this->employee_m->getEmail_approver1($v['nik']); // ambil data email dri approver1 (N)
-                    // } else {
-                    //     show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                    //     exit;
-                    // }
                 } else {
                     // nothing
                 }
@@ -698,7 +688,7 @@ class Pmk extends SpecialUserAppController {
             $data[$k]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id_summary']));
 
             // olah data tanggal
-            $data[$k]['date'] = date('F (Y)', $v['created']);
+            $data[$k]['date'] = date('F (Y)', $v['deadline']);
             $data[$k]['created'] = date('j M Y, H:i', $v['created']);
             $data[$k]['modified'] = date('j M Y, H:i', $v['modified']);
             $data[$k]['employee_total'] = $this->_general_m->getRow($this->table['form'], array('id_summary' => $v['id_summary']));
@@ -850,7 +840,7 @@ class Pmk extends SpecialUserAppController {
         // cek apa dia admin atau userapp admin
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 196 || $position_my['id'] == 1){
             // perbolehkan akses bebas
-            $value = 2; // flag bisa akses tapi ga berhak submit
+            $value = 3; // flag bisa akses tapi ga berhak submit
         } else {
             // cek berdasarkan hirarki
             if($position_my['hirarki_org'] == "N"){
@@ -873,7 +863,7 @@ class Pmk extends SpecialUserAppController {
             } elseif($position_my['hirarki_org'] == "N-2"){
                 if($position_my['id'] == $position['id_approver1']){
                     // perbolehkan akses
-                    $value = 1;
+                    $value = 3; // beri tanda kalo dia N-2
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                     exit;
@@ -922,6 +912,7 @@ class Pmk extends SpecialUserAppController {
                 ]
             ]);
             $data['status_now_id'] = "pmksum-01";
+            $data['deadline'] = $date;
             $data['created'] = time();
             $data['modified'] = time();
 
