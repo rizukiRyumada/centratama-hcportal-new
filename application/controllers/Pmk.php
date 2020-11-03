@@ -266,7 +266,7 @@ class Pmk extends SpecialUserAppController {
         $data['data_summary'] = $data_summary['data']; // data summary for table
         $data['summary'] = $data_summary['summary']; // summary identities
         $data['pa_year'] = $data_summary['pa_year']; // data year pa
-        $data['entity'] = $this->entity_m->getAll(); // semua data entity
+ptkpmk        $data['entity'] = $this->entity_m->getAll_notAtAll(); // semua data entity
 
         // ambil data my position
         $position_my = $this->posisi_m->getMyPosition();
@@ -370,7 +370,7 @@ class Pmk extends SpecialUserAppController {
      * @return void
      */
     function ajax_getList() {
-        // Array ( [showhat] => 0 [divisi] => [departemen] => [status] => [daterange] => 08/11/2020 - 12/11/2020 )
+        // ambil semua parameter
         $showhat = $this->input->post('showhat');
         $filter_divisi = $this->input->post('divisi');
         $filter_departemen = $this->input->post('departemen');
@@ -746,16 +746,29 @@ class Pmk extends SpecialUserAppController {
         $id = $this->input->post('id');
         $value = $this->input->post('value');
         $entity = $this->input->post('entity');
+        $extend_for = $this->input->post('extend_for');
+        $contract = $this->input->post('contract');
+
+        echo($id);
+        echo('<br>');
+        echo($value);
+        echo('<br>');
+        echo($entity);
+        echo('<br>');
+        echo($extend_for);
+        echo('<br>');
+        echo($contract);
+        exit;
 
         // cek untuk menentukan identitas user
         $position_my = $this->posisi_m->getMyPosition();
 
         // ambil data summary
-        $summary_result = $this->pmk_m->getOnceWhereSelect_form('summary', array('id' => $id));
+        $summary_result = $this->pmk_m->getOnceWhereSelect_form('recomendation', array('id' => $id));
         if(empty($summary_result)){ // jika summary resultnya kosong
             $summary_data = array(); // siapkan array kosong
         } else {
-            $summary_data = json_decode($summary_result['summary'], true); // keluarkan summary
+            $summary_data = json_decode($summary_result['recomendation'], true); // keluarkan summary
         }
 
         // update data summary
@@ -765,7 +778,7 @@ class Pmk extends SpecialUserAppController {
         // update ke database
         $this->pmk_m->updateForm(
             array(
-                'summary' => json_encode($summary_data),
+                'recomendation' => json_encode($summary_data),
                 'modified' => time()
             ),
             array('id' => $id)
@@ -863,7 +876,7 @@ class Pmk extends SpecialUserAppController {
             } elseif($position_my['hirarki_org'] == "N-2"){
                 if($position_my['id'] == $position['id_approver1']){
                     // perbolehkan akses
-                    $value = 3; // beri tanda kalo dia N-2
+                    $value = 1; // beri tanda kalo dia N-2
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                     exit;
@@ -979,14 +992,26 @@ class Pmk extends SpecialUserAppController {
             );
         } else { // jika actionnya submit
             if($penilai['hirarki_org'] == "N-2"){
-                $status_now_id = "2";
-                $status_new[array_key_last($status_new)+1] = array(
-                    'id_status' => "2",
-                    'by' => $penilai['emp_name'],
-                    'nik' => $penilai['nik'],
-                    'time' => time(),
-                    'text' => 'Assessment form was submitted by N-2.'
-                );
+                // cek jika atasannya (N-1) ada atau engga
+                if(empty($this->posisi_m->whoIsOnThisPosition($penilai['id_approver1']))){ // kalo N-1nya kosong isi dengan status id 8
+                    $status_now_id = "8";
+                    $status_new[array_key_last($status_new)+1] = array(
+                        'id_status' => "2",
+                        'by' => $penilai['emp_name'],
+                        'nik' => $penilai['nik'],
+                        'time' => time(),
+                        'text' => 'Assessment form was submitted by N-2.'
+                    );
+                } else { // seperti biasa buat N-1
+                    $status_now_id = "2";
+                    $status_new[array_key_last($status_new)+1] = array(
+                        'id_status' => "2",
+                        'by' => $penilai['emp_name'],
+                        'nik' => $penilai['nik'],
+                        'time' => time(),
+                        'text' => 'Assessment form was submitted by N-2.'
+                    );
+                }
             } else{
                 $status_now_id = "3";
                 if($penilai['hirarki_org'] == "N-1"){

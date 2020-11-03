@@ -60,20 +60,21 @@
                             <th>Employee Status</th>
                             <th>End of Contract</th>
                             <th>Contract<br/>#</th>
-                            <th>Year of Contract/Probation</th>
+                            <th style="width: 240px;">Year of Contract/Probation</th>
                             <th>Position</th>
                             <th>Departement</th>
                             <th>Division</th>
                             <th>Entity</th>
-                            <th>Assessment</th>
+                            <th>Assessment Score</th>
                             <th style="width: 60px;"><?= "PA ".$pa_year[0]['periode']; ?><br/><span id="pa1_score"><?= $pa_year[0]['year']; ?></span></th>
                             <th style="width: 60px;"><?= "PA ".$pa_year[1]['periode']; ?><br/><span id="pa2_score"><?= $pa_year[1]['year']; ?></span></th>
                             <th style="width: 60px;"><?= "PA ".$pa_year[2]['periode']; ?><br/><span id="pa3_score"><?= $pa_year[2]['year']; ?></span></th>
                             <th>Status</th>
                             <!-- bagian ini hanya untuk hc divhead, divhead, dan CEO -->
                             <?php if($is_akses == 1): ?>
-                                <th>Summary</th>
+                                <th>Recomendation</th>
                                 <th>Choose New Entity</th>
+                                <th>Extend for</th>
                             <?php endif; ?>
                             <th></th>
                         </tr>
@@ -88,7 +89,11 @@
                                 <td><?= $v['emp_stats']; ?></td>
                                 <td><?= $v['eoc_probation']; ?></td>
                                 <td><?= $v['contract']; ?></td>
-                                <td><?= $v['yoc_probation']; ?></td>
+                                <td>
+                                    <?php foreach($v['yoc_probation'] as $value): ?>
+                                        <p class="m-0"><?= $value; ?></p>
+                                    <?php endforeach;?>
+                                </td>
                                 <td><?= $v['position']; ?></td>
                                 <td><?= $v['department']; ?></td>
                                 <td><?= $v['divisi']; ?></td>
@@ -115,7 +120,7 @@
                                 <!-- bagian ini hanya untuk hc divhead, divhead, dan CEO -->
                                 <?php if($is_akses == 1): ?>
                                     <td>
-                                        <select class="custom-select" name="summary" id="chooser_summary<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['summary']; ?>" style="width: 200px;" >
+                                        <select class="custom-select" name="recomendation" id="chooser_recomendation<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['recomendation']; ?>" data-saved="" style="width: 200px;" >
                                             <option value="">Select Action</option>
                                             <option value="0">Terminated</option>
                                             <option value="1">Extended</option>
@@ -123,11 +128,25 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="custom-select" name="entity_new" id="chooser_entityNew<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['entity_new']; ?>" style="width: 200px;" disabled>
+                                        <select class="custom-select" name="entity_new" id="chooser_entityNew<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['entity_new']; ?>" data-contract="<?= $v['contract']; ?>" data-entity_last="<?= $v['entity_last']['id']; ?>" style="width: 200px;" disabled>
                                             <option value="">Choose Entity</option>
                                             <?php foreach($entity as $value): ?>
                                                 <option value="<?= $value['id']; ?>"><?= $value['nama_entity']; ?></option>
                                             <?php endforeach;?>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="custom-select" name="extend_for" id="chooser_extendfor<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['extend_for']; ?>" style="width: 200px;" disabled>
+                                            <option value="">Extend For</option>
+                                            <?php for($x = 1; $x < 13; $x++): ?>
+                                                <option value="<?= $x; ?>"><?= $x; ?> 
+                                                    <?php if($x == 1): ?>
+                                                        Month
+                                                    <?php else: ?>
+                                                        Months    
+                                                    <?php endif; ?>
+                                                </option>
+                                            <?php endfor;?>
                                         </select>
                                     </td>
                                 <?php endif; ?>

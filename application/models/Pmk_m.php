@@ -169,10 +169,11 @@ class Pmk_m extends CI_Model {
      * @return void
      */
     function getComplete_pmkList($position_my, $showhat, $filter_divisi, $filter_departemen, $filter_status, $filter_daterange){
+        // siapkan variabel
+        $where = "";
+
         // cek apa dia admin, superadmin, hc divhead, atau CEO
-        // TODO bagaimana buat divhead HC sama CEO, tampilkan modul assessment
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
-            $where = ""; // where untuk filtering
             // filter divisi dan departemen khusus admin dan hc divhead
             if($position_my['id'] == 196 && $showhat == 0){
                 $where .= $this->table['position'].".div_id = '6'";
@@ -235,7 +236,7 @@ class Pmk_m extends CI_Model {
             } elseif($position_my['hirarki_org'] == "N-1"){
                 $where .= " AND (status_now_id = '2' OR status_now_id = '1')";
             } elseif($position_my['hirarki_org'] == "N-2"){
-                $where .= " AND status_now_id = '1'";
+                $where .= " AND (status_now_id = '1' OR status_now_id = '8')";
             } else { // ambil yang tidak ada statusnya di database biar hasilnya null
                 $where .= " AND status_now_id = '999'";
                 // show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
@@ -266,7 +267,6 @@ class Pmk_m extends CI_Model {
         }
 
         $dataPmk = $this->detail_assessment($data_pmk);
-
         return $dataPmk;
     }
     
@@ -384,7 +384,6 @@ class Pmk_m extends CI_Model {
             $divisi        = $this->divisi_model->getOnceWhere(array('id' => $employee['div_id']));
             $department    = $this->dept_model->getDetailById($employee['dept_id']);
             $status        = $this->pmk_m->getOnceWhere_status(array('id_status' => $v['status_now_id']));
-            $entity        = $this->entity_m->getOnce(array('id' => $employee['id_entity']));
 
             $vya = 3; // penanda
             foreach($pa_year as $key => $value){
@@ -399,12 +398,24 @@ class Pmk_m extends CI_Model {
                 }
                 $vya--;
             }
+
             // data kontrak
             $contract_last = $this->pmk_m->getOnce_LastContractByNik(substr($v['id'], 0, 8));
-            $contract_detail = $this->pmk_m->getDetailWhere_contract(array(
+            $contract_last_detail = $this->pmk_m->getDetailWhere_contract(array(
                 'nik' => $contract_last['nik'],
                 'contract' => $contract_last['contract']
             ));
+            $contract_details = $this->pmk_m->getDetailsWhere_contract(array(
+                'nik' => $contract_last['nik']
+            ));
+            // atur data contract
+            $contract_output = array();
+            foreach($contract_details as $kunci => $nilai){
+                $contract_output[$kunci] = $nilai['contract']." | ".date("j M'y", $nilai['date_start'])." - ".date("j M'y", $nilai['date_end'])." | ".$this->entity_m->getOnce(array('id' => $nilai['entity']))['nama_entity'];
+            }
+
+            // ambil entity last
+            $entity_last = $this->entity_m->getOnce(array('id' => $contract_last_detail['entity']));
             
             // persiapkan detail data
             $dataPmk[$x]['id']         = $v['id'];
@@ -413,13 +424,14 @@ class Pmk_m extends CI_Model {
             $dataPmk[$x]['date_birth'] = $employee['date_birth'];
             $dataPmk[$x]['date_join']  = $employee['date_join'];
             $dataPmk[$x]['emp_stats']  = $employee['emp_stats'];
-            $dataPmk[$x]['eoc_probation'] = date("j M'y", $contract_detail['date_end']);
+            $dataPmk[$x]['eoc_probation'] = date("j M'y", $contract_last_detail['date_end']);
             $dataPmk[$x]['contract']   = $contract_last['contract'];
-            $dataPmk[$x]['yoc_probation'] = date("j M'y", $contract_detail['date_start'])." - ".date("j M'y", $contract_detail['date_end']);
+            $dataPmk[$x]['yoc_probation'] = $contract_output;
             $dataPmk[$x]['position']   = $employee['position_name'];
             $dataPmk[$x]['department'] = $department['nama_departemen'];
             $dataPmk[$x]['divisi']     = $divisi['division'];
-            $dataPmk[$x]['entity']     = $entity['nama_entity'];
+            $dataPmk[$x]['entity']     = $entity_last['nama_entity'];
+            $dataPmk[$x]['entity_last']= $entity_last;
             $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
             $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
 
@@ -433,14 +445,16 @@ class Pmk_m extends CI_Model {
             
             $position_my = $this->posisi_m->getMyPosition(); // get position my
             $entity = $this->entity_m->getAll(); // get semua entity
-            if(!empty($v['summary'])){
-                $summary = json_decode($v['summary'], true); // decode summary
+            if(!empty($v['recomendation'])){
+                $recomendation = json_decode($v['recomendation'], true); // decode summary
                 // persiapkan variable untuk interpretasi data
-                $dataPmk[$x]['summary'] = $summary['summary'];
-                $dataPmk[$x]['entity_new'] = $summary['entity'];
+                $dataPmk[$x]['recomendation'] = $recomendation['summary'];
+                $dataPmk[$x]['entity_new'] = $recomendation['entity'];
+                $dataPmk[$x]['extend_for'] = $recomendation['extend_for'];
             } else {
-                $dataPmk[$x]['summary'] = "";
+                $dataPmk[$x]['recomendation'] = "";
                 $dataPmk[$x]['entity_new'] = "";
+                $dataPmk[$x]['extend_for'] = "";
             }
             $x++; // increament the index
         }
@@ -459,6 +473,16 @@ class Pmk_m extends CI_Model {
      */
     function getDetailWhere_contract($where){
         return $this->db->get_where($this->table['contract'], $where)->row_array();
+    }
+
+    /**
+     * get all detail with where parameter
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getDetailsWhere_contract($where){
+        return $this->db->get_where($this->table['contract'], $where)->result_array();
     }
     
     /**
