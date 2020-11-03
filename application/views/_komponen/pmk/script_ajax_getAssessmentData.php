@@ -36,8 +36,12 @@
                         $('input[name="'+value.id_pertanyaan+'"][value="'+value.jawaban+'"]').removeAttr('disabled'); // aktifkan radio button yang dicentang aja
                     });
                     hitungSekarang1();
-                    hitungSekarang2();
-                    hitungSekarang3();
+                    <?php if($level_personal > 9): ?>
+                        hitungSekarang2();
+                    <?php endif; ?>
+                    <?php if($level_personal > 17): ?>
+                        hitungSekarang3();
+                    <?php endif; ?>
                     hitungRerataB(); // hitung rata2nya
                     // ambil jawaban total dan beri rata-rata
                 } else {

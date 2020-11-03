@@ -736,7 +736,7 @@ class Pmk extends SpecialUserAppController {
 
         // ambil data form
         $pmk = $this->pmk_m->getAllWhere_form(array('id_summary' => $id_summary));
-        $data_form = $this->pmk_m->detail_pmk($pmk);
+        $data_form = $this->pmk_m->detail_summary($pmk);
 
         echo(json_encode(array(
             'data' => $data_form,
@@ -811,7 +811,7 @@ class Pmk extends SpecialUserAppController {
 
         // ambil data form
         $pmk = $this->pmk_m->getAllWhere_form(array('id_summary' => $id_summary));
-        $data_form = $this->pmk_m->detail_pmk($pmk);
+        $data_form = $this->pmk_m->detail_summary($pmk);
 
         return array(
             'data'    => $data_form['data_pmk'],

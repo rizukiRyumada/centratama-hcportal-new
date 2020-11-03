@@ -8,6 +8,10 @@ html {
     scroll-behavior: smooth;
 }
 
+body {
+    /* zoom: 90%; */
+}
+
 /* ------------------------------ Main Class Styles Replacement ----------------------------- */
 .btn{
     border-radius: 2em;

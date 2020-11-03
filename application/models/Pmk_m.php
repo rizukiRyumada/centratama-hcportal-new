@@ -305,7 +305,7 @@ class Pmk_m extends CI_Model {
      * @param  mixed $data_pmk
      * @return void
      */
-    function detail_pmk($data_pmk){       
+    function detail_summary($data_pmk){       
         $time = date('d-m-Y', time()); $counter_data = 2; $pa_year = array(); // variabel untuk mencari pa
         // cek data pa per data pmk
         $counter_pa_employee = 0;
@@ -399,9 +399,6 @@ class Pmk_m extends CI_Model {
                 }
                 $vya--;
             }
-
-            // $assement_score = json_decode
-
             // data kontrak
             $contract_last = $this->pmk_m->getOnce_LastContractByNik(substr($v['id'], 0, 8));
             $contract_detail = $this->pmk_m->getDetailWhere_contract(array(
@@ -409,6 +406,7 @@ class Pmk_m extends CI_Model {
                 'contract' => $contract_last['contract']
             ));
             
+            // persiapkan detail data
             $dataPmk[$x]['id']         = $v['id'];
             $dataPmk[$x]['nik']        = substr($v['id'], 0, 8);
             $dataPmk[$x]['emp_name']   = $employee['emp_name'];
@@ -445,29 +443,6 @@ class Pmk_m extends CI_Model {
                 $dataPmk[$x]['entity_new'] = "";
             }
             $x++; // increament the index
-
-            // data yg diperlukan
-            /**
-             * nik
-             * full name
-             * BOD (date_birth)
-             * Join Date
-             * Employee Status
-             * 
-             * Year of Contract/Probation
-             * Contract #
-             * Year of Contract
-             * 
-             * Job Position
-             * Departement
-             * Division
-             * Entity
-             * 
-             * SPFY 3 perioe
-             * 
-             * Terminated, Extended, Permanent
-             * Extended milih entity baru
-             */
         }
 
         return array(
@@ -548,7 +523,13 @@ class Pmk_m extends CI_Model {
             'id_time'   => $id_time
         ))->row_array()['status_now'];
     }
-
+    
+    /**
+     * ambil satu data detail summary dengan id
+     *
+     * @param  mixed $id
+     * @return void
+     */
     function getDetail_summary($id){
         return $this->db->get_where($this->table['form_summary'], array('id_summary' => $id))->row_array();
     }
