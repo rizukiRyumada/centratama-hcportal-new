@@ -349,3 +349,10 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
         background-color: #fff;
     }
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                  toastr js                                 */
+/* -------------------------------------------------------------------------- */
+#toast-container > div {
+    opacity:1;
+}
