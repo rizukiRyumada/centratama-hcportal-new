@@ -59,12 +59,10 @@
                             <th>Join Date</th>
                             <th>Employee Status</th>
                             <th>End of Contract</th>
-                            <th>Contract<br/>#</th>
                             <th style="width: 240px;">Year of Contract/Probation</th>
                             <th>Position</th>
                             <th>Departement</th>
                             <th>Division</th>
-                            <th>Entity</th>
                             <th>Assessment Score</th>
                             <th style="width: 60px;"><?= "PA ".$pa_year[0]['periode']; ?><br/><span id="pa1_score"><?= $pa_year[0]['year']; ?></span></th>
                             <th style="width: 60px;"><?= "PA ".$pa_year[1]['periode']; ?><br/><span id="pa2_score"><?= $pa_year[1]['year']; ?></span></th>
@@ -88,7 +86,6 @@
                                 <td><?= $v['date_join']; ?></td>
                                 <td><?= $v['emp_stats']; ?></td>
                                 <td><?= $v['eoc_probation']; ?></td>
-                                <td><?= $v['contract']; ?></td>
                                 <td>
                                     <?php foreach($v['yoc_probation'] as $value): ?>
                                         <p class="m-0"><?= $value; ?></p>
@@ -97,7 +94,6 @@
                                 <td><?= $v['position']; ?></td>
                                 <td><?= $v['department']; ?></td>
                                 <td><?= $v['divisi']; ?></td>
-                                <td><?= $v['entity']; ?></td>
                                 <td><?= $v['survey_rerata']; ?></td>
                                 <td>
                                     <?php if(!empty($v['pa1']['score'])): ?>
