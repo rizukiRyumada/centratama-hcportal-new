@@ -266,7 +266,7 @@ class Pmk extends SpecialUserAppController {
         $data['data_summary'] = $data_summary['data']; // data summary for table
         $data['summary'] = $data_summary['summary']; // summary identities
         $data['pa_year'] = $data_summary['pa_year']; // data year pa
-ptkpmk        $data['entity'] = $this->entity_m->getAll_notAtAll(); // semua data entity
+        $data['entity'] = $this->entity_m->getAll_notAtAll(); // semua data entity
 
         // ambil data my position
         $position_my = $this->posisi_m->getMyPosition();
@@ -747,18 +747,6 @@ ptkpmk        $data['entity'] = $this->entity_m->getAll_notAtAll(); // semua dat
         $value = $this->input->post('value');
         $entity = $this->input->post('entity');
         $extend_for = $this->input->post('extend_for');
-        $contract = $this->input->post('contract');
-
-        echo($id);
-        echo('<br>');
-        echo($value);
-        echo('<br>');
-        echo($entity);
-        echo('<br>');
-        echo($extend_for);
-        echo('<br>');
-        echo($contract);
-        exit;
 
         // cek untuk menentukan identitas user
         $position_my = $this->posisi_m->getMyPosition();
@@ -774,6 +762,7 @@ ptkpmk        $data['entity'] = $this->entity_m->getAll_notAtAll(); // semua dat
         // update data summary
         $summary_data['entity'] = $entity;
         $summary_data['summary'] = $value;
+        $summary_data['extend_for'] = $extend_for;
 
         // update ke database
         $this->pmk_m->updateForm(
@@ -851,9 +840,17 @@ ptkpmk        $data['entity'] = $this->entity_m->getAll_notAtAll(); // semua dat
      */
     function cekAkses_pmk($position_my, $position){
         // cek apa dia admin atau userapp admin
-        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 196 || $position_my['id'] == 1){
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1){
             // perbolehkan akses bebas
             $value = 3; // flag bisa akses tapi ga berhak submit
+        } elseif($position_my['id'] == 196){
+            if($position_my['div_id'] == $position['div_id']){
+                // perbolehkan akses
+                $value = 1;
+            } else {
+                // perbolehkan akses tapi jangan kasih dia buat submit form
+                $value = 3;
+            }
         } else {
             // cek berdasarkan hirarki
             if($position_my['hirarki_org'] == "N"){
@@ -982,14 +979,37 @@ ptkpmk        $data['entity'] = $this->entity_m->getAll_notAtAll(); // semua dat
         $this->cekAkses_pmk($position_my, $position);
 
         if($this->input->post('action') == 0){ // jika actionnya save
-            $status_now_id = "1";
-            $status_new[array_key_last($status_new)+1] = array(
-                'id_status' => "1",
-                'by' => $penilai['emp_name'],
-                'nik' => $penilai['nik'],
-                'time' => time(),
-                'text' => 'Assessment form was changed.'
-            );
+            // cek status sebelumnya
+            if($pmk_data['status_now_id'] == 1){
+                $status_now_id = "1";
+                $status_new[array_key_last($status_new)+1] = array(
+                    'id_status' => "1",
+                    'by' => $penilai['emp_name'],
+                    'nik' => $penilai['nik'],
+                    'time' => time(),
+                    'text' => 'Assessment form was changed.'
+                );
+            } elseif($pmk_data['status_now_id'] == 2){
+                $status_now_id = "2";
+                $status_new[array_key_last($status_new)+1] = array(
+                    'id_status' => "2",
+                    'by' => $penilai['emp_name'],
+                    'nik' => $penilai['nik'],
+                    'time' => time(),
+                    'text' => 'Assessment form was changed.'
+                );
+            } elseif($pmk_data['status_now_id'] == 8){
+                $status_now_id = "8";
+                $status_new[array_key_last($status_new)+1] = array(
+                    'id_status' => "8",
+                    'by' => $penilai['emp_name'],
+                    'nik' => $penilai['nik'],
+                    'time' => time(),
+                    'text' => 'Assessment form was changed.'
+                );
+            } else {
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            }
         } else { // jika actionnya submit
             if($penilai['hirarki_org'] == "N-2"){
                 // cek jika atasannya (N-1) ada atau engga

@@ -21,13 +21,16 @@
             $('#chooser_extendfor<?= $v['id']; ?>').val('<?= $v['extend_for']; ?>');
             // penanda saved untuk nandain kalo udh ada di database
             $('#chooser_entityNew<?= $v['id']; ?>').data('saved', '<?= $v['entity_new']; ?>');
-            
+            // cek jika chooser recomendation sudah keisi
+            if($('#chooser_recomendation<?= $v['id']; ?>').val() != ""){
+                $('#chooser_recomendation<?= $v['id']; ?>').data('saved', 1);
+            }
             // untuk mengaktifkan atau menonaktifkan extend dropdown list
             /**
-             * jika recomendasinya itu bukan extend nonaktifkan extendfor
+             * jika recomendasinya ituS bukan extend nonaktifkan extendfor
              */
-            if($('#chooser_recomendation<?= $v['id']; ?>').val() != 1){
-                $('#chooser_extendfor<?= $v['id']; ?>').attr('disabled', true);
+            if($('#chooser_extendfor<?= $v['id']; ?>').val() != ""){
+                $('#chooser_extendfor<?= $v['id']; ?>').removeAttr('disabled');
             }
             // lihat statusnya untuk mengaktifkan atau menonaktifkan approval action
             <?php $status = json_decode($v['status_now'], true); ?>
@@ -130,12 +133,14 @@
         let extend_for = $('#chooser_extendfor'+id).val();
         let contract = $(this).data('contract');
 
-        if(value == 1){ // apakah recomendationnya extend
-            if(contract % 2 == 0){ // apakah contractnya genap
-                if(extend_for != ""){ // apakah extend fornya kosong
-                    pmk_updateApproval(id, value, entity, extend_for); // update summary summary
-                } else {
-                    toastr["warning"]("Please choose extend for to save your change.", "Attention!"); // tampilkan toastr error
+        if(entity != ""){ // cek apakah entity terpilih tidak kosong
+            if(value == 1){ // apakah recomendationnya extend
+                if(contract % 2 == 0){ // apakah contractnya genap
+                    if(extend_for != ""){ // apakah extend fornya kosong
+                        pmk_updateApproval(id, value, entity, extend_for); // update summary summary
+                    } else {
+                        toastr["warning"]("Please choose extend for to save your change.", "Attention!"); // tampilkan toastr error
+                    }
                 }
             }
         }
@@ -149,8 +154,18 @@
         let extend_for = $(this).val();
         let contract = $('#chooser_entityNew'+id).data('contract');
 
-        if(value == 1){ // apakah recomendationnya extend
-            pmk_updateApproval(id, value, entity, extend_for); // update summary summary
+        if(extend_for != ""){ // cek apakah extend for terpilih tidak kosong
+            if(value == 1){ // apakah recomendationnya extend
+                if(contract % 2 == 0){
+                    if(entity == ""){
+                        toastr["warning"]("Please choose New Entity for to save your change.", "Attention!"); // tampilkan toastr error
+                    } else {
+                        pmk_updateApproval(id, value, entity, extend_for); // update summary summary
+                    }
+                } else {
+                    pmk_updateApproval(id, value, entity, extend_for); // update summary summary
+                }
+            }
         }
     });
 
@@ -189,7 +204,7 @@
             let validate_status = 0; let element_scroll = "";
             // cek jika ada yang valuenya actionnya belum diisi
             <?php foreach($data_summary as $v): ?>
-                if($('#chooser_recomendation<?= $v['id']; ?>').val() == ""){
+                if($('#chooser_recomendation<?= $v['id']; ?>').data('saved') == ""){
                     validate_status++;
                     element_scroll = $('#chooser_recomendation<?= $v['id']; ?>');
                 }
@@ -241,7 +256,8 @@
             data: {
                 id: id,
                 value: value,
-                entity: entity
+                entity: entity,
+                extend_for: extend_for
             },
             method: "POST",
             beforeSend: function(){
@@ -254,6 +270,8 @@
             },
             success: function(data){
                 toastr["success"]("Summary action has been saved.", "Saved");
+                // ganti data saved di select option recomendation untuk validasi form
+                $('#chooser_recomendation'+id).data('saved', 1);
             },
             error: function(){
                 Swal.fire({
