@@ -273,12 +273,33 @@ class Pmk extends SpecialUserAppController {
         $data['position_my'] =  $position_my; 
 
         // cek akses buat ngubah summary action, ngisi notes dan submit summary
-        if(($data_summary['summary']['status_now_id'] == "pmksum-01" && $position_my['hirarki_org'] == "N") ||
+        if(($data_summary['summary']['status_now_id'] == "pmksum-01" && $position_my['hirarki_org'] == "N" && $position_my['id'] != 196 && $position_my['id'] != 1) ||
            ($data_summary['summary']['status_now_id'] == "pmksum-02" && $position_my['id'] == 196) ||
            ($data_summary['summary']['status_now_id'] == "pmksum-03" && $position_my['id'] == 1)){
             $data['is_akses'] = 1;
         } else {
             $data['is_akses'] = 0;
+        }
+
+        // if untuk set pesan alert
+        if($data_summary['summary']['status_now_id'] != "pmksum-01"){
+            if($position_my['hirarki_org'] == "N" && $position_my['id'] != 196 && $position_my['id'] != 1){
+                $data['alert_message'] = $this->getAlertSummary(0);
+            } else {
+                $data['alert_message'] = $this->getAlertSummary(1);
+            }
+        } elseif($data_summary['summary']['status_now_id'] != "pmksum-02"){
+            if($position_my['id'] == 196){
+                $data['alert_message'] = $this->getAlertSummary(0);
+            } else {
+                $data['alert_message'] = $this->getAlertSummary(1);
+            }
+        } elseif($data_summary['summary']['status_now_id'] != "pmksum-03"){
+            if($position_my['id'] == 1){
+                $data['alert_message'] = $this->getAlertSummary(0);
+            } else {
+                $data['alert_message'] = $this->getAlertSummary(1);
+            }
         }
 
         // main data
@@ -956,6 +977,29 @@ class Pmk extends SpecialUserAppController {
 
         return $data;
     }
+
+    /**
+     * getalert summary detail
+     * 
+     * @return void
+     */
+    function getAlertSummary($switch){
+        if($switch == 0){
+            return array(
+                'type' => 'warning',
+                'icon' => 'fa-exclamation-triangle',
+                'title' => 'Warning!',
+                'text' => "You can't submit this summary until all employee assessment finished."
+            );
+        } else {
+            return array(
+                'type' => 'info',
+                'icon' => 'fa-info',
+                'title' => 'Info',
+                'text' => "You can't process this summary for at this moment."
+            );
+        }
+    }
     
     /**
      * save assessment survey data to database
@@ -1148,24 +1192,45 @@ class Pmk extends SpecialUserAppController {
             $summary_notes = json_decode($result_summary['notes'], true);
         } else {
             $summary_notes = array(
-                'N' => "",
-                196 => "",
-                1   => ""
+                'N' => array(
+                    'whoami' => "Division Head",
+                    'by'     => "",
+                    'time'   => "",
+                    'text'   => ""
+                ),
+                196 => array(
+                    'whoami' => 'HC Divhead',
+                    'by'     => "",
+                    'time'   => "",
+                    'text'   => ""
+                ),
+                1   => array(
+                    'whoami' => 'CEO',
+                    'by'     => "",
+                    'time'   => "",
+                    'text'   => ""
+                )
             );
         }
         // atur status now
         if($whoami['position_id'] == 196){
             $summary_status_now_id = "pmksum-03";
             $summary_status_text = "Summary form was submitted by HC Divhead.";
-            $summary_notes[$whoami['position_id']] = $notes;
+            $summary_notes[$whoami['position_id']]['text'] = $notes;
+            $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
+            $summary_notes[$whoami['position_id']]['time'] = time();
         } elseif($whoami['position_id'] == 1){
             $summary_status_now_id = "pmksum-04";
             $summary_status_text = "Contract Evaluation has been Completed.";
-            $summary_notes[$whoami['position_id']] = $notes;
+            $summary_notes[$whoami['position_id']]['text'] = $notes;
+            $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
+            $summary_notes[$whoami['position_id']]['time'] = time();
         } elseif($whoami['hirarki_org'] == "N"){
             $summary_status_now_id = "pmksum-02";
             $summary_status_text = "Summary form was submitted by N.";
-            $summary_notes[$whoami['hirarki_org']] = $notes;
+            $summary_notes[$whoami['hirarki_org']]['text'] = $notes;
+            $summary_notes[$whoami['hirarki_org']]['by'] = $whoami['position_name'];
+            $summary_notes[$whoami['hirarki_org']]['time'] = time();
         } else {
             show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
         }

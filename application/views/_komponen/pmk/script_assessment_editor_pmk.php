@@ -32,11 +32,11 @@
         if(formValidate() == 0){ // jika tidak ada error
             Swal.fire({ 
                 title: 'Are you sure?',
-                text: "This assessment will be addressed to your superior, please give the assessment carefully, your assessment will have an effect for this employee in the future.",
+                // text: "This assessment will be addressed to your superior, please give the assessment carefully, your assessment will have an effect for this employee in the future.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, I really sure!',
-                cancelButtonText: 'No, give me more time'
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
             }).then((result) => {
                 if (result.isConfirmed) {
                     Swal.fire({
@@ -52,11 +52,15 @@
                 } else if (
                     /* Read more about handling dismissals below */
                     result.dismiss === Swal.DismissReason.cancel) {
-                        Swal.fire(
-                            'Okay',
-                            'Please have a more time to review this employee assessment.',
-                            'info'
-                        )
+                        // Swal.fire(
+                        //     'Okay',
+                        //     'Please have a more time to review this employee assessment.',
+                        //     'info'
+                        // )
+                        toastr["info"]("Please have a more time to review this employee assessment."); // tampilkan toastr error
+                        // scroll top
+                        // document.body.scrollTop = 0;
+                        // document.documentElement.scrollTop = 0;
                         return false;
                     }
             });

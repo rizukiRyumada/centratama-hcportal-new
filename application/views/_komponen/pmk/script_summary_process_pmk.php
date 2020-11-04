@@ -1,7 +1,12 @@
 <script>
     // CKEditor Instances
     CKEDITOR.replace('notes', {
-		enterMode: CKEDITOR.ENTER_BR
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                $('#ckeditor_loader').slideUp(); // sembunyikan loader
+            }
+        }
     });
     // variable yang dibutuhkan
     var id_summary = "<?= $id_summary; ?>";
@@ -35,7 +40,7 @@
             // lihat statusnya untuk mengaktifkan atau menonaktifkan approval action
             <?php $status = json_decode($v['status_now'], true); ?>
             if(!(<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N") || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1)){
-                $('#chooser_recomendation<?= $v['id']; ?>').attr('disabled', true);
+                $('#chooser_recomendation<?= $v['id']; ?>').removeAttr('disabled');
             }
             // untuk menampilkan entity new dropdown
             /**
@@ -44,7 +49,7 @@
              * 2. dilihat data contractnya apa dia genap ganjil dengan aritmatika modulus
              * 3. dilihat dari status per karyawan form pmk nya dan hirarki karyawan
              */
-            if(($('#chooser_entityNew<?= $v['id']; ?>').val() != "" && $('#chooser_entityNew<?= $v['id']; ?>').data('contract') % 2 == 0) && (<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N") || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1)){
+            if(($('#chooser_entityNew<?= $v['id']; ?>').val() != "" && $('#chooser_entityNew<?= $v['id']; ?>').data('contract') % 2 == 0) && ((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N") || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1))){
                 $('#chooser_entityNew<?= $v['id']; ?>').removeAttr('disabled');
             }
             /**
@@ -55,6 +60,13 @@
                 counter_summaryEmployee++;
             }
         <?php endforeach;?>
+
+        // sembunyikan tombol submit dan notes jika ada employee yg masih belum selesai assessmentnya
+        if(counter_summary != counter_summaryEmployee){
+            $('#button_container').hide();
+            $('#notes_container').hide();
+            $('#messages_container').show(); // tampilkan pesan peringatan
+        }
     });
 
     var table = $('#table_summaryProcess').DataTable({
@@ -114,6 +126,7 @@
                 $('#chooser_entityNew'+id).removeAttr('disabled');
             }
             $('#chooser_extendfor'+id).removeAttr('disabled');
+            toastr["warning"]("Please choose extend for.", "Attention!"); // tampilkan toastr error
         } else {
             // matikan extend value dan entity
             $('#chooser_entityNew'+id).attr('disabled', true);
@@ -158,7 +171,7 @@
             if(value == 1){ // apakah recomendationnya extend
                 if(contract % 2 == 0){
                     if(entity == ""){
-                        toastr["warning"]("Please choose New Entity for to save your change.", "Attention!"); // tampilkan toastr error
+                        toastr["warning"]("Please choose New Entity to save your change.", "Attention!"); // tampilkan toastr error
                     } else {
                         pmk_updateApproval(id, value, entity, extend_for); // update summary summary
                     }
@@ -173,7 +186,7 @@
     $('#button_submit').on('click', function() {
         // TODO tambah validasi lihat status karyawan apa sudah memenuhi untuk seleksi atau tidak
         // pesan error
-        var msg_notes = '<div class="card-footer error-message bg-danger" ><div class="col text-center">Please enter your notes</div></div>';
+        var msg_notes = '<div class="row error-message bg-danger py-2" ><div class="col text-center">Please fill your notes and the notes must contain atleast 2 character</div></div>';
         // div ckeditor selector
         var cke_notes = $('#cke_notes');
         // ambil note CKEDITOR
@@ -186,8 +199,8 @@
         });
 
         // cek jika note nya kosong
-        if((note == "" || note == undefined || note == null)){
-            toastr["error"]("Notes Should not be Empty.", "Error"); // tampilkan toastr error
+        if((note == "" || note == undefined || note == null || note.length < 2)){
+            toastr["error"]("Notes Should not be Empty and must contain atleast 2 characters.", "Error"); // tampilkan toastr error
             // tambahkan attribute pesan tambahan
             cke_notes.parent().parent().parent().addClass('border border-danger');
             cke_notes.parent().parent().parent().parent().append(msg_notes);
@@ -229,18 +242,27 @@
                     scrollIt = elementTop - ((viewportHeight - elementHeight) / 2);
                 $window.scrollTop(scrollIt);
             } else {
-                // tampilkan dialog submitting
                 Swal.fire({
-                    icon: 'info',
-                    title: 'Processing The Summary Form',
-                    html: '<p>Please wait, it will take a while.<br/>'+"Please don't close the browser or tab, even move to another tab, to avoid fail form submit."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></div></p>',
-                    showConfirmButton: false,
-                    // allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    allowEnterKey: false
-                });
-
-                $('#form_notes').submit(); // lakukan submit form
+                    title: 'Are you sure?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // tampilkan dialog submitting
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Processing The Summary Form',
+                            html: '<p>Please wait, it will take a while.<br/>'+"Please don't close the browser or tab, even move to another tab, to avoid fail form submit."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></div></p>',
+                            showConfirmButton: false,
+                            // allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        });
+                        $('#form_notes').submit(); // lakukan submit form
+                    }
+                })
             }
         }        
     });
@@ -272,6 +294,7 @@
                 toastr["success"]("Summary action has been saved.", "Saved");
                 // ganti data saved di select option recomendation untuk validasi form
                 $('#chooser_recomendation'+id).data('saved', 1);
+                // penanda counter recomendation summary kalo sudah diisi
             },
             error: function(){
                 Swal.fire({

@@ -44,6 +44,16 @@
     </div>
 </div>
 
+<div id="messages_container" class="row" style="display: none;">
+    <div class="col">
+        <div class="alert alert-<?= $alert_message['type']; ?> alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas <?= $alert_message['icon']; ?>"></i> <?= $alert_message['title']; ?></h5>
+            <?= $alert_message['text']; ?>
+        </div>
+    </div>
+</div>
+
 <!-- main section -->
 <div class="row">
     <div class="col">
@@ -59,7 +69,7 @@
                             <th>Join Date</th>
                             <th>Employee Status</th>
                             <th>End of Contract</th>
-                            <th style="width: 240px;">Year of Contract/Probation</th>
+                            <th style="width: 240px;">Probation</th>
                             <th>Position</th>
                             <th>Departement</th>
                             <th>Division</th>
@@ -116,7 +126,7 @@
                                 <!-- bagian ini hanya untuk hc divhead, divhead, dan CEO -->
                                 <?php if($is_akses == 1): ?>
                                     <td>
-                                        <select class="custom-select" name="recomendation" id="chooser_recomendation<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['recomendation']; ?>" data-saved="" style="width: 200px;" >
+                                        <select class="custom-select" name="recomendation" id="chooser_recomendation<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['recomendation']; ?>" data-saved="" style="width: 200px;" disabled>
                                             <option value="">Select Action</option>
                                             <option value="0">Terminated</option>
                                             <option value="1">Extended</option>
@@ -156,7 +166,7 @@
     </div>
 </div>
 
-<!-- notes dan submit button hanya untuk hirarki_org N, CEO, dan HC Divhead -->
+<!-- notes dan submit button hanya untuk hirarki_org N, CEO, dan HC Divhead dan pada statusnya -->
 <?php if($is_akses == 1): ?>
     <div id="notes_container" class="row">
         <div class="col">
@@ -168,29 +178,74 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <?php 
-                    $summary_notes = json_decode($summary['notes'], true);
-                    ?>
-                    <?php if(!empty($summary_notes)): ?>
-                        <?php foreach($summary_notes as $key => $value): ?>
-                            <?php if(!empty($value)): ?>
-                                <div class="form-group">
-                                    <label>Notes from <?= $key; ?></label>
-                                    <div class="form-control"><?= $value; ?></div>
-                                </div>   
-                            <?php endif; ?>
-                        <?php endforeach;?>
-                    <?php endif; ?>
-                    <!-- <div class="form-group">
-                        <label></label>
-                        <textarea class="form-control" rows="3" placeholder="Enter your notes..."></textarea>
-                    </div> -->
                     <form id="form_notes" action="<?= base_url('pmk/updateSummaryProcess'); ?>" method="post">
-                        <div class="form-group">
-                            <label >Your Notes</label>
-                            <textarea class="form-control" name="notes" rows="3" placeholder="Enter your notes..."></textarea>
+                        <div class="row">
+                            <?php 
+                            $summary_notes = json_decode($summary['notes'], true);
+                            $notes_color = array("blue", "orange", "warning"); $x=0;
+                            if($position_my['id'] == 196){
+                                $column = "col-lg-6";
+                            } else {
+                                $column = "col-lg-4";
+                            }
+                            ?>
+                            <?php if(!empty($summary_notes)): ?>
+                                <?php foreach($summary_notes as $key => $value): ?>
+                                    <?php if(!empty($value['text'])): ?>
+                                        <div class="<?= $column; ?> bg-<?= $notes_color[$x]; ?> p-2 p-sm-3 m-1 border-radius-1">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold mb-3" >Notes from <?= $value['whoami']; ?></label>
+                                                <div class="p-3 bg-white overflow-auto" style="height: 380px"><?= $value['text']; ?></div>
+                                            </div>
+                                            <div class="form-group m-0">
+                                                <div class="row">
+                                                    <div class="col-lg-4 align-self-middle">
+                                                        <p class="m-0 font-weight-bold">Position:</p>
+                                                    </div>
+                                                    <div class="col-lg-8 align-self-middle">
+                                                        <p class="m-0"><?= $value['by']; ?></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group m-0">
+                                                <div class="row">
+                                                    <div class="col-lg-4 align-self-middle">
+                                                        <p class="m-0 font-weight-bold">Time:</p>
+                                                    </div>
+                                                    <div class="col-lg-8 align-self-middle">
+                                                        <p class="m-0"><?= date("j M'Y", $value['time']); ?></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php $x++; endif; ?>
+                                <?php endforeach;?>
+                            <?php endif; ?>
+                            <!-- <div class="form-group">
+                                <label></label>
+                                <textarea class="form-control" rows="3" placeholder="Enter your notes..."></textarea>
+                            </div> -->
+                            <div class="col-lg bg-warning p-2 p-sm-3 m-1 border-radius-1">
+                                <div class="form-group">
+                                    <label class="font-weight-bold mb-3" >Your Notes</label>
+                                    <textarea class="form-control" name="notes" rows="3" placeholder="Enter your notes..."></textarea>
+                                </div>
+                                <div id="ckeditor_loader" class="form-group">
+                                    <p class="m-0 text-center">
+                                        <!-- <i class="fa fa-spinner fa-spin fa-2x"></i> -->
+                                        <img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80">
+                                    </p>
+                                </div>
+                                <div class="form-group m-0">
+                                    <div class="align-self-middle">
+                                        <p class="m-0 font-weight-bold">Position:</p>
+                                    </div>
+                                    <div class="align-self-middle">
+                                        <p class="m-0"><?= $position_my['position_name']; ?></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
                         <!-- data summary yang diperlukan -->
                         <input type="hidden" name="id_summary">
                     </form>
