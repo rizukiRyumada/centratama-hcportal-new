@@ -69,8 +69,8 @@
                             <th>Join Date</th>
                             <th>Employee Status</th>
                             <th>End of Contract</th>
-                            <th style="width: 240px;">Probation</th>
-                            <th>Position</th>
+                            <th style="width: 240px;">Contract</th>
+                            <th style="width: 200px;" >Position</th>
                             <th>Departement</th>
                             <th>Division</th>
                             <th>Assessment Score</th>
@@ -84,7 +84,7 @@
                                 <th>Choose New Entity</th>
                                 <th>Extend for</th>
                             <?php endif; ?>
-                            <th></th>
+                            <th>View Assessment</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,7 +156,9 @@
                                         </select>
                                     </td>
                                 <?php endif; ?>
-                                <td></td>
+                                <td>
+                                    <div class="container h-100 m-0 px-auto"> <div class="row justify-content-center align-self-center w-100 m-0"><a class="btn btn-primary w-100" href="<?= base_url('pmk/assessment')."?id=".$v['id']."&direct_summary=".$id_summary; ?>"><i class="fa fa-search mx-auto"></i></a></div></div>
+                                </td>
                             </tr>
                         <?php endforeach;?>
                     </tbody>
