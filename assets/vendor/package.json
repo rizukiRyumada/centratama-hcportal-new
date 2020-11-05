@@ -19,6 +19,7 @@
     "ckeditor4": "^4.15.0",
     "jquery-ui": "^1.12.1",
     "knockout-daterangepicker": "0.0.9",
+    "moment": "^2.29.1",
     "orgchart": "^2.1.10",
     "pdfobject": "^2.2.3",
     "popper.js": "^1.16.1",
