@@ -128,12 +128,18 @@
 
                 $('#summaryDateChooser').fadeOut(); // summary date chooser
                 $('#summary_status').fadeOut(); // filter summary status
+                <?php if($position_my['id'] != "1" && $position_my['id'] != "196" && $this->session->userdata('role_id') != 1 && $userApp_admin != 1): ?>
+                    $('#summaryButton_resetFilter').slideUp();
+                <?php endif; ?>
             } else {
                 $('#summary_switchData1').removeClass('active');
                 $('#summary_switchData2').addClass('active');
 
                 $('#summaryDateChooser').fadeIn(); // summary date chooser
                 $('#summary_status').fadeIn(); // filter summary status
+                <?php if($position_my['id'] != "1" && $position_my['id'] != "196" && $this->session->userdata('role_id') != 1 && $userApp_admin != 1): ?>
+                    $('#summaryButton_resetFilter').slideDown();
+                <?php endif; ?>
             }
 
             table_summary.ajax.reload();

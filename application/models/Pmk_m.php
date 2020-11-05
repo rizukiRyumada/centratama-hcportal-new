@@ -430,6 +430,7 @@ class Pmk_m extends CI_Model {
             $dataPmk[$x]['position']   = $employee['position_name'];
             $dataPmk[$x]['department'] = $department['nama_departemen'];
             $dataPmk[$x]['divisi']     = $divisi['division'];
+            $dataPmk[$x]['divisi_id']  = $divisi['id'];
             $dataPmk[$x]['entity']     = $entity_last['nama_entity'];
             $dataPmk[$x]['entity_last']= $entity_last;
             $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
@@ -582,10 +583,6 @@ class Pmk_m extends CI_Model {
         ));
 
         return $id;
-    }
-
-    function getId_summary(){
-
     }
     
     /**

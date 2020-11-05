@@ -16,6 +16,8 @@
     // variable selector
     var select_recomendation = $('select[name="recomendation"]');
 
+    // buat penanda untuk menaruh informasi sudah atau belum di setiap id
+    var flag_recomendation = Array(); x = 0;
     // untuk menampilkan jawaban summary dari yang sudah diisi
     $(document).ready(function(){
         $('input[name="id_summary"]').val(id_summary); // simpan id summary di form
@@ -30,17 +32,24 @@
             if($('#chooser_recomendation<?= $v['id']; ?>').val() != ""){
                 $('#chooser_recomendation<?= $v['id']; ?>').data('saved', 1);
             }
-            // untuk mengaktifkan atau menonaktifkan extend dropdown list
-            /**
-             * jika recomendasinya ituS bukan extend nonaktifkan extendfor
-             */
-            if($('#chooser_extendfor<?= $v['id']; ?>').val() != ""){
-                $('#chooser_extendfor<?= $v['id']; ?>').removeAttr('disabled');
-            }
-            // lihat statusnya untuk mengaktifkan atau menonaktifkan approval action
             <?php $status = json_decode($v['status_now'], true); ?>
-            if(!(<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N") || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1)){
+            // lihat statusnya untuk mengaktifkan atau menonaktifkan approval action
+            if((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 196 && <?= $position_my['id']; ?> != 1) || (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1)){
                 $('#chooser_recomendation<?= $v['id']; ?>').removeAttr('disabled');
+
+                // beri flag recomendation kalo sudah melalui tahap assessment
+                flag_recomendation[x] = {
+                    id: '<?= $v['id']; ?>',
+                    status: 1
+                };
+                x++;
+            } else {
+                // beri flag recomendation kalo belum melalui tahap assessment
+                flag_recomendation[x] = {
+                    id: '<?= $v['id']; ?>',
+                    status: 0
+                };
+                x++;
             }
             // untuk menampilkan entity new dropdown
             /**
@@ -49,14 +58,21 @@
              * 2. dilihat data contractnya apa dia genap ganjil dengan aritmatika modulus
              * 3. dilihat dari status per karyawan form pmk nya dan hirarki karyawan
              */
-            if(($('#chooser_entityNew<?= $v['id']; ?>').val() != "" && $('#chooser_entityNew<?= $v['id']; ?>').data('contract') % 2 == 0) && ((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N") || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1))){
+            if(($('#chooser_entityNew<?= $v['id']; ?>').val() != "" && $('#chooser_entityNew<?= $v['id']; ?>').data('contract') % 2 == 0) && ((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 196 && <?= $position_my['id']; ?> != 1) || (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1))){
                 $('#chooser_entityNew<?= $v['id']; ?>').removeAttr('disabled');
+            }
+            // untuk mengaktifkan atau menonaktifkan extend dropdown list
+            /**
+             * jika recomendasinya ituS bukan extend nonaktifkan extendfor
+             */
+            if($('#chooser_extendfor<?= $v['id']; ?>').val() != "" && ((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 196 && <?= $position_my['id']; ?> != 1) || (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1))){
+                $('#chooser_extendfor<?= $v['id']; ?>').removeAttr('disabled');
             }
             /**
              * penjelasan if
              * jika memenuhi id statusnya dengan hirarki orgnya
              */
-            if((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N") || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1)){
+            if((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 1) || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1)){
                 counter_summaryEmployee++;
             }
         <?php endforeach;?>
@@ -90,8 +106,8 @@
         ],
         order: [[0, 'asc']],
         fixedColumns:   {
-            leftColumns: 2,
-            rightColumns: 1
+            leftColumns: 2
+            // ,rightColumns: 1
         },
         // buttons
         buttons: [
@@ -283,11 +299,18 @@
             },
             method: "POST",
             beforeSend: function(){
-                select_recomendation.attr('disabled', true);
-                $('select[name="entity_new"]').attr('disabled', true);
-                if(value == 1){ // jika valuenya extend
-                    $('select[name="extend_for"]').attr('disabled', true);
-                }
+                // aktifkan dan noaktifkan recomendation, entity, dan extend for dengan flag recomendation
+                $.each(flag_recomendation, function(index, nilai){
+                    if(nilai.status == 1){ // lihat apakah id ini sudah memenuhi assessment complete
+                        $('#chooser_recomendation'+nilai.id).attr('disabled', true);
+                        if(entity != ""){ // jika entitynya tidak kosong
+                            $('#chooser_entityNew'+nilai.id).attr('disabled', true);
+                        }
+                        if(value == 1){ // jika valuenya extend
+                            $('#chooser_extendfor'+nilai.id).attr('disabled', true);
+                        }
+                    }
+                });
                 toastr["warning"]("Your changes is being saved.", "Saving...");
             },
             success: function(data){
@@ -304,14 +327,17 @@
                 });
             },
             complete: function(){
-                select_recomendation.removeAttr('disabled');
-                if(entity != ""){ // jika entitynya tidak kosong
-                    $('select[name="entity_new"]').removeAttr('disabled');
-                }
-                if(value == 1){ // jika valuenya extend
-                    $('select[name="extend_for"]').removeAttr('disabled');
-                }
-                $('.pmk-indicator').hide();
+                $.each(flag_recomendation, function(index, nilai){
+                    if(nilai.status == 1){ // lihat apakah id ini sudah memenuhi assessment complete
+                        $('#chooser_recomendation'+nilai.id).removeAttr('disabled');
+                        if(entity != ""){ // jika entitynya tidak kosong
+                            $('#chooser_entityNew'+nilai.id).removeAttr('disabled');
+                        }
+                        if(value == 1){ // jika valuenya extend
+                            $('#chooser_extendfor'+nilai.id).removeAttr('disabled');
+                        }
+                    }
+                });
             }
         });
     }

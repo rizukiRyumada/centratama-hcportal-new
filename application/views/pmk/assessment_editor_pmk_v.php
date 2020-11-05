@@ -3,6 +3,11 @@
     <div class="col">
         <div class="card card-primary card-outline">
             <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-2">
+                        <a href="<?= $direct_url; ?>" class="btn btn-primary"><i class="fas fa-chevron-left"></i></a>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col">
                         <div class="card ">

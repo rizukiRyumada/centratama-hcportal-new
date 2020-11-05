@@ -105,13 +105,20 @@ class Pmk extends SpecialUserAppController {
                     $data_divisi[$k]["count_summary"] += $this->_general_m->getRow($this->table['summary'], array('status_now_id' => $value['id'], 'id_div' => $v['id']));
                 }
             }
+
+            // ambil data departemen khusus buat division head
+            if($position_my['hirarki_org'] == "N" && $position_my['id'] != 1 && $position_my['id'] != 196){
+                $data['department'] = $this->dept_model->getAll_where(array('div_id' => $position_my['div_id']));
+            }
+
             // more advance pmk data
             $data['summary'] = 1; // flag bahwa karyawan ini berhak melihat summary
             $data['divisi'] = $data_divisi;
             // beri script dengan summary script
             $data['custom_script'] = array(
                 'plugins/datatables/script_datatables',
-                'plugins/daterange-picker/script_daterange-picker', 
+                'plugins/daterange-picker/script_daterange-picker',
+                // 'plugins/daterange-superpicker/script_daterange-superpicker',
                 'pmk/script_index_pmk',
                 'pmk/script_summary_pmk'
             );
@@ -119,7 +126,8 @@ class Pmk extends SpecialUserAppController {
             // beri script tanpa summary script
             $data['custom_script'] = array(
                 'plugins/datatables/script_datatables',
-                'plugins/daterange-picker/script_daterange-picker', 
+                'plugins/daterange-picker/script_daterange-picker',
+                // 'plugins/daterange-superpicker/script_daterange-superpicker',
                 'pmk/script_index_pmk'
             );
         }
@@ -168,7 +176,6 @@ class Pmk extends SpecialUserAppController {
         $position = $this->employee_m->getDetails_employee($nik);
         // cek akses assessment
         $data['is_access'] = $this->cekAkses_pmk($position_my, $position);
-
         $data['exist_empPhoto'] = $this->employee_m->check_empPhoto($nik); // check employee photo exist or not
 
         // cek ketersediaan survey
@@ -182,6 +189,14 @@ class Pmk extends SpecialUserAppController {
             // akses preview
 		    $data['load_view'] = 'pmk/assessment_viewer_pmk_v';
             $script_assessment = 'pmk/script_assessment_viewer_pmk';
+        }
+
+        // cek untuk kesediaan direct_summary
+        $direct_summary = $this->input->get('direct_summary');
+        if(!empty($direct_summary)){ // jika direct summary ada
+            $data['direct_url'] = base_url('pmk/summary_process')."?id=".$direct_summary;
+        } else {
+            $data['direct_url'] = base_url('pmk');
         }
 
         // assessment data
@@ -273,9 +288,9 @@ class Pmk extends SpecialUserAppController {
         $data['position_my'] =  $position_my; 
 
         // cek akses buat ngubah summary action, ngisi notes dan submit summary
-        if(($data_summary['summary']['status_now_id'] == "pmksum-01" && $position_my['hirarki_org'] == "N" && $position_my['id'] != 196 && $position_my['id'] != 1) ||
-           ($data_summary['summary']['status_now_id'] == "pmksum-02" && $position_my['id'] == 196) ||
-           ($data_summary['summary']['status_now_id'] == "pmksum-03" && $position_my['id'] == 1)){
+        if(($position_my['hirarki_org'] == "N" && $position_my['id'] != 196 && $position_my['id'] != 1) ||
+           ($position_my['id'] == 196) ||
+           ($position_my['id'] == 1)){
             $data['is_akses'] = 1;
         } else {
             $data['is_akses'] = 0;
@@ -427,7 +442,7 @@ class Pmk extends SpecialUserAppController {
             // cek apa data sudah ada di pmk_form
             $vya = $this->pmk_m->getRow_form($v['nik'], $v['contract']);
             // cek apa kontraknya mau habis dalam 2 bulan
-            $result = $this->_general_m->getOnce('nik, contract', $this->table['contract'], "nik = '".$v['nik']."' AND contract = '".$v['contract']."' AND date_end <= ".$date);
+            $result = $this->_general_m->getOnce('*', $this->table['contract'], "nik = '".$v['nik']."' AND contract = '".$v['contract']."' AND date_end <= ".$date);
             // cek apa ada pada 2 bulan ke depan dengan kontrak terakhir
             if(!empty($result)){
                 $counter_pmk++; // counter data yg abis di 2 bulan ke depan
@@ -480,8 +495,8 @@ class Pmk extends SpecialUserAppController {
                     $data_pmk[$x]['modified'] = time();
 
                     $data_employee = $this->employee_m->getDetails_employee($v['nik']); // ambil detail data employee
-                    $data_pmk[$x]['id_summary'] = date("Ym", $date).$data_employee['div_id']; // pmk_id nanti setelah hc divhead melakukan pembuatan summary
-                    $this->cekPmkSummary($data_pmk[$x]['id_summary'], $date, $data_employee['div_id']); // lakukan pemeriksaan summary
+                    $data_pmk[$x]['id_summary'] = date("Ym", $result['date_end']).$data_employee['div_id']; // pmk_id nanti setelah hc divhead melakukan pembuatan summary
+                    $this->cekPmkSummary($data_pmk[$x]['id_summary'], $result['date_end'], $data_employee['div_id']); // lakukan pemeriksaan summary
                     $x++;
                 } else {
                     // nothing
@@ -923,15 +938,15 @@ class Pmk extends SpecialUserAppController {
     
     /**
      * cek summary pmk jika ada buat pmk summary baru di 2 bulan ke depan
-     *
+     *  
      * @return void
      */
-    function cekPmkSummary($id_summary, $date, $id_div){
+    function cekPmkSummary($id_summary, $date_end, $id_div){
         if($this->_general_m->getRow($this->table['summary'], array('id_summary' => $id_summary)) < 1){
             // buat data status summary pmk
             $data['id_summary'] = $id_summary;
-            $data['bulan']  = date("m", $date);
-            $data['tahun']  = date("Y", $date);
+            $data['bulan']  = date("m", $date_end);
+            $data['tahun']  = date("Y", $date_end);
             $data['id_div'] = $id_div;
             $data['status'] = json_encode([
                 0 => [
@@ -943,7 +958,7 @@ class Pmk extends SpecialUserAppController {
                 ]
             ]);
             $data['status_now_id'] = "pmksum-01";
-            $data['deadline'] = $date;
+            $data['deadline'] = $date_end;
             $data['created'] = time();
             $data['modified'] = time();
 

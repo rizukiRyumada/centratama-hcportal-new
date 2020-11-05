@@ -167,7 +167,14 @@
                                     <div class="form-group">
                                         <label for="departemen">Department:</label>
                                         <select id="departemen" class="custom-select form-control form-control-sm">
-                                            <option value="">Please choose division first</option>        
+                                            <?php if($position_my['hirarki_org'] == "N" && $position_my['id'] != 1 && $position_my['id'] != 196): ?>
+                                                <option value="">All Department</option>
+                                                <?php foreach($department as $vya): ?>
+                                                    <option value="dept-<?= $vya['id']; ?>"><?= $vya['nama_departemen']; ?></option>
+                                                <?php endforeach;?>
+                                            <?php else: ?>
+                                            <option value="">Please choose division first</option>
+                                            <?php endif; ?>
                                         </select>
                                     </div>
                                 </div>
@@ -202,12 +209,27 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- <div id="daterangeChooser" class="col-lg-4 col-sm-6" 
+                                <?php if(($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2") && $position_my['id'] != 1): ?>
+                                <?php endif; ?>
+                                >
+                                <div class="form-group">
+                                    <label for="daterange">Pick a daterange:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                        <input id="superdatepicker" class="form-control " type="text" name="sdvvd" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
+                                    </div>
+                                </div>
+                            </div> -->
                         </div>
-                        <div id="buttonResetFilter" class="row justify-content-end">
+                        <!-- <div id="buttonResetFilter" class="row justify-content-end">
                             <div class="col-sm-2">
                                 <button id="resetFilterAsses" class="btn btn-danger w-100"><i class="fa fa-filter fa-rotate-180"></i> Reset</button>
                             </div>
-                        </div><!-- /filter table -->
+                        </div> -->
+                        <!-- /filter table -->
 
                         <hr/>
 
@@ -260,8 +282,9 @@
                             </div>
                             <!-- filter table -->
                             <div class="row justify-content-end" >
+                                <?php $flag_filterSummary = 0; ?>
                                     <?php if($position_my['id'] == "1" || $position_my['id'] == "196" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
-                                        <?php $flag_filter++; // tandai filter flag buat munculin tombol apa dia ada filter toolsnya ?>
+                                        <?php $flag_filter++; $flag_filterSummary++; // tandai filter flag buat munculin tombol apa dia ada filter toolsnya ?>
                                         <div id="division_wrapper" class="col-lg-4 col-sm-6">
                                             <div class="form-group">
                                                 <label for="divisiSummary">Division:</label>
@@ -305,11 +328,16 @@
                                         </div>
                                     </div>
                             </div>
-                            <div id="summaryButton_resetFilter" class="row justify-content-end" >
+                            <!-- <div id="summaryButton_resetFilter" class="row justify-content-end" 
+                            <?php if($flag_filterSummary == 0): ?>
+                                style="display: none;"
+                            <?php endif; ?>
+                            >
                                 <div class="col-sm-2">
                                     <button id="resetFilterAsses" class="btn btn-danger w-100"><i class="fa fa-filter fa-rotate-180"></i> Reset</button>
                                 </div>
-                            </div><!-- /filter table -->
+                            </div> -->
+                            <!-- /filter table -->
                             <hr/>
                             <div class="table-responsive">
                                 <table id="table_indexSummary" class="table table-striped table-hover">

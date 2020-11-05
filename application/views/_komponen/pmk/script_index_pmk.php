@@ -208,6 +208,24 @@
                 });
             });
         <?php endif; ?>
+
+        // additional script to get hc divhead department
+        <?php if($position_my['id'] == 196): ?>
+            $.ajax({
+                url: "job_profile/ajax_getdepartement",
+                data: {
+                    divisi: "div-6"
+                },
+                method: "POST",
+                success: function(data){
+                    $('#departemen').empty().append('<option value="">All</option>'); //kosongkan selection value dan tambahkan satu selection option
+
+                    $.each(JSON.parse(data), function(i, v) {
+                        $('#departemen').append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
+                    });
+                }
+            });
+        <?php endif; ?>
     });
 
 /* -------------------------------------------------------------------------- */
