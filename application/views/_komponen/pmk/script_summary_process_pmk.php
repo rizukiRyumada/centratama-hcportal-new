@@ -8,6 +8,7 @@
             }
         }
     });
+
     // variable yang dibutuhkan
     var id_summary = "<?= $id_summary; ?>";
     // untuk memilih option sesuai dengan isian form
@@ -79,9 +80,15 @@
 
         // sembunyikan tombol submit dan notes jika ada employee yg masih belum selesai assessmentnya
         if(counter_summary != counter_summaryEmployee){
-            $('#button_container').hide();
-            $('#notes_container').hide();
-            $('#messages_container').show(); // tampilkan pesan peringatan
+            let retryCount = 0;
+            var delayedSetReadOnly = function(){
+                if(CKEDITOR.instances['notes'].editable() == undefined && retryCount++ < 10){
+                    setTimeout(delayedSetReadOnly, retryCount * 100); // tunggu lebih lama pada setiap iterasi
+                } else {
+                    CKEDITOR.instances['notes'].setReadOnly();
+                }
+            };
+            setTimeout(delayedSetReadOnly, 50);
         }
     });
 
@@ -143,6 +150,8 @@
             }
             $('#chooser_extendfor'+id).removeAttr('disabled');
             toastr["warning"]("Please choose extend for.", "Attention!"); // tampilkan toastr error
+
+            pmk_updateApproval(id, ""); // update summary summary
         } else {
             // matikan extend value dan entity
             $('#chooser_entityNew'+id).attr('disabled', true);
@@ -206,7 +215,7 @@
         // div ckeditor selector
         var cke_notes = $('#cke_notes');
         // ambil note CKEDITOR
-        const note = CKEDITOR.instances['notes'].getData();        
+        const note = CKEDITOR.instances['notes'].getData();
         
         // hapus pesan error dulu
         cke_notes.parent().parent().parent().removeClass('border border-danger');
@@ -242,7 +251,7 @@
             if(counter_summary != counter_summaryEmployee){
                 // munculkan pesan error kalo ada karyawan yang belum submit assessment
                 Swal.fire({
-                    icon: 'error',
+                    icon: 'warning',
                     title: 'Oops...',
                     text: 'There is employee/s who have not finished the assessment.'
                 });
@@ -256,6 +265,7 @@
                     elementHeight = $element.height(),
                     viewportHeight = $window.height(),
                     scrollIt = elementTop - ((viewportHeight - elementHeight) / 2);
+                element_scroll.addClass('is-invalid');
                 $window.scrollTop(scrollIt);
             } else {
                 Swal.fire({
@@ -311,12 +321,21 @@
                         }
                     }
                 });
-                toastr["warning"]("Your changes is being saved.", "Saving...");
+                // toastr["warning"]("Your changes is being saved.", "Saving...");
             },
             success: function(data){
-                toastr["success"]("Summary action has been saved.", "Saved");
+                // cek jika valuenya kosong, kalo kosong jangan tampilkan toastr save
+                if(value == "" || value == undefined || value == null){
+                    // don't do anything
+                } else {
+                    toastr["success"]("Summary action has been saved.", "Saved");
+                }
                 // ganti data saved di select option recomendation untuk validasi form
-                $('#chooser_recomendation'+id).data('saved', 1);
+                if(value == "" || value == undefined || value == null){
+                    $('#chooser_recomendation'+id).data('saved', ""); // beri tanda tidak ada, jika belum memenuhi syarat manapun
+                } else {
+                    $('#chooser_recomendation'+id).data('saved', 1); // beri tanda kalo tanda itu sudah diubah
+                }
                 // penanda counter recomendation summary kalo sudah diisi
             },
             error: function(){
@@ -342,3 +361,5 @@
         });
     }
 </script>
+
+<?php $this->load->view('_komponen/pmk/script_status'); // load status ?>

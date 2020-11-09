@@ -321,27 +321,6 @@ class Pmk extends SpecialUserAppController {
             $data['is_akses'] = 0;
         }
 
-        // if untuk set pesan alert
-        if($data_summary['summary']['status_now_id'] != "pmksum-01"){
-            if($position_my['hirarki_org'] == "N" && $position_my['id'] != 196 && $position_my['id'] != 1){
-                $data['alert_message'] = $this->getAlertSummary(0);
-            } else {
-                $data['alert_message'] = $this->getAlertSummary(1);
-            }
-        } elseif($data_summary['summary']['status_now_id'] != "pmksum-02"){
-            if($position_my['id'] == 196){
-                $data['alert_message'] = $this->getAlertSummary(0);
-            } else {
-                $data['alert_message'] = $this->getAlertSummary(1);
-            }
-        } elseif($data_summary['summary']['status_now_id'] != "pmksum-03"){
-            if($position_my['id'] == 1){
-                $data['alert_message'] = $this->getAlertSummary(0);
-            } else {
-                $data['alert_message'] = $this->getAlertSummary(1);
-            }
-        }
-
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
@@ -681,6 +660,31 @@ class Pmk extends SpecialUserAppController {
 
         echo(json_encode($status_data));
     }
+
+    /**
+     * get assessment per employee timeline
+     *
+     * @return void
+     */
+    function ajax_getTimeline_summary(){
+        $id = $this->input->post('id');
+
+        $this->cekAkses_summary($this->posisi_m->getMyPosition());
+
+        $temp_status_data = $this->pmk_m->getDetail_pmkStatus_summary($id); // ambil data jawaban survey
+        $status_data = array_reverse($temp_status_data); // balikkan array biar yang terbaru di atas duluan
+
+        foreach($status_data as $k => $v){
+            $el = $this->pmk_m->getDetail_pmkStatusDetailByStatusId_summary($v['id_status']);
+            // get status data attribute
+            $status_data[$k]['time'] = date("j M o<~>H:i", $v['time']);
+            $status_data[$k]['name_text'] = $el['name_text'];
+            $status_data[$k]['css_color'] = $el['css_color'];
+            $status_data[$k]['icon'] = $el['icon'];
+        }
+
+        echo(json_encode($status_data));
+    }
     
     /**
      * get summary list
@@ -878,8 +882,8 @@ class Pmk extends SpecialUserAppController {
         $data_summary['status_now'] = json_encode(array('status' => $status, 'trigger' => $data_summary['id_summary']));
 
         // olah data tanggal
-        $data_summary['bulan'] = date('F (m)', $data_summary['created']);
-        $data_summary['tahun'] = date('Y', $data_summary['created']);
+        $data_summary['bulan'] = date('F (m)', strtotime('1-'. $data_summary['bulan'].'-2019'));
+        $data_summary['tahun'] = date('Y', strtotime('1-1-'.$data_summary['tahun']));
         $data_summary['created'] = date('j M Y, H:i', $data_summary['created']);
         $data_summary['modified'] = date('j M Y, H:i', $data_summary['modified']);
 
@@ -922,10 +926,10 @@ class Pmk extends SpecialUserAppController {
      */
     function cekAkses_pmk($position_my, $position){
         // cek apa dia admin atau userapp admin
-        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1){
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
             // perbolehkan akses bebas
             $value = 3; // flag bisa akses tapi ga berhak submit
-        } elseif($position_my['id'] == 196){
+        } elseif($position_my['id'] == 196 || $position_my['id'] == 1){
             if($position_my['div_id'] == $position['div_id']){
                 // perbolehkan akses
                 $value = 1;
@@ -1037,29 +1041,6 @@ class Pmk extends SpecialUserAppController {
         }
 
         return $data;
-    }
-
-    /**
-     * getalert summary detail
-     * 
-     * @return void
-     */
-    function getAlertSummary($switch){
-        if($switch == 0){
-            return array(
-                'type' => 'warning',
-                'icon' => 'fa-exclamation-triangle',
-                'title' => 'Warning!',
-                'text' => "You can't submit this summary until all employee assessment finished."
-            );
-        } else {
-            return array(
-                'type' => 'info',
-                'icon' => 'fa-info',
-                'title' => 'Info',
-                'text' => "You can't process this summary at this moment."
-            );
-        }
     }
     
     /**

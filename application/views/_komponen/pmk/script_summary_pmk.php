@@ -54,7 +54,7 @@
             },
             beforeSend: () => {
                 // $('.overlay').removeClass('d-none'); // hapus class d-none
-                toastr["warning"]("This will take a few moments.", "Retrieving data...");
+                // toastr["warning"]("This will take a few moments.", "Retrieving data...");
                 $('.overlay').fadeIn(); // hapus overlay chart
                 ajax_start_time = new Date().getTime(); // ajax stopwatch
                 $(".overlay").fadeIn();
@@ -64,7 +64,7 @@
                 
                 // ajax data counter
                 var ajax_request_time = new Date().getTime() - ajax_start_time;
-                toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
+                // toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
                 $('.overlay').fadeOut(); // hapus overlay chart
             }
         },
@@ -78,7 +78,7 @@
                 render: (data, type) => {
                     if(type === 'display'){
                         let vya = JSON.parse(data);
-                        return '<a href="javascript:showTimeline('+"'"+vya.trigger+"'"+')" ><span class="w-100 badge badge-'+vya.status.css_color+'">'+vya.status.name+'</span></a>';
+                        return '<a href="javascript:showTimeline('+"'"+vya.trigger+"'"+', 2)" ><span class="w-100 badge badge-'+vya.status.css_color+'">'+vya.status.name+'</span></a>';
                     }
                     return data;
                 }

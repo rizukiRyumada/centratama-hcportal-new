@@ -172,7 +172,7 @@
             warna = "warning";
         } else if(rerata_semua >= 3.51 && rerata_semua <= 4.50){
             keterangan = "Sangat baik";
-            warna = "info";
+            warna = "success";
         } else if(rerata_semua >= 4.51 && rerata_semua <= 5.00){
             keterangan = "Luar Biasa";
             warna = "success";

@@ -58,7 +58,7 @@
             },
             beforeSend: () => {
                 // $('.overlay').removeClass('d-none'); // hapus class d-none
-                toastr["warning"]("This will take a few moments.", "Retrieving data...");
+                // toastr["warning"]("This will take a few moments.", "Retrieving data...");
                 $('.overlay').fadeIn(); // hapus overlay chart
                 ajax_start_time = new Date().getTime(); // ajax stopwatch
                 $(".overlay").fadeIn();
@@ -68,7 +68,7 @@
                 
                 // ajax data counter
                 var ajax_request_time = new Date().getTime() - ajax_start_time;
-                toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
+                // toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
                 $('.overlay').fadeOut(); // hapus overlay chart
             }
         },
@@ -84,7 +84,7 @@
                 render: (data, type) => {
                     if(type === 'display'){
                         let vya = JSON.parse(data);
-                        return '<a href="javascript:showTimeline('+"'"+vya.trigger+"'"+')" ><span class="w-100 badge badge-'+vya.status.css_color+'">'+vya.status.name+'</span></a>';
+                        return '<a href="javascript:showTimeline('+"'"+vya.trigger+"'"+', 1)" ><span class="w-100 badge badge-'+vya.status.css_color+'">'+vya.status.name+'</span></a>';
                     }
                     return data;
                 }
@@ -176,7 +176,7 @@
                         $('#act').empty().append('<i class="fa fa-circle-notch fa-spin text-primary"></i>');
                         $('#cpt').empty().append('<i class="fa fa-circle-notch fa-spin text-primary"></i>');
 
-                        toastr["warning"]("While the PMK data is being refreshed.", "Please Wait...");
+                        toastr["warning"]("The PMK data is being refreshed.", "Please Wait...");
                         ajax_start_time = new Date().getTime(); // ajax stopwatch
                     },
                     success: (data) => {
@@ -194,7 +194,7 @@
                         $("#iconRefreshPMK").removeClass('fa-spin'); // spin icon font awesome
 
                         let ajax_request_time = new Date().getTime() - ajax_start_time;
-                        toastr["success"]("PMK Form Data successfully refreshed.<br/><small>Retrieved in "+ajax_request_time+" ms", "Completed</small>")
+                        // toastr["success"]("PMK Form Data successfully refreshed.<br/><small>Retrieved in "+ajax_request_time+" ms", "Completed</small>")
                         table.ajax.reload(); // reload table
                     },
                     error: () => {
@@ -304,66 +304,6 @@
         });
     }
 
-    // show timeline dialog with id
-    function showTimeline(id){
-        $.ajax({
-            url: "<?= base_url('pmk/ajax_getTimeline'); ?>",
-            data: {
-                id: id
-            },
-            method: "POST",
-            beforeSend: function(){
-                $('.timeline').empty(); // kosongkan timeline
-                $('#overlay_statusHistory').fadeIn(); // tampilkan
-
-                toastr["warning"]("Retrieving Status History...");
-
-                // show modal
-                $('#statusViewer').modal('show');
-            },
-            complete: function(){
-
-            },
-            success: function(data){
-                let data_timeline = JSON.parse(data);
-
-                // variabel buat penanda
-                let date_before = "";
-                let id_timeline = "";
-                $.each(data_timeline, function(index, value){
-                    // split data timeline
-                    let el = value.time.split('<~>');
-                    let date_now = el[0];
-                    let time_now = el[1];
-
-                    // tambah data timeline
-                    if(date_before != date_now){
-                        // buat label date
-                        id_timeline = "timeline-"+index;
-                        date_before = date_now; // set date before dengan date now
-                        
-                        $('.timeline').append('<div id="'+id_timeline+'" class="time-label"><span class="bg-red">'+date_now+'</span></div>');
-                    } else {
-                        // nothing
-                    }
-
-                    $('#'+id_timeline).parent().append('<div><i class="'+value.icon+' bg-'+value.css_color+'"></i><div id='+index+' class="timeline-item"><span class="time"><i class="fas fa-clock"></i> '+time_now+'</span><h3 class="timeline-header"><span class="text-primary font-weight-bold">'+value.by+'</span> '+value.nik+'</h3></div></div>');
-
-                    // jika tidak kosong tampilkan pesan revisi
-                    if(value.text != undefined){
-                        $('.timeline-item#'+index).append('<div class="timeline-body">'+value.text+'</div>'); // tambah pesan timeline
-                    }
-                    $('.timeline-item#'+index).append('<div class="timeline-footer"><span class="badge badge-'+value.css_color+'">'+value.name_text+'</span></div>');
-                });
-
-                $('#overlay_statusHistory').fadeOut(); // hide overlay
-            },
-            error: function(){
-
-            }
-        })
-    }
-
 /* -------------------------------------------------------------------------- */
 /*                              daterange picker                              */
 /* -------------------------------------------------------------------------- */
@@ -393,3 +333,5 @@
         console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
     });
 </script>
+
+<?php $this->load->view('_komponen/pmk/script_status'); // load status ?>

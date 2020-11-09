@@ -519,6 +519,16 @@ class Pmk_m extends CI_Model {
     function getDetail_pmkStatusDetailByStatusId($id_status){
         return $this->db->get_where($this->table['status'], array('id_status' => $id_status))->row_array();
     }
+
+    /**
+     * get detail information of status id on summary status
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    function getDetail_pmkStatusDetailByStatusId_summary($id_status){
+        return $this->db->get_where($this->table['status_summary'], array('id' => $id_status))->row_array();
+    }
     
     /**
      * getDetail_pmkStatus
@@ -534,6 +544,23 @@ class Pmk_m extends CI_Model {
         $this->db->select('status');
         return json_decode($this->db->get_where($this->table['main'], array(
             'id' => $id
+        ))->row_array()['status'], true);
+    }
+
+    /**
+     * get detail pmk status for summary pmk
+     *
+     * @param  mixed $id_entity
+     * @param  mixed $id_div
+     * @param  mixed $id_dept
+     * @param  mixed $id_pos
+     * @param  mixed $id_time
+     * @return void
+     */
+    function getDetail_pmkStatus_summary($id){
+        $this->db->select('status');
+        return json_decode($this->db->get_where($this->table['summary'], array(
+            'id_summary' => $id
         ))->row_array()['status'], true);
     }
 

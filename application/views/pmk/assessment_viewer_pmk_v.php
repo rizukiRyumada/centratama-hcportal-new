@@ -135,7 +135,7 @@
                                             <td class="text-center px-2">2.51 – 3.50</td>
                                         </tr>
                                         <tr>
-                                            <td class="text-center border-right border-primary px-2"><span class="badge badge-info">4</span></td>
+                                            <td class="text-center border-right border-primary px-2"><span class="badge badge-success">4</span></td>
                                             <td class="border-right border-primary px-2">Sangat baik</td>
                                             <td class="text-center px-2">3.51 – 4.50</td>
                                         </tr>
@@ -173,7 +173,7 @@
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">1</span></div>
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">2</span></div>
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">3</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-info">4</span></div>
+                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">4</span></div>
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">5</span></div>
                 </div>
                 <?php foreach($pertanyaan as $v): ?>
@@ -212,7 +212,7 @@
                                         </div>
                                     </div>
                                     <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                        <div class="icheck-info">
+                                        <div class="icheck-success">
                                             <input type="radio" id="<?= $v['id_pertanyaan']; ?>5" name="<?= $v['id_pertanyaan']; ?>" value="4" disabled="true" />
                                             <label for="<?= $v['id_pertanyaan']; ?>5"></label>
                                         </div>
@@ -248,13 +248,13 @@
 
                 <!-- tambahan kompetensi untuk supervisor - manager level -->
                 <?php if($level_personal > 9): ?>
-                    <div class="row py-2 bg-orange mt-4">
+                    <div class="row py-2 bg-primary mt-4">
                         <div class="col-6"><p class="m-0 font-weight-bold text-center">Tambahan Kompetensi untuk Supervisor<br/>Manager level</p></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">0</span></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">1</span></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">2</span></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">3</span></div>
-                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-info">4</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">4</span></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">5</span></div>
                     </div>
                     <?php foreach($pertanyaan as $v): ?>
@@ -293,7 +293,7 @@
                                             </div>
                                         </div>
                                         <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                            <div class="icheck-info">
+                                            <div class="icheck-success">
                                                 <input type="radio" id="<?= $v['id_pertanyaan']; ?>5" name="<?= $v['id_pertanyaan']; ?>" value="4" disabled="true" />
                                                 <label for="<?= $v['id_pertanyaan']; ?>5"></label>
                                             </div>
@@ -330,13 +330,13 @@
 
                 <!-- tambahan kompetensi untuk General Manager Vice President Level -->
                 <?php if($level_personal > 17): ?>
-                    <div class="row py-2 bg-purple mt-4">
+                    <div class="row py-2 bg-primary mt-4">
                         <div class="col-6"><p class="m-0 font-weight-bold text-center">Tambahan Kompetensi untuk General Manager<br/>Vice President Level</p></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">0</span></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">1</span></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">2</span></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">3</span></div>
-                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-info">4</span></div>
+                        <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">4</span></div>
                         <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">5</span></div>
                     </div>
                     <?php foreach($pertanyaan as $v): ?>
@@ -375,7 +375,7 @@
                                             </div>
                                         </div>
                                         <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                            <div class="icheck-info">
+                                            <div class="icheck-success">
                                                 <input type="radio" id="<?= $v['id_pertanyaan']; ?>5" name="<?= $v['id_pertanyaan']; ?>" value="4" disabled="true" />
                                                 <label for="<?= $v['id_pertanyaan']; ?>5"></label>
                                             </div>
@@ -411,11 +411,11 @@
                 <!-- tambahan kompetensi untuk General Manager Vice President Level -->
             </div>
             <!-- rata-rata nilai soal A -->
-            <div class="card-footer bg-danger">
+            <div class="card-footer bg-gray">
                 <div class="row py-2">
                     <div class="col">
                         <div class="row justify-content-end">
-                            <div class="col-md-auto align-self-center font-weight-bold">Total Performance Value <sub>[Total Nilai Rata-Rata (1+2+3) / Sub Level Kompetensi]</sub> </div>
+                            <div class="col-md-auto align-self-center font-weight-bold">Total Soft Competecy Value Value <sub>[Total Nilai Rata-Rata (1+2+3) / Sub Level Kompetensi]</sub> </div>
                             <div class="col-md-2 text-right mt-2 mt-md-0">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="rerata_A" readonly>
@@ -430,8 +430,8 @@
             </div><!-- /rata-rata nilai soal A -->
         </div>
 
-        <div class="card card-warning card-outline">
-            <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
+        <div class="card card-primary card-outline">
+            <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg" width="80" height="80"></div>
             <div class="card-header">
                 <h5 class="m-0">
                     Technical Competency
@@ -439,13 +439,13 @@
             </div>
             <div class="card-body">
                 <!-- kompetensi teknikal -->
-                <div class="row py-2 bg-maroon">
+                <div class="row py-2 bg-primary">
                     <div class="col-6"><p class="m-0 font-weight-bold text-center">Kompetensi</p></div>
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">0</span></div>
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-danger">1</span></div>
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">2</span></div>
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-warning">3</span></div>
-                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-info">4</span></div>
+                    <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">4</span></div>
                     <div class="col-1 align-self-center px-0 px-sm-2"><span class="py-2 badge badge-survey-tag w-100 font-weight-bold badge-success">5</span></div>
                 </div>
                 <?php for($x = 0; $x < 5; $x++): ?>
@@ -482,7 +482,7 @@
                                     </div>
                                 </div>
                                 <div class="col-1 text-center align-self-center px-0 px-sm-2">
-                                    <div class="icheck-info">
+                                    <div class="icheck-success">
                                         <input type="radio" id="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>5" name="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>" value="4" disabled="true" />
                                         <label for="B0-<?= str_pad($x, 2, '0', STR_PAD_LEFT); ?>5"></label>
                                     </div>
@@ -519,7 +519,7 @@
 
         <div class="card">
             <div class="overlay"></div>
-            <div class="card-body bg-danger">
+            <div class="card-body bg-gray">
                 <!-- rata-rata nilai -->
                 <div class="row py-2">
                     <div class="col">

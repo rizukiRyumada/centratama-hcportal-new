@@ -53,7 +53,7 @@
             },
             beforeSend: () => {
                 // $('.overlay').removeClass('d-none'); // hapus class d-none
-                toastr["warning"]("This will take a few moments.", "Retrieving data...");
+                // toastr["warning"]("This will take a few moments.", "Retrieving data...");
                 $('.overlay').fadeIn(); // hapus overlay chart
                 ajax_start_time = new Date().getTime(); // ajax stopwatch
                 $(".overlay").fadeIn();
