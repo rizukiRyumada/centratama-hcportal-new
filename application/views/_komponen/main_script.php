@@ -30,7 +30,7 @@
 <script>
     // toaster popup notifications
     toastr.options = {
-    "closeButton": false,
+    "closeButton": true,
     "debug": false,
     "newestOnTop": true,
     "progressBar": true,
