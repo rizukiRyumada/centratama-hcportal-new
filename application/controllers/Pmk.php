@@ -176,15 +176,40 @@ class Pmk extends SpecialUserAppController {
         $position = $this->employee_m->getDetails_employee($nik);
         // cek akses assessment
         $data['is_access'] = $this->cekAkses_pmk($position_my, $position);
+        // cek akses jika dia mau ngakses data sendiri
+        if($this->session->userdata('nik') == $nik){
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+            exit;
+        } else {
+            // izinkan akses
+        }
         $data['exist_empPhoto'] = $this->employee_m->check_empPhoto($nik); // check employee photo exist or not
 
         // cek ketersediaan survey
         $data['id_pmk'] = $this->input->get('id'); // ambil data nik dan contract di get dari url
         $data_pmk = $this->pmk_m->getOnceWhere_form(array('id' => $data['id_pmk']));
         if($data_pmk['status_now_id'] == 1 || $data_pmk['status_now_id'] == 2 || $data_pmk['status_now_id'] == 8){
-            // akses edit
-            $data['load_view'] = 'pmk/assessment_editor_pmk_v';
-            $script_assessment = 'pmk/script_assessment_editor_pmk';
+            // cek izin akses khusus CEO dan HC Division Head
+            $editable = 0; // penanda editable
+            if($position_my['id'] == 196 || $position_my['id'] == 1){
+                if($position_my['div_id'] == $position['div_id']){
+                    $editable = 1;
+                } else {
+                    $editable = 0;
+                }
+            } else {
+                $editable = 1;
+            }
+
+            if($editable == 1){ // jika editable
+                // akses edit
+                $data['load_view'] = 'pmk/assessment_editor_pmk_v';
+                $script_assessment = 'pmk/script_assessment_editor_pmk';
+            } else { // jika tidak editable
+                // akses preview
+                $data['load_view'] = 'pmk/assessment_viewer_pmk_v';
+                $script_assessment = 'pmk/script_assessment_viewer_pmk';
+            }
         } else {
             // akses preview
 		    $data['load_view'] = 'pmk/assessment_viewer_pmk_v';
@@ -446,17 +471,38 @@ class Pmk extends SpecialUserAppController {
             // cek apa ada pada 2 bulan ke depan dengan kontrak terakhir
             if(!empty($result)){
                 $counter_pmk++; // counter data yg abis di 2 bulan ke depan
-                // cek apa tidak ada datanya di kontrak terakhir
-                if($vya == 0){
-                    // cek apa dia punya approver
-                    $approver_nik = $this->employee_m->getApprover_nik($v['nik']); // ambil nik approver 1nya dia
-
+                if($vya == 0){ // cek apa tidak ada datanya di kontrak terakhir
+                    /**
+                     * Mengecek apa dia punya approver
+                     * - cek apa ada approver 1
+                     * - kalo gaada approver 1 cari approver 2 nya
+                     * - kalo 2 2nya gaada lariin aja ke divhead
+                     */
+                    // cek apa dia punya approver 
+                    $approver1_nik = $this->employee_m->getApprover_nik($v['nik']); // ambil nik approver 1nya dia
+                    // cek apa approver 1 niknya divhead
+                    if($this->employee_m->is_divhead($approver1_nik) > 0){ // klo dia divhead
+                        $approver_nik = ""; // kosongkan approver nik
+                    } else { // kalo bukan divhead
+                        if(empty($approver1_nik)){
+                            $approver2_nik = $this->employee_m->getApprover_nik($v['nik'], 2); // ambil nik approver 2nya dia
+                            if($this->employee_m->is_divhead($approver2_nik) > 0){ // klo dia divhead
+                                $approver_nik = "";
+                            } else {
+                                $approver_nik = $approver2_nik;
+                            }
+                        } else {
+                            $approver_nik = $approver1_nik; // ambil nik approver 1nya dia
+                        }
+                    }
+                    
                     $emp_data = $this->employee_m->getDetails_employee($v['nik']);
                     $counter_new++; // counter new data
                     // prepare data
                     $data_pmk[$x]['id'] = $this->pmk_m->getId_form($result['nik'], $result['contract']);
-                    if(!empty($approver_nik)){
-                        if($emp_data['hirarki_org'] == "Functional-div" || $emp_data['hirarki_org'] == "Functional-adm"){
+                    if(!empty($approver_nik)){ // cek approvernya apa ada
+                        // yang langsung kirim ke division head ada Functional dan N-1
+                        if($emp_data['hirarki_org'] == "Functional-div" || $emp_data['hirarki_org'] == "Functional-adm" ||$emp_data['hirarki_org'] == "N-1"){
                             $data_pmk[$x]['status'] = json_encode([
                                 0 => [
                                     'id_status' => 8,
@@ -479,7 +525,7 @@ class Pmk extends SpecialUserAppController {
                             ]);
                             $data_pmk[$x]['status_now_id'] = 1;
                         }
-                    } else {
+                    } else { // kalo approver 1 dan 2 nya gaada kirim ke divhead
                         $data_pmk[$x]['status'] = json_encode([
                             0 => [
                                 'id_status' => 8,
@@ -1011,7 +1057,7 @@ class Pmk extends SpecialUserAppController {
                 'type' => 'info',
                 'icon' => 'fa-info',
                 'title' => 'Info',
-                'text' => "You can't process this summary for at this moment."
+                'text' => "You can't process this summary at this moment."
             );
         }
     }
@@ -1092,25 +1138,36 @@ class Pmk extends SpecialUserAppController {
                     );
                 }
             } else{
-                $status_now_id = "3";
-                if($penilai['hirarki_org'] == "N-1"){
+                if($penilai['div_id'] == 1){ // cek apa penilainya dari CEO Office Division
+                    $status_now_id = "4";
                     $status_new[array_key_last($status_new)+1] = array(
-                        'id_status' => "3",
+                        'id_status' => "4",
                         'by' => $penilai['emp_name'],
                         'nik' => $penilai['nik'],
                         'time' => time(),
                         'text' => 'Assessment form was submitted by N-1.'
                     );
-                } elseif($penilai['hirarki_org'] == "N"){
-                    $status_new[array_key_last($status_new)+1] = array(
-                        'id_status' => "3",
-                        'by' => $penilai['emp_name'],
-                        'nik' => $penilai['nik'],
-                        'time' => time(),
-                        'text' => 'Assessment form was submitted by N.'
-                    );
-                } else {
-                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                } else { // jika bukan CEO Office
+                    $status_now_id = "3";
+                    if($penilai['hirarki_org'] == "N-1"){
+                        $status_new[array_key_last($status_new)+1] = array(
+                            'id_status' => "3",
+                            'by' => $penilai['emp_name'],
+                            'nik' => $penilai['nik'],
+                            'time' => time(),
+                            'text' => 'Assessment form was submitted by N-1.'
+                        );
+                    } elseif($penilai['hirarki_org'] == "N"){
+                        $status_new[array_key_last($status_new)+1] = array(
+                            'id_status' => "3",
+                            'by' => $penilai['emp_name'],
+                            'nik' => $penilai['nik'],
+                            'time' => time(),
+                            'text' => 'Assessment form was submitted by N.'
+                        );
+                    } else {
+                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                    }
                 }
             }
         }

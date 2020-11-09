@@ -6,6 +6,7 @@ class Pmk_m extends CI_Model {
     protected $table = [
         "contract" => "master_employee_contract",
         "counter" => "_counter_trans",
+        'employee' => 'master_employee',
         "employee_pa" => 'master_employee_pa',
         "form_summary" => "pmk_form_summary",
         "main" => "pmk_form",
@@ -171,22 +172,25 @@ class Pmk_m extends CI_Model {
     function getComplete_pmkList($position_my, $showhat, $filter_divisi, $filter_departemen, $filter_status, $filter_daterange){
         // siapkan variabel
         $where = "";
-
         // cek apa dia admin, superadmin, hc divhead, atau CEO
         if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1 || $position_my['id'] == 196){
             // filter divisi dan departemen khusus admin dan hc divhead
-            if($position_my['id'] == 196 && $showhat == 0){
+            if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+                // biarkan where kosong untuk ambil semua data
+            } elseif($position_my['id'] == 1 && $showhat == 0){ // jika dia CEO
+                $where .= $this->table['position'].".div_id = '1'";
+            } elseif($position_my['id'] == 196 && $showhat == 0){ // jika dia HC Division Head
                 $where .= $this->table['position'].".div_id = '6'";
             } elseif($position_my['hirarki_org'] == "N" && $showhat == 0){ // ambil data form di divisi dia aja
                 $where = $this->table['position'].".div_id = ".$position_my['div_id'];
                 // if(!empty($filter_departemen)){
                 //     $where .= " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
                 // }
-            } elseif($position_my['hirarki_org'] == "N-1" && $showhat == 0){
+            } elseif($position_my['hirarki_org'] == "N-1" && $showhat == 0){ // jika hirarki N-1
                 // ambil data form di divisi dan departemen dia
                 $where = $this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id'];
                 // ambil data di divisi dan departemen dia
-            } elseif($position_my['hirarki_org'] == "N-2" && $showhat == 0){
+            } elseif($position_my['hirarki_org'] == "N-2" && $showhat == 0){ // jika hirarki N-2
                 $where = $this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']." AND ".$this->table['position'].".id_approver1 = ".$position_my['id'];
             }
 
@@ -209,17 +213,17 @@ class Pmk_m extends CI_Model {
         } else {
             // ambil data form di divisi dia aja
             if($position_my['hirarki_org'] == "N"){
-                $where = $this->table['position'].".div_id = ".$position_my['div_id'];
+                $where = $this->table['employee'].".nik!='".$this->session->userdata('nik')."' AND ".$this->table['position'].".div_id = ".$position_my['div_id'];
                 if(!empty($filter_departemen)){
                     $where .= " AND ".$this->table['position'].".dept_id = ".explode("-", $filter_departemen)[1];
                 }
                 // ambil data form di divisi dia aja
             } elseif($position_my['hirarki_org'] == "N-1"){
                 // ambil data form di divisi dan departemen dia
-                $where = $this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id'];
+                $where = $this->table['employee'].".nik!='".$this->session->userdata('nik')."' AND ".$this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id'];
                 // ambil data di divisi dan departemen dia
             } elseif($position_my['hirarki_org'] == "N-2"){
-                $where = $this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']." AND ".$this->table['position'].".id_approver1 = ".$position_my['id'];
+                $where = $this->table['employee'].".nik!='".$this->session->userdata('nik')."' AND ".$this->table['position'].".div_id = ".$position_my['div_id']." AND ".$this->table['position'].".dept_id = ".$position_my['dept_id']." AND ".$this->table['position'].".id_approver1 = ".$position_my['id'];
             } else {
                 show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                 exit;
@@ -236,7 +240,12 @@ class Pmk_m extends CI_Model {
             } elseif($position_my['hirarki_org'] == "N-1"){
                 $where .= " AND (status_now_id = '2' OR status_now_id = '1')";
             } elseif($position_my['hirarki_org'] == "N-2"){
-                $where .= " AND (status_now_id = '1' OR status_now_id = '8')";
+                //cek jika dia admin
+                if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+                    $where .= " AND (status_now_id = '1' OR status_now_id = '8')";
+                } else {
+                    $where .= " AND (status_now_id = '1')";
+                }
             } else { // ambil yang tidak ada statusnya di database biar hasilnya null
                 $where .= " AND status_now_id = '999'";
                 // show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
@@ -334,7 +343,7 @@ class Pmk_m extends CI_Model {
                             $counter_ada_semester++; // tandai kalo di tahun ini ada penilaian akhir (pa)
                         }
                     }
-                    if($counter_ada_semester != 0 && $counter_data >= 0){
+                    if($counter_ada_semester != 0 && $counter_data >= 0 || !empty($pa_year)){ // cek kalo ada penilaian akhir dan counter data ada atau tidak kosong pa_year nya
                         $pa_year[$counter_data] = array(
                             'year' => date('Y', strtotime($time)),
                             'periode' => $period
@@ -361,7 +370,7 @@ class Pmk_m extends CI_Model {
                         $period = "H1";
                     }
                     
-                    if($counter_data >= 0){
+                    if($counter_data >= 0 || !empty($pa_year)){ // cek kalo ada penilaian akhir dan counter data ada atau tidak kosong pa_year nya
                         $pa_year[$counter_data] = array(
                             'year' => date('Y', strtotime($time)),
                             'periode' => $period

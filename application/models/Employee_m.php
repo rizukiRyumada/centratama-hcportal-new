@@ -62,7 +62,7 @@ class Employee_m extends CI_Model {
      * get approver 1 or 2 nik with my nik
      *
      * @param  mixed $nik
-     * @param  mixed $approver1or2
+     * @param  mixed $approver1or2 
      * @return void
      */
     function getApprover_nik($nik, $approver1or2 = 1){
@@ -189,6 +189,16 @@ class Employee_m extends CI_Model {
      */
     function insert($data){
         $this->db->insert($this->table['employee'], $data);
+    }
+    
+    /**
+     * cek apa dia divhead atau bukan
+     *
+     * @param  mixed $nik
+     * @return void
+     */
+    function is_divhead($nik){
+        return $this->db->get_where($this->table['division'], array('nik_div_head' => $nik))->row();
     }
     
     /**

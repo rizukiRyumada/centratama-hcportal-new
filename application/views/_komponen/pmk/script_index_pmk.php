@@ -1,9 +1,8 @@
 <script>
-    // buat kalo dia bukan N, N-1, N-2 tampilkan historynya aja
-    <?php if(($position_my['hirarki_org'] == "N" || $position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2") && $position_my['id'] != 1): ?>
-        var showhat =  0; 
+    <?php if($this->session->userdata('role_id') == 1): ?>
+        var showhat = 1; // variable pemilih metode data mytask atau history
     <?php else: ?>
-        var showhat =  1;     
+        var showhat = 0; // variable pemilih metode data mytask atau history
     <?php endif; ?>
     
     // buat memunculkan tombol reset saat ada filternya aja
@@ -110,15 +109,15 @@
             $("#buttonResetFilter").slideUp();
         }
         // sembunyikan divisi filter di my task hc divhead
-        <?php if($position_my['id'] == 196): ?>
+        <?php if($position_my['id'] == 196 || $position_my['id'] == 1): ?>
             divisi = "div-<?= $position_my['div_id']; ?>";
-            getDepartemen("div-<?= $position_my['div_id']; ?>");
+            getDepartemen("div-<?= $position_my['div_id']; ?>", 'departemen');
             $("#division_wrapper").slideUp();
         <?php endif; ?>
         
-        // jalankan get departemen jika dia N tapi buka hc divhead
+        // jalankan get departemen jika dia N tapi buka hc divhead dan CEO
         <?php if($position_my['hirarki_org'] == "N" && $position_my['id'] != 196 && $position_my['id'] != 1): ?>
-            getDepartemen("div-<?= $position_my['div_id']; ?>");
+            getDepartemen("div-<?= $position_my['div_id']; ?>", 'departemen');
         <?php endif; ?>
 
     /* -------------------------------------------------------------------------- */
@@ -245,7 +244,7 @@
                 $("#buttonResetFilter").slideUp();
             }
 
-            <?php if($position_my['id'] == 196): ?>
+            <?php if($position_my['id'] == 196 || $position_my['id'] == 1): ?>
                 divisi = "div-<?= $position_my['div_id']; ?>";
                 getDepartemen("div-<?= $position_my['div_id']; ?>");
                 $("#division_wrapper").slideUp();
@@ -266,7 +265,7 @@
                 $("#buttonResetFilter").slideDown();
             }
 
-            <?php if($position_my['id'] == 196): ?>
+            <?php if($position_my['id'] == 196 || $position_my['id'] == 1): ?>
                 divisi = "";
                 getDepartemen("");
                 $("#division_wrapper").slideDown();
