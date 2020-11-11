@@ -219,9 +219,10 @@
         
         // hapus pesan error dulu
         cke_notes.parent().parent().parent().removeClass('border border-danger');
-        cke_notes.parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
-            cke_notes.parent().parent().parent().siblings('.error-message').remove(); // remove error message
-        });
+        // cke_notes.parent().parent().parent().siblings('.error-message').hide( "blind", 250, function () {
+        //     cke_notes.parent().parent().parent().siblings('.error-message').remove(); // remove error message
+        // });
+        cke_notes.parent().parent().parent().siblings('.error-message').slideUp(); // remove error message
 
         // cek jika note nya kosong
         if((note == "" || note == undefined || note == null || note.length < 2)){
@@ -229,6 +230,7 @@
             // tambahkan attribute pesan tambahan
             cke_notes.parent().parent().parent().addClass('border border-danger');
             cke_notes.parent().parent().parent().parent().append(msg_notes);
+            // cke_notes.parent().parent().parent().siblings('.error-message').slideDown();
 
             // scroll ke notes kosongnya
             var $window = $(window),

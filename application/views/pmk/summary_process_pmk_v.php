@@ -51,8 +51,8 @@
                             <th>Employee Name</th>
                             <th style="width: 200px;" >Position</th>
                             <th>Departement</th>
-                            <th>BOD</th>
-                            <th>Join Date</th>
+                            <th style="width: 100px;">BOD</th>
+                            <th style="width: 100px;">Join Date</th>
                             <th>Employee Status</th>
                             <th>End of Contract</th>
                             <th style="width: 240px;">Contract/Probation</th>
@@ -74,8 +74,8 @@
                                 <td><?= $v['emp_name']; ?></td>
                                 <td><?= $v['position']; ?></td>
                                 <td><?= $v['department']; ?></td>
-                                <td><?= $v['date_birth']; ?></td>
-                                <td><?= $v['date_join']; ?></td>
+                                <td><?= date('j M Y', $v['date_birth']); ?></td>
+                                <td><?= date('j M Y', $v['date_join']); ?></td>
                                 <td><?= $v['emp_stats']; ?></td>
                                 <td><?= $v['eoc_probation']; ?></td>
                                 <td>
@@ -115,7 +115,7 @@
                                         </div>
                                         <div class="col-6">
                                             <select class="custom-select" name="extend_for" id="chooser_extendfor<?= $v['id']; ?>" data-id="<?= $v['id']; ?>" data-value="<?= $v['extend_for']; ?>" disabled>
-                                                <option value="">Extend For</option>
+                                                <option value="">Months</option>
                                                 <?php for($x = 1; $x < 13; $x++): ?>
                                                     <option value="<?= $x; ?>"><?= $x; ?> 
                                                         <?php if($x == 1): ?>

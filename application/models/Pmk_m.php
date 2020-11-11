@@ -294,12 +294,18 @@ class Pmk_m extends CI_Model {
             $department = $this->dept_model->getDetailById($data_pos['dept_id']);
             $employee   = $this->employee_m->getDetails_employee(substr($v['id'], 0, 8));
             $status     = $this->pmk_m->getOnceWhere_status(array('id_status' => $v['status_now_id']));
+            $contract_last = $this->pmk_m->getOnce_LastContractByNik(substr($v['id'], 0, 8));
+            $contract_last_detail = $this->pmk_m->getDetailWhere_contract(array(
+                'nik' => $contract_last['nik'],
+                'contract' => $contract_last['contract']
+            ));
 
             $dataPmk[$x]['nik']        = substr($v['id'], 0, 8);
             $dataPmk[$x]['divisi']     = $divisi['division'];
             $dataPmk[$x]['department'] = $department['nama_departemen'];
             $dataPmk[$x]['position']   = $data_pos['position_name'];
             $dataPmk[$x]['emp_name']   = $employee['emp_name'];
+            $dataPmk[$x]['eoc']        = date('Y-m-d', $contract_last_detail['date_end']);
             $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
             $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
             $x++;

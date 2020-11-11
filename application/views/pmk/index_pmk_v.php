@@ -41,9 +41,9 @@
         <!--<div class="col-md-2 d-md-inline-block d-none">
             <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
         </div> -->
-        <div class="col-md-2 d-md-inline-block d-none">
+        <!-- <div class="col-md-2 d-md-inline-block d-none">
             <img src="http://localhost:82/assets/img/illustration/contract.svg" alt="" class="responsive-image">
-        </div>
+        </div> -->
             <div class="col-md-3 col-12 align-self-center">
                 <div class="card">
                     <div class="card-body p-2">
@@ -63,13 +63,13 @@
                     </div>
                 </div>
             </div>
-        <div class="col-md-7">
+        <!-- <div class="col-md-7">
             <div class="row h-100">
                 <div class="col align-self-center">
                     <p class="text m-0">The card on the left is used for refresh the near-to-end employee contract, please click the button at least once a month to keep on track the employee contract.</p>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 <?php endif; ?>
 
@@ -135,7 +135,7 @@
                         <?php endif; ?>
 
                         <!-- filter table -->
-                        <div id="filterTools" class="row justify-content-end
+                        <div id="filterTools" class="row
                             <?php if($this->session->userdata('role_id') == 1): ?>
                                <?php $flag_filter++; // tandai filter flag buat munculin tombol apa dia ada filter toolsnya ?>
                             <?php endif; ?>
@@ -217,7 +217,7 @@
                                 </div>
                             </div> -->
                         </div>
-                        <!-- <div id="buttonResetFilter" class="row justify-content-end">
+                        <!-- <div id="buttonResetFilter" class="row">
                             <div class="col-sm-2">
                                 <button id="resetFilterAsses" class="btn btn-danger w-100"><i class="fa fa-filter fa-rotate-180"></i> Reset</button>
                             </div>
@@ -236,6 +236,7 @@
                                         <th>Department</th>
                                         <th>Position</th>
                                         <th>Employee Name</th>
+                                        <th>End of Contract</th>
                                         <th>Status</th>
                                         <th></th>
                                     </tr>
@@ -272,7 +273,7 @@
                                 </div>
                             </div>
                             <!-- filter table -->
-                            <div class="row justify-content-end" >
+                            <div class="row" >
                                 <?php $flag_filterSummary = 0; ?>
                                     <?php if($position_my['id'] == "1" || $position_my['id'] == "196" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
                                         <?php $flag_filter++; $flag_filterSummary++; // tandai filter flag buat munculin tombol apa dia ada filter toolsnya ?>
@@ -319,7 +320,7 @@
                                         </div>
                                     </div>
                             </div>
-                            <!-- <div id="summaryButton_resetFilter" class="row justify-content-end" 
+                            <!-- <div id="summaryButton_resetFilter" class="row" 
                             <?php if($flag_filterSummary == 0): ?>
                                 style="display: none;"
                             <?php endif; ?>
