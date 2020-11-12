@@ -12,9 +12,15 @@
         
         console.log($('input[name="budget"]:checked').val());
 
-        // number of incumbent
+        // empty mpp form
         $('#noiReq').val('-');
-        input_mpp.val('');
+        input_mpp.val(''); // kosongkan value mpp
+        input_mpp.attr('max', '1');
+        input_mpp.attr('disabled', true);
+        // remove any validation class on mpp form
+        input_mpp.removeClass('is-invalid');
+        input_mpp.removeClass('valid');
+        input_mpp.siblings('.invalid-tooltip').remove();
         
         if($('input[name="budget"]:checked').val() == 0) { // cek jika unbudgeted
             input_jptext.fadeIn(); // tampilkan free text buat nulis nama job 
@@ -65,6 +71,7 @@
         input_jpchoose.removeClass('is-valid'); // remove class invalid
         input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
+            // ambil data mpp dan set mpp ke form
             $.ajax({
                 url: '<?= base_url("ptk/ajax_getPositionMpp"); ?>',
                 data: {
@@ -76,6 +83,13 @@
                     $('#noiReq').val(vya.mpp);
                     input_mpp.attr('max', vya.mpp);
                     input_mpp.removeAttr('disabled');
+                },
+                error: function(){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
+                    });
                 }
             });
 
@@ -86,6 +100,10 @@
             input_mpp.val(''); // kosongkan value mpp
             input_mpp.attr('max', '1');
             input_mpp.attr('disabled', true);
+            // remove any validation class on mpp form
+            input_mpp.removeClass('is-invalid');
+            input_mpp.removeClass('valid');
+            input_mpp.siblings('.invalid-tooltip').remove();
 
             input_jpchoose.addClass('is-invalid'); // remove class invalid
             input_jpchoose.parent().append(msg_choose); // show error tooltip
@@ -389,10 +407,6 @@
     });
 
     <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
-        // division, department, and position filter and validator
-        var select_department = $('#departementForm');
-        var select_divisi = $('#divisionForm');
-
         // Filter Divisi
         select_divisi.change(function(){
             // validator
@@ -409,6 +423,34 @@
             select_department.siblings('.invalid-tooltip').remove(); // remove class invalid
             input_jpchoose.removeClass('is-valid').removeClass('is-invalid'); // remove class invalid
             input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
+
+            // empty mpp form
+            $('#noiReq').val('-');
+            input_mpp.val(''); // kosongkan value mpp
+            input_mpp.attr('max', '1');
+            input_mpp.attr('disabled', true);
+            // remove any validation class on mpp form
+            input_mpp.removeClass('is-invalid');
+            input_mpp.removeClass('valid');
+            input_mpp.siblings('.invalid-tooltip').remove();
+
+            // hapus nama di interviewer 1 dan 2
+            $("#interviewer_name1").val("");
+            $("#interviewer_position1").val("");
+            $("#interviewer_name1").removeAttr('readonly');
+            $("#interviewer_name1").addClass('form-control');
+            $("#interviewer_name1").removeClass('form-control-plaintext');
+            $("#interviewer_position1").removeAttr('readonly');
+            $("#interviewer_position1").addClass('form-control');
+            $("#interviewer_position1").removeClass('form-control-plaintext');
+            $("#interviewer_name2").val("");
+            $("#interviewer_position2").val("");
+            $("#interviewer_name2").removeAttr('readonly');
+            $("#interviewer_name2").addClass('form-control');
+            $("#interviewer_name2").removeClass('form-control-plaintext');
+            $("#interviewer_position2").removeAttr('readonly');
+            $("#interviewer_position2").addClass('form-control');
+            $("#interviewer_position2").removeClass('form-control-plaintext');
 
             if($(this).val() != ""){
                 // validator
@@ -462,6 +504,16 @@
             input_jpchoose.removeClass('is-valid').removeClass('is-invalid'); // remove class invalid
             input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
 
+            // empty mpp form
+            $('#noiReq').val('-');
+            input_mpp.val(''); // kosongkan value mpp
+            input_mpp.attr('max', '1');
+            input_mpp.attr('disabled', true);
+            // remove any validation class on mpp form
+            input_mpp.removeClass('is-invalid');
+            input_mpp.removeClass('valid');
+            input_mpp.siblings('.invalid-tooltip').remove();
+
             if($("#departementForm").val() != ""){
                 // validator
                 select_department.addClass('is-valid'); // remove class invalid
@@ -469,7 +521,7 @@
 
                 // get popsition data
                 $.ajax({
-                    url: "<?= base_url('job_profile/ajax_getPosition'); ?>",
+                    url: "<?= base_url('ptk/ajax_getPosition'); ?>",
                     data: {
                         divisi: divisi,
                         departemen: departemen
@@ -488,8 +540,78 @@
                         // input_jpchoose.parent().append(msg_choose); // show error tooltip
                     }
                 });
+
+                // ambil data approver untuk
+                $.ajax({
+                    url: '<?= base_url("ptk/ajax_getInterviewer"); ?>',
+                    data: {
+                        divisi: select_divisi.val(),
+                        department: select_department.val()
+                    },
+                    method: "POST",
+                    success: function(data){
+                        let vya = JSON.parse(data);
+                        // cek apa ada data divheadnya
+                        if(vya.divhead == "" || vya.divhead == undefined || vya.divhead == null){
+                            // hapus attribut disabled
+                            $("#interviewer_name1").val("");
+                            $("#interviewer_position1").val("");
+                            $("#interviewer_name1").removeAttr('readonly');
+                            $("#interviewer_name1").addClass('form-control');
+                            $("#interviewer_name1").removeClass('form-control-plaintext');
+                            $("#interviewer_position1").removeAttr('readonly');
+                            $("#interviewer_position1").addClass('form-control');
+                            $("#interviewer_position1").removeClass('form-control-plaintext');
+                        } else {
+                            // taruh data interviewer dengan data divhead
+                            $("#interviewer_name1").val(vya.divhead.emp_name);
+                            $("#interviewer_position1").val(vya.divhead.position_name);
+                            $("#interviewer_name1").attr('readonly');
+                            $("#interviewer_name1").removeClass('form-control');
+                            $("#interviewer_name1").addClass('form-control-plaintext');
+                            $("#interviewer_position1").attr('readonly');
+                            $("#interviewer_position1").removeClass('form-control');
+                            $("#interviewer_position1").addClass('form-control-plaintext');
+                        }
+                        // cek apa ada data deptheadnya
+                        if(vya.depthead == "" || vya.depthead == undefined || vya.depthead == null){
+                            // hapus attribut disabled
+                            $("#interviewer_name2").val("");
+                            $("#interviewer_position2").val("");
+                            $("#interviewer_name2").removeAttr('readonly');
+                            $("#interviewer_name2").addClass('form-control');
+                            $("#interviewer_name2").removeClass('form-control-plaintext');
+                            $("#interviewer_position2").removeAttr('readonly');
+                            $("#interviewer_position2").addClass('form-control');
+                            $("#interviewer_position2").removeClass('form-control-plaintext');
+                        } else {
+                            // taruh data interviewer depthead
+                            $("#interviewer_name2").val(vya.depthead.emp_name);
+                            $("#interviewer_position2").val(vya.depthead.position_name);
+                            $("#interviewer_name2").attr('readonly');
+                            $("#interviewer_name2").removeClass('form-control');
+                            $("#interviewer_name2").addClass('form-control-plaintext');
+                            $("#interviewer_position2").attr('readonly');
+                            $("#interviewer_position2").removeClass('form-control');
+                            $("#interviewer_position2").addClass('form-control-plaintext');
+                        }
+                    },
+                    error: function(){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
+                        });
+                    }
+                });
             } else {
-                // validaotr
+                // hapus interviewer 2
+                $("#interviewer_name2").val("");
+                $("#interviewer_position2").val("");
+                $("#interviewer_name2").removeAttr('readonly');
+                $("#interviewer_position2").removeAttr('readonly');
+
+                // validator
                 select_department.addClass('is-invalid'); // remove class invalid
                 select_department.parent().append(msg_choose); // show error tooltip
 

@@ -126,8 +126,10 @@ class Employee_m extends CI_Model {
             'left'
         );
         $result = $this->db->get_where($this->table['employee'], array('nik' => $nik))->row_array();
-        $result['divisi'] = $this->divisi_model->getDetailById($result['div_id'])['division'];
-        $result['departemen'] = $this->dept_model->getDetailById($result['dept_id'])['nama_departemen'];
+        if(!empty($result)){
+            $result['divisi'] = $this->divisi_model->getDetailById($result['div_id'])['division'];
+            $result['departemen'] = $this->dept_model->getDetailById($result['dept_id'])['nama_departemen'];
+        }
         return $result;
     }
     

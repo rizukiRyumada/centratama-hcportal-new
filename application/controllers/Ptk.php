@@ -22,7 +22,7 @@ class Ptk extends SpecialUserAppController {
         'division' => 'master_division',
         'position' => 'master_position',
         'location' => 'master_location',
-        'joblevel' => 'master_personallevel',
+        'joblevel' => 'master_level',
         'ptk_status' => 'ptk_status',
         'ptk_status_pj' => 'ptk_status-pj',
         'ptk_education' => 'ptk_education'
@@ -133,7 +133,12 @@ class Ptk extends SpecialUserAppController {
         
 		$this->load->view('main_v', $data);
     }
-
+    
+    /**
+     * this function used for create new form
+     *
+     * @return void
+     */
     function createNewForm(){
         // get my hirarki
         $my_hirarki = $this->posisi_m->getOnceWhere(array('id' => $this->session->userdata('position_id')))['hirarki_org'];
@@ -164,13 +169,12 @@ class Ptk extends SpecialUserAppController {
             }
 
             // form data
-            $data['entity'] = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
+            $data['entity'] = $this->entity_m->getAll_notAtAll(); // ambil entity
             $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status
             $data['education'] = $this->_general_m->getAll('*', 'ptk_education', array()); // education
-            // TODO dari javascript MPP dari table position
-            $data['data_atasan'] = $this->posisi_m->whoMyAtasanS(); // ambil data atasan 1 dan 2
+            $data['master_level'] = $this->ptk_m->get_masterLevel(); // ambil master level
+            $data['position_my'] = $this->posisi_m->getMyPosition(); // ambil data my position
             $data['work_location'] = $this->_general_m->getAll('id, location', $this->table['location'], array());
-            $data['position_my'] = $this->posisi_m->getMyPosition();
 
             // sorting
             usort($data['entity'], function($a, $b) { return $a['keterangan'] <=> $b['keterangan']; }); // sort berdasarkan title menu
@@ -251,7 +255,27 @@ class Ptk extends SpecialUserAppController {
 /* -------------------------------------------------------------------------- */
 /*                                AJAX Function                               */
 /* -------------------------------------------------------------------------- */
-    
+        
+    /**
+     * get interviewer with ajax
+     *
+     * @return void
+     */
+    function ajax_getInterviewer(){
+        // ambil variable divisi dan department
+        $divisi = $this->input->post('divisi');
+        $department = $this->input->post('department');
+
+        // ambil dept head dan division headnya
+        $divhead = $this->divisi_model->get_headById($divisi); // get division head
+        $depthead = $this->dept_model->get_headById($department); // get department head
+
+        echo(json_encode(array(
+            'divhead' => $divhead,
+            'depthead' => $depthead
+        )));
+    }
+
     /**
      * get ajax form list for index page
      *
@@ -378,6 +402,30 @@ class Ptk extends SpecialUserAppController {
         echo json_encode(array(
             'mpp' => $this->_general_m->getOnce('mpp', $this->table['position'], array('id' => $this->input->post('id_posisi')))['mpp']
         ));
+    }
+
+    /**
+     * get position with divisi and departemen _POST
+     *
+     * @return void
+     */
+    public function ajax_getPosition(){
+        // take division and department
+        $divisi = $this->input->post('divisi');
+        $departemen = $this->input->post('departemen');
+        // get position
+        $posisi = $this->posisi_m->getAllWhere(array("div_id" => $divisi, "dept_id" => $departemen));
+
+        // cari di masing2 data posisi untuk mendapatkan siapa aja yg ada di posisi ini
+        foreach($posisi as $k => $v){
+            $posisi_pmk = $this->posisi_m->howMuchOnThisPosition($v['id']);
+            // jika jumlah mppnya sama antara yang terisi dengan yang dibutuhkan, hapus datanya
+            if($posisi_pmk['filled'] == $posisi_pmk['needed']){
+                unset($posisi[$k]); // hapus terkain=t
+            }
+        }
+        // bring back with json
+        echo(json_encode($posisi));
     }
     
     /**
@@ -511,15 +559,14 @@ class Ptk extends SpecialUserAppController {
                 $data_ptk[$k]['resources'] = "Internal";
                 $data_ptk[$k]['resources_internal_who'] = $data_resources['internal_who'];
             }
-            // lengkapi data interviewer3
-            if(!empty($v['interviewer3'])){
-                $data_interviewer3 = json_decode($v['interviewer3'], true);
-                $data_ptk[$k]['interviewer3_name'] = $data_interviewer3['name'];
-                $data_ptk[$k]['interviewer3_position'] = $data_interviewer3['position'];
-            } else {
-                $data_ptk[$k]['interviewer3_name'] = "";
-                $data_ptk[$k]['interviewer3_position'] = "";
-            }
+            // lengkapi data interviewer
+            $data_interviewer = json_decode($v['interviewer'], true);
+            $data_ptk[$k]['interviewer1_name'] = $data_interviewer[0]['name'];
+            $data_ptk[$k]['interviewer1_position'] = $data_interviewer[0]['position'];
+            $data_ptk[$k]['interviewer2_name'] = $data_interviewer[1]['name'];
+            $data_ptk[$k]['interviewer2_position'] = $data_interviewer[1]['position'];
+            $data_ptk[$k]['interviewer3_name'] = $data_interviewer[2]['name'];
+            $data_ptk[$k]['interviewer3_position'] = $data_interviewer[2]['position'];
             // lengkapi data work location
             $data_workLocation = json_decode($v['work_location'], true);
             if($data_workLocation['other'] == false){
@@ -551,7 +598,7 @@ class Ptk extends SpecialUserAppController {
             $data_ptk[$k]['req_ska'] = str_replace("&nbsp;", "" , trim(strip_tags($v['req_ska'])));
 
             // remove some unused data
-            unset($data_ptk[$k]['interviewer3']);
+            unset($data_ptk[$k]['interviewer']);
             unset($data_ptk[$k]['id_entity']);
             unset($data_ptk[$k]['id_div']);
             unset($data_ptk[$k]['id_dept']);
@@ -653,12 +700,20 @@ class Ptk extends SpecialUserAppController {
         // Outline
         $data['outline'] = $this->input->post('outline');
         // Interviewer
-        if(!empty($this->input->post('interviewer_name3')) && !empty($this->input->post('interviewer_position3'))){
-            $data['interviewer3'] = json_encode([
+        $data['interviewer'] = json_encode([
+            0 => array(
+                'name' => $this->input->post('interviewer_name1'),
+                'position' => $this->input->post('interviewer_position1')
+            ),
+            1 => array(
+                'name' => $this->input->post('interviewer_name2'),
+                'position' => $this->input->post('interviewer_position2')
+            ),
+            2 => array(
                 'name' => $this->input->post('interviewer_name3'),
                 'position' => $this->input->post('interviewer_position3')
-            ]);
-        }
+            )
+        ]);
         // Main Responsibilities
         $data['main_responsibilities'] = $this->input->post('main_responsibilities');
         // Tasks
@@ -819,21 +874,16 @@ class Ptk extends SpecialUserAppController {
         // data useradmin app
         $data['userApp_admin'] = $this->userApp_admin;
         // form data
+        $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+        $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+        $data['education']  = $this->_general_m->getAll('*', 'ptk_education', array()); // education
+        $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status
+        $data['entity']     = $this->entity_m->getAll_notAtAll("*", $this->table['entity'], array()); // ambil entity
+        $data['master_level'] = $this->ptk_m->get_masterLevel(); // ambil master level
+        $data['position']   = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
         $data['position_my'] = $position_my; // my position data
         $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
         $data['status_detail'] = $this->ptk_m->getDetail_ptkStatusDetailByStatusId($data['status_form']); // get status details
-        $data['entity']     = $this->_general_m->getAll("*", $this->table['entity'], array()); // ambil entity
-        $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
-        $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
-        $data['position']   = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
-        $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status
-        $data['education']  = $this->_general_m->getAll('*', 'ptk_education', array()); // education
-        // TODO dari javascript MPP dari table position
-        if($data['id_pos'] != 0){
-            $data['data_atasan'] = $this->posisi_m->whoAtasanS($data['id_pos']); // ambil data atasan 1 dan 2
-        } else {
-            $data['data_atasan'] = "";
-        }
         $data['work_location'] = $this->_general_m->getAll('id, location', $this->table['location'], array());
         // sorting
         usort($data['entity'], function($a, $b) { return $a['keterangan'] <=> $b['keterangan']; }); // sort berdasarkan title menu

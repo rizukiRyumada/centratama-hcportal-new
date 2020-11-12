@@ -51,6 +51,26 @@ class Posisi_m extends CI_Model {
     }
     
     /**
+     * buat ngecek berapa banyak yang terdaftar dalam suatu posisi
+     *
+     * @param  mixed $id_posisi
+     * @return void
+     */
+    function howMuchOnThisPosition($id_posisi){
+        // ambil data siapa aja yang ada di posisi ini
+        $whois = $this->whoIsOnThisPosition($id_posisi);
+        $counterHowMuch = count($whois);
+
+        // ambil data mpp
+        $posisi_mpp = $this->_general_m->getOnce('mpp', $this->table, array('id' => $id_posisi))['mpp'];
+
+        return(array(
+            'filled' => $counterHowMuch,
+            'needed' => $posisi_mpp
+        ));
+    }
+    
+    /**
      * Siapa yang ada di posisi ini? dan dapatkan detailnya
      *
      * @param  mixed $id

@@ -36,13 +36,14 @@
                 $('input[name="preferred_age"]').val(data.data.age);
 
                 // interviewer set data
-                // console.log(data.data.interviewer3);
-                if(data.data.interviewer3 != null){
-                    let interviewer3 = JSON.parse(data.data.interviewer3);
-                    
-                    $('input[name="interviewer_name3"]').val(interviewer3.name);
-                    $('input[name="interviewer_position3"]').val(interviewer3.position);
-                }
+                // console.log(data.data.interviewer);
+                let interviewer = JSON.parse(data.data.interviewer);
+                $('input[name="interviewer_name1"]').val(interviewer[0].name);
+                $('input[name="interviewer_position1"]').val(interviewer[0].position);
+                $('input[name="interviewer_name2"]').val(interviewer[1].name);
+                $('input[name="interviewer_position2"]').val(interviewer[1].position);    
+                $('input[name="interviewer_name3"]').val(interviewer[2].name);
+                $('input[name="interviewer_position3"]').val(interviewer[2].position);
 
                 // budget selector
                 // select budget

@@ -1,21 +1,5 @@
 <!-- banner -->
 <div class="row mb-3">
-    <div class="col-md-2 d-md-inline-block d-none">
-        <img src="<?= base_url('/assets/img/illustration/ptk/thingking-new-employee.svg'); ?>" alt="" class="responsive-image">
-    </div>
-    <div class="
-    <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1" || $my_hirarki == "N-2"): ?>
-        col-md-6
-    <?php else: ?>
-        col-md-10
-    <?php endif; ?>
-    ">
-        <div class="row h-100">
-            <div class="col align-self-center">
-                <p class="text m-0">Employee Requisition Form digunakan untuk mengajukan tenaga kerja baru, dengan melalui beberapa tahap approval.</p>
-            </div>
-        </div>
-    </div>
     <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1" || $my_hirarki == "N-2"): ?>
         <div class="col-md-4 py-2">
             <div class="row h-100">
@@ -23,7 +7,8 @@
                     <a href="<?= base_url('ptk/createNewForm'); ?>" class="w-100 btn btn-success">
                         <div class="row h-100">
                             <div class="col-auto align-self-center text-center">
-                                <img src="<?= base_url('/assets/img/illustration/add-document.svg'); ?>" alt="add-document" class="img-lg">
+                                <img src="<?= base_url('/assets/img/illustration/ptk/thingking-new-employee.svg'); ?>" alt="add-document" class="img-md">
+                                <!-- <img src="<?= base_url('/assets/img/illustration/add-document.svg'); ?>" alt="add-document" class="img-lg"> -->
                             </div>
                             <div class="col align-self-center text-center">
                                 <p class="text m-0">Create New Employee Requisition Form</p>
@@ -34,12 +19,28 @@
             </div>
         </div>
     <?php endif; ?>
+    <div class="
+    <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1" || $my_hirarki == "N-2"): ?>
+        col-md-6
+    <?php else: ?>
+        col-md-10
+    <?php endif; ?>
+    ">
+        <div class="row h-100">
+            <div class="col align-self-center">
+                <!-- <p class="text m-0">Employee Requisition Form digunakan untuk mengajukan tenaga kerja baru, dengan melalui beberapa tahap approval.</p> -->
+            </div>
+        </div>
+    </div>
+    <!-- <div class="col-md-2 d-md-inline-block d-none">
+        <img src="<?= base_url('/assets/img/illustration/ptk/thingking-new-employee.svg'); ?>" alt="" class="responsive-image">
+    </div> -->
 </div>
 
 <!-- main tabs -->
 <div class="row">
     <div class="col">
-        <div class="card card-success card-tabs">
+        <div class="card card-primary card-tabs">
             <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
             <div class="card-header px-0 pb-0 pt-1">
                 <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">

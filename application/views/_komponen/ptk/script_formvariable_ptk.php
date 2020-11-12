@@ -1,6 +1,13 @@
 <script>
     // CKEDITOR Instances
-    CKEDITOR.replace( 'ska' );
+    CKEDITOR.replace('ska', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                $('.ckeditor_loader').slideUp(); // sembunyikan loader
+            }
+        }
+    });
     CKEDITOR.replace( 'req_special' );
     CKEDITOR.replace( 'outline' );
     CKEDITOR.replace( 'main_responsibilities' );
@@ -83,4 +90,7 @@
     var input_interviewer_name = $('#interviewer_name3');
     var input_interviewer_position = $('#interviewer_position3');
 
+    // division, department, and position filter and validator
+    var select_department = $('#departementForm');
+    var select_divisi = $('#divisionForm');
 </script>

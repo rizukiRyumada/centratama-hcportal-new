@@ -46,9 +46,9 @@
                     <!-- FIXME get job level from database -->
                     <select id="jobLevelForm" name="job_level" class="custom-select" required>
                         <option value="" >Select Job Level...</option>
-                        <option value="job_level-0" >Staff</option>
-                        <option value="job_level-1" >Supervisor</option>
-                        <option value="job_level-2" >Manager</option>
+                        <?php foreach($master_level as $v): ?>
+                            <option value="<?= $v['id']; ?>" ><?= $v['name']; ?></option>
+                        <?php endforeach;?>
                     </select>
                 </div>
             </div>
@@ -337,6 +337,12 @@
                 <label id="ska_label">Skill, Knowledge, and Abilities</label>
                 <textarea name="ska" id="ska" class="form-control" rows="3" placeholder="Enter ..." required ><?php echo set_value('ska'); ?></textarea>
             </div>
+            <div class="form-group ckeditor_loader">
+                <p class="m-0 text-center">
+                    <!-- <i class="fa fa-spinner fa-spin fa-2x"></i> -->
+                    <img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80">
+                </p>
+            </div>
         </div>
     </div>
     <!-- /Skill, Knowledge, and Abilities (SKA) -->
@@ -347,6 +353,12 @@
             <div class="form-group">
                 <label id="reqSpecial_label">Special Requirement</label>
                 <textarea name="req_special" id="req_special" class="form-control" rows="3" placeholder="Enter ..." required ><?php echo set_value('req_special'); ?></textarea>
+            </div>
+            <div class="form-group ckeditor_loader">
+                <p class="m-0 text-center">
+                    <!-- <i class="fa fa-spinner fa-spin fa-2x"></i> -->
+                    <img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80">
+                </p>
             </div>
         </div>
     </div>
@@ -359,51 +371,15 @@
                 <label id="outline_label">Outline Why This Position is necessary</label>
                 <textarea name="outline" id="outline" class="form-control" rows="3" placeholder="Enter ..." required><?php echo set_value('outline'); ?></textarea>
             </div>
-        </div>
-    </div>
-    <!-- /Outline Why This Position is necessary -->
-    
-    <div class="row px-3 border border-gray-light py-2 mb-3">
-        <div class="col">
-            <?php $x = 1; ?>
-            <div class="form-group mb-0 table-responsive">
-                <label>Interviewer</label>
-                <table class="table table-striped" style="min-width: 250px;">
-                    <tr>
-                        <th style="width: 10px;">No.</th>
-                        <th>Name</th>
-                        <th>Position</th>
-                    </tr>
-                    <?php if(!empty($data_atasan['atasan2'])): ?>
-                        <?php foreach($data_atasan['atasan2'] as $v): ?>
-                            <tr>
-                                <td><?= $x; ?></td>
-                                <td><?= $v['emp_name']; ?></td>
-                                <td><?= $v['position_name']; ?></td>
-                            </tr>
-                            <?php $x++; ?>
-                        <?php endforeach;?>
-                    <?php endif; ?>
-                    <?php if(!empty($data_atasan['atasan1'])): ?>
-                        <?php foreach($data_atasan['atasan1'] as $v): ?>
-                            <tr>
-                                <td><?= $x; ?></td>
-                                <td><?= $v['emp_name']; ?></td>
-                                <td><?= $v['position_name']; ?></td>
-                            </tr>
-                            <?php $x++; ?>
-                        <?php endforeach;?>
-                    <?php endif; ?>
-                    <tr>
-                        <td><?= $x; ?></td>
-                        <td><input type="text" name="interviewer_name3" class="form-control" id="interviewer_name3" placeholder="Enter Name..."></td>
-                        <td><input type="text" name="interviewer_position3" class="form-control" id="interviewer_position3" placeholder="Enter Position..."></td>
-                    </tr>
-                </table>
+            <div class="form-group ckeditor_loader">
+                <p class="m-0 text-center">
+                    <!-- <i class="fa fa-spinner fa-spin fa-2x"></i> -->
+                    <img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80">
+                </p>
             </div>
         </div>
     </div>
-    <!-- /Interviewer -->
+    <!-- /Outline Why This Position is necessary -->
     
     <!-- Main Responsibilities -->
     <div class="row px-3 py-2 mb-3">
@@ -411,6 +387,12 @@
             <div class="form-group mb-0">
                 <label id="main_responsibilities_label">Main Responsibilities</label>
                 <textarea name="main_responsibilities" id="main_responsibilities" class="form-control" rows="5" placeholder="Enter ..." required ><?php echo set_value('main_responsibilities'); ?></textarea>
+            </div>
+            <div class="form-group ckeditor_loader">
+                <p class="m-0 text-center">
+                    <!-- <i class="fa fa-spinner fa-spin fa-2x"></i> -->
+                    <img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80">
+                </p>
             </div>
         </div>
     </div>
@@ -423,9 +405,47 @@
                 <label id="tasks_label">Tasks</label>
                 <textarea name="tasks" id="tasks" class="form-control" rows="5" placeholder="Enter ..." required ><?php echo set_value('tasks'); ?></textarea>
             </div>
+            <div class="form-group ckeditor_loader">
+                <p class="m-0 text-center">
+                    <!-- <i class="fa fa-spinner fa-spin fa-2x"></i> -->
+                    <img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80">
+                </p>
+            </div>
         </div>
     </div>
     <!-- /Tasks -->
+
+    <div class="row px-3 border border-gray-light py-2 mb-3">
+        <div class="col">
+            <?php $x = 1; ?>
+            <div class="form-group mb-0 table-responsive">
+                <label>Interviewer</label>
+                <table class="table table-striped" style="min-width: 250px;">
+                    <tr>
+                        <th style="width: 10px;">No.</th>
+                        <th>Name</th>
+                        <th>Position</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" name="interviewer_name1" class="form-control" id="interviewer_name1" placeholder="Enter Name..."></td>
+                        <td><input type="text" name="interviewer_position1" class="form-control" id="interviewer_position1" placeholder="Enter Position..."></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><input type="text" name="interviewer_name2" class="form-control" id="interviewer_name2" placeholder="Enter Name..."></td>
+                        <td><input type="text" name="interviewer_position2" class="form-control" id="interviewer_position2" placeholder="Enter Position..."></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><input type="text" name="interviewer_name3" class="form-control" id="interviewer_name3" placeholder="Enter Name..."></td>
+                        <td><input type="text" name="interviewer_position3" class="form-control" id="interviewer_position3" placeholder="Enter Position..."></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- /Interviewer -->
 
     <!-- penanda save dan submit buat hirarki N-1 -->
     <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>

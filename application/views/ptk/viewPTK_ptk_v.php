@@ -77,7 +77,7 @@
                                 <?php else: ?>
                                     <div class="col">
                                         <div class="alert alert-<?= $status_detail['css_color']; ?>">
-                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_text']; ?></h5>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -100,7 +100,7 @@
                                 <?php else: ?>
                                     <div class="col">
                                         <div class="alert alert-<?= $status_detail['css_color']; ?>">
-                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_text']; ?></h5>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -123,7 +123,7 @@
                                 <?php else: ?>
                                     <div class="col">
                                         <div class="alert alert-<?= $status_detail['css_color']; ?>">
-                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_text']; ?></h5>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -146,7 +146,7 @@
                                 <?php else: ?>
                                     <div class="col">
                                         <div class="alert alert-<?= $status_detail['css_color']; ?>">
-                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_text']; ?></h5>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -166,7 +166,7 @@
                                 <?php else: ?>
                                     <div class="col">
                                         <div class="alert alert-<?= $status_detail['css_color']; ?>">
-                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_text']; ?></h5>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -174,7 +174,7 @@
                             <?php else: ?>
                                 <div class="col">
                                     <div class="alert alert-<?= $status_detail['css_color']; ?>">
-                                        <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_name']; ?></h5>
+                                        <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_text']; ?></h5>
                                     </div>
                                 </div>
                             <?php endif; ?>

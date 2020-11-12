@@ -53,6 +53,25 @@ class Divisi_model extends CI_Model {
         $divhead_nik = $this->db->select("nik_div_head")->get_where($this->table, array('id' => $id_div))->row_array()['nik_div_head'];
         return $this->employee_m->getDetails_employee($divhead_nik);
     }
+    
+    /**
+     * get div head information by id
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    function get_headById($id){
+        // ambil nik divhead
+        $nik = $this->_general_m->getOnce('nik_div_head', $this->table, array('id' => $id))['nik_div_head'];
+
+        // lengkapi data head
+        $this->load->model('employee_m');
+        if($nik != "#N/A"){ // cek apa ada headnya?
+            return $this->employee_m->getDetails_employee($nik);
+        } else {
+            return "";
+        }
+    }
 
     public function getDIvByOrg()
     {

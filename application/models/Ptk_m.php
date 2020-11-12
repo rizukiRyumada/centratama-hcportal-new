@@ -5,6 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Ptk_m extends CI_Model {
     protected $table = [
         "main" => "ptk_form",
+        "level" => "master_level",
         "status" => "ptk_status"
     ];
     
@@ -46,6 +47,36 @@ class Ptk_m extends CI_Model {
         $this->db->select($this->table['main'].".id_entity, ".$this->table['main'].".id_div, ".$this->table['main'].".id_dept, ".$this->table['main'].".id_pos, ".$this->table['main'].".id_time, ".$this->table['main'].".time_modified, ".$this->table['main'].".status, ".$this->table['main'].".status_now");
         $this->db->join($this->table['status'], $this->table['main'].".status_now = ".$this->table['status'].".id", 'left');
         return $this->db->get_where($this->table['main'], $where)->result_array();
+    }
+    
+    /**
+     * ambil level master dari database
+     *
+     * @return void
+     */
+    function get_masterLevel(){
+        $level = $this->_general_m->getAll('*', $this->table['level'], array());
+
+        // ambil data nama level dan id levelnya
+        $level_return = array(); $x = 0; $flag = ""; // flag untuk menandakan data terakhir yang ada di level
+        foreach($level as $v){
+            /**  
+             * cek jika flag dengan id level pada satu per satu data level return apakah sama atau tidak
+             * jika tidak sama flagnya baru tambahkan
+             * 
+             * gunanya untuk menghapus data level yang sama agar mendapatkan induk data level
+             */
+            if($flag != $v['id_level']){
+                $level_return[$x] = array(
+                    'id' => $v['id_level'],
+                    'name' => $v['name']
+                );
+                $x++; // increment index
+            }
+
+            $flag = $v['id_level']; // taruh id_level ke dalam flag
+        }
+        return($level_return);
     }
     
     /**

@@ -4,6 +4,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dept_model extends CI_Model {
     protected $table = "master_department";
+
+    /**
+     * get dept head information by id
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    function get_headById($id){
+        // ambil nik dephead
+        $nik = $this->_general_m->getOnce('dep_head', $this->table, array('id' => $id))['dep_head'];
+
+        // lengkapi data head
+        $this->load->model('employee_m');
+        if($nik != "#N/A"){ // cek apa ada headnya?
+            return $this->employee_m->getDetails_employee($nik);
+        } else {
+            return "";
+        }
+    }
     
     /**
      * get All data without where
