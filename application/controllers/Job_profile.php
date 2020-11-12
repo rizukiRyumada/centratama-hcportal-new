@@ -1268,7 +1268,12 @@ class Job_profile extends MainController {
 
         //bawa balik ke ajax
     }
-
+    
+    /**
+     * get position with divisi and departemen _POST
+     *
+     * @return void
+     */
     public function ajax_getPosition(){
         // take division and department
         $divisi = $this->input->post('divisi');
