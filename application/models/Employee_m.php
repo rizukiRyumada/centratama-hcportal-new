@@ -66,6 +66,11 @@ class Employee_m extends CI_Model {
      * @return void
      */
     function getApprover_nik($nik, $approver1or2 = 1){
+        // buat ngecek ada nik yang ada di master employee contract tapi gaada di master employee
+        // if(empty($this->db->select('position_id')->get_where($this->table['employee'], array('nik' => $nik))->row_array())){
+        //     print_r($nik);
+        //     exit;
+        // }
         $id_pos = $this->db->select('position_id')->get_where($this->table['employee'], array('nik' => $nik))->row_array()['position_id'];
         $approver = $this->db->select('id_approver'.$approver1or2)->get_where($this->table['position'], array('id' => $id_pos))->row_array()['id_approver'.$approver1or2];
         $result = $this->db->select('nik')->get_where($this->table['employee'], array('position_id' => $approver))->row_array();
@@ -234,14 +239,30 @@ class Employee_m extends CI_Model {
      * @return void
      */
     function check_empPhoto($nik){
+        // TODO pake is_readable();
         $file = base_url('/assets/img/employee/'.$nik.'.jpeg');
         $file_headers = @get_headers($file);
-        if($file_headers[0] == 'HTTP/1.1 404 Not Found' || $file_headers[0] == 'HTTP/1.0 500 Internal Server Error') {
+        // PRODUCTION error sometimes file_headers empty
+        // PRODUCTION get employee images on user-img path
+        if($file_headers[0] == 'HTTP/1.1 404 Not Found' || $file_headers[0] == 'HTTP/1.0 500 Internal Server Error' || $file_headers[0] == 'HTTP/1.1 500 Internal Server Error') {
             return false;
         }
         else {
             return true;
         }
+
+        // $file_headers output
+        // Array
+        // (
+        //     [0] => HTTP/1.1 500 Internal Server Error
+        //     [1] => Content-Type: text/html; charset=UTF-8
+        //     [2] => Server: Microsoft-IIS/8.5
+        //     [3] => X-Powered-By: PHP/7.4.1
+        //     [4] => X-Powered-By: ASP.NET
+        //     [5] => Date: Wed, 11 Nov 2020 09:03:10 GMT
+        //     [6] => Connection: close
+        //     [7] => Content-Length: 207112
+        // )
 
         // $filename = base_url('/assets/img/employee/'.$nik.'.jpeg');
 
