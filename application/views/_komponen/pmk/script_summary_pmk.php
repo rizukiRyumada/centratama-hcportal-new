@@ -91,7 +91,7 @@
                 render: (data, type) => {
                     if(type === 'display'){
                         // let vya = JSON.parse(data);
-                        return '<div class="container h-100 m-0 px-auto"> <div class="row justify-content-center align-self-center w-100 m-0"><a class="btn btn-primary w-100" href="<?= base_url('pmk/summary_process'); ?>?id='+data+'"><i class="fa fa-search mx-auto"></i></a></div></div>';
+                        return '<div class="container h-100 m-0 px-auto"> <div class="row justify-content-center align-self-center w-100 m-0"><a class="btn btn-primary w-100" onclick="javascript:summaryLoader()" href="<?= base_url('pmk/summary_process'); ?>?id='+data+'"><i class="fa fa-search mx-auto"></i></a></div></div>';
                     }
                     return data;
                 }

@@ -97,7 +97,7 @@
                                 <?php else: ?>
                                     <?php // biarkan kosong ?>
                                 <?php endif; ?>
-                            " id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="true"><i class="fas fa-file-signature"></i> Summary</a>
+                            " id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="true"><i class="fas fa-file-signature"></i> Approval</a>
                         </li>
                     </ul>
                 </div>

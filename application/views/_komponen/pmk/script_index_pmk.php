@@ -285,6 +285,20 @@
             chooseIt($(this).data('choosewhat'));
         }
     });
+
+    //loader Swal
+    function summaryLoader(){
+        Swal.fire({
+            icon: 'info',
+            title: 'Please Wait',
+            html: '<p>'+"Approval data is being prepared."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false
+        });
+    }
+
     // function to take action after choosing
     function chooseIt(choose){
         showhat = choose; // ganti flag view data
