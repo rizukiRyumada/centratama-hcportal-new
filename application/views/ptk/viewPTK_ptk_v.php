@@ -55,18 +55,17 @@
                     <!-- Tab Form PTK -->
                     <div class="tab-pane fade active show" id="custom-tabs-ptkForm" role="tabpanel" aria-labelledby="custom-tabs-ptkForm-tab">
                         <!-- jika statusnya draft dan revised tampilkan editor -->
-                        <?php if($status_form == "ptk_stats-1" || $status_form == "ptk_stats-C" || $status_form == "ptk_stats-D" || $status_form == "ptk_stats-E" || $status_form == "ptk_stats-F"): ?>
+                        <?php if($is_edit == 1): ?>
                             <?php $this->load->view('ptk/ptk_editor_v'); ?>
                         <?php else: ?>
                             <?php $this->load->view('ptk/ptk_viewer_v'); ?>
                         <?php endif; ?>
 
-
                         <!-- buttons -->
                         <div class="row justify-content-end">
                             <!-- buat CEO -->
                             <?php if($position_my['id'] == 1): ?>
-                                <?php if($status_form == "ptk_stats-B"): ?>
+                                <?php if($is_edit == 1): ?>
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
@@ -89,7 +88,7 @@
                                 <?php endif; ?>
                             <!-- buat Divisi HC -->
                             <?php elseif($position_my['id'] == 196): ?>
-                                <?php if($status_form == "ptk_stats-4"): ?>
+                                <?php if($is_edit == 1): ?>
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
@@ -146,7 +145,7 @@
                                 <?php endif; ?>
                             <!-- buat hirarki N -->
                             <?php elseif($position_my['hirarki_org'] == "N"): ?>
-                                <?php if($status_form == "ptk_stats-2"): ?>
+                                <?php if($is_edit == 1): ?>
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
@@ -169,7 +168,7 @@
                                 <?php endif; ?>
                             <!-- buat hirarki N-1 -->
                             <?php elseif($position_my['hirarki_org'] == "N-1"): ?>
-                                <?php if($status_form == "ptk_stats-1" || $status_form == "ptk_stats-C" || $status_form == "ptk_stats-D" || $status_form == "ptk_stats-E" || $status_form == "ptk_stats-F"): ?>
+                                <?php if($is_edit == 1): ?>
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
@@ -189,7 +188,7 @@
                                 <?php endif; ?>
                             <!-- buat hirarki N-2 -->
                             <?php else: ?>
-                                <?php if($status_form == "ptk_stats-1"): ?>
+                                <?php if($is_edit == 1): ?>
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="3">
@@ -245,3 +244,30 @@
     var id_pos    = "<?= $id_pos; ?>";
     var id_time   = "<?= $id_time; ?>";
 </script>
+
+<!-- modal pesan revisi -->
+<!-- Button trigger modal -->
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#pesanRevisi">
+    Launch demo modal
+</button> -->
+<!-- Modal -->
+<div class="modal fade" id="pesanRevisi" tabindex="-1" role="dialog" aria-labelledby="pesanRevisiLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="pesanRevisiLabel">Input a Message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p class="text">Please input a message to be revised.</p>
+            <textarea id="textareaPesanRevisi" class="ckeditor" name="Pesan Revisi" id="" cols="30" rows="10"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button id="submitPesanRevisi" type="button" class="btn btn-primary">Save changes</button>
+        </div>
+        </div>
+    </div>
+</div>

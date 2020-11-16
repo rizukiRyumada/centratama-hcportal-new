@@ -83,7 +83,7 @@
                             <th>Date</th>
                             <th>Division</th>
                             <th>Department</th>
-                            <!-- <th>Subject</th> -->
+                            <th>Position</th>
                             <th>Status</th>
                             <th style="width: 98px;">View Details</th>
                         </tr>

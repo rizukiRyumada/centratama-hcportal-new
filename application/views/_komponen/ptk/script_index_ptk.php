@@ -71,7 +71,7 @@
                 
                 // ajax data counter
                 var ajax_request_time = new Date().getTime() - ajax_start_time;
-                toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
+                // toastr["success"]("data retrieved in " + ajax_request_time + "ms", "Completed");
                 
                 $('.overlay').fadeOut(); // hapus overlay chart
             }
@@ -80,6 +80,7 @@
             {data: 'time_modified'},
             {data: 'name_div'},
             {data: 'name_dept'},
+            {data: 'name_pos'},
             {
                 classNmae: "",
                 data: 'status_now',
@@ -164,7 +165,7 @@
         Swal.fire({
             icon: 'info',
             title: 'Please Wait',
-            html: '<p>'+"The data is being prepared, wait until the download window dialog opened and save it to your local data."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+            html: '<p>'+"The data is being prepared, wait until the download window dialog opened and save it to your computer."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
             allowOutsideClick: false,
         });
     });

@@ -102,7 +102,67 @@
                 // nothing
             }
         } else if($('input[name="resources"]:checked').val() == "ext"){
-            // nothing
+            // validate empstats
+            if(validate_empstats.val() == ""){
+                validate_empstats.addClass('is-invalid'); // tambah kelas invalid
+                validate_empstats.parent().append(msg_fill); // tampilkan pesan error
+                msg_validate += "<li>empstats is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            }
+
+            // validate education
+            if(validate_education.val() == ""){
+                validate_education.addClass('is-invalid'); // tambah kelas invalid
+                validate_education.parent().append(msg_fill); // tampilkan pesan error
+                msg_validate += "<li>empstats is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            }
+
+            // validate sex
+            if(validate_sex.val() == ""){
+                validate_sex.addClass('is-invalid'); // tambah kelas invalid
+                validate_sex.parent().append(msg_fill); // tampilkan pesan error
+                msg_validate += "<li>empstats is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            }
+
+            // validate majoring
+            if(input_majoring.val() == ""){
+                input_majoring.addClass('is-invalid'); // tambah kelas invalid
+                input_majoring.parent().append(msg_fill); // tampilkan pesan error
+                msg_validate += "<li>Majoring is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+
+            // validate preferred age
+            if(input_preferage.val() == ""){
+                input_preferage.addClass('is-invalid'); // add class invalid
+                input_preferage.parent().append(msg_fill); // show error tooltip
+                msg_validate += "<li>Preferred Age is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+
+            // validate work experience
+            if($('input[name="work_exp"]:checked').val() == 1) { // cek jika cekbox work experience
+                if(input_workexp_yearstext.val() == ""){
+                    input_workexp_yearstext.addClass('is-invalid'); // add class invalid
+                    input_workexp_yearstext.parent().append(msg_number); // show error tooltip
+                    msg_validate += "<li>Work Experience Years is empty</li>"; // pesan empty
+                    counter_validate++; // validate counter add
+                }
+            } else if($('input[name="work_exp"]:checked').val() == 0) { // cek jika cekbox fresh graduate
+                input_workexp_yearstext.val('0'); // set value sama dengan nol
+            } else {
+                input_workexp.parent().parent().parent().parent().parent().addClass('border border-danger');
+                input_workexp.addClass('is-invalid');
+                $('#experiencedRadio').parent().append(msg_choose);
+                msg_validate += "<li>Work Experience not choosen</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            }
         } else {
             input_resource_internal.parent().parent().parent().addClass('border border-danger');
             input_resource_internal.addClass('is-invalid');
@@ -123,7 +183,7 @@
 
         // cek apa man power requirednya lebih besar dari Number of Incumbent
         let mpp = input_mpp.val();
-        let noiReq = $('#noiReq').val();
+        let noiReq = $('#noiReq').data('empty');
         if(noiReq != '-'){
             if(mpp > 0 && mpp <= noiReq){
             // nothing
@@ -135,50 +195,11 @@
             }
         }
 
-        let input_preferage = $('input[name="preferred_age"]');
-        // validate preferred age
-        if(input_preferage.val() ==""){
-            input_preferage.addClass('is-invalid'); // add class invalid
-            input_preferage.parent().append(msg_number); // show error tooltip
-            msg_validate += "<li>Preferred Age is empty</li>"; // pesan empty
-            counter_validate++; // validate counter add
-        } else {
-            // nothing
-        }
-
-        // validate work experience
-        if($('input[name="work_exp"]:checked').val() == 1) { // cek jika cekbox work experience
-            if(input_workexp_yearstext.val() == ""){
-                input_workexp_yearstext.addClass('is-invalid'); // add class invalid
-                input_workexp_yearstext.parent().append(msg_number); // show error tooltip
-                msg_validate += "<li>Work Experience Years is empty</li>"; // pesan empty
-                counter_validate++; // validate counter add
-            }
-        } else if($('input[name="work_exp"]:checked').val() == 0) { // cek jika cekbox fresh graduate
-            input_workexp_yearstext.val('0'); // set value sama dengan nol
-        } else {
-            input_workexp.parent().parent().parent().parent().parent().addClass('border border-danger');
-            input_workexp.addClass('is-invalid');
-            $('#experiencedRadio').parent().append(msg_choose);
-            msg_validate += "<li>Work Experience not choosen</li>"; // pesan empty
-            counter_validate++; // validate counter add
-        }
-
         // validate Date Required
         if(input_daterequired.val() == ""){
             input_daterequired.addClass('is-invalid'); // tambah kelas invalid
             input_daterequired.parent().append(msg_fill); // tampilkan pesan error
             msg_validate += "<li>Date Required is empty</li>"; // pesan empty
-            counter_validate++; // validate counter add
-        } else {
-            // nothing
-        }
-
-        // validate majoring
-        if(input_majoring.val() == ""){
-            input_majoring.addClass('is-invalid'); // tambah kelas invalid
-            input_majoring.parent().append(msg_fill); // tampilkan pesan error
-            msg_validate += "<li>Majoring is empty</li>"; // pesan empty
             counter_validate++; // validate counter add
         } else {
             // nothing

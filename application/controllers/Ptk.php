@@ -48,13 +48,13 @@ class Ptk extends SpecialUserAppController {
             array('field' => 'budget', 'label' => 'Budget', 'rules' => 'required'),
             array('field' => 'resources', 'label' => 'Resources', 'rules' => 'required'),
             array('field' => 'mpp_req', 'label' => 'MPP Req', 'rules' => 'required'),
-            array('field' => 'emp_stats', 'label' => 'Employee Status', 'rules' => 'required'),
+            // array('field' => 'emp_stats', 'label' => 'Employee Status', 'rules' => 'required'),
             array('field' => 'date_required', 'label' => 'Date Required', 'rules' => 'required'),
-            array('field' => 'education', 'label' => 'Education', 'rules' => 'required'),
-            array('field' => 'majoring', 'label' => 'Majoring', 'rules' => 'required'),
-            array('field' => 'preferred_age', 'label' => 'Preferred Age', 'rules' => 'required'),
-            array('field' => 'sex', 'label' => 'Sex', 'rules' => 'required'),
-            array('field' => 'work_exp', 'label' => 'Working Experience', 'rules' => 'required'),
+            // array('field' => 'education', 'label' => 'Education', 'rules' => 'required'),
+            // array('field' => 'majoring', 'label' => 'Majoring', 'rules' => 'required'),
+            // array('field' => 'preferred_age', 'label' => 'Preferred Age', 'rules' => 'required'),
+            // array('field' => 'sex', 'label' => 'Sex', 'rules' => 'required'),
+            // array('field' => 'work_exp', 'label' => 'Working Experience', 'rules' => 'required'),
             array('field' => 'ska', 'label' => 'Skill, Knowledge, and Abilities', 'rules' => 'required'),
             // array('field' => 'req_special', 'label' => 'Special Requirement', 'rules' => 'required'),
             array('field' => 'outline', 'label' => 'Outline Why This Position is necessary', 'rules' => 'required'),
@@ -71,7 +71,6 @@ class Ptk extends SpecialUserAppController {
         // load library
         $this->load->library('form_validation');
     }
-    
 
     public function index() {
         // ptk data
@@ -176,6 +175,7 @@ class Ptk extends SpecialUserAppController {
             $data['entity'] = $this->entity_m->getAll_notAtAll(); // ambil entity
             $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status
             $data['education'] = $this->_general_m->getAll('*', 'ptk_education', array()); // education
+            $data['is_edit'] = 1;
             $data['master_level'] = $this->ptk_m->get_masterLevel(); // ambil master level
             $data['position_my'] = $this->posisi_m->getMyPosition(); // ambil data my position
             $data['work_location'] = $this->_general_m->getAll('id, location', $this->table['location'], array());
@@ -212,19 +212,24 @@ class Ptk extends SpecialUserAppController {
             $this->load->view('main_v', $data);
         } else {
             // cekakses hanya admin, superadmin, N-2 dan N-1 yang bisa akses
-            if($my_hirarki == "N-2") {
-                $status_now = 'ptk_stats-1'; //  set status drafted
-                $title = "Saved"; $msg = "Your form has been saved.";
-            } elseif($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1") {
+            if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1") {
                 if($this->input->post('action') == "save"){
                     $status_now = 'ptk_stats-1'; // set status saved
                     $title = "Saved"; $msg = "Your form has been saved.";
                 } elseif ($this->input->post('action') == "submit"){
-                    $status_now = 'ptk_stats-2'; // set status proposed
+                    // cek jika divisinya HC
+                    if((int)$this->input->post('division') == 6){
+                        $status_now = 'ptk_stats-3'; // set status proposed
+                    } else {
+                        $status_now = 'ptk_stats-2'; // set status proposed
+                    }
                     $title = "Submitted"; $msg = "Your form has been submited.";
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                 }
+            } elseif($my_hirarki == "N-2") {
+                $status_now = 'ptk_stats-1'; //  set status drafted
+                $title = "Saved"; $msg = "Your form has been saved.";
             } else {
                 show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
             }
@@ -297,13 +302,13 @@ class Ptk extends SpecialUserAppController {
 
         // date division department status details
         // get form list ptk
-        if($getWithStatus == "2"){
+        if($getWithStatus == "2"){ // jika history
             if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
                 $data_ptk = $this->ptk_m->getAll_ptkList();
             } else {
                 show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
             }
-        } elseif($getWithStatus == "0" || $getWithStatus == "1") {
+        } elseif($getWithStatus == "0" || $getWithStatus == "1") { // jika statusnya aktif atau tidak
             if($position_my['id'] == 1 || $position_my['id'] == 196 || $this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
                 $data_ptk = $this->ptk_m->get_ptkList(array(
                     // 'type' => $getWithStatus
@@ -371,6 +376,7 @@ class Ptk extends SpecialUserAppController {
         foreach ($data_ptk as $key => $value) {
             $data_ptk[$key]["name_div"] = $this->divisi_model->getDetailById($value['id_div'])['division'];
             $data_ptk[$key]["name_dept"] = $this->dept_model->getDetailById($value['id_dept'])['nama_departemen'];
+            $data_ptk[$key]["name_pos"] = $this->posisi_m->getOnceWhere(array('id' => $value['id_pos']))['position_name'];
             $data_ptk[$key]["time_modified"] = date("o-m-d", $value['time_modified']);
             $data_ptk[$key]["href"] = base_url('ptk/viewPTK')."?id_entity=".$value['id_entity']."&id_div=".$value['id_div']."&id_dept=".$value['id_dept']."&id_pos=".$value['id_pos']."&id_time=".$value['id_time'];
             $data_ptk[$key]['status_now'] = $value['status_now']."<~>".json_encode(array($value['id_entity'], $value['id_div'], $value['id_dept'], $value['id_pos'], $value['id_time']));
@@ -400,14 +406,20 @@ class Ptk extends SpecialUserAppController {
             'data' => $data_ptk
         ]));
     }
-
+    
+    /**
+     * fungsi untuk mengolah get mpp untuk number of incumbent di form, setelah pilih posisi
+     *
+     * @return void
+     */
     function ajax_getPositionMpp(){
         $id_posisi = $this->input->post('id_posisi');
         $mpp = $this->posisi_m->howMuchOnThisPosition($id_posisi); // cari berapa banyak yang ada di posisi ini
 
         // $noi = $mpp - $mpp_filled;
         echo json_encode(array(
-            'noi' => $mpp['needed'] - $mpp['filled']
+            'empty' => $mpp['needed'] - $mpp['filled'],
+            'noi' => $mpp['filled']
         ));
     }
 
@@ -889,18 +901,95 @@ class Ptk extends SpecialUserAppController {
         // form data
         $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
 
-        if($data['status_form'] == "ptk_stats-1" || $data['status_form'] == "ptk_stats-C" || $data['status_form'] == "ptk_stats-D" || $data['status_form'] == "ptk_stats-E" || $data['status_form'] == "ptk_stats-F"){
-            // Form Data
-            if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
-                $data['division'] = $this->divisi_model->getDivisi(); // ambil division
-            } else {
+        if($position_my['id'] == 1){
+            if($data['status_form'] == "ptk_stats-B"){
+                // Form Data
                 $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
                 $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
                 $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+
+                $data['is_edit'] = 1; // tambah edit status
+            } else {
+                // Form Data
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+
+                $data['is_edit'] = 0; //  tambah viewer status
             }
+        // buat Divisi HC
+        } elseif($position_my['id'] == 196) {
+            if($data['status_form'] == "ptk_stats-4"){
+                // Form Data
+                $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+
+                $data['is_edit'] = 1; // tambah edit status
+            } else {
+                // Form Data
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+
+                $data['is_edit'] = 0; //  tambah viewer status
+            }
+        // buat Admin
+        } elseif($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1) {
+            if($data['status_form'] == "ptk_stats-3" || $data['status_form'] == "ptk_stats-1" || $data['status_form'] == "ptk_stats-C" || $data['status_form'] == "ptk_stats-D" || $data['status_form'] == "ptk_stats-E" || $data['status_form'] == "ptk_stats-F"){
+                // Form Data
+                $data['division'] = $this->divisi_model->getDivisi(); // ambil division
+
+                $data['is_edit'] = 1; // tambah edit status
+            } else {
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+
+                $data['is_edit'] = 0; //  tambah viewer status
+            }
+        // buat hirarki N
+        } elseif($position_my['hirarki_org'] == "N") {
+            if($data['status_form'] == "ptk_stats-2"){
+                // Form Data
+                $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+
+                $data['is_edit'] = 1; // tambah edit status
+            } else {
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+
+                $data['is_edit'] = 0; //  tambah viewer status
+            }
+        // buat hirarki N-1
+        } elseif($position_my['hirarki_org'] == "N-1") {
+            if($data['status_form'] == "ptk_stats-1" || $data['status_form'] == "ptk_stats-C" || $data['status_form'] == "ptk_stats-D" || $data['status_form'] == "ptk_stats-E" || $data['status_form'] == "ptk_stats-F"){
+                // Form Data        
+                $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+
+                $data['is_edit'] = 1; // tambah edit status
+            } else {
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+
+                $data['is_edit'] = 0; //  tambah viewer status
+            }
+        // buat hirarki N-2
         } else {
-            $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
-            $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+            if($data['status_form'] == "ptk_stats-1" || $data['status_form'] == "ptk_stats-C" || $data['status_form'] == "ptk_stats-D" || $data['status_form'] == "ptk_stats-E" || $data['status_form'] == "ptk_stats-F"){
+                // Form Data
+                $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+
+                $data['is_edit'] = 1; // tambah edit status
+            } else {
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+
+                $data['is_edit'] = 0; //  tambah viewer status
+            }
         }
         
         $data['education']  = $this->_general_m->getAll('*', 'ptk_education', array()); // education
@@ -982,7 +1071,55 @@ class Ptk extends SpecialUserAppController {
             header('location: ' . base_url('ptk/testStatus')."?id_entity=$id_entity&id_div=$id_div&id_dept=$id_dept&id_pos=$id_pos&id_time=$id_time");
         } else {
             // cek posisi dan status dari form lalu ubah status datanya, dan tambah pesan revisi
-            if($position_my['id'] == 1){
+            if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+                if($status_now == "ptk_stats-3"){
+                    // cek action
+                    if($action == 0){
+                        $new_statsData = $this->process_statusData("ptk_stats-5", $status_data, $name_signed, $nik_signed);
+                    } elseif($action == 1){
+                        $new_statsData = $this->process_statusData("ptk_stats-4", $status_data, $name_signed, $nik_signed);
+                    } elseif($action == 2){
+                        $new_statsData = $this->process_statusData("ptk_stats-E", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                    } else {
+                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                        exit;
+                    }
+                } 
+                // elseif($status_now == "ptk_stats-4"){
+                //     // cek action
+                //     if($action == 0){
+                //         $new_statsData = $this->process_statusData("ptk_stats-7", $status_data, $name_signed, $nik_signed);
+                //     } elseif($action == 1){
+                //         $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed);
+                //     } elseif($action == 2){
+                //         $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                //     } else {
+                //         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                //         exit;
+                //     }
+                // } 
+                else {
+                    if((int)$this->input->post('division') == 6){
+                        if($action == 1){
+                            $new_statsData = $this->process_statusData("ptk_stats-3", $status_data, $name_signed, $nik_signed);
+                        } elseif($action == 3){
+                            $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed);
+                        } else {
+                            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                            exit;
+                        }
+                    } else {
+                        if($action == 1){
+                            $new_statsData = $this->process_statusData("ptk_stats-2", $status_data, $name_signed, $nik_signed);
+                        } elseif($action == 3){
+                            $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed);
+                        } else {
+                            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                            exit;
+                        }
+                    }
+                }
+            } elseif($position_my['id'] == 1){
                 if($status_now == "ptk_stats-B"){
                     // cek action
                     if($action == 0){
@@ -1000,7 +1137,7 @@ class Ptk extends SpecialUserAppController {
                     exit;
                 }
             } elseif($position_my['id'] == 196) {
-                if($status_now == "ptk_stats-4"){
+                if($status_now == "ptk_stats-4" || ($status_now == "ptk_stats-2" && $id_div == 6)){
                     // cek action
                     if($action == 0){
                         $new_statsData = $this->process_statusData("ptk_stats-7", $status_data, $name_signed, $nik_signed);
@@ -1008,23 +1145,6 @@ class Ptk extends SpecialUserAppController {
                         $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed);
                     } elseif($action == 2){
                         $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_revisi);
-                    } else {
-                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                        exit;
-                    }
-                } else {
-                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                    exit;
-                }
-            } elseif($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1) {
-                if($status_now == "ptk_stats-3"){
-                    // cek action
-                    if($action == 0){
-                        $new_statsData = $this->process_statusData("ptk_stats-5", $status_data, $name_signed, $nik_signed);
-                    } elseif($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-4", $status_data, $name_signed, $nik_signed);
-                    } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-E", $status_data, $name_signed, $nik_signed, $pesan_revisi);
                     } else {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                         exit;

@@ -1,5 +1,5 @@
 <!-- banner -->
-<div class="row mb-3 pl-2 px-3">
+<div class="row mb-3">
     <!-- <div class="col-md-2 d-md-inline-block d-none">
         <div class="row h-100">
             <div class="col align-self-center p-0">
@@ -7,13 +7,13 @@
             </div>
         </div>
     </div> -->
-    <div class="col">
-        <div class="row h-100">
-            <div class="col align-self-center p-lg-4 p-md-3 p-sm-2 p-1">
+    <div class="col align-self-center pl-2">
+        <!-- <div class="row h-100 align-self-center"> -->
+            <!-- <div class="col align-self-center p-lg-4 p-md-3 p-sm-2 p-1"> -->
                 <!-- <p class="text m-0"></p> -->
                 <p>Employee Requisition Form should be received by Human Capital minimum 45 days before the required date.</p>
-            </div>
-        </div>
+            <!-- </div> -->
+        <!-- </div> -->
     </div>
 </div>
 
@@ -50,14 +50,14 @@
                         <div class="row px-3 justify-content-end">
                             <div class="col-md-6 text-right">
                                 <div class="btn-group w-100">
-                                    <button class="submitPTK btn btn-lg btn-warning w-100" data-id="save">
-                                        <i class="fa fa-save"></i> Save
-                                    </button>
                                     <?php if($position_my['hirarki_org'] == "N-1" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
                                         <button class="submitPTK btn btn-lg btn-success w-100" data-id="submit">
                                             <i class="fa fa-paper-plane"></i> Submit
                                         </button>
                                     <?php endif; ?>
+                                    <button class="submitPTK btn btn-lg btn-warning w-100" data-id="save">
+                                        <i class="fa fa-save"></i> Save
+                                    </button>
                                 </div>
                             </div>
                         </div>

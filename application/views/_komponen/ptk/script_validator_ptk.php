@@ -10,8 +10,6 @@
         input_budget.removeClass('is-invalid');
         $('#unbudgettedRadio').siblings('.invalid-tooltip').remove(); // hapus tooltip invalid 
         
-        console.log($('input[name="budget"]:checked').val());
-
         // empty mpp form
         $('#noiReq').val('-');
         input_mpp.val(''); // kosongkan value mpp
@@ -98,11 +96,8 @@
         input_mpp.siblings('.invalid-tooltip').remove();
         // cek jika mpp request < number of incumbent
 
-        console.log($(this).val());
-        console.log($('#noiReq').val());
-
         let mpp = $(this).val();
-        let noiReq = $('#noiReq').val();
+        let noiReq = $('#noiReq').data('empty');
         if(noiReq != '-'){
             if(mpp > 0 && mpp <= noiReq){
             // nothing
@@ -192,10 +187,26 @@
         input_resource_internal.siblings('.invalid-tooltip').remove();
         if($('input[name="resources"]:checked').val() == "int") { // cek jika internal radio button
             input_resource_internalwho.slideDown(); // tampilkan input text internal_who
+
+            // disable element yang tidak diperlukan
+            validate_empstats.attr('disabled', true);
+            validate_education.attr('disabled', true);
+            validate_sex.attr('disabled', true);
+            input_majoring.attr('disabled', true);
+            input_preferage.attr('disabled', true);
+            input_workexp.attr('disabled', true);
         } else if($('input[name="resources"]:checked').val() == "ext") { // cek jika external radio button
             input_resource_internalwho.slideUp(); // sembunyikan input text internal_who
             input_resource_internalwho.removeClass('is-invalid');
             input_resource_internalwho.siblings('.invalid-tooltip').remove();
+
+            // hapus disable element 
+            validate_empstats.removeAttr('disabled');
+            validate_education.removeAttr('disabled');
+            validate_sex.removeAttr('disabled');
+            input_majoring.removeAttr('disabled');
+            input_preferage.removeAttr('disabled');
+            input_workexp.removeAttr('disabled');
         }
     });
     input_resource_internalwho.on('keyup', function() {
@@ -206,6 +217,20 @@
             input_resource_internalwho.parent().append(msg_fill); // show error tooltip
         }
     });
+
+    // preferred age
+    input_preferage.on('change keyup', function() {
+        input_preferage.removeClass('is-invalid');
+        input_preferage.siblings('.invalid-tooltip').remove();
+        if(input_preferage.val() == ""){
+            input_preferage.addClass('is-invalid'); // add class invalid
+            input_preferage.parent().append(msg_fill); // show error tooltip
+            msg_validate += "<li>Preferred Age is empty</li>"; // pesan empty
+            counter_validate++; // validate counter add
+        } else {
+            // nothing
+        }
+    })
 
     // Work Experience Radio button Internal form
     input_workexp.on('change', function() {
@@ -542,7 +567,9 @@
             },
             method: "POST",
             success: (data) => {
-                input_jpchoose.removeAttr('disabled'); // hapus attribut disabled
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1){
+                    input_jpchoose.removeAttr('disabled'); // hapus attribut disabled
+                }
                 input_jpchoose.empty().append('<option value="">Choose Position...</option>'); //kosongkan selection value dan tambahkan satu selection option
                 $.each(JSON.parse(data), function(i, v) {
                     input_jpchoose.append('<option value="' + v.id + '">' + v.position_name + '</option>'); //tambahkan 1 per 1 option yang didapatkan
@@ -582,10 +609,10 @@
                             // taruh data interviewer dengan data divhead
                             $("#interviewer_name1").val(vya.divhead.emp_name);
                             $("#interviewer_position1").val(vya.divhead.position_name);
-                            $("#interviewer_name1").attr('readonly');
+                            $("#interviewer_name1").attr('readonly', true);
                             $("#interviewer_name1").removeClass('form-control');
                             $("#interviewer_name1").addClass('form-control-plaintext');
-                            $("#interviewer_position1").attr('readonly');
+                            $("#interviewer_position1").attr('readonly', true);
                             $("#interviewer_position1").removeClass('form-control');
                             $("#interviewer_position1").addClass('form-control-plaintext');
                         }
@@ -604,10 +631,10 @@
                             // taruh data interviewer depthead
                             $("#interviewer_name2").val(vya.depthead.emp_name);
                             $("#interviewer_position2").val(vya.depthead.position_name);
-                            $("#interviewer_name2").attr('readonly');
+                            $("#interviewer_name2").attr('readonly', true);
                             $("#interviewer_name2").removeClass('form-control');
                             $("#interviewer_name2").addClass('form-control-plaintext');
-                            $("#interviewer_position2").attr('readonly');
+                            $("#interviewer_position2").attr('readonly', true);
                             $("#interviewer_position2").removeClass('form-control');
                             $("#interviewer_position2").addClass('form-control-plaintext');
                         }
@@ -633,7 +660,9 @@
             },
             method: "POST",
             success: function(data) { //jadi nanti dia balikin datanya dengan variable data
-                select_department.removeAttr('disabled'); // hapus attribut disabled
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1){
+                    select_department.removeAttr('disabled'); // hapus attribut disabled
+                }
                 select_department.empty().append('<option value="">Choose Department...</option>'); //kosongkan selection value dan tambahkan satu selection option
 
                 $.each(JSON.parse(data), function(i, v) {
@@ -663,7 +692,8 @@
             success: function(data){
                 let vya = JSON.parse(data);
                 $('#noiReq').val(vya.noi);
-                input_mpp.attr('max', vya.noi);
+                $('#noiReq').data('empty', vya.empty);
+                input_mpp.attr('max', vya.empty);
                 input_mpp.removeAttr('disabled');
             },
             error: function(){

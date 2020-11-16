@@ -5,13 +5,55 @@
         on: {
             instanceReady: function(evt) {
                 $('.ckeditor_loader').slideUp(); // sembunyikan loader
+
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['ska'].setReadOnly();
+                }
             }
         }
     });
-    CKEDITOR.replace( 'req_special' );
-    CKEDITOR.replace( 'outline' );
-    CKEDITOR.replace( 'main_responsibilities' );
-    CKEDITOR.replace( 'tasks' );
+    CKEDITOR.replace( 'req_special', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['req_special'].setReadOnly();
+                }
+            }
+        }
+    });
+    CKEDITOR.replace( 'outline', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['outline'].setReadOnly();
+                }
+            }
+        }
+    });
+    CKEDITOR.replace( 'main_responsibilities', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['main_responsibilities'].setReadOnly();
+                }
+            }
+        }
+    });
+    CKEDITOR.replace( 'tasks', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['tasks'].setReadOnly();
+                }
+
+                $('.overlay').fadeOut(); // hapus overlay
+            }
+        }
+    });
 
     /* -------------------------------------------------------------------------- */
     /*                            form input variables                            */
@@ -30,9 +72,9 @@
     var input_select = [
         {input: "entity", name: "Entity"},
         // {input: "job_level", name: "Job Level"},
-        {input: "emp_stats", name: "Status of Employement"},
-        {input: "education", name: "Education"},
-        {input: "sex", name: "Sex"}
+        // {input: "emp_stats", name: "Status of Employement"},
+        // {input: "education", name: "Education"},
+        // {input: "sex", name: "Sex"}
     ];
 
     // Job Position Selector
@@ -72,13 +114,16 @@
     let input_mpp = $('input[name="mpp_req"]');
 
     // validation emp_stats
-    let validate_empstats = $('select[name="' + input_select[1].input + '"]');
+    let validate_empstats = $('select[name="emp_stats"]');
 
     // validation education
-    let validate_education = $('select[name="' + input_select[2].input + '"]');
+    let validate_education = $('select[name="education"]');
+
+    // prefer age
+    let input_preferage = $('input[name="preferred_age"]');
 
     // validation sex
-    let validate_sex = $('select[name="' + input_select[3].input + '"]');
+    let validate_sex = $('select[name="sex"]');
 
     // validate Date Required
     var input_daterequired = $('input[name="date_required"]');

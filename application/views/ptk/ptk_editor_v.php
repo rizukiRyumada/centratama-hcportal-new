@@ -209,7 +209,7 @@
             <div class="form-group row">
                 <label for="emp_stats" class="col-sm-5 col-form-label">Status of Employement</label>
                 <div class="col-sm-7">
-                    <select id="emp_stats" name="emp_stats" class="custom-select" required>
+                    <select id="emp_stats" name="emp_stats" class="custom-select" disabled>
                         <option value="" >Select One...</option>
                         <?php foreach($emp_status as $v): ?>
                         <option value="<?= $v['id']; ?>" data-nama="<?= $v['status_name']; ?>" ><?= $v['status_name']; ?></option>
@@ -244,7 +244,7 @@
             <div class="form-group row">
                 <label for="education" class="col-sm-5 col-form-label">Education</label>
                 <div class="col-sm-7">
-                    <select id="education" name="education" class="custom-select" required>
+                    <select id="education" name="education" class="custom-select" disabled>
                         <option value="" >Select One...</option>
                         <?php foreach($education as $v): ?>
                         <option value="<?= $v['id']; ?>" data-nama="<?= $v['name']; ?>" ><?= $v['name']; ?></option>
@@ -257,7 +257,7 @@
             <div class="form-group row">
                 <label for="majoring" class="col-sm-5 col-form-label">Majoring</label>
                 <div class="col-sm-7">
-                    <input type="text" name="majoring" class="form-control" id="majoring" placeholder="Enter Majoring" value="<?php echo set_value('majoring'); ?>" required>
+                    <input type="text" name="majoring" class="form-control" id="majoring" placeholder="Enter Majoring" value="<?php echo set_value('majoring'); ?>" disabled>
                 </div>
             </div>
         </div>
@@ -270,7 +270,7 @@
                 <label for="age" class="col-sm-5 col-form-label">Preferred Age</label>
                 <div class="col-sm-7">
                     <div class="input-group">
-                        <input type="number" name="preferred_age" class="form-control" id="age" placeholder="Enter Prefered Age" value="<?php echo set_value('preferred_age'); ?>" required min="15" max="70">
+                        <input type="number" name="preferred_age" class="form-control" id="age" placeholder="Enter Prefered Age" value="<?php echo set_value('preferred_age'); ?>" required min="15" max="70" disabled>
                         <div class="input-group-append">
                             <span class="input-group-text">year</span>
                         </div>
@@ -282,7 +282,7 @@
             <div class="form-group row">
                 <label for="sexForm" class="col-sm-5 col-form-label">Sex</label>
                 <div class="col-sm-7">
-                    <select id="sexForm" name="sex" class="custom-select" required>
+                    <select id="sexForm" name="sex" class="custom-select" disabled>
                         <option value="" >Select One...</option>
                         <option value="1">Male</option>
                         <option value="0">Female</option>
@@ -299,7 +299,7 @@
                 <label for="inputEmail3" class="col-lg-5 col-form-label">Working Experience</label>
                 <div class="col-lg-7">
                     <div class="icheck-warning">
-                        <input type="radio" id="freshGradRadio" name="work_exp" value="0">
+                        <input type="radio" id="freshGradRadio" name="work_exp" value="0" disabled>
                         <label for="freshGradRadio">Fresh Graduate</label>
                     </div>
                 </div>
@@ -313,7 +313,7 @@
                 <!-- <label for="inputEmail3" class="col-lg-5 col-form-label">Sex</label> -->
                 <div class="col-lg-5">
                     <div class="icheck-success">
-                        <input type="radio" id="experiencedRadio" name="work_exp" value="1">
+                        <input type="radio" id="experiencedRadio" name="work_exp" value="1" disabled>
                         <label for="experiencedRadio">Experience</label>
                     </div>
                 </div>
@@ -430,13 +430,13 @@
                     </tr>
                     <tr>
                         <td>1</td>
-                        <td><input type="text" name="interviewer_name1" class="form-control" id="interviewer_name1" placeholder="Enter Name..."></td>
-                        <td><input type="text" name="interviewer_position1" class="form-control" id="interviewer_position1" placeholder="Enter Position..."></td>
+                        <td><input type="text" name="interviewer_name1" class="form-control" id="interviewer_name1" placeholder="Enter Name..." disabled></td>
+                        <td><input type="text" name="interviewer_position1" class="form-control" id="interviewer_position1" placeholder="Enter Position..." disabled></td>
                     </tr>
                     <tr>
                         <td>2</td>
-                        <td><input type="text" name="interviewer_name2" class="form-control" id="interviewer_name2" placeholder="Enter Name..."></td>
-                        <td><input type="text" name="interviewer_position2" class="form-control" id="interviewer_position2" placeholder="Enter Position..."></td>
+                        <td><input type="text" name="interviewer_name2" class="form-control" id="interviewer_name2" placeholder="Enter Name..." disabled></td>
+                        <td><input type="text" name="interviewer_position2" class="form-control" id="interviewer_position2" placeholder="Enter Position..." disabled></td>
                     </tr>
                     <tr>
                         <td>3</td>

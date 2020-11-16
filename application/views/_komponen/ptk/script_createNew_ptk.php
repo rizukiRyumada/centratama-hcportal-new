@@ -14,11 +14,9 @@
     /*                           Customized Form Validation                       */
     /* -------------------------------------------------------------------------- */
     $('.submitPTK').on('click', function() {
-        <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>
-            // ambil data pada tombol save atau submit
-            $('input[name="action"]').val($(this).data('id'));
-            let action = $(this).data('id');
-        <?php endif; ?>
+        // ambil data pada tombol save atau submit
+        $('input[name="action"]').val($(this).data('id'));
+        let action = $(this).data('id');
         
         let validator = submit_validator(); // submit validator taken from .../application/views/_komponen/ptk/script_submitValidator_ptk.php
         let counter_validate = validator[0];

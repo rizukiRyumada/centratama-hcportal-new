@@ -20,25 +20,21 @@
             },
             success: function(data){
                 data = JSON.parse(data);
-                console.log(data);
+                // console.log(data);
 
                 $('#ptkForm').attr('action', "<?= base_url('ptk/updateStatus'); ?>"); // ganti form action url
 
                 // form select option
                 $("#entityInput option[value="+data.data.id_entity+"]").attr('selected', 'selected'); // select entity base on data
                 $("#jobLevelForm option[value="+data.data.job_level+"]").attr('selected', 'selected'); // select job level base on data
-                // other job level remove if 
-                $("#emp_stats option[value="+data.data.id_employee_status+"]").attr('selected', 'selected'); // select employee status base on data
-                $("#education option[value="+data.data.id_ptk_edu+"]").attr('selected', 'selected'); // select education base on data
-                $("#sexForm option[value="+data.data.sex+"]").attr('selected', 'selected'); // select sex base on data
                 
                 // fill free text form
                 $('input[name="mpp_req"]').val(data.data.req_mpp);
                 $('input[name="date_required"]').val(data.data.req_date);
-                $('input[name="majoring"]').val(data.data.majoring);
-                $('input[name="preferred_age"]').val(data.data.age);
 
-                $('input[name="mpp_req"]').removeAttr('disabled'); // remove disabled attribute from input_mpp
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1){
+                    $('input[name="mpp_req"]').removeAttr('disabled'); // remove disabled attribute from input_mpp
+                }
                 getNoi(data.data.id_pos); // ambil number of incumbent
 
                 // interviewer set data
@@ -60,7 +56,9 @@
                 if(data.data.replacement != ""){
                     input_replacement.attr('checked', true); // check replacement checkbox
                     input_replacement_who.val(data.data.replacement); // isi kotak replacement
-                    input_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
+                    if(<?= $is_edit; ?> == 1){
+                        input_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
+                    }
                 } else {
                     // nothing
                 }
@@ -91,16 +89,28 @@
                     input_resource_internalwho.slideDown(); // tampilkan input text internal_who
                     input_resource_internalwho.val(resources.internal_who); // tampilkan inpu
                 } else if(resources.resources == "ext"){
-                    // nothing
-                }
+                    // hapus disabled element
+                    validate_empstats.removeAttr('disabled');
+                    validate_education.removeAttr('disabled');
+                    input_preferage.removeAttr('disabled');
+                    validate_sex.removeAttr('disabled');
+                    input_majoring.removeAttr('disabled');
+                    input_workexp.removeAttr('disabled');
 
-                // work experience selector
-                if(data.data.work_exp > 0) { // cek jika cekbox work experience
-                    input_workexp_years.fadeIn(); // tampilkan kotak free text tahun
-                    input_workexp_yearstext.val(data.data.work_exp); // set data work experience
-                    $('input[name="work_exp"][value="1"]').attr('checked',true); // select work experience
-                } else if(data.data.work_exp == 0) { // cek jika cekbox fresh graduate
-                    $('input[name="work_exp"][value="0"]').attr('checked',true); // select work experience
+                    // set nilai dari masing2 selector
+                    // work experience
+                    if(data.data.work_exp > 0) { // cek jika cekbox work experience
+                        input_workexp_years.fadeIn(); // tampilkan kotak free text tahun
+                        input_workexp_yearstext.val(data.data.work_exp); // set data work experience
+                        $('input[name="work_exp"][value="1"]').attr('checked',true); // select work experience
+                    } else if(data.data.work_exp == 0) { // cek jika cekbox fresh graduate
+                        $('input[name="work_exp"][value="0"]').attr('checked',true); // select work experience
+                    }
+                    input_majoring.val(data.data.majoring); // majoring
+                    input_preferage.val(data.data.age); // prefered age
+                    $("#emp_stats option[value="+data.data.id_employee_status+"]").attr('selected', 'selected'); // select employee status base on data
+                    $("#education option[value="+data.data.id_ptk_edu+"]").attr('selected', 'selected'); // select education base on data
+                    $("#sexForm option[value="+data.data.sex+"]").attr('selected', 'selected'); // select sex base on data
                 }
 
                 // taruh data position dan interviewer
@@ -138,7 +148,9 @@
                 // tampilkan tab job profile viewer dan ambil datanya
                 showMeJobProfile(id_pos);
 
-                $('.overlay').fadeOut(); // hapus overlay
+                // $('.overlay').fadeOut(); // hapus overlay
+                // the code above is moved to script_formvariable_ptk.php
+                // CKEDITOR.replace 'tasks', 
             }
         })
     });
