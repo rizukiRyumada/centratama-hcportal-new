@@ -72,26 +72,7 @@
         input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
             // ambil data mpp dan set mpp ke form
-            $.ajax({
-                url: '<?= base_url("ptk/ajax_getPositionMpp"); ?>',
-                data: {
-                    id_posisi: $(this).val()
-                },
-                method: "POST",
-                success: function(data){
-                    let vya = JSON.parse(data);
-                    $('#noiReq').val(vya.mpp);
-                    input_mpp.attr('max', vya.mpp);
-                    input_mpp.removeAttr('disabled');
-                },
-                error: function(){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
-                    });
-                }
-            });
+            getNoi($(this).val());
 
             input_jpchoose.addClass('is-valid'); // remove class invalid
             input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
@@ -269,18 +250,18 @@
     });
 
     // validation job_level
-    validate_job_level.on('change', function() {
-        validate_job_level.removeClass('is-invalid'); // remove class invalid
-        validate_job_level.removeClass('is-valid'); // remove class invalid
-        validate_job_level.siblings('.invalid-tooltip').remove(); // remove class invalid
-        if($(this).val() != ""){
-            validate_job_level.addClass('is-valid'); // remove class invalid
-            validate_job_level.siblings('.invalid-tooltip').remove(); // remove class invalid
-        } else {
-            validate_job_level.addClass('is-invalid'); // remove class invalid
-            validate_job_level.parent().append(msg_choose); // show error tooltip
-        }
-    });
+    // validate_job_level.on('change', function() {
+    //     validate_job_level.removeClass('is-invalid'); // remove class invalid
+    //     validate_job_level.removeClass('is-valid'); // remove class invalid
+    //     validate_job_level.siblings('.invalid-tooltip').remove(); // remove class invalid
+    //     if($(this).val() != ""){
+    //         validate_job_level.addClass('is-valid'); // remove class invalid
+    //         validate_job_level.siblings('.invalid-tooltip').remove(); // remove class invalid
+    //     } else {
+    //         validate_job_level.addClass('is-invalid'); // remove class invalid
+    //         validate_job_level.parent().append(msg_choose); // show error tooltip
+    //     }
+    // });
 
     // validation emp_stats
     validate_empstats.on('change', function() {
@@ -458,25 +439,7 @@
                 select_divisi.siblings('.invalid-tooltip').remove(); // remove class invalid
 
                 // get department data
-                $.ajax({
-                    url: "<?php echo base_url('job_profile/ajax_getdepartement'); ?>",
-                    data: {
-                        divisi: dipilih //kirim ke server php
-                    },
-                    method: "POST",
-                    success: function(data) { //jadi nanti dia balikin datanya dengan variable data
-                        select_department.removeAttr('disabled'); // hapus attribut disabled
-                        select_department.empty().append('<option value="">Choose Department...</option>'); //kosongkan selection value dan tambahkan satu selection option
-
-                        $.each(JSON.parse(data), function(i, v) {
-                            select_department.append('<option value="' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
-                        });
-
-                        // validaotr
-                        select_department.addClass('is-invalid'); // remove class invalid
-                        select_department.parent().append(msg_choose); // show error tooltip
-                    }
-                });
+                getDepartment(dipilih);
             } else {
                 // validator
                 select_divisi.addClass('is-invalid'); // remove class invalid
@@ -519,34 +482,87 @@
                 select_department.addClass('is-valid'); // remove class invalid
                 select_department.siblings('.invalid-tooltip').remove(); // remove class invalid
 
-                // get popsition data
-                $.ajax({
-                    url: "<?= base_url('ptk/ajax_getPosition'); ?>",
-                    data: {
-                        divisi: divisi,
-                        departemen: departemen
-                    },
-                    method: "POST",
-                    success: (data) => {
-                        input_jpchoose.removeAttr('disabled'); // hapus attribut disabled
-                        input_jpchoose.empty().append('<option value="">Choose Position...</option>'); //kosongkan selection value dan tambahkan satu selection option
+                // get position and interviewer data
+                getPositionInterviewer(divisi, departemen);
+            } else {
+                // hapus interviewer 2
+                $("#interviewer_name2").val("");
+                $("#interviewer_position2").val("");
+                $("#interviewer_name2").removeAttr('readonly');
+                $("#interviewer_position2").removeAttr('readonly');
 
-                        $.each(JSON.parse(data), function(i, v) {
-                            input_jpchoose.append('<option value="' + v.id + '">' + v.position_name + '</option>'); //tambahkan 1 per 1 option yang didapatkan
-                        });
+                // validator
+                select_department.addClass('is-invalid'); // remove class invalid
+                select_department.parent().append(msg_choose); // show error tooltip
 
-                        // validaotr
-                        // input_jpchoose.addClass('is-invalid'); // remove class invalid
-                        // input_jpchoose.parent().append(msg_choose); // show error tooltip
-                    }
+                // case for jpchoose
+                input_jpchoose.attr('disabled', "true"); // hapus attribut disabled
+                input_jpchoose.empty().append('<option selected value="">Choose Department first...</option>'); //kosongkan selection value dan tambahkan satu selection option
+            }
+        });
+
+        // validator
+
+    <?php endif; ?>
+
+    // input type number validation
+    // $('input[type="number"]').on('change keyup', function() {
+    //     $(this).removeClass('is-invalid'); // remove class invalid
+    //     $(this).siblings('.invalid-tooltip').remove(); // remove error tooltip
+    //     if($.isNumeric($(this).val()) != true) { // cek jika value kosong
+    //         if($(this).val() == ""){ // cek value yang diinput user
+    //             $(this).addClass('is-invalid'); // add class invalid
+    //             $(this).parent().append(msg_number); // show error tooltip
+    //         } else {
+    //             $(this).addClass('is-invalid'); // add class invalid
+    //             $(this).parent().append(msg_number); // show error tooltip
+    //         }
+    //     } else {
+    //         // nothing
+    //     }
+    // });
+
+    /* -------------------------------------------------------------------------- */
+    /*                           Job Profile Tab Trigger                          */
+    /* -------------------------------------------------------------------------- */
+    // ambil data job profile ketika dropdown berubah
+    $("#positionInput").on('change', function() {
+        let id_posisi = $(this).children("option:selected").val();
+
+        showMeJobProfile(id_posisi);
+    });
+
+    // function to get position and interviewer data
+    function getPositionInterviewer(divisi, departemen, choose = ""){
+        $.ajax({
+            url: "<?= base_url('ptk/ajax_getPosition'); ?>",
+            data: {
+                divisi: divisi,
+                departemen: departemen
+            },
+            method: "POST",
+            success: (data) => {
+                input_jpchoose.removeAttr('disabled'); // hapus attribut disabled
+                input_jpchoose.empty().append('<option value="">Choose Position...</option>'); //kosongkan selection value dan tambahkan satu selection option
+                $.each(JSON.parse(data), function(i, v) {
+                    input_jpchoose.append('<option value="' + v.id + '">' + v.position_name + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                 });
 
-                // ambil data approver untuk
+                // jika choose tidak kosong, pilih valuenya
+                if(choose != ""){
+                    input_jpchoose.val(choose);
+                }
+
+                // validaotr
+                // input_jpchoose.addClass('is-invalid'); // remove class invalid
+                // input_jpchoose.parent().append(msg_choose); // show error tooltip
+
+                // get interviewer data
                 $.ajax({
                     url: '<?= base_url("ptk/ajax_getInterviewer"); ?>',
                     data: {
-                        divisi: select_divisi.val(),
-                        department: select_department.val()
+                        divisi: divisi,
+                        department: departemen
                     },
                     method: "POST",
                     success: function(data){
@@ -604,53 +620,61 @@
                         });
                     }
                 });
-            } else {
-                // hapus interviewer 2
-                $("#interviewer_name2").val("");
-                $("#interviewer_position2").val("");
-                $("#interviewer_name2").removeAttr('readonly');
-                $("#interviewer_position2").removeAttr('readonly');
-
-                // validator
-                select_department.addClass('is-invalid'); // remove class invalid
-                select_department.parent().append(msg_choose); // show error tooltip
-
-                // case for jpchoose
-                input_jpchoose.attr('disabled', "true"); // hapus attribut disabled
-                input_jpchoose.empty().append('<option selected value="">Choose Department first...</option>'); //kosongkan selection value dan tambahkan satu selection option
             }
         });
+    }
 
-        // validator
+    // fungsi untuk mengolah departemen
+    function getDepartment(divisi, choose = ""){
+        $.ajax({
+            url: "<?php echo base_url('job_profile/ajax_getdepartement'); ?>",
+            data: {
+                divisi: divisi //kirim ke server php
+            },
+            method: "POST",
+            success: function(data) { //jadi nanti dia balikin datanya dengan variable data
+                select_department.removeAttr('disabled'); // hapus attribut disabled
+                select_department.empty().append('<option value="">Choose Department...</option>'); //kosongkan selection value dan tambahkan satu selection option
 
-    <?php endif; ?>
+                $.each(JSON.parse(data), function(i, v) {
+                    select_department.append('<option value="' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
+                });
 
-    // input type number validation
-    // $('input[type="number"]').on('change keyup', function() {
-    //     $(this).removeClass('is-invalid'); // remove class invalid
-    //     $(this).siblings('.invalid-tooltip').remove(); // remove error tooltip
-    //     if($.isNumeric($(this).val()) != true) { // cek jika value kosong
-    //         if($(this).val() == ""){ // cek value yang diinput user
-    //             $(this).addClass('is-invalid'); // add class invalid
-    //             $(this).parent().append(msg_number); // show error tooltip
-    //         } else {
-    //             $(this).addClass('is-invalid'); // add class invalid
-    //             $(this).parent().append(msg_number); // show error tooltip
-    //         }
-    //     } else {
-    //         // nothing
-    //     }
-    // });
+                // jika admin pilih valuenya
+                if(choose != ""){
+                    select_department.val(choose);
+                } else {
+                    // validator
+                    select_department.addClass('is-invalid'); // remove class invalid
+                    select_department.parent().append(msg_choose); // show error tooltip
+                }
+            }
+        });
+    }
 
-    /* -------------------------------------------------------------------------- */
-    /*                           Job Profile Tab Trigger                          */
-    /* -------------------------------------------------------------------------- */
-    // ambil data job profile ketika dropdown berubah
-    $("#positionInput").on('change', function() {
-        let id_posisi = $(this).children("option:selected").val();
-
-        showMeJobProfile(id_posisi);
-    });
+    // get number of incumbent dengan id_posisi
+    function getNoi(id_posisi){
+        $.ajax({
+            url: '<?= base_url("ptk/ajax_getPositionMpp"); ?>',
+            data: {
+                id_posisi: id_posisi
+            },
+            method: "POST",
+            success: function(data){
+                let vya = JSON.parse(data);
+                $('#noiReq').val(vya.noi);
+                input_mpp.attr('max', vya.noi);
+                input_mpp.removeAttr('disabled');
+            },
+            error: function(){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
+                });
+            }
+        });
+    }
 
     function showMeJobProfile(id_posisi){
         if(id_posisi != "" && $('input[name="budget"]:checked').val() == 1){

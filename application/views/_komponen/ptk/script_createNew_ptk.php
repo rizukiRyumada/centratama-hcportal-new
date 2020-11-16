@@ -1,105 +1,14 @@
 <!-- <script src="<?php // base_url('/assets/js/iframe-resize/iframeResizer.min.js'); ?>"></script> -->
 <script>
-    // $('#ptkForm').validate({
-    //     rules: {
-    //         entity: {
-    //             required: true
-    //         },
-    //         job_position: {
-    //             required: true
-    //         },
-    //         job_level: {
-    //             required: true
-    //         },
-    //         division: {
-    //             required: true
-    //         },
-    //         department: {
-    //             required: true
-    //         },
-    //         work_location: {
-    //             required: true
-    //         },
-    //         budget: {
-    //             required: true
-    //         },
-    //         resources: {
-    //             required: true
-    //         },
-    //         mpp_req: {
-    //             required: true
-    //         },
-    //         emp_stats: {
-    //             required: true
-    //         },
-    //         date_required: {
-    //             required: true
-    //         },
-    //         education: {
-    //             required: true
-    //         },
-    //         majoring: {
-    //             required: true
-    //         },
-    //         preferred_age: {
-    //             required: true
-    //         },
-    //         sex: {
-    //             required: true
-    //         },
-    //         work_exp: {
-    //             required: true
-    //         },
-    //         ska: {
-    //             required: true
-    //         },
-    //         req_special: {
-    //             required: true
-    //         },
-    //         outline: {
-    //             required: true
-    //         },
-    //         main_responsibilities: {
-    //             required: true
-    //         },
-    //         tasks: {
-    //             required: true
-    //         }
-    //     },
-    //     messages: {
-    //         name: {
-    //             required: "Please enter your Name",
-    //             minlength: "Your Name must be at least 5 characters long."
-    //         },
-    //         email: {
-    //             required: "Please enter your Email",
-    //             email: "This is not the correct Email."
-    //         },
-    //         password_current: {
-    //             required: "Please type your password to save changes.",
-    //             minlength: "Your Password must be at least 8 characters long."
-    //         },
-    //         password: {
-    //             minlength: "Your new Password must be at least 8 characters long."
-    //         },
-    //         password2:{
-    //             minlength: "Your new Password must be at least 8 characters long.",
-    //             equalTo: "Password doesn't match with the first one."
-    //         }
-    //     },
-    //     errorElement: 'span',
-    //     errorClass: 'text-right pr-2',
-    //     errorPlacement: function (error, element) {
-    //         error.addClass('invalid-feedback');
-    //         element.closest('.form-group').append(error);
-    //     },
-    //     highlight: function (element, errorClass, validClass) {
-    //         $(element).addClass('is-invalid');
-    //     },
-    //     unhighlight: function (element, errorClass, validClass) {
-    //         $(element).removeClass('is-invalid');
-    //     }
-    // });
+    $(document).ready(function(){
+        // ambil job position jika ada divisi dan posisinya
+        let divisi = select_divisi.val();
+        let department = select_department.val();
+
+        if(divisi != "" && department != ""){
+            getPositionInterviewer(divisi, department);
+        }
+    });
 
     /* -------------------------------------------------------------------------- */
     /*                           Customized Form Validation                       */
@@ -117,18 +26,18 @@
         // cek apa ada form error
         if(counter_validate != 0){
             // List empty form popup
-            $(document).Toasts('create', {
-                class: 'bg-danger', 
-                title: 'List of Empty Form',
-                subtitle: 'Lets fill it',
-                position: 'bottomLeft',
-                body: msg_validate + "Please look at red mark or border."
-            });
+            // $(document).Toasts('create', {
+            //     class: 'bg-danger', 
+            //     title: 'List of Empty Form',
+            //     subtitle: 'Lets fill it',
+            //     position: 'bottomLeft',
+            //     body: msg_validate + "Please look at red mark or border."
+            // });
             // tampilkan pesan error dalam swal
             Swal.fire({
                 title: 'Form Validation Error',
                 html: "Please fill the required input form.",
-                icon: 'error',
+                icon: 'warning',
                 showCancelButton: false,
                 // confirmButtonColor: '#99FF99',
                 // cancelButtonColor: '#d33',

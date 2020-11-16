@@ -32,10 +32,7 @@
                         </select>
                     <?php else: ?>
                         <select id="positionInput" name="job_position_choose" class="custom-select" style="display: none;" required>
-                            <option value="" >Select an Job Position...</option>
-                            <?php foreach($position as $v): ?>
-                                <option value="<?= $v['id']; ?>" ><?= $v['position_name']; ?></option>
-                            <?php endforeach;?>
+                            <option value="" >Select a Job Position...</option>
                         </select>
                     <?php endif; ?>
                 </div>
@@ -43,8 +40,13 @@
             <div class="form-group row">
                 <label for="jobLevelForm" class="col-sm-4 col-form-label">Job Level</label>
                 <div class="col-sm-8">
-                    <!-- FIXME get job level from database -->
-                    <select id="jobLevelForm" name="job_level" class="custom-select" required>
+                    <select id="jobLevelForm" name="job_level" class="custom-select" required 
+                    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                        <?php // nothing ?>
+                    <?php else: ?>
+                        disabled
+                    <?php endif; ?>
+                    >
                         <option value="" >Select Job Level...</option>
                         <?php foreach($master_level as $v): ?>
                             <option value="<?= $v['id']; ?>" ><?= $v['name']; ?></option>
@@ -448,7 +450,19 @@
     <!-- /Interviewer -->
 
     <!-- penanda save dan submit buat hirarki N-1 -->
-    <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>
-        <input type="hidden" name="action">
-    <?php endif; ?>
+    <?php // if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>
+        <!-- <input type="hidden" name="action"> -->
+    <?php // endif; ?>
+
+    <!-- hidden text for form information -->
+    <input type="hidden" name="id_entity" value="<?php if(!empty($id_entity)): ?> <?= $id_entity; ?> <?php endif; ?>">
+    <input type="hidden" name="id_div" value="<?php if(!empty($id_div)): ?> <?= $id_div; ?> <?php endif; ?>">
+    <input type="hidden" name="id_dept" value="<?php if(!empty($id_dept)): ?> <?= $id_dept; ?> <?php endif; ?>">
+    <input type="hidden" name="id_pos" value="<?php if(!empty($id_pos)): ?> <?= $id_pos; ?> <?php endif; ?>">
+    <input type="hidden" name="id_time" value="<?php if(!empty($id_time)): ?> <?= $id_time; ?> <?php endif; ?>">
+
+    <!-- hidden form for additional information -->
+    <input type="hidden" name="action"> 
+    <input type="hidden" name="pesan_revisi"> 
+    <input type="hidden" name="status_now">
 </form>

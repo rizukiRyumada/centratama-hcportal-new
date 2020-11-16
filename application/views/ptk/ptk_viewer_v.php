@@ -418,18 +418,6 @@
         </div>
     </div>
     <!-- /Interviewer -->
-
-    <!-- hidden text for form information -->
-    <input type="hidden" name="id_entity" value="<?= $id_entity; ?>">
-    <input type="hidden" name="id_div" value="<?= $id_div; ?>">
-    <input type="hidden" name="id_dept" value="<?= $id_dept; ?>">
-    <input type="hidden" name="id_pos" value="<?= $id_pos; ?>">
-    <input type="hidden" name="id_time" value="<?= $id_time; ?>">
-
-    <!-- hidden form for additional information -->
-    <input type="hidden" name="action"> 
-    <input type="hidden" name="pesan_revisi"> 
-    <input type="hidden" name="status_now">
 </form>
 
     <!-- modal pesan revisi -->

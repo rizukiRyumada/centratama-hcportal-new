@@ -1,5 +1,5 @@
 <!-- banner -->
-<div class="row mb-3 pl-2 px-3">
+<!-- <div class="row mb-3 pl-2 px-3">
     <div class="col-md-2 d-md-inline-block d-none">
         <div class="row h-100">
             <div class="col align-self-center p-0">
@@ -9,16 +9,16 @@
     </div>
     <div class="col-md-10">
         <div class="row h-100">
-            <div class="col align-self-center p-lg-4 p-md-3 p-sm-2 p-1">
+            <div class="col align-self-center p-lg-4 p-md-3 p-sm-2 p-1"> -->
                 <!-- <p class="text m-0"></p> -->
-                <ul>
+                <!-- <ul>
                     <li>Employee Requisition Form should be received by Human Capital minimum 45 days before the required date</li>
                     <li></li>
                 </ul>
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <div class="row">
     <div class="col">
@@ -30,7 +30,7 @@
 <div class="row">
     <div class="col">
         <div class="card card-primary card-outline card-outline-tabs">
-            <!-- <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div> -->
+            <div class="overlay"><img src="<?= base_url("assets/") ?>img/loading.svg"  width="80" height="80"></div>
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
                     <li class="nav-item">
@@ -43,7 +43,7 @@
                         <a class="nav-link" id="custom-tabs-orgchart-tab" data-toggle="pill" href="#custom-tabs-orgchart" role="tab" aria-controls="custom-tabs-orgchart" aria-selected="false"><i class="fa fa-sitemap"></i> Organization Chart</a>
                     </li>
                     <li class="nav-item" id="tab_timeline">
-                        <a class="nav-link" id="custom-tabs-timeline-tab" data-toggle="pill" href="#custom-tabs-timeline" role="tab" aria-controls="custom-tabs-timeline" aria-selected="false"><i class="fa fa-history"></i> Status History</a>
+                        <a class="nav-link" id="custom-tabs-timeline-tab" data-toggle="pill" href="#custom-tabs-timeline" role="tab" aria-controls="custom-tabs-timeline" aria-selected="false"><i class="fa fa-history"></i> Approval Logs</a>
                     </li>
                     <li class="nav-item" id="tab_timeline">
                         <a class="nav-link" href="<?= base_url('ptk/printPTK'); ?>?id_entity=<?= $id_entity; ?>&id_div=<?= $id_div; ?>&id_dept=<?= $id_dept; ?>&id_pos=<?= $id_pos; ?>&id_time=<?= $id_time; ?>" aria-selected="false"><i class="fa fa-print"></i> Print</a>
@@ -54,7 +54,13 @@
                 <div class="tab-content" id="custom-tabs-four-tabContent">
                     <!-- Tab Form PTK -->
                     <div class="tab-pane fade active show" id="custom-tabs-ptkForm" role="tabpanel" aria-labelledby="custom-tabs-ptkForm-tab">
-                        <?php $this->load->view('ptk/ptk_viewer_v'); ?>
+                        <!-- jika statusnya draft dan revised tampilkan editor -->
+                        <?php if($status_form == "ptk_stats-1" || $status_form == "ptk_stats-C" || $status_form == "ptk_stats-D" || $status_form == "ptk_stats-E" || $status_form == "ptk_stats-F"): ?>
+                            <?php $this->load->view('ptk/ptk_editor_v'); ?>
+                        <?php else: ?>
+                            <?php $this->load->view('ptk/ptk_viewer_v'); ?>
+                        <?php endif; ?>
+
 
                         <!-- buttons -->
                         <div class="row justify-content-end">
@@ -120,6 +126,17 @@
                                             </button>
                                         </div>
                                     </div>
+                                <?php elseif($status_form == "ptk_stats-1" || $status_form == "ptk_stats-C" || $status_form == "ptk_stats-D" || $status_form == "ptk_stats-E" || $status_form == "ptk_stats-F"): ?>
+                                    <div class="col-md-6">
+                                        <div class="btn-group w-100">
+                                            <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
+                                                <i class="fa fa-paper-plane"></i> Submit
+                                            </button>
+                                            <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="3">
+                                                <i class="fas fa-save"></i> Save
+                                            </button>
+                                        </div>
+                                    </div>
                                 <?php else: ?>
                                     <div class="col">
                                         <div class="alert alert-<?= $status_detail['css_color']; ?>">
@@ -172,11 +189,21 @@
                                 <?php endif; ?>
                             <!-- buat hirarki N-2 -->
                             <?php else: ?>
-                                <div class="col">
-                                    <div class="alert alert-<?= $status_detail['css_color']; ?>">
-                                        <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_text']; ?></h5>
+                                <?php if($status_form == "ptk_stats-1"): ?>
+                                    <div class="col-md-6">
+                                        <div class="btn-group w-100">
+                                            <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="3">
+                                                <i class="fas fa-save"></i> Save
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                <?php else: ?>
+                                    <div class="col">
+                                        <div class="alert alert-<?= $status_detail['css_color']; ?>">
+                                            <h5><i class="icon fas fa-exclamation-triangle"></i><?= $status_detail['status_text']; ?></h5>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
                     </div><!-- /Tab form PTK -->

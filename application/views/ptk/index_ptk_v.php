@@ -4,14 +4,14 @@
         <div class="col-md-4 py-2">
             <div class="row h-100">
                 <div class="col align-self-center text-center">
-                    <a href="<?= base_url('ptk/createNewForm'); ?>" class="w-100 btn btn-success">
+                    <a href="<?= base_url('ptk/createNewForm'); ?>" class="w-100 btn btn-primary">
                         <div class="row h-100">
                             <div class="col-auto align-self-center text-center">
-                                <img src="<?= base_url('/assets/img/illustration/ptk/thingking-new-employee.svg'); ?>" alt="add-document" class="img-md">
-                                <!-- <img src="<?= base_url('/assets/img/illustration/add-document.svg'); ?>" alt="add-document" class="img-lg"> -->
-                            </div>
+                                <i class="fa fa-plus fa-2x"></i>
+                                <!-- <img src="<?= base_url('/assets/img/illustration/ptk/thingking-new-employee.svg'); ?>" alt="add-document" class="img-md"> -->
+                                <!-- <img src="<?= base_url('/assets/img/illustration/add-document.svg'); ?>" alt="add-document" class="img-lg"> -->                            </div>
                             <div class="col align-self-center text-center">
-                                <p class="text m-0">Create New Employee Requisition Form</p>
+                                <p class="text m-0">Create Employee Requisition Form</p>
                             </div>
                         </div>
                     </a>
@@ -46,7 +46,7 @@
                 <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
                   <?php if(!empty($mytask)): ?>
                     <li class="nav-item">
-                        <a class="nav-link ptk_tableTrigger active" id="custom-tabs-four-myTask-tab" data-toggle="pill" data-status="4" href="#custom-tabs-four-myTask" role="tab" aria-controls="custom-tabs-four-myTask" aria-selected="true">My Task</a>
+                        <a class="nav-link ptk_tableTrigger active" id="custom-tabs-four-myTask-tab" data-toggle="pill" data-status="4" href="#custom-tabs-four-myTask" role="tab" aria-controls="custom-tabs-four-myTask" aria-selected="true"><i class="fas fa-clipboard-list"></i> My Task</a>
                     </li>
                   <?php endif; ?>
                   <li class="nav-item">
@@ -54,7 +54,7 @@
                     <?php if(empty($mytask)): ?>
                         active
                     <?php endif; ?>
-                    " id="custom-tabs-four-home-tab" data-toggle="pill" data-status="1" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false">History</a>
+                    " id="custom-tabs-four-home-tab" data-toggle="pill" data-status="1" href="#custom-tabs-four-home" role="tab" aria-controls="custom-tabs-four-home" aria-selected="false"><i class="fas fa-history"></i> History</a>
                   </li>
                   <!-- <li class="nav-item">
                     <a class="nav-link ptk_tableTrigger" id="custom-tabs-four-profile-tab" data-toggle="pill" data-status="0" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Inactive</a>

@@ -10,7 +10,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Ptk extends SpecialUserAppController {
     // page title
     protected $page_title = array(
-        'index' => "Employee Requisition"
+        'index' => "Employee Requisition",
+        'form' => "Employee Requisition Form"
     );
 
     // table name list
@@ -40,7 +41,7 @@ class Ptk extends SpecialUserAppController {
     protected $config_formValidation = array(
             array('field' => 'entity', 'label' => 'Entity', 'rules' => 'required'),
             // array('field' => 'job_position', 'label' => 'Job Position', 'rules' => 'required'),
-            array('field' => 'job_level', 'label' => 'Job Level', 'rules' => 'required'),
+            // array('field' => 'job_level', 'label' => 'Job Level', 'rules' => 'required'),
             // array('field' => 'division', 'label' => 'Division', 'rules' => 'required'),
             // array('field' => 'department', 'label' => 'Departemen', 'rules' => 'required'),
             // array('field' => 'work_location', 'label' => 'Work Location', 'rules' => 'required'),
@@ -168,6 +169,9 @@ class Ptk extends SpecialUserAppController {
                 $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $detail_emp['div_id'], 'dept_id' => $detail_emp['dept_id'])); // position
             }
 
+            // data useradmin app
+            $data['userApp_admin'] = $this->userApp_admin;
+
             // form data
             $data['entity'] = $this->entity_m->getAll_notAtAll(); // ambil entity
             $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status
@@ -191,8 +195,7 @@ class Ptk extends SpecialUserAppController {
             $data['sidebar'] = getMenu(); // ambil menu
             $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
             $data['user'] = getDetailUser(); //ambil informasi user
-            $data['page_title'] = "Create New Form";
-            // $data['page_title'] = "Create New Form ".$this->page_title['index'];
+            $data['page_title'] = $this->page_title['form'];
             $data['load_view'] = 'ptk/createNew_ptk_v';
             // additional styles and custom script
             $data['additional_styles'] = array('plugins/datepicker/styles_datepicker');
@@ -399,8 +402,12 @@ class Ptk extends SpecialUserAppController {
     }
 
     function ajax_getPositionMpp(){
+        $id_posisi = $this->input->post('id_posisi');
+        $mpp = $this->posisi_m->howMuchOnThisPosition($id_posisi); // cari berapa banyak yang ada di posisi ini
+
+        // $noi = $mpp - $mpp_filled;
         echo json_encode(array(
-            'mpp' => $this->_general_m->getOnce('mpp', $this->table['position'], array('id' => $this->input->post('id_posisi')))['mpp']
+            'noi' => $mpp['needed'] - $mpp['filled']
         ));
     }
 
@@ -420,7 +427,7 @@ class Ptk extends SpecialUserAppController {
         foreach($posisi as $k => $v){
             $posisi_pmk = $this->posisi_m->howMuchOnThisPosition($v['id']);
             // jika jumlah mppnya sama antara yang terisi dengan yang dibutuhkan, hapus datanya
-            if($posisi_pmk['filled'] == $posisi_pmk['needed']){
+            if($posisi_pmk['filled'] == $posisi_pmk['needed'] || $posisi_pmk['filled'] > $posisi_pmk['needed']){
                 unset($posisi[$k]); // hapus terkain=t
             }
         }
@@ -499,15 +506,16 @@ class Ptk extends SpecialUserAppController {
         } else {
             // cek berdasarkan hirarki
             if($position_my['hirarki_org'] == "N"){
-                if($position_my['div_id'] == $position['div_id']){
+                if((int)$position_my['div_id'] == (int)$position['div_id']){
                     // perbolehkan akses
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
                     exit;
                 }
             } elseif($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2") {
+                // $div = 
                 // cek berdasarkan kesamaan divisi dan department
-                if($position_my['div_id'] == $position['div_id'] && $position_my['dept_id'] == $position['dept_id']){
+                if((int)$position_my['div_id'] == (int)$position['div_id'] && (int)$position_my['dept_id'] == (int)$position['dept_id']){
                     // perbolehkan akses
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
@@ -618,9 +626,14 @@ class Ptk extends SpecialUserAppController {
      *
      * @return void
      */
-    public function saveForm_post($status_now, $status_data) {
+    public function saveForm_post($status_now, $status_data, $time = "") {
         //timestamp id
-        $data['id_time'] = time();
+        if(empty($time)){
+            $time = time();
+        } else {
+            // nothing
+        }
+        $data['id_time'] = $time;
         // time modified
         $data['time_modified'] = time();
         // created at
@@ -874,15 +887,28 @@ class Ptk extends SpecialUserAppController {
         // data useradmin app
         $data['userApp_admin'] = $this->userApp_admin;
         // form data
-        $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
-        $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+        $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
+
+        if($data['status_form'] == "ptk_stats-1" || $data['status_form'] == "ptk_stats-C" || $data['status_form'] == "ptk_stats-D" || $data['status_form'] == "ptk_stats-E" || $data['status_form'] == "ptk_stats-F"){
+            // Form Data
+            if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+                $data['division'] = $this->divisi_model->getDivisi(); // ambil division
+            } else {
+                $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+            }
+        } else {
+            $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+            $data['division']   = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+        }
+        
         $data['education']  = $this->_general_m->getAll('*', 'ptk_education', array()); // education
         $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status
         $data['entity']     = $this->entity_m->getAll_notAtAll("*", $this->table['entity'], array()); // ambil entity
         $data['master_level'] = $this->ptk_m->get_masterLevel(); // ambil master level
         $data['position']   = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
         $data['position_my'] = $position_my; // my position data
-        $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
         $data['status_detail'] = $this->ptk_m->getDetail_ptkStatusDetailByStatusId($data['status_form']); // get status details
         $data['work_location'] = $this->_general_m->getAll('id, location', $this->table['location'], array());
         // sorting
@@ -893,8 +919,7 @@ class Ptk extends SpecialUserAppController {
         $data['sidebar']    = getMenu();        // ambil menu
         $data['breadcrumb'] = getBreadCrumb();  // ambil data breadcrumb
         $data['user']       = getDetailUser();  //ambil informasi user
-        $data['page_title'] = "View PTK";
-        // $data['page_title'] = "Create New Form ".$this->page_title['index'];
+        $data['page_title'] = $this->page_title['form'];
         $data['load_view'] = 'ptk/viewPTK_ptk_v';
         // additional styles and custom script
         $data['additional_styles'] = array('plugins/datepicker/styles_datepicker');
@@ -1034,13 +1059,20 @@ class Ptk extends SpecialUserAppController {
                 } else {
                     show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                     exit;
-                }    
+                }
+            } elseif($position_my['hirarki_org'] == "N-2") {
+                if($action == 3){
+                    $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed);
+                } else {
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                    exit;
+                }
             } else {
                 show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                 exit;
             }
             // simpan ke dalam database
-            $data = $this->saveForm_post($new_statsData['status_new'], $new_statsData['status_data']);
+            $data = $this->saveForm_post($new_statsData['status_new'], $new_statsData['status_data'], $id_time);
             $this->updateForm($data, $id_entity, $id_div, $id_dept, $id_pos, $id_time);
 
             // siapkan notifikasi

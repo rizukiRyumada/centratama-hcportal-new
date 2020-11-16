@@ -29,7 +29,7 @@
 
     var input_select = [
         {input: "entity", name: "Entity"},
-        {input: "job_level", name: "Job Level"},
+        // {input: "job_level", name: "Job Level"},
         {input: "emp_stats", name: "Status of Employement"},
         {input: "education", name: "Education"},
         {input: "sex", name: "Sex"}
@@ -66,19 +66,19 @@
     var validate_entity = $('select[name="' + input_select[0].input + '"]');
 
     // validation job_level
-    let validate_job_level = $('select[name="' + input_select[1].input + '"]');
+    // let validate_job_level = $('select[name="' + input_select[1].input + '"]');
 
     // variable man power required
     let input_mpp = $('input[name="mpp_req"]');
 
     // validation emp_stats
-    let validate_empstats = $('select[name="' + input_select[2].input + '"]');
+    let validate_empstats = $('select[name="' + input_select[1].input + '"]');
 
     // validation education
-    let validate_education = $('select[name="' + input_select[3].input + '"]');
+    let validate_education = $('select[name="' + input_select[2].input + '"]');
 
     // validation sex
-    let validate_sex = $('select[name="' + input_select[4].input + '"]');
+    let validate_sex = $('select[name="' + input_select[3].input + '"]');
 
     // validate Date Required
     var input_daterequired = $('input[name="date_required"]');
