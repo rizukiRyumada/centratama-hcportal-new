@@ -34,7 +34,7 @@
 <script>
 //masukkin data ke variabel javascript dari php
 
-var assistant_atasan1 = <?= $assistant_atasan1; ?>;
+var assistant_atasan1 = "<?php if(!empty($assistant_atasan1)): ?> <?= $assistant_atasan1; ?>; <?php else: ?> <?= ""; ?><?php endif; ?>";
 var atasan = <?= $atasan; ?>;
 var datasource = <?php echo $orgchart_data; ?>; 
 var datasource_assistant1 = <?php echo($orgchart_data_assistant1); ?>;
