@@ -69,7 +69,7 @@
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
-                                                <i class="fa fa-check"></i> Accept
+                                                <i class="fa fa-check"></i> Approve
                                             </button>
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
                                                 <i class="fas fa-edit"></i> Revise
@@ -92,7 +92,7 @@
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
-                                                <i class="fa fa-check"></i> Accept
+                                                <i class="fa fa-check"></i> Approve
                                             </button>
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
                                                 <i class="fas fa-edit"></i> Revise
@@ -115,7 +115,7 @@
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
-                                                <i class="fa fa-check"></i> Accept
+                                                <i class="fa fa-check"></i> Approve
                                             </button>
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
                                                 <i class="fas fa-edit"></i> Revise
@@ -149,7 +149,7 @@
                                     <div class="col-md-6">
                                         <div class="btn-group w-100">
                                             <button class="submitPTK btn btn-lg btn-success w-100" data-status="<?= $status_form; ?>" data-id="1">
-                                                <i class="fa fa-check"></i> Accept
+                                                <i class="fa fa-check"></i> Approve
                                             </button>
                                             <button class="submitPTK btn btn-lg btn-warning w-100" data-status="<?= $status_form; ?>" data-id="2">
                                                 <i class="fas fa-edit"></i> Revise
