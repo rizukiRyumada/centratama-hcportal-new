@@ -137,7 +137,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="text" name="internal_who" id="internal_who" class="form-control" placeholder="Who is it?" style="display: none;">
+                <input type="text" name="internal_who" id="internal_who" class="form-control" placeholder="Who is it?" style="display: none;" disabled>
             </div>
         </div>
     </div>

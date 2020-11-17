@@ -79,15 +79,15 @@ class Ptk extends SpecialUserAppController {
 
         $position_my = $this->posisi_m->getMyPosition();
         $dataStatusList = array(); $x = 0;
-        if($position_my['id'] == 1 || $position_my['id'] == 196){
-            $a = $this->_general_m->getAll('id_ptkstatus', $this->table['ptk_status_pj'], array('condition_value' => $position_my['id']));
+        if((int)$position_my['id'] == 1 || (int)$position_my['id'] == 196){
+            $a = $this->_general_m->getAll('id_ptkstatus', $this->table['ptk_status_pj'], array('condition_value' => (int)$position_my['id']));
             foreach($a as $v){
                 $dataStatusList[$x] = $v['id_ptkstatus'];
                 $x++;
             }
         } elseif($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
             $a = $this->_general_m->getAll('id_ptkstatus', $this->table['ptk_status_pj'], array('condition_value' => 'admin'));
-            $b = $this->_general_m->getAll('id_ptkstatus', $this->table['ptk_status_pj'], array('condition_value' => $position_my['id']));
+            $b = $this->_general_m->getAll('id_ptkstatus', $this->table['ptk_status_pj'], array('condition_value' => (int)$position_my['id']));
             $c = $this->_general_m->getAll('id_ptkstatus', $this->table['ptk_status_pj'], array('condition_value' => $position_my['hirarki_org']));
             
             foreach($a as $v){
@@ -309,7 +309,7 @@ class Ptk extends SpecialUserAppController {
                 show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
             }
         } elseif($getWithStatus == "0" || $getWithStatus == "1") { // jika statusnya aktif atau tidak
-            if($position_my['id'] == 1 || $position_my['id'] == 196 || $this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+            if((int)$position_my['id'] == 1 || (int)$position_my['id'] == 196 || $this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
                 $data_ptk = $this->ptk_m->get_ptkList(array(
                     // 'type' => $getWithStatus
                 ));
@@ -333,7 +333,7 @@ class Ptk extends SpecialUserAppController {
                 $statuses = $statuses['my_task'];
                 
                 $temp_ptk = array();
-                if($position_my['id'] == 1 || $position_my['id'] == 196 || $this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+                if((int)$position_my['id'] == 1 || (int)$position_my['id'] == 196 || $this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
                     foreach($statuses as $k => $v){
                         $temp_ptk[$k] = $this->ptk_m->get_ptkList(array(
                             'status_now' => $v
@@ -513,7 +513,7 @@ class Ptk extends SpecialUserAppController {
     // cek akses buat frame viewer
     public function cekakses_ptk($position_my, $position){
         // cek apa dia admin atau userapp admin
-        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 196 || $position_my['id'] == 1){
+        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || (int)$position_my['id'] == 196 || (int)$position_my['id'] == 1){
             // perbolehkan akses bebas
         } else {
             // cek berdasarkan hirarki
@@ -901,12 +901,17 @@ class Ptk extends SpecialUserAppController {
         // form data
         $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
 
-        if($position_my['id'] == 1){
+        // cek apa dia CEO Office
+        if((int)$position_my['id'] == 1){
             if($data['status_form'] == "ptk_stats-B"){
                 // Form Data
-                $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
-                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
-                $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+                if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+                    $data['division'] = $this->divisi_model->getDivisi(); // ambil division
+                } else {
+                    $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+                    $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                    $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+                }
 
                 $data['is_edit'] = 1; // tambah edit status
             } else {
@@ -916,13 +921,17 @@ class Ptk extends SpecialUserAppController {
 
                 $data['is_edit'] = 0; //  tambah viewer status
             }
-        // buat Divisi HC
-        } elseif($position_my['id'] == 196) {
+        // buat Divisi HC ga baca ke sini dah
+        } elseif((int)$position_my['id'] == 196) {
             if($data['status_form'] == "ptk_stats-4"){
                 // Form Data
-                $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
-                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
-                $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+                if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+                    $data['division'] = $this->divisi_model->getDivisi(); // ambil division
+                } else {
+                    $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+                    $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                    $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+                }
 
                 $data['is_edit'] = 1; // tambah edit status
             } else {
@@ -949,9 +958,14 @@ class Ptk extends SpecialUserAppController {
         } elseif($position_my['hirarki_org'] == "N") {
             if($data['status_form'] == "ptk_stats-2"){
                 // Form Data
-                $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
-                $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
-                $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+                // if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+                //     $data['division'] = $this->divisi_model->getDivisi(); // ambil division
+                // } else {
+                    $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
+                    // $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                    $data['department'] = $this->dept_model->getAll(); // ambil departemen
+                    $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
+                // }
 
                 $data['is_edit'] = 1; // tambah edit status
             } else {
@@ -1071,7 +1085,58 @@ class Ptk extends SpecialUserAppController {
             header('location: ' . base_url('ptk/testStatus')."?id_entity=$id_entity&id_div=$id_div&id_dept=$id_dept&id_pos=$id_pos&id_time=$id_time");
         } else {
             // cek posisi dan status dari form lalu ubah status datanya, dan tambah pesan revisi
-            if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
+            if((int)$position_my['id'] == 1){
+                if($status_now == "ptk_stats-B"){
+                    // cek action
+                    if($action == 0){
+                        $new_statsData = $this->process_statusData("ptk_stats-8", $status_data, $name_signed, $nik_signed);
+                    } elseif($action == 1){
+                        $new_statsData = $this->process_statusData("ptk_stats-A", $status_data, $name_signed, $nik_signed);
+                    } elseif($action == 2){
+                        $new_statsData = $this->process_statusData("ptk_stats-C", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                    } else {
+                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                        exit;
+                    }
+                } else {
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                    exit;
+                }
+            } elseif((int)$position_my['id'] == 196) {
+                if($status_now == "ptk_stats-4"){
+                    // cek action
+                    if($action == 0){
+                        $new_statsData = $this->process_statusData("ptk_stats-7", $status_data, $name_signed, $nik_signed);
+                    } elseif($action == 1){
+                        $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed);
+                    } elseif($action == 2){
+                        $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                    } else {
+                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                        exit;
+                    }
+                } else {
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                    exit;
+                }
+            } elseif($position_my['hirarki_org'] == "N") {
+                if($status_now == "ptk_stats-2"){
+                    // cek action
+                    if($action == 0){
+                        $new_statsData = $this->process_statusData("ptk_stats-6", $status_data, $name_signed, $nik_signed);
+                    } elseif($action == 1){
+                        $new_statsData = $this->process_statusData("ptk_stats-3", $status_data, $name_signed, $nik_signed);
+                    } elseif($action == 2){
+                        $new_statsData = $this->process_statusData("ptk_stats-F", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                    } else {
+                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                        exit;
+                    }
+                } else {
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                    exit;
+                }
+            } elseif($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
                 if($status_now == "ptk_stats-3"){
                     // cek action
                     if($action == 0){
@@ -1119,57 +1184,6 @@ class Ptk extends SpecialUserAppController {
                         }
                     }
                 }
-            } elseif($position_my['id'] == 1){
-                if($status_now == "ptk_stats-B"){
-                    // cek action
-                    if($action == 0){
-                        $new_statsData = $this->process_statusData("ptk_stats-8", $status_data, $name_signed, $nik_signed);
-                    } elseif($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-A", $status_data, $name_signed, $nik_signed);
-                    } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-C", $status_data, $name_signed, $nik_signed, $pesan_revisi);
-                    } else {
-                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                        exit;
-                    }
-                } else {
-                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                    exit;
-                }
-            } elseif($position_my['id'] == 196) {
-                if($status_now == "ptk_stats-4" || ($status_now == "ptk_stats-2" && $id_div == 6)){
-                    // cek action
-                    if($action == 0){
-                        $new_statsData = $this->process_statusData("ptk_stats-7", $status_data, $name_signed, $nik_signed);
-                    } elseif($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed);
-                    } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_revisi);
-                    } else {
-                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                        exit;
-                    }
-                } else {
-                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                    exit;
-                }
-            } elseif($position_my['hirarki_org'] == "N") {
-                if($status_now == "ptk_stats-2"){
-                    // cek action
-                    if($action == 0){
-                        $new_statsData = $this->process_statusData("ptk_stats-6", $status_data, $name_signed, $nik_signed);
-                    } elseif($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-3", $status_data, $name_signed, $nik_signed);
-                    } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-F", $status_data, $name_signed, $nik_signed, $pesan_revisi);
-                    } else {
-                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                        exit;
-                    }
-                } else {
-                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                    exit;
-                }
             } elseif($position_my['hirarki_org'] == "N-1") {
                 // cek action
                 if($action == 1){
@@ -1202,7 +1216,7 @@ class Ptk extends SpecialUserAppController {
                 if($status_now == "ptk_stats-1"){
                     $icon = "success"; $title = "Proposed"; $msg = "You have Proposed this form.";
                 } else {
-                    $icon = "success"; $title = "Accepted"; $msg = "You have Accepted this form.";
+                    $icon = "success"; $title = "Approved"; $msg = "You have Approved this form.";
                 }
             } elseif($action == 2){
                 $icon = "warning"; $title = "Requested to Revise"; $msg = "You have requested to Revise this form.";

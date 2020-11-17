@@ -24,9 +24,15 @@
 
                 $('#ptkForm').attr('action', "<?= base_url('ptk/updateStatus'); ?>"); // ganti form action url
 
+                let job_level = "";
                 // form select option
-                $("#entityInput option[value="+data.data.id_entity+"]").attr('selected', 'selected'); // select entity base on data
-                $("#jobLevelForm option[value="+data.data.job_level+"]").attr('selected', 'selected'); // select job level base on data
+                if(data.data.job_level == ""){
+                    job_level = "";
+                } else {
+                    job_level = data.data.job_level;
+                }
+                validate_entity.val(data.data.id_entity); // select entity base on data
+                $("#jobLevelForm").val(data.data.job_level); // select job level base on data
                 
                 // fill free text form
                 $('input[name="mpp_req"]').val(data.data.req_mpp);
@@ -47,7 +53,6 @@
                 $('input[name="interviewer_name3"]').val(interviewer[2].name);
                 $('input[name="interviewer_position3"]').val(interviewer[2].position);
 
-                // budget selector
                 // select budget
                 $('input[name="budget"][value="'+data.data.budget+'"]').attr('checked',true);
                 $("#budgetAlert").hide(); // sembunyikan overlay job position alert
@@ -113,16 +118,9 @@
                     $("#sexForm option[value="+data.data.sex+"]").attr('selected', 'selected'); // select sex base on data
                 }
 
-                // taruh data position dan interviewer
-                getPositionInterviewer(data.data.id_div, data.data.id_dept, data.data.id_pos);
-
-                <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
-                    // taruh data division
-                    select_divisi.val(data.data.id_div);
-
-                    // get departemen dan pilih valuenya
-                    getDepartment("div-"+data.data.id_div, data.data.id_dept);
-                <?php endif; ?>
+                select_divisi.val(data.data.id_div); // taruh data division
+                getDepartment("div-"+data.data.id_div, data.data.id_dept); // get departemen dan pilih valuenya
+                getPositionInterviewer(data.data.id_div, data.data.id_dept, data.data.id_pos); // taruh data position dan interviewer
                 
                 // tampilkan Job Position chooser atau text
                 if(data.data.budget == 0) { // cek jika unbudgeted
