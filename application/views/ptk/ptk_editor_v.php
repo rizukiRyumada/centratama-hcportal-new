@@ -69,7 +69,7 @@
                 <div class="form-group row">
                     <label for="departementForm" class="col-sm-4 col-form-label">Department</label>
                     <div class="col-sm-8">
-                        <select id="departementForm" class="custom-select" name="department" disabled>
+                        <select id="departementForm" class="custom-select" name="department">
                             <option value="">Choose Division first...</option>
                         </select>
                     </div>

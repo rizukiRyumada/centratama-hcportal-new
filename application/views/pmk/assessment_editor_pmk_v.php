@@ -18,10 +18,8 @@
                                             <div class="col align-self-center">
                                                 <div>
                                                 <div class="text-center">
-                                                    <!-- <i class="fa fa-user-circle fa-5x"></i> -->
-
-                                                    
-                                                    <img class="border border-gray-dark img-fluid" src="<?php if($exist_empPhoto == true){ echo base_url('/assets/img/employee/'.$employee['nik'].'.jpeg'); } else { echo base_url('/assets/img/user.svg'); } ?>" alt="User profile picture">
+                                                    <!-- PRODUCTION alamat ganti jadi /user-img/ -->
+                                                    <img class="border border-gray-dark img-fluid" src="<?php if($exist_empPhoto == true){ echo base_url('/assets/img/employee/'.$employee['nik'].'.jpg'); } else { echo base_url('/assets/img/user.svg'); } ?>" alt="User profile picture">
                                                 </div>
                                                 <!-- <h3 class="profile-username text-center"></h3> -->
                                                 </div>

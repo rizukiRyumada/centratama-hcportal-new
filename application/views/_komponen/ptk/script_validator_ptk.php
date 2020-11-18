@@ -553,7 +553,7 @@
             },
             method: "POST",
             success: function(data) { //jadi nanti dia balikin datanya dengan variable data
-                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1 && <?= $position_my['hirarki_org']; ?> != "N"){
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1){
                     select_department.removeAttr('disabled'); // hapus attribut disabled
                 }
                 select_department.empty().append('<option value="">Choose Department...</option>'); //kosongkan selection value dan tambahkan satu selection option
@@ -766,6 +766,74 @@
         $("#interviewer_position2").addClass('form-control');
         $("#interviewer_position2").removeClass('form-control-plaintext');
     }
+
+/* -------------------------------------------------------------------------- */
+/*                             CKEDITOR instances                             */
+/* -------------------------------------------------------------------------- */
+    // CKEDITOR Instances
+    CKEDITOR.replace('ska', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                $('.ckeditor_loader').slideUp(); // sembunyikan loader
+                CKEDITOR.instances['ska'].setData(cke_ska);
+
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['ska'].setReadOnly();
+                }
+            }
+        }
+    });
+    CKEDITOR.replace( 'req_special', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                CKEDITOR.instances['req_special'].setData(cke_req_special);
+
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['req_special'].setReadOnly();
+                }
+            }
+        }
+    });
+    CKEDITOR.replace( 'outline', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                CKEDITOR.instances['outline'].setData(cke_outline);
+
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['outline'].setReadOnly();
+                }
+            }
+        }
+    });
+    CKEDITOR.replace( 'main_responsibilities', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                CKEDITOR.instances['main_responsibilities'].setData(cke_main_responsibilities);
+
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['main_responsibilities'].setReadOnly();
+                }
+            }
+        }
+    });
+    CKEDITOR.replace( 'tasks', {
+        enterMode: CKEDITOR.ENTER_BR,
+        on: {
+            instanceReady: function(evt) {
+                CKEDITOR.instances['tasks'].setData(cke_tasks);
+
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
+                    CKEDITOR.instances['tasks'].setReadOnly();
+                }
+
+                $('.overlay').fadeOut(); // hapus overlay
+            }
+        }
+    });
 
     /* -------------------------------------------------------------------------- */
     /*                          Tippy JS Tooltip trigger                          */

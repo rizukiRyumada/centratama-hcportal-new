@@ -137,12 +137,12 @@
                     $('input[name="job_position_choose"]').val(data.data.id_pos);
                 }
 
-                // CKEDITOR set data form
-                CKEDITOR.instances['ska'].setData(data.data.req_ska);
-                CKEDITOR.instances['req_special'].setData(data.data.req_special);
-                CKEDITOR.instances['outline'].setData(data.data.outline);
-                CKEDITOR.instances['main_responsibilities'].setData(data.data.main_responsibilities);
-                CKEDITOR.instances['tasks'].setData(data.data.tasks);
+                // ganti variable for ckeditor
+                cke_ska = data.data.req_ska;
+                cke_req_special = data.data.req_special;
+                cke_outline = data.data.outline;
+                cke_main_responsibilities = data.data.main_responsibilities;
+                cke_tasks = data.data.tasks;
 
                 // tampilkan tab job profile viewer dan ambil datanya
                 showMeJobProfile(id_pos);

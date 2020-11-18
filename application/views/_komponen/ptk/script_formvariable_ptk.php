@@ -1,60 +1,4 @@
 <script>
-    // CKEDITOR Instances
-    CKEDITOR.replace('ska', {
-        enterMode: CKEDITOR.ENTER_BR,
-        on: {
-            instanceReady: function(evt) {
-                $('.ckeditor_loader').slideUp(); // sembunyikan loader
-
-                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
-                    CKEDITOR.instances['ska'].setReadOnly();
-                }
-            }
-        }
-    });
-    CKEDITOR.replace( 'req_special', {
-        enterMode: CKEDITOR.ENTER_BR,
-        on: {
-            instanceReady: function(evt) {
-                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
-                    CKEDITOR.instances['req_special'].setReadOnly();
-                }
-            }
-        }
-    });
-    CKEDITOR.replace( 'outline', {
-        enterMode: CKEDITOR.ENTER_BR,
-        on: {
-            instanceReady: function(evt) {
-                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
-                    CKEDITOR.instances['outline'].setReadOnly();
-                }
-            }
-        }
-    });
-    CKEDITOR.replace( 'main_responsibilities', {
-        enterMode: CKEDITOR.ENTER_BR,
-        on: {
-            instanceReady: function(evt) {
-                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
-                    CKEDITOR.instances['main_responsibilities'].setReadOnly();
-                }
-            }
-        }
-    });
-    CKEDITOR.replace( 'tasks', {
-        enterMode: CKEDITOR.ENTER_BR,
-        on: {
-            instanceReady: function(evt) {
-                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> != 1){
-                    CKEDITOR.instances['tasks'].setReadOnly();
-                }
-
-                $('.overlay').fadeOut(); // hapus overlay
-            }
-        }
-    });
-
     /* -------------------------------------------------------------------------- */
     /*                            form input variables                            */
     /* -------------------------------------------------------------------------- */
@@ -138,4 +82,11 @@
     // division, department, and position filter and validator
     var select_department = $('#departementForm');
     var select_divisi = $('#divisionForm');
+
+    // variable for ckeditor
+    var cke_ska = "";
+    var cke_req_special = "";
+    var cke_outline = "";
+    var cke_main_responsibilities = "";
+    var cke_tasks = "";
 </script>
