@@ -69,12 +69,14 @@
         input_jpchoose.removeClass('is-valid'); // remove class invalid
         input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         if($(this).val() != ""){
-            // ambil data mpp dan set mpp ke form
-            getNoi($(this).val());
+            getNoi($(this).val()); // ambil data mpp dan set mpp ke form
+            getInterviewer($(this).val())// ambil data interviewer
 
             input_jpchoose.addClass('is-valid'); // remove class invalid
             input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
+            removeInterviewer(); // hapus interviewer
+
             $('#noiReq').val('-');
             input_mpp.val(''); // kosongkan value mpp
             input_mpp.attr('max', '1');
@@ -90,7 +92,7 @@
     });
 
     //validate mpp request
-    input_mpp.on('keyup', function(){
+    input_mpp.on('keyup change', function(){
         input_mpp.removeClass('is-invalid');
         input_mpp.removeClass('valid');
         input_mpp.siblings('.invalid-tooltip').remove();
@@ -440,23 +442,7 @@
             input_mpp.removeClass('valid');
             input_mpp.siblings('.invalid-tooltip').remove();
 
-            // hapus nama di interviewer 1 dan 2
-            $("#interviewer_name1").val("");
-            $("#interviewer_position1").val("");
-            $("#interviewer_name1").removeAttr('readonly');
-            $("#interviewer_name1").addClass('form-control');
-            $("#interviewer_name1").removeClass('form-control-plaintext');
-            $("#interviewer_position1").removeAttr('readonly');
-            $("#interviewer_position1").addClass('form-control');
-            $("#interviewer_position1").removeClass('form-control-plaintext');
-            $("#interviewer_name2").val("");
-            $("#interviewer_position2").val("");
-            $("#interviewer_name2").removeAttr('readonly');
-            $("#interviewer_name2").addClass('form-control');
-            $("#interviewer_name2").removeClass('form-control-plaintext');
-            $("#interviewer_position2").removeAttr('readonly');
-            $("#interviewer_position2").addClass('form-control');
-            $("#interviewer_position2").removeClass('form-control-plaintext');
+            removeInterviewer(); // hapus interviewer
 
             if($(this).val() != ""){
                 // validator
@@ -502,13 +488,14 @@
             input_mpp.removeClass('valid');
             input_mpp.siblings('.invalid-tooltip').remove();
 
+            removeInterviewer(); // hapus interviewer
+
             if($("#departementForm").val() != ""){
                 // validator
                 select_department.addClass('is-valid'); // remove class invalid
                 select_department.siblings('.invalid-tooltip').remove(); // remove class invalid
 
-                // get position and interviewer data
-                getPositionInterviewer(divisi, departemen);
+                getPosition(divisi, departemen); // get position and interviewer data
             } else {
                 // hapus interviewer 2
                 $("#interviewer_name2").val("");
@@ -557,8 +544,38 @@
         showMeJobProfile(id_posisi);
     });
 
+    // fungsi untuk mengolah departemen
+    function getDepartment(divisi, choose = ""){
+        $.ajax({
+            url: "<?php echo base_url('job_profile/ajax_getdepartement'); ?>",
+            data: {
+                divisi: divisi //kirim ke server php
+            },
+            method: "POST",
+            success: function(data) { //jadi nanti dia balikin datanya dengan variable data
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1 && <?= $position_my['hirarki_org']; ?> != "N"){
+                    select_department.removeAttr('disabled'); // hapus attribut disabled
+                }
+                select_department.empty().append('<option value="">Choose Department...</option>'); //kosongkan selection value dan tambahkan satu selection option
+
+                $.each(JSON.parse(data), function(i, v) {
+                    select_department.append('<option value="' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
+                });
+
+                // jika admin pilih valuenya
+                if(choose != ""){
+                    select_department.val(choose);
+                } else {
+                    // validator
+                    select_department.addClass('is-invalid'); // remove class invalid
+                    select_department.parent().append(msg_choose); // show error tooltip
+                }
+            }
+        });
+    }
+
     // function to get position and interviewer data
-    function getPositionInterviewer(divisi, departemen, choose = ""){
+    function getPosition(divisi, departemen, choose = ""){
         $.ajax({
             url: "<?= base_url('ptk/ajax_getPosition'); ?>",
             data: {
@@ -583,100 +600,71 @@
                 // validaotr
                 // input_jpchoose.addClass('is-invalid'); // remove class invalid
                 // input_jpchoose.parent().append(msg_choose); // show error tooltip
-
-                // get interviewer data
-                $.ajax({
-                    url: '<?= base_url("ptk/ajax_getInterviewer"); ?>',
-                    data: {
-                        divisi: divisi,
-                        department: departemen
-                    },
-                    method: "POST",
-                    success: function(data){
-                        let vya = JSON.parse(data);
-                        // cek apa ada data divheadnya
-                        if(vya.divhead == "" || vya.divhead == undefined || vya.divhead == null){
-                            // hapus attribut disabled
-                            $("#interviewer_name1").val("");
-                            $("#interviewer_position1").val("");
-                            $("#interviewer_name1").removeAttr('readonly');
-                            $("#interviewer_name1").addClass('form-control');
-                            $("#interviewer_name1").removeClass('form-control-plaintext');
-                            $("#interviewer_position1").removeAttr('readonly');
-                            $("#interviewer_position1").addClass('form-control');
-                            $("#interviewer_position1").removeClass('form-control-plaintext');
-                        } else {
-                            // taruh data interviewer dengan data divhead
-                            $("#interviewer_name1").val(vya.divhead.emp_name);
-                            $("#interviewer_position1").val(vya.divhead.position_name);
-                            $("#interviewer_name1").attr('readonly', true);
-                            $("#interviewer_name1").removeClass('form-control');
-                            $("#interviewer_name1").addClass('form-control-plaintext');
-                            $("#interviewer_position1").attr('readonly', true);
-                            $("#interviewer_position1").removeClass('form-control');
-                            $("#interviewer_position1").addClass('form-control-plaintext');
-                        }
-                        // cek apa ada data deptheadnya
-                        if(vya.depthead == "" || vya.depthead == undefined || vya.depthead == null){
-                            // hapus attribut disabled
-                            $("#interviewer_name2").val("");
-                            $("#interviewer_position2").val("");
-                            $("#interviewer_name2").removeAttr('readonly');
-                            $("#interviewer_name2").addClass('form-control');
-                            $("#interviewer_name2").removeClass('form-control-plaintext');
-                            $("#interviewer_position2").removeAttr('readonly');
-                            $("#interviewer_position2").addClass('form-control');
-                            $("#interviewer_position2").removeClass('form-control-plaintext');
-                        } else {
-                            // taruh data interviewer depthead
-                            $("#interviewer_name2").val(vya.depthead.emp_name);
-                            $("#interviewer_position2").val(vya.depthead.position_name);
-                            $("#interviewer_name2").attr('readonly', true);
-                            $("#interviewer_name2").removeClass('form-control');
-                            $("#interviewer_name2").addClass('form-control-plaintext');
-                            $("#interviewer_position2").attr('readonly', true);
-                            $("#interviewer_position2").removeClass('form-control');
-                            $("#interviewer_position2").addClass('form-control-plaintext');
-                        }
-                    },
-                    error: function(){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
-                        });
-                    }
-                });
             }
         });
     }
 
-    // fungsi untuk mengolah departemen
-    function getDepartment(divisi, choose = ""){
+    function getInterviewer(position){
+        // get interviewer data
         $.ajax({
-            url: "<?php echo base_url('job_profile/ajax_getdepartement'); ?>",
+            url: '<?= base_url("ptk/ajax_getInterviewer"); ?>',
             data: {
-                divisi: divisi //kirim ke server php
+                position: position
             },
             method: "POST",
-            success: function(data) { //jadi nanti dia balikin datanya dengan variable data
-                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1){
-                    select_department.removeAttr('disabled'); // hapus attribut disabled
-                }
-                select_department.empty().append('<option value="">Choose Department...</option>'); //kosongkan selection value dan tambahkan satu selection option
-
-                $.each(JSON.parse(data), function(i, v) {
-                    select_department.append('<option value="' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
-                });
-
-                // jika admin pilih valuenya
-                if(choose != ""){
-                    select_department.val(choose);
+            success: function(data){
+                let vya = JSON.parse(data);
+                // cek apa ada data approver1nya
+                if(vya.approver1 == "" || vya.approver1 == undefined || vya.approver1 == null){
+                    // hapus attribut disabled
+                    $("#interviewer_name1").val("");
+                    $("#interviewer_position1").val("");
+                    $("#interviewer_name1").removeAttr('readonly');
+                    $("#interviewer_name1").addClass('form-control');
+                    $("#interviewer_name1").removeClass('form-control-plaintext');
+                    $("#interviewer_position1").removeAttr('readonly');
+                    $("#interviewer_position1").addClass('form-control');
+                    $("#interviewer_position1").removeClass('form-control-plaintext');
                 } else {
-                    // validator
-                    select_department.addClass('is-invalid'); // remove class invalid
-                    select_department.parent().append(msg_choose); // show error tooltip
+                    // taruh data interviewer dengan data approver1
+                    $("#interviewer_name1").val(vya.approver1.emp_name);
+                    $("#interviewer_position1").val(vya.approver1.position_name);
+                    $("#interviewer_name1").attr('readonly', true);
+                    $("#interviewer_name1").removeClass('form-control');
+                    $("#interviewer_name1").addClass('form-control-plaintext');
+                    $("#interviewer_position1").attr('readonly', true);
+                    $("#interviewer_position1").removeClass('form-control');
+                    $("#interviewer_position1").addClass('form-control-plaintext');
                 }
+                // cek apa ada data approver2nya
+                if(vya.approver2 == "" || vya.approver2 == undefined || vya.approver2 == null){
+                    // hapus attribut disabled
+                    $("#interviewer_name2").val("");
+                    $("#interviewer_position2").val("");
+                    $("#interviewer_name2").removeAttr('readonly');
+                    $("#interviewer_name2").addClass('form-control');
+                    $("#interviewer_name2").removeClass('form-control-plaintext');
+                    $("#interviewer_position2").removeAttr('readonly');
+                    $("#interviewer_position2").addClass('form-control');
+                    $("#interviewer_position2").removeClass('form-control-plaintext');
+                } else {
+                    // taruh data interviewer approver2
+                    $("#interviewer_name2").val(vya.approver2.emp_name);
+                    $("#interviewer_position2").val(vya.approver2.position_name);
+                    $("#interviewer_name2").attr('readonly', true);
+                    $("#interviewer_name2").removeClass('form-control');
+                    $("#interviewer_name2").addClass('form-control-plaintext');
+                    $("#interviewer_position2").attr('readonly', true);
+                    $("#interviewer_position2").removeClass('form-control');
+                    $("#interviewer_position2").addClass('form-control-plaintext');
+                }
+            },
+            error: function(){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
+                });
             }
         });
     }
@@ -757,6 +745,26 @@
             $('#tab_jobProfile').fadeOut();
             $('#tab_orgChart').fadeOut();
         }
+    }
+
+    function removeInterviewer(){
+        // hapus nama di interviewer 1 dan 2
+        $("#interviewer_name1").val("");
+        $("#interviewer_position1").val("");
+        // $("#interviewer_name1").removeAttr('readonly');
+        $("#interviewer_name1").addClass('form-control');
+        $("#interviewer_name1").removeClass('form-control-plaintext');
+        // $("#interviewer_position1").removeAttr('readonly');
+        $("#interviewer_position1").addClass('form-control');
+        $("#interviewer_position1").removeClass('form-control-plaintext');
+        $("#interviewer_name2").val("");
+        $("#interviewer_position2").val("");
+        // $("#interviewer_name2").removeAttr('readonly');
+        $("#interviewer_name2").addClass('form-control');
+        $("#interviewer_name2").removeClass('form-control-plaintext');
+        // $("#interviewer_position2").removeAttr('readonly');
+        $("#interviewer_position2").addClass('form-control');
+        $("#interviewer_position2").removeClass('form-control-plaintext');
     }
 
     /* -------------------------------------------------------------------------- */

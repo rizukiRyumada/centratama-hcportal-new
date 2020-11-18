@@ -81,6 +81,22 @@ class Posisi_m extends CI_Model {
         $this->db->join($this->table_employee, "$this->table_employee.position_id = $this->table.id", 'left');
         return $this->db->get_where($this->table, array("$this->table_employee.position_id" => $id))->result_array();
     }
+
+    /**
+     * Siapakah approver dengan id_posisi
+     *
+     * @param  mixed $id_position
+     * @return void
+     */
+    public function whoApprover($id_position){
+        // ambil data my position
+        $my_position = $this->getOnceWhere(array("id" => $id_position));
+        //ambil data approver detailnya dan orangnya
+        $data_approver['approver1'] = $this->whoIsOnThisPosition($my_position['id_approver1'])[0];
+        $data_approver['approver2'] = $this->whoIsOnThisPosition($my_position['id_approver2'])[0];
+        
+        return $data_approver;
+    }
     
     /**
      * Siapakah atasan saya

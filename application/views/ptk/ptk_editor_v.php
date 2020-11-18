@@ -41,11 +41,11 @@
                 <label for="jobLevelForm" class="col-sm-4 col-form-label">Job Level</label>
                 <div class="col-sm-8">
                     <select id="jobLevelForm" name="job_level" class="custom-select" required 
-                    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
+                    <?php //if($this->session->userdata('role_id') == 1 || $userApp_admin == 1 || $position_my['hirarki_org'] == "N"): ?>
                         <?php // nothing ?>
-                    <?php else: ?>
-                        disabled
-                    <?php endif; ?>
+                    <?php //else: ?>
+                        <?// echo "disabled"; ?>
+                    <?php //endif; ?>
                     >
                         <option value="" >Select Job Level...</option>
                         <?php foreach($master_level as $v): ?>

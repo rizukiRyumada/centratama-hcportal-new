@@ -120,7 +120,8 @@
 
                 select_divisi.val(data.data.id_div); // taruh data division
                 getDepartment("div-"+data.data.id_div, data.data.id_dept); // get departemen dan pilih valuenya
-                getPositionInterviewer(data.data.id_div, data.data.id_dept, data.data.id_pos); // taruh data position dan interviewer
+                getPosition(data.data.id_div, data.data.id_dept, data.data.id_pos);
+                getInterviewer(data.data.id_pos)// ambil data interviewer
                 
                 // tampilkan Job Position chooser atau text
                 if(data.data.budget == 0) { // cek jika unbudgeted

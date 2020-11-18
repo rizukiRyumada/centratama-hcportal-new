@@ -270,18 +270,9 @@ class Ptk extends SpecialUserAppController {
      * @return void
      */
     function ajax_getInterviewer(){
-        // ambil variable divisi dan department
-        $divisi = $this->input->post('divisi');
-        $department = $this->input->post('department');
-
-        // ambil dept head dan division headnya
-        $divhead = $this->divisi_model->get_headById($divisi); // get division head
-        $depthead = $this->dept_model->get_headById($department); // get department head
-
-        echo(json_encode(array(
-            'divhead' => $divhead,
-            'depthead' => $depthead
-        )));
+        $position = $this->input->post('position'); // ambil data posisi
+        $approver = $this->posisi_m->whoApprover($position); // ambil data approver
+        echo json_encode($approver); // bawa kembali
     }
 
     /**
@@ -962,8 +953,8 @@ class Ptk extends SpecialUserAppController {
                 //     $data['division'] = $this->divisi_model->getDivisi(); // ambil division
                 // } else {
                     $data['division'] = $this->divisi_model->getOnceById($data['id_div']); // ambil division
-                    // $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
-                    $data['department'] = $this->dept_model->getAll(); // ambil departemen
+                    $data['department'] = $this->dept_model->getDetailById($data['id_dept']); // ambil departemen
+                    // $data['department'] = $this->dept_model->getAll(); // ambil departemen
                     $data['position'] = $this->posisi_m->getAllWhere(array('div_id' => $data['id_div'], 'dept_id' => $data['id_dept'])); // position
                 // }
 

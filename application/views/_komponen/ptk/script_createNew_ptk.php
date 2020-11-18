@@ -6,7 +6,7 @@
         let department = select_department.val();
 
         if(divisi != "" && department != ""){
-            getPositionInterviewer(divisi, department);
+            getPosition(divisi, department); // get position and interviewer data
         }
     });
 
