@@ -569,26 +569,20 @@ class Pmk_m extends CI_Model {
             'id_summary' => $id
         ))->row_array()['status'], true);
     }
-
+    
     /**
-     * get id status now pmk
+     * get status now summary and its detail with id_summary
      *
-     * @param  mixed $id_entity
-     * @param  mixed $id_div
-     * @param  mixed $id_dept
-     * @param  mixed $id_pos
-     * @param  mixed $id_time
-     * @return void
+     * @param  mixed $id_summary
+     * @return data detail status now of summary
      */
-    function getDetail_pmkStatusNow($id_entity, $id_div, $id_dept, $id_pos, $id_time){
-        $this->db->select('status_now');
-        return $this->db->get_where($this->table['main'], array(
-            'id_entity' => $id_entity,
-            'id_div'    => $id_div,
-            'id_dept'   => $id_dept,
-            'id_pos'    => $id_pos,
-            'id_time'   => $id_time
-        ))->row_array()['status_now'];
+    function getDetail_statusNowSummary($id_summary){
+        $this->db->select('status_now_id');
+        $id_status = $this->db->get_where($this->table['form_summary'], array(
+            'id_summary' => $id_summary
+        ))->row_array()['status_now_id'];
+
+        return $this->getOnceWhere_statusSummary(array('id' => $id_status));
     }
     
     /**

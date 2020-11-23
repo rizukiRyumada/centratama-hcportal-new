@@ -4,6 +4,15 @@
         enterMode: CKEDITOR.ENTER_BR,
         on: {
             instanceReady: function(evt) {
+                <?php if($is_akses == 0): ?>
+                    // CKEDITOR.instances['notes'].setReadOnly();
+                <?php endif; ?>
+                // set draft pesan untuk hc divhead
+                <?php if($position_my['id'] == 196): ?>
+                    <?php if(!empty($summary_notes)): ?>
+                        CKEDITOR.instances['notes'].setData("<?= $summary_notes[196]['text']; ?>");
+                    <?php endif; ?>
+                <?php endif; ?>
                 $('#ckeditor_loader').slideUp(); // sembunyikan loader
             }
         }
@@ -35,15 +44,21 @@
             }
             <?php $status = json_decode($v['status_now'], true); ?>
             // lihat statusnya untuk mengaktifkan atau menonaktifkan approval action
-            if((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 196 && <?= $position_my['id']; ?> != 1) || (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1)){
+            if(
+                (<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 1 && <?= $position_my['id']; ?> != 196) || 
+                (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || 
+                (<?= $status['status']['id_status']; ?> == 4 && (<?= $is_admin; ?> == 1 || <?= $this->session->userdata('role_id'); ?> == 1)) || 
+                (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 196) || 
+                (<?= $status['status']['id_status']; ?> == 6 && <?= $position_my['id']; ?> == 1)
+            ){
                 $('#chooser_recomendation<?= $v['id']; ?>').removeAttr('disabled');
-
                 // beri flag recomendation kalo sudah melalui tahap assessment
                 flag_recomendation[x] = {
                     id: '<?= $v['id']; ?>',
                     status: 1
                 };
                 x++;
+                counter_summaryEmployee++; // counter buat liat apa satu data employee ready untuk di summary action
             } else {
                 // beri flag recomendation kalo belum melalui tahap assessment
                 flag_recomendation[x] = {
@@ -52,6 +67,33 @@
                 };
                 x++;
             }
+            /**
+             * penjelasan if
+             * jika memenuhi id statusnya dengan hirarki orgnya
+             */
+            /* if(
+                (<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 1 && <?= $position_my['id']; ?> != 196) || 
+                (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || 
+                (<?= $status['status']['id_status']; ?> == 4 && (<?= $is_admin; ?> == 1 || <?= $this->session->userdata('role_id'); ?> == 1)) || 
+                (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 196) || 
+                (<?= $status['status']['id_status']; ?> == 6 && <?= $position_my['id']; ?> == 1)
+            ){
+                counter_summaryEmployee++;
+            } */
+            // untuk mengaktifkan atau menonaktifkan extend dropdown list
+            /**
+             * jika recomendasinya ituS bukan extend nonaktifkan extendfor
+             */
+            if($('#chooser_extendfor<?= $v['id']; ?>').val() != "" && 
+            (
+                (<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 1 && <?= $position_my['id']; ?> != 196) || 
+                (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || 
+                (<?= $status['status']['id_status']; ?> == 4 && (<?= $is_admin; ?> == 1 || <?= $this->session->userdata('role_id'); ?> == 1)) || 
+                (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 196) || 
+                (<?= $status['status']['id_status']; ?> == 6 && <?= $position_my['id']; ?> == 1)
+            )){
+                $('#chooser_extendfor<?= $v['id']; ?>').removeAttr('disabled');
+            }
             // untuk menampilkan entity new dropdown
             /**
              * Penjelasan if
@@ -59,26 +101,30 @@
              * 2. dilihat data contractnya apa dia genap ganjil dengan aritmatika modulus
              * 3. dilihat dari status per karyawan form pmk nya dan hirarki karyawan
              */
-            if(($('#chooser_entityNew<?= $v['id']; ?>').val() != "" && $('#chooser_entityNew<?= $v['id']; ?>').data('contract') % 2 == 0) && ((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 196 && <?= $position_my['id']; ?> != 1) || (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1))){
+            // if(($('#chooser_entityNew<?= $v['id']; ?>').val() != "" && $('#chooser_entityNew<?= $v['id']; ?>').data('contract') % 2 == 0) && ((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 196 && <?= $position_my['id']; ?> != 1) || (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1))){
+            if(($('#chooser_entityNew<?= $v['id']; ?>').val() != "" && $('#chooser_entityNew<?= $v['id']; ?>').data('contract') % 2 == 0) && 
+            (
+                (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || 
+                (<?= $status['status']['id_status']; ?> == 4 && (<?= $is_admin; ?> == 1 || <?= $this->session->userdata('role_id'); ?> == 1)) || 
+                (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 196) || 
+                (<?= $status['status']['id_status']; ?> == 6 && <?= $position_my['id']; ?> == 1)
+            )){
                 $('#chooser_entityNew<?= $v['id']; ?>').removeAttr('disabled');
-            }
-            // untuk mengaktifkan atau menonaktifkan extend dropdown list
-            /**
-             * jika recomendasinya ituS bukan extend nonaktifkan extendfor
-             */
-            if($('#chooser_extendfor<?= $v['id']; ?>').val() != "" && ((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 196 && <?= $position_my['id']; ?> != 1) || (<?= $status['status']['id_status']; ?> == 3 && <?= $position_my['id']; ?> == 196 && <?= $v['divisi_id']; ?> == 6) || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1))){
-                $('#chooser_extendfor<?= $v['id']; ?>').removeAttr('disabled');
-            }
-            /**
-             * penjelasan if
-             * jika memenuhi id statusnya dengan hirarki orgnya
-             */
-            if((<?= $status['status']['id_status']; ?> == 3 && "<?= $position_my['hirarki_org']; ?>" == "N" && <?= $position_my['id']; ?> != 1) || (<?= $status['status']['id_status']; ?> == 4 && <?= $position_my['id']; ?> == 196) || (<?= $status['status']['id_status']; ?> == 5 && <?= $position_my['id']; ?> == 1)){
-                counter_summaryEmployee++;
             }
         <?php endforeach;?>
 
-        // sembunyikan tombol submit dan notes jika ada employee yg masih belum selesai assessmentnya
+        <?php if($is_akses == 1): ?>
+            $('#button_submit').removeAttr('disabled');
+        <?php else: ?>
+            toastr["error"]("You can't submit this summary form.", "Access Unavailable"); // tampilkan toastr error
+
+            // liat di masing-masing pesan summary kalo kosong semua jangan di hide
+            <?php if(!empty($summary_notes)): ?>
+                $('#container_notes').fadeOut();
+            <?php endif; ?>
+        <?php endif; ?>
+
+        // set notes nya read-only jika ada employee yg masih belum selesai assessmentnya
         if(counter_summary != counter_summaryEmployee){
             let retryCount = 0;
             var delayedSetReadOnly = function(){
@@ -102,10 +148,11 @@
             processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div><p class="m-0">Retrieving Data...</p>',
             zeroRecords: '<p class="m-0 text-danger font-weight-bold">No Data.</p>'
         },
-        pagingType: 'full_numbers',
+        paging: false,
+        // pagingType: 'full_numbers',
         // serverSide: true,
         // dom: 'Bfrtip',
-        deferRender: true,
+        // deferRender: true,
         // custom length menu
         lengthMenu: [
             [5, 10, 25, 50, 100, -1 ],
@@ -148,10 +195,9 @@
             if(contract % 2 == 0){
                 $('#chooser_entityNew'+id).removeAttr('disabled');
             }
-            $('#chooser_extendfor'+id).removeAttr('disabled');
             toastr["warning"]("Please choose extend for.", "Attention!"); // tampilkan toastr error
-
             pmk_updateApproval(id, ""); // update summary summary
+            $('#chooser_extendfor'+id).removeAttr('disabled');
         } else {
             // matikan extend value dan entity
             $('#chooser_entityNew'+id).attr('disabled', true);

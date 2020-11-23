@@ -165,22 +165,41 @@
                         <?php if(!empty($summary_notes)): ?>
                             <?php foreach($summary_notes as $key => $value): ?>
                                 <?php if(!empty($value['text'])): ?>
-                                    <div class="<?= $column; ?> bg-gray-light p-2 p-sm-3 m-1 border-radius-1">
-                                        <div class="form-group">
-                                            <label class="font-weight-bold mb-3" ><?= $value['by']; ?></label>
-                                            <div class="p-3 bg-white overflow-auto" style="height: 380px"><?= $value['text']; ?></div>
-                                        </div>
-                                        <div class="form-group m-0">
-                                            <div class="row">
-                                                <div class="col-lg-4 align-self-middle">
-                                                    <p class="m-0 font-weight-bold">Time:</p>
-                                                </div>
-                                                <div class="col-lg-8 align-self-middle">
-                                                    <p class="m-0"><?= date("j M'Y, H:i", $value['time']); ?></p>
+                                    <?php if($key != $position_my['id'] && $is_akses == 1): ?>
+                                        <div class="col bg-gray-light p-2 p-sm-3 m-1 border-radius-1">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold mb-3" ><?= $value['by']; ?></label>
+                                                <div class="p-3 bg-white overflow-auto" style="height: 380px"><?= $value['text']; ?></div>
+                                            </div>
+                                            <div class="form-group m-0">
+                                                <div class="row">
+                                                    <div class="col-lg-4 align-self-middle">
+                                                        <p class="m-0 font-weight-bold">Time:</p>
+                                                    </div>
+                                                    <div class="col-lg-8 align-self-middle">
+                                                        <p class="m-0"><?= date("j M'Y, H:i", $value['time']); ?></p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    <?php elseif($is_akses == 0): ?>
+                                        <div class="col bg-gray-light p-2 p-sm-3 m-1 border-radius-1">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold mb-3" ><?= $value['by']; ?></label>
+                                                <div class="p-3 bg-white overflow-auto" style="height: 380px"><?= $value['text']; ?></div>
+                                            </div>
+                                            <div class="form-group m-0">
+                                                <div class="row">
+                                                    <div class="col-lg-4 align-self-middle">
+                                                        <p class="m-0 font-weight-bold">Time:</p>
+                                                    </div>
+                                                    <div class="col-lg-8 align-self-middle">
+                                                        <p class="m-0"><?= date("j M'Y, H:i", $value['time']); ?></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
                                 <?php $x++; endif; ?>
                             <?php endforeach;?>
                         <?php endif; ?>
@@ -188,9 +207,15 @@
                             <label></label>
                             <textarea class="form-control" rows="3" placeholder="Enter your notes..."></textarea>
                         </div> -->
-                        <div class="col-lg bg-gray p-2 p-sm-3 m-1 border-radius-1">
+                        <div id="container_notes" class="col-lg bg-gray p-2 p-sm-3 m-1 border-radius-1">
                             <div class="form-group">
-                                <label class="font-weight-bold mb-3" ><?= $position_my['position_name']; ?></label>
+                                <label class="font-weight-bold mb-3" >
+                                    <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
+                                        HC Division Head Draft Notes*
+                                    <?php else: ?>
+                                        <?= $position_my['position_name']; ?>                                        
+                                    <?php endif; ?>
+                                </label>
                                 <textarea class="form-control" name="notes" rows="3" placeholder="Enter your notes..."></textarea>
                             </div>
                             <div id="ckeditor_loader" class="form-group">
@@ -216,7 +241,7 @@
                 <div class="row justify-content-end">
                     <div class="col-lg-4">
                         <div class="btn-group w-100">
-                            <button id="button_submit" class="btn btn-lg btn-success"><i class="fas fa-paper-plane"></i> Submit</button>
+                            <button id="button_submit" class="btn btn-lg btn-success" disabled><i class="fas fa-paper-plane"></i> Submit</button>
                         </div>
                     </div>
                 </div>

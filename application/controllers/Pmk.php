@@ -256,43 +256,6 @@ class Pmk extends SpecialUserAppController {
         
 		$this->load->view('main_v', $data);
     }
-    
-    /**
-     * summary function to view per division
-     *
-     * @return void
-     */
-    function summary(){
-        $position_my = $this->posisi_m->getMyPosition(); // ambil data my position
-        // cek akses apa user ini diperbolehkan akses summary
-        $this->cekAkses_summary($position_my);
-        
-        // ambil detail divisi
-        $detail_divisi = $this->divisi_model->getOnceById($this->input->get('div'));
-        $detail_divisi['divhead_name'] = $this->employee_m->getDetails_employee($detail_divisi['nik_div_head'])['emp_name']; // ambil nama divhead
-        
-        // summary data
-        $data['divisi'] = $detail_divisi;
-        $data['id_div'] = $this->input->get('div');
-        $data['status_summary'] = $this->_general_m->getAll('id, name_text', $this->table['summary_status'], array());
-
-        // main data
-		$data['sidebar'] = getMenu(); // ambil menu
-		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
-		$data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->page_title['summary'];
-		$data['load_view'] = 'pmk/summary_index_pmk_v';
-		// additional styles and custom script
-        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
-		$data['custom_styles'] = array('pmk_styles');
-        $data['custom_script'] = array(
-            'plugins/datatables/script_datatables',
-            'plugins/daterange-picker/script_daterange-picker',
-            'pmk/script_summary_pmk'
-        );
-        
-		$this->load->view('main_v', $data);
-    }
 
     /**
      * summary process
@@ -307,18 +270,24 @@ class Pmk extends SpecialUserAppController {
         $data['summary'] = $data_summary['summary']; // summary identities
         $data['pa_year'] = $data_summary['pa_year']; // data year pa
         $data['entity'] = $this->entity_m->getAll_notAtAll(); // semua data entity
+        $data['is_admin'] = $this->userApp_admin; // flag admin
+        $data['summary_notes'] = json_decode($data['summary']['notes'], true); // decode summary notes
+        unset($data['summary']['notes']); // hapus data summary notes
 
         // ambil data my position
         $position_my = $this->posisi_m->getMyPosition();
-        $data['position_my'] =  $position_my; 
+        $data['position_my'] =  $position_my;
 
+        // ambil status now summary
+        $status_now = $this->pmk_m->getDetail_statusNowSummary($data['id_summary']);
         // cek akses buat ngubah summary action, ngisi notes dan submit summary
-        if(($position_my['hirarki_org'] == "N" && $position_my['id'] != 196 && $position_my['id'] != 1) ||
-           ($position_my['id'] == 196) ||
-           ($position_my['id'] == 1)){
-            $data['is_akses'] = 1;
+        if(((($this->userApp_admin == 1 && $position_my['div_id'] == 6) || $this->session->userdata('role_id') == 1) && $status_now['id'] == "pmksum-02") || 
+           (($position_my['hirarki_org'] == "N" && $position_my['id'] != 196 && $position_my['id'] != 1) && $status_now['id'] == "pmksum-01") ||
+           ($position_my['id'] == 196 && $status_now['id'] == "pmksum-03") ||
+           ($position_my['id'] == 1 && $status_now['id'] == "pmksum-04")){
+            $data['is_akses'] = 1; // beri akses
         } else {
-            $data['is_akses'] = 0;
+            $data['is_akses'] = 0; // jangan beri akses
         }
 
         // main data
@@ -715,13 +684,13 @@ class Pmk extends SpecialUserAppController {
 
             // cek hirarki
             if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){ // apakah dia admin?
-                $where .= "status_now_id='pmksum-01' OR status_now_id='pmksum-02' OR status_now_id='pmksum-03'";
+                $where .= "status_now_id='pmksum-02'";
             } elseif($position_my['id'] == 196){ // apakah dia hc divhead?
                 // $status = "pmksum-02";
-                $where .= "status_now_id='pmksum-02' OR (status_now_id='pmksum-01' AND id_div='6')";
+                $where .= "status_now_id='pmksum-03' OR (status_now_id='pmksum-01' AND id_div='6')";
             } elseif($position_my['id'] == 1){ // apakah dia CEO?
                 // $status = "pmksum-03";
-                $where .= "status_now_id='pmksum-03'";
+                $where .= "status_now_id='pmksum-04'";
             } elseif($position_my['hirarki_org'] == "N"){ // apakah dia divhead?
                 // cek akses buat N
                 if($position_my['div_id'] != $divisi){
@@ -1267,17 +1236,25 @@ class Pmk extends SpecialUserAppController {
         }
         // atur status now
         if($whoami['position_id'] == 196){
-            $summary_status_now_id = "pmksum-03";
+            $summary_status_now_id = "pmksum-04";
             $summary_status_text = "Summary form was submitted by HC Divhead.";
             $summary_notes[$whoami['position_id']]['text'] = $notes;
             $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
             $summary_notes[$whoami['position_id']]['time'] = time();
         } elseif($whoami['position_id'] == 1){
-            $summary_status_now_id = "pmksum-04";
+            $summary_status_now_id = "pmksum-05";
             $summary_status_text = "Contract Evaluation has been Completed.";
             $summary_notes[$whoami['position_id']]['text'] = $notes;
             $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
             $summary_notes[$whoami['position_id']]['time'] = time();
+        } elseif(($this->userApp_admin == 1 && $whoami['div_id'] == 6) || $this->session->userdata('role_id') == 1){
+            // ambil datanya si 196
+            $whois196 = $this->posisi_m->getOnceWhere(array('id' => 196)); // ambil keterangan data 196
+            $summary_status_now_id = "pmksum-03";
+            $summary_status_text = "Summary form was submitted by OD Department Head.";
+            $summary_notes[$whois196['id']]['text'] = $notes;
+            $summary_notes[$whois196['id']]['by'] = $whois196['position_name'];
+            $summary_notes[$whois196['id']]['time'] = time();
         } elseif($whoami['hirarki_org'] == "N"){
             $summary_status_now_id = "pmksum-02";
             $summary_status_text = "Summary form was submitted by N.";
@@ -1293,7 +1270,7 @@ class Pmk extends SpecialUserAppController {
             'by' => $whoami['emp_name'],
             'nik' => $whoami['nik'],
             'time' => time(),
-            'text' => $summary_status_text
+            'text' => $notes."<br/><br/>".$summary_status_text
         );
         // prepare updated summary data
         $update_pmkSummary = array(
@@ -1311,10 +1288,13 @@ class Pmk extends SpecialUserAppController {
             $status_new = json_decode($v['status'], true);
             // beri status now id sesuai dengan siapa yang menilai
             if($whoami['position_id'] == 196){
-                $status_now_id = 5;
+                $status_now_id = 6;
                 $status_text = $notes;
             } elseif($whoami['position_id'] == 1){
-                $status_now_id = 7;
+                $status_now_id = 8;
+                $status_text = $notes;
+            } elseif(($this->userApp_admin == 1 && $whoami['div_id'] == 6) || $this->session->userdata('role_id') == 1){
+                $status_now_id = 5;
                 $status_text = $notes;
             } elseif($whoami['hirarki_org'] == "N"){
                 $status_now_id = 4;
