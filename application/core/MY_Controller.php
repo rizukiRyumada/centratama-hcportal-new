@@ -39,7 +39,7 @@ class MainController extends MY_Controller {
 
     protected function cekUserAppAdmin(){
         // cek buat userapp admin di menusub health report
-        if($this->session->userdata('role_id') == 2){
+        if($this->session->userdata('role_id') == 2 || $this->session->userdata('role_id') == 1){
             // get menu id sekaligus ini daftar aplikasi
             $id_menu = $this->_general_m->getOnce('id_menu', 'user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
             $value = $this->_general_m->getRow('user_userapp_admins', array(
