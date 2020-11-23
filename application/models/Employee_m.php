@@ -242,10 +242,24 @@ class Employee_m extends CI_Model {
      */
     function check_empPhoto($nik){
         // TODO pake is_readable();
-        $file = base_url('/assets/img/employee/'.$nik.'.jpeg');
+        $file = base_url('/assets/img/employee/'.$nik.'.jpg');
         $file_headers = @get_headers($file);
         // PRODUCTION error sometimes file_headers empty
         // PRODUCTION get employee images on user-img path
+
+        // echo(is_readable($file));
+        // echo('<br>');
+        // echo('<br>');
+        // echo($file);
+        // exit;
+        // if(is_readable($file)) {
+        //     return true;
+        // }
+        // else {
+        //     return false;
+        // }
+
+        // cek alamat tidak error
         if($file_headers[0] == 'HTTP/1.1 404 Not Found' || $file_headers[0] == 'HTTP/1.0 500 Internal Server Error' || $file_headers[0] == 'HTTP/1.1 500 Internal Server Error') {
             return false;
         }
