@@ -236,13 +236,13 @@ class Pmk_m extends CI_Model {
         if($showhat == 0){ // ambil data mytask
             // if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1 || $position_my['id'] == 1){
             if($position_my['hirarki_org'] == "N") {
-                $where .= " AND status_now_id = '8'";
+                $where .= " AND status_now_id = '9'";
             } elseif($position_my['hirarki_org'] == "N-1"){
                 $where .= " AND (status_now_id = '2' OR status_now_id = '1')";
             } elseif($position_my['hirarki_org'] == "N-2"){
                 //cek jika dia admin
                 if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
-                    $where .= " AND (status_now_id = '1' OR status_now_id = '8')";
+                    $where .= " AND (status_now_id = '1' OR status_now_id = '9')";
                 } else {
                     $where .= " AND (status_now_id = '1')";
                 }
@@ -705,6 +705,22 @@ class Pmk_m extends CI_Model {
      */
     function getRow_form($nik, $contract){
         return $this->db->from($this->table['main'])->like('id', $nik.str_pad($contract, 2, "0", STR_PAD_LEFT), 'after')->get()->num_rows();
+    }
+    
+    /**
+     * get status summary before status now id
+     *
+     * @param  mixed $status_now_id
+     * @return void
+     */
+    function getStatusBefore($status_now_id){
+        $result = array(); $y = 0;
+        for($x = 1; $x < substr($status_now_id, 8, 1); $x++){ // pecahkan angka terakhir summary status
+            $result[$y] = $this->db->select('id, pic_name')->get_where($this->table['status_summary'], array('id' => 'pmksum-0'.$x))->row_array();
+            $y++;
+        }
+
+        return $result;
     }
 
     /**

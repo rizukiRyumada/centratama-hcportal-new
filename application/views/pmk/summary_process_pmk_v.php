@@ -165,7 +165,7 @@
                         <?php if(!empty($summary_notes)): ?>
                             <?php foreach($summary_notes as $key => $value): ?>
                                 <?php if(!empty($value['text'])): ?>
-                                    <?php if($key != $position_my['id'] && $is_akses == 1): ?>
+                                    <?php if($key != $whoami && $is_akses == 1): ?>
                                         <div class="col bg-gray-light p-2 p-sm-3 m-1 border-radius-1">
                                             <div class="form-group">
                                                 <label class="font-weight-bold mb-3" ><?= $value['by']; ?></label>
@@ -228,6 +228,8 @@
                     </div>
                     <!-- data summary yang diperlukan -->
                     <input type="hidden" name="id_summary">
+                    <input type="hidden" name="action">
+                    <input type="hidden" name="revise_to">
                 </form>
             </div>
         </div>
@@ -241,9 +243,50 @@
                 <div class="row justify-content-end">
                     <div class="col-lg-4">
                         <div class="btn-group w-100">
-                            <button id="button_submit" class="btn btn-lg btn-success" disabled><i class="fas fa-paper-plane"></i> Submit</button>
+                            <button class="button-action btn btn-lg btn-success" data-action="1" disabled><i class="fas fa-paper-plane" ></i> Approve</button>
+                            <?php if($summary['status_now_id'] != "pmksum-01"): ?>
+                                <button class="button-action btn btn-lg btn-warning" data-action="0" disabled><i class="fas fa-edit" ></i> Revise</button>
+                            <?php endif; ?>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal pilih dimana mau di mundurkan -->
+<div id="modal_revise" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_reviseLabel">Revise Summary</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <p class="m-0">Address revise to...</p>
+                </div>
+                <div class="form-group">
+                    <!-- <label>Minimal</label> -->
+                    <select class="form-control select2" style="width: 100%;" name="revise_to">
+                        <!-- <option value="" selected="selected">Choose to who?</option> -->
+                        <optgroup label="Revise to who?">
+                            <?php if(!empty($status_before)): ?>
+                                <?php foreach($status_before as $v): ?>
+                                    <option value="<?= $v['id']; ?>"><?= $v['pic_name']; ?></option>
+                                <?php endforeach;?>
+                            <?php endif; ?>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <button id="modal_btn_revise" type="button" class="btn btn-warning"><i class="fas fa-edit" ></i> Revise</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

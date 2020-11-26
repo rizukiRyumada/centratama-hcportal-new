@@ -205,7 +205,7 @@ class Employee_m extends CI_Model {
      * @return void
      */
     function is_divhead($nik){
-        return $this->db->get_where($this->table['division'], array('nik_div_head' => $nik))->row();
+        return $this->db->get_where($this->table['division'], array('nik_div_head' => $nik))->num_rows();
     }
     
     /**
@@ -241,7 +241,6 @@ class Employee_m extends CI_Model {
      * @return void
      */
     function check_empPhoto($nik){
-        // TODO pake is_readable();
         $file = base_url('/assets/img/employee/'.$nik.'.jpg');
         $file_headers = @get_headers($file);
         // PRODUCTION error sometimes file_headers empty

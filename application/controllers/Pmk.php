@@ -277,7 +277,20 @@ class Pmk extends SpecialUserAppController {
         // ambil data my position
         $position_my = $this->posisi_m->getMyPosition();
         $data['position_my'] =  $position_my;
-
+        $data['status_before'] = $this->pmk_m->getStatusBefore($data_summary['summary']['status_now_id']); // ambil status sebelumnya
+        // cari whoami
+        if($position_my['id'] == 1){
+            $data['whoami'] = 1;
+        } elseif($position_my['id'] == 196){
+            $data['whoami'] = 196;
+        } elseif(($this->userApp_admin == 1 && $position_my['div_id'] == 6) || $this->session->userdata('role_id') == 1){
+            $data['whoami'] = 196;
+        } elseif($position_my['hirarki_org'] == "N"){
+            $data['whoami'] = "N";
+        } else {
+            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+        }
+        
         // ambil status now summary
         $status_now = $this->pmk_m->getDetail_statusNowSummary($data['id_summary']);
         // cek akses buat ngubah summary action, ngisi notes dan submit summary
@@ -304,37 +317,6 @@ class Pmk extends SpecialUserAppController {
             // 'plugins/daterange-picker/script_daterange-picker',
             'plugins/ckeditor/script_ckeditor',
             'pmk/script_summary_process_pmk'
-        );
-        
-		$this->load->view('main_v', $data);
-    }
-    
-    /**
-     * summary process, the data loaded using ajax
-     *
-     * @return void
-     */
-    function summary_process_ajax(){
-        // $id_summary = $this->input->get('id');
-
-        // print_r($id_summary);
-
-        // summary data
-        $data['id_summary'] = $this->input->get('id');
-
-        // main data
-		$data['sidebar'] = getMenu(); // ambil menu
-		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
-		$data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = $this->page_title['summary'];
-		$data['load_view'] = 'pmk/summary_process_pmk_v_ajax';
-		// additional styles and custom script
-        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
-		// $data['custom_styles'] = array('pmk_styles');
-        $data['custom_script'] = array(
-            'plugins/datatables/script_datatables',
-            // 'plugins/daterange-picker/script_daterange-picker',
-            'pmk/script_summary_process_pmk_ajax'
         );
         
 		$this->load->view('main_v', $data);
@@ -453,14 +435,14 @@ class Pmk extends SpecialUserAppController {
                         if($emp_data['hirarki_org'] == "Functional-div" || $emp_data['hirarki_org'] == "Functional-adm" ||$emp_data['hirarki_org'] == "N-1"){
                             $data_pmk[$x]['status'] = json_encode([
                                 0 => [
-                                    'id_status' => 8,
+                                    'id_status' => 9,
                                     'by' => 'system',
                                     'nik' => '',
                                     'time' => time(),
                                     'text' => 'Form Generated and the assessment for this employee adressed to Division Head.'
                                 ]
                             ]);
-                            $data_pmk[$x]['status_now_id'] = 8;
+                            $data_pmk[$x]['status_now_id'] = 9;
                         } else {
                             $data_pmk[$x]['status'] = json_encode([
                                 0 => [
@@ -476,14 +458,14 @@ class Pmk extends SpecialUserAppController {
                     } else { // kalo approver 1 dan 2 nya gaada kirim ke divhead
                         $data_pmk[$x]['status'] = json_encode([
                             0 => [
-                                'id_status' => 8,
+                                'id_status' => 9,
                                 'by' => 'system',
                                 'nik' => '',
                                 'time' => time(),
-                                'text' => 'The System cannot found approver 1, so the assessment for this employee adressed to Division Head.'
+                                'text' => 'Form Generated and the assessment for this employee adressed to Division Head.'
                             ]
                         ]);
-                        $data_pmk[$x]['status_now_id'] = 8;
+                        $data_pmk[$x]['status_now_id'] = 9;
                     }
                     $data_pmk[$x]['created'] = time();
                     $data_pmk[$x]['modified'] = time();
@@ -596,7 +578,6 @@ class Pmk extends SpecialUserAppController {
             'counter_inactive' => $counter_inactive,
             'counter_new' => $counter_new
         ]));
-        // simpan data pmk di database
     }
     
     /**
@@ -1200,6 +1181,8 @@ class Pmk extends SpecialUserAppController {
      * @return void
      */
     function updateSummaryProcess(){
+        $action = $this->input->post('action');
+        $revise_to = $this->input->post('revise_to');
         $notes = $this->input->post('notes');
         $id_summary = $this->input->post('id_summary');
 
@@ -1234,35 +1217,64 @@ class Pmk extends SpecialUserAppController {
                 )
             );
         }
-        // atur status now
-        if($whoami['position_id'] == 196){
-            $summary_status_now_id = "pmksum-04";
-            $summary_status_text = "Summary form was submitted by HC Divhead.";
-            $summary_notes[$whoami['position_id']]['text'] = $notes;
-            $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
-            $summary_notes[$whoami['position_id']]['time'] = time();
-        } elseif($whoami['position_id'] == 1){
-            $summary_status_now_id = "pmksum-05";
-            $summary_status_text = "Contract Evaluation has been Completed.";
-            $summary_notes[$whoami['position_id']]['text'] = $notes;
-            $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
-            $summary_notes[$whoami['position_id']]['time'] = time();
-        } elseif(($this->userApp_admin == 1 && $whoami['div_id'] == 6) || $this->session->userdata('role_id') == 1){
-            // ambil datanya si 196
-            $whois196 = $this->posisi_m->getOnceWhere(array('id' => 196)); // ambil keterangan data 196
-            $summary_status_now_id = "pmksum-03";
-            $summary_status_text = "Summary form was submitted by OD Department Head.";
-            $summary_notes[$whois196['id']]['text'] = $notes;
-            $summary_notes[$whois196['id']]['by'] = $whois196['position_name'];
-            $summary_notes[$whois196['id']]['time'] = time();
-        } elseif($whoami['hirarki_org'] == "N"){
-            $summary_status_now_id = "pmksum-02";
-            $summary_status_text = "Summary form was submitted by N.";
-            $summary_notes[$whoami['hirarki_org']]['text'] = $notes;
-            $summary_notes[$whoami['hirarki_org']]['by'] = $whoami['position_name'];
-            $summary_notes[$whoami['hirarki_org']]['time'] = time();
-        } else {
-            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+        
+        // cek jika actionnya submit atau revise
+        if($action == 0){ // jika actionnya revise
+            // atur status now
+            if($whoami['position_id'] == 196){
+                $summary_status_now_id = $revise_to;
+                $summary_status_text = "Summary form was Revised by HC Divhead.";
+                $summary_notes[$whoami['position_id']]['text'] = $notes;
+                $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
+                $summary_notes[$whoami['position_id']]['time'] = time();
+            } elseif($whoami['position_id'] == 1){
+                $summary_status_now_id = $revise_to;
+                $summary_status_text = "Summary form was Revised by CEO.";
+                $summary_notes[$whoami['position_id']]['text'] = $notes;
+                $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
+                $summary_notes[$whoami['position_id']]['time'] = time();
+            } elseif(($this->userApp_admin == 1 && $whoami['div_id'] == 6) || $this->session->userdata('role_id') == 1){
+                // ambil datanya si 196
+                $whois196 = $this->posisi_m->getOnceWhere(array('id' => 196)); // ambil keterangan data 196
+                $summary_status_now_id = $revise_to;
+                $summary_status_text = "Summary form was Revised by OD Department Head.";
+                $summary_notes[$whois196['id']]['text'] = $notes;
+                $summary_notes[$whois196['id']]['by'] = $whois196['position_name'];
+                $summary_notes[$whois196['id']]['time'] = time();
+            } else {
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            }
+        } else { // jika actionnya approve
+            // atur status now
+            if($whoami['position_id'] == 196){
+                $summary_status_now_id = "pmksum-04";
+                $summary_status_text = "Summary form was submitted by HC Divhead.";
+                $summary_notes[$whoami['position_id']]['text'] = $notes;
+                $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
+                $summary_notes[$whoami['position_id']]['time'] = time();
+            } elseif($whoami['position_id'] == 1){
+                $summary_status_now_id = "pmksum-05";
+                $summary_status_text = "Contract Evaluation has been Completed.";
+                $summary_notes[$whoami['position_id']]['text'] = $notes;
+                $summary_notes[$whoami['position_id']]['by'] = $whoami['position_name'];
+                $summary_notes[$whoami['position_id']]['time'] = time();
+            } elseif(($this->userApp_admin == 1 && $whoami['div_id'] == 6) || $this->session->userdata('role_id') == 1){
+                // ambil datanya si 196
+                $whois196 = $this->posisi_m->getOnceWhere(array('id' => 196)); // ambil keterangan data 196
+                $summary_status_now_id = "pmksum-03";
+                $summary_status_text = "Summary form was submitted by OD Department Head.";
+                $summary_notes[$whois196['id']]['text'] = $notes;
+                $summary_notes[$whois196['id']]['by'] = $whois196['position_name'];
+                $summary_notes[$whois196['id']]['time'] = time();
+            } elseif($whoami['hirarki_org'] == "N"){
+                $summary_status_now_id = "pmksum-02";
+                $summary_status_text = "Summary form was submitted by Division Head.";
+                $summary_notes[$whoami['hirarki_org']]['text'] = $notes;
+                $summary_notes[$whoami['hirarki_org']]['by'] = $whoami['position_name'];
+                $summary_notes[$whoami['hirarki_org']]['time'] = time();
+            } else {
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            }
         }
         // update status summary
         $summary_status_new[array_key_last($summary_status_new)+1] = array(
@@ -1287,21 +1299,34 @@ class Pmk extends SpecialUserAppController {
         foreach($form as $v){
             $status_new = json_decode($v['status'], true);
             // beri status now id sesuai dengan siapa yang menilai
-            if($whoami['position_id'] == 196){
-                $status_now_id = 6;
-                $status_text = $notes;
-            } elseif($whoami['position_id'] == 1){
-                $status_now_id = 8;
-                $status_text = $notes;
-            } elseif(($this->userApp_admin == 1 && $whoami['div_id'] == 6) || $this->session->userdata('role_id') == 1){
-                $status_now_id = 5;
-                $status_text = $notes;
-            } elseif($whoami['hirarki_org'] == "N"){
-                $status_now_id = 4;
-                $status_text = $notes;
-            } else {
-                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            if($action == 0){ // jika actionnya revise
+                // cek kode revise to dan pasangkan statusnya dengan pmk form status
+                if($revise_to == "pmksum-01"){
+                    $status_now_id = 3;
+                } elseif($revise_to == "pmksum-02"){
+                    $status_now_id = 4;
+                } elseif($revise_to == "pmksum-03"){
+                    $status_now_id = 5;
+                } elseif($revise_to == "pmksum-04"){
+                    $status_now_id = 6;
+                } else {
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                }
+            } else { // jika actionnya approve
+                if($whoami['position_id'] == 196){
+                    $status_now_id = 6;
+                } elseif($whoami['position_id'] == 1){
+                    $status_now_id = 8;
+                } elseif(($this->userApp_admin == 1 && $whoami['div_id'] == 6) || $this->session->userdata('role_id') == 1){
+                    $status_now_id = 5;
+                } elseif($whoami['hirarki_org'] == "N"){
+                    $status_now_id = 4;
+                } else {
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                }
             }
+            $status_text = $notes."<br/><br/>".$summary_status_text; // status text buat di timeline
+
             // update status form karyawan
             $status_new[array_key_last($status_new)+1] = array(
                 'id_status' => $status_now_id,

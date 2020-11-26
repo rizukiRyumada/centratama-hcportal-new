@@ -8,10 +8,8 @@
                     // CKEDITOR.instances['notes'].setReadOnly();
                 <?php endif; ?>
                 // set draft pesan untuk hc divhead
-                <?php if($position_my['id'] == 196): ?>
-                    <?php if(!empty($summary_notes)): ?>
-                        CKEDITOR.instances['notes'].setData("<?= $summary_notes[196]['text']; ?>");
-                    <?php endif; ?>
+                <?php if(!empty($summary_notes)): ?>
+                    CKEDITOR.instances['notes'].setData("<?= $summary_notes[$whoami]['text']; ?>");
                 <?php endif; ?>
                 $('#ckeditor_loader').slideUp(); // sembunyikan loader
             }
@@ -114,7 +112,7 @@
         <?php endforeach;?>
 
         <?php if($is_akses == 1): ?>
-            $('#button_submit').removeAttr('disabled');
+            $('.button-action').removeAttr('disabled');
         <?php else: ?>
             toastr["error"]("You can't submit this summary form.", "Access Unavailable"); // tampilkan toastr error
 
@@ -136,6 +134,10 @@
             };
             setTimeout(delayedSetReadOnly, 50);
         }
+        
+        $(".select2").select2({
+            theme: 'bootstrap4'
+        });
     });
 
     var table = $('#table_summaryProcess').DataTable({
@@ -227,6 +229,8 @@
                     }
                 }
             }
+        } else {
+            pmk_updateApproval(id, value, "", extend_for); // update summary summary
         }
     });
 
@@ -254,14 +258,40 @@
     });
 
     // button submit summary
-    $('#button_submit').on('click', function() {
-        // TODO tambah validasi lihat status karyawan apa sudah memenuhi untuk seleksi atau tidak
+    var action = "";
+    $('.button-action').on('click', function() {
+        action = $(this).data('action');
+        // cek action
+        if(action == 1){ // jika submit
+            submit_summary(action);
+        } else { // jika revise
+            $("#modal_revise").modal('show'); // show modal revise
+        }
+    });
+    
+    // tombol revise setela
+    $('#modal_btn_revise').on('click', function(){
+        let revise_to = $('select[name="revise_to"]').val();
+        $("#modal_revise").modal('hide'); // hide modal revise
+        submit_summary(action, revise_to); // kirimkan action dan revise_to
+    });
+
+
+/* -------------------------------------------------------------------------- */
+/*                                  functions                                 */
+/* -------------------------------------------------------------------------- */
+
+    function submit_summary(action, revise_to = ""){
         // pesan error
         var msg_notes = '<div class="row error-message bg-danger py-2" ><div class="col text-center">Please fill your notes and the notes must contain atleast 2 character</div></div>';
         // div ckeditor selector
         var cke_notes = $('#cke_notes');
         // ambil note CKEDITOR
         const note = CKEDITOR.instances['notes'].getData();
+
+        // set form hidden action dan revise_to
+        $('input[name="action"]').val(action);
+        $('input[name="revise_to"]').val(revise_to);
         
         // hapus pesan error dulu
         cke_notes.parent().parent().parent().removeClass('border border-danger');
@@ -338,12 +368,8 @@
                     }
                 })
             }
-        }        
-    });
-
-/* -------------------------------------------------------------------------- */
-/*                                  function                                  */
-/* -------------------------------------------------------------------------- */
+        }
+    }
 
     // function untuk mengupdate summary
     function pmk_updateApproval(id, value, entity = "", extend_for = ""){
