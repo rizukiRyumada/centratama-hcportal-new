@@ -198,12 +198,18 @@ class Ptk extends SpecialUserAppController {
             $data['page_title'] = $this->page_title['form'];
             $data['load_view'] = 'ptk/createNew_ptk_v';
             // additional styles and custom script
-            $data['additional_styles'] = array('plugins/datepicker/styles_datepicker');
+            $data['additional_styles'] = array(
+                'plugins/datatables/styles_datatables',
+                'plugins/datepicker/styles_datepicker',
+                'plugins/jquery-uploadfile/styles'
+            );
             // $data['custom_styles'] = array();
             $data['custom_script'] = array(
+                'plugins/datatables/script_datatables', 
                 'plugins/jqueryValidation/script_jqueryValidation', 
                 'plugins/datepicker/script_datepicker', 
-                'plugins/ckeditor/script_ckeditor.php', 
+                'plugins/ckeditor/script_ckeditor',
+                'plugins/jquery-uploadfile/script',
                 'ptk/script_formvariable_ptk',
                 'ptk/script_createNew_ptk',
                 'ptk/script_validator_ptk',
@@ -263,6 +269,37 @@ class Ptk extends SpecialUserAppController {
 /* -------------------------------------------------------------------------- */
 /*                                AJAX Function                               */
 /* -------------------------------------------------------------------------- */
+    
+    /**
+     * ambil daftar employee yang terdaftar pada position
+     *
+     * @return void
+     */
+    function ajax_getEmployeeList(){
+        $position = $this->input->post('position');
+
+        // ambil employe yang ada di position ini
+        $employee = $this->posisi_m->whoIsOnThisPosition($position);
+        $list_employee = array(); $x = 0; // persiapkan list employee
+        foreach($employee as $k => $v){
+            $list_employee[$k] = array(
+                'value' => $v['nik'],
+                'text' => $v['emp_name']." [".$v['nik']."]"
+            );
+        }
+
+        // cek apa list employeenya kosong
+        if(!empty($list_employee)){
+            // sort by nama employee
+            usort($list_employee, function($a, $b) { return $a['text'] <=> $b['text']; }); // sort berdasarkan title menu
+        } else {
+            $list_employee = "";
+        }
+
+        echo(json_encode(array(
+            'data' => $list_employee
+        )));
+    }
         
     /**
      * get interviewer with ajax
@@ -273,6 +310,30 @@ class Ptk extends SpecialUserAppController {
         $position = $this->input->post('position'); // ambil data posisi
         $approver = $this->posisi_m->whoApprover($position); // ambil data approver
         echo json_encode($approver); // bawa kembali
+    }
+    
+    /**
+     * get job level via ajax
+     *
+     * @return void
+     */
+    function ajax_getJobLevel(){
+        $id_posisi = $this->input->post('id_posisi');
+        $detail_position = $this->posisi_m->getOnceWhere(array('id' => $id_posisi));
+        if(!empty($detail_position['job_grade'])){
+            $result_level = $this->posisi_m->whatLevelIsThis($detail_position['job_grade']);
+            if(!empty($result_level)){
+                $job_level = $result_level['id_level'];
+            } else {
+                $job_level = "";
+            }
+        } else {
+            $job_level = "";
+        }
+
+        echo(json_encode(array(
+            'data' => $job_level
+        ))) ;
     }
 
     /**
@@ -423,16 +484,15 @@ class Ptk extends SpecialUserAppController {
         // take division and department
         $divisi = $this->input->post('divisi');
         $departemen = $this->input->post('departemen');
+        $budget = (int)$this->input->post('budget');
         // get position
-        $posisi = $this->posisi_m->getAllWhere(array("div_id" => $divisi, "dept_id" => $departemen));
 
         // cari di masing2 data posisi untuk mendapatkan siapa aja yg ada di posisi ini
-        foreach($posisi as $k => $v){
-            $posisi_pmk = $this->posisi_m->howMuchOnThisPosition($v['id']);
-            // jika jumlah mppnya sama antara yang terisi dengan yang dibutuhkan, hapus datanya
-            if($posisi_pmk['filled'] == $posisi_pmk['needed'] || $posisi_pmk['filled'] > $posisi_pmk['needed']){
-                unset($posisi[$k]); // hapus terkain=t
-            }
+        if($budget != 2){ // jika budgetnya bukan replacement, pilih positionnya yang masih ada kuota tersedia
+            $posisi = $this->posisi_m->getAllWhere_mppAvailable(array("div_id" => $divisi, "dept_id" => $departemen));
+        } else {
+            $posisi = $this->posisi_m->getAllWhere(array("div_id" => $divisi, "dept_id" => $departemen));
+            // nothing
         }
         // bring back with json
         echo(json_encode($posisi));
@@ -496,6 +556,26 @@ class Ptk extends SpecialUserAppController {
         }
 
         echo(json_encode($status_data));
+    }
+
+    /**
+     * ajax function to refresh data files attachment
+     *
+     * @return void
+     */
+    function ajax_refreshListFiles(){
+        $file_session = $this->session->userdata('files_upload');
+        if(!empty($file_session)){
+            $counter_files = count($file_session);
+        } else {
+            $counter_files = 0;
+            $file_session = "";
+        }
+
+        echo json_encode(array(
+            'counter_files' => $counter_files,
+            'data' => $file_session
+        ));
     }
 
 /* -------------------------------------------------------------------------- */

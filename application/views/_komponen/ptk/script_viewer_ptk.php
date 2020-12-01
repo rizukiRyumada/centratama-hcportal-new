@@ -60,9 +60,9 @@
                 // replacement selector
                 if(data.data.replacement != ""){
                     input_replacement.attr('checked', true); // check replacement checkbox
-                    input_replacement_who.val(data.data.replacement); // isi kotak replacement
+                    select_replacement_who.val(data.data.replacement); // isi kotak replacement
                     if(<?= $is_edit; ?> == 1){
-                        input_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
+                        select_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
                     }
                 } else {
                     // nothing

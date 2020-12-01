@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="<?= base_url('/assets/vendor/node_modules/toastr/build/toastr.min.css'); ?>">
 <!-- select2 -->
 <link rel="stylesheet" href="<?= base_url('assets/vendor/node_modules/admin-lte/plugins/select2/css/select2.min.css'); ?>">
+<link rel="stylesheet" href="<?= base_url('/assets/vendor/node_modules/admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css'); ?>">
 <!-- custom css style -->
 <link rel="stylesheet" href="<?= base_url('/assets/css/main_styles.css'); ?>">
 

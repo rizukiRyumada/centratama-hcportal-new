@@ -51,6 +51,10 @@ div.input-group span.input-group-append button.btn{
 
 }
 
+.select2-container--bootstrap4 .select2-selection{
+    border-radius: 1.5em;
+}
+
 /* custom color and hover */
 .link-primary{
     color: #0072C6;

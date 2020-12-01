@@ -19,8 +19,14 @@
         input_mpp.removeClass('is-invalid');
         input_mpp.removeClass('valid');
         input_mpp.siblings('.invalid-tooltip').remove();
+        // remove input replacement_who validation class
+        select_replacement_who.siblings('.invalid-tooltip').remove(); // remove class invalid
+        select_replacement_who.removeClass('is-invalid'); // remove class invalid
+
+        get_jobLevel(""); // kosongkan job_level
         
         if($('input[name="budget"]:checked').val() == 0) { // cek jika unbudgeted
+            input_jpchoose.select2("destroy"); // hancurkan select2 job position choose
             input_jptext.fadeIn(); // tampilkan free text buat nulis nama job 
             input_jpchoose.hide(); // sembunyikan pilihan posisi job
             input_jpchoose.prop('selectedIndex',0);// kembalikan status ke default - position chooser
@@ -28,11 +34,13 @@
             // sembunyikan tab job Profile dan orgChart
             $('#tab_jobProfile').fadeOut();
             $('#tab_orgChart').fadeOut();
+            hide_selectReplacementWho();
 
             // remove valid and invalid class
             input_jpchoose.removeClass('is-valid').removeClass('is-invalid'); // remove class invalid
             input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
-        } else if($('input[name="budget"]:checked').val() == 1) { // cek jika budgeted
+        } else if($('input[name="budget"]:checked').val() == 1 || $('input[name="budget"]:checked').val() == 2) { // cek jika budgeted atau replacement
+            input_jpchoose.select2({theme: 'bootstrap4'}); // inisialisasi kalo job position choose itu select2
             input_jpchoose.fadeIn(); // tampilkan pilihan job position 
             input_jptext.hide(); // sembunyikan free text job profile
             input_jptext.val(''); // kosongkan kotak job_position_text
@@ -44,6 +52,23 @@
             // validator input jpchoose
             input_jpchoose.addClass('is-invalid'); // remove class invalid
             input_jpchoose.parent().append(msg_choose); // show error tooltip
+
+            // cek position untuk update list
+            let divisi = select_divisi.val();
+            let departemen = $("#departementForm").val();
+            let budget = $('input[name="budget"]:checked').val();
+            if(divisi == "" || departemen == ""){
+                // nothing
+            } else {
+                getPosition(divisi, departemen, "", budget); // get position and interviewer data
+            }
+
+            // script khusus budget replacement
+            if($('input[name="budget"]:checked').val() == 2){
+                get_selectReplacementWho(); // get employee for replacement_who from position and show it
+            } else {
+                hide_selectReplacementWho(); // hide replacement who
+            }
         }
     });
     // validate job profile free text
@@ -65,12 +90,14 @@
     });
     // validate job profile chooser
     input_jpchoose.on('change', function() {
+        let id_posisi = $(this).val();
         input_jpchoose.removeClass('is-invalid'); // remove class invalid
         input_jpchoose.removeClass('is-valid'); // remove class invalid
         input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
-        if($(this).val() != ""){
-            getNoi($(this).val()); // ambil data mpp dan set mpp ke form
-            getInterviewer($(this).val())// ambil data interviewer
+        if(id_posisi != ""){
+            getNoi(id_posisi); // ambil data mpp dan set mpp ke form
+            getInterviewer(id_posisi)// ambil data interviewer
+            // ambil data job_level dari job_grade di master position dan set job_levelnya di form
 
             input_jpchoose.addClass('is-valid'); // remove class invalid
             input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
@@ -88,6 +115,11 @@
 
             input_jpchoose.addClass('is-invalid'); // remove class invalid
             input_jpchoose.parent().append(msg_choose); // show error tooltip
+        }
+        get_jobLevel(id_posisi);
+        showMeJobProfile(id_posisi); // tampilkan job profile tab
+        if($('input[name="budget"]:checked').val() == 2){
+            get_selectReplacementWho(); // proses replacement_who
         }
     });
 
@@ -156,29 +188,17 @@
         }
     });
 
-    // Replacement form trigger
-    input_replacement.on('change', () => {
-        // remove validation class
-        input_replacement_who.siblings('.invalid-tooltip').remove(); // remove class invalid
-        input_replacement_who.removeClass('is-invalid'); // remove class invalid
-        if(input_replacement.prop("checked") == true) { // cek jika replacement check box dicek
-            input_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
-        } else if(input_replacement.prop("checked") == false) { // cek jika replacement check box tidak dicek
-            input_replacement_who.attr('disabled', true); // nonaktifkan kotak replacement who
-            input_replacement_who.val(''); // kosongkan kotak replacement who
-        }
-    });
     // Replacement who free text
-    input_replacement_who.on('keyup', function() {
+    select_replacement_who.on('change', function() {
         // remove validation class
-        input_replacement_who.siblings('.invalid-tooltip').remove(); // remove invalid tooltip
-        input_replacement_who.removeClass('is-invalid'); // remove class invalid
-        if(input_replacement_who.val() == ""){
-            $(input_replacement_who).addClass('is-invalid'); // add class invalid
-            $(input_replacement_who).parent().append(msg_fill); // show error tooltip
+        select_replacement_who.siblings('.invalid-tooltip').remove(); // remove invalid tooltip
+        select_replacement_who.removeClass('is-invalid'); // remove class invalid
+        if(select_replacement_who.val() == ""){
+            select_replacement_who.addClass('is-invalid'); // add class invalid
+            select_replacement_who.parent().append(msg_fill); // show error tooltip
         } else {
-            $(input_replacement_who).removeClass('is-invalid'); // remove class invalid
-            input_replacement_who.siblings('.invalid-tooltip').remove(); // remove invalid tooltip
+            select_replacement_who.removeClass('is-invalid'); // remove class invalid
+            select_replacement_who.siblings('.invalid-tooltip').remove(); // remove invalid tooltip
         }
     });
 
@@ -191,24 +211,24 @@
             input_resource_internalwho.slideDown(); // tampilkan input text internal_who
 
             // disable element yang tidak diperlukan
-            validate_empstats.attr('disabled', true);
-            validate_education.attr('disabled', true);
-            validate_sex.attr('disabled', true);
-            input_majoring.attr('disabled', true);
-            input_preferage.attr('disabled', true);
-            input_workexp.attr('disabled', true);
+            // validate_empstats.attr('disabled', true);
+            // validate_education.attr('disabled', true);
+            // validate_sex.attr('disabled', true);
+            // input_majoring.attr('disabled', true);
+            // input_preferage.attr('disabled', true);
+            // input_workexp.attr('disabled', true);
         } else if($('input[name="resources"]:checked').val() == "ext") { // cek jika external radio button
             input_resource_internalwho.slideUp(); // sembunyikan input text internal_who
             input_resource_internalwho.removeClass('is-invalid');
             input_resource_internalwho.siblings('.invalid-tooltip').remove();
 
             // hapus disable element 
-            validate_empstats.removeAttr('disabled');
-            validate_education.removeAttr('disabled');
-            validate_sex.removeAttr('disabled');
-            input_majoring.removeAttr('disabled');
-            input_preferage.removeAttr('disabled');
-            input_workexp.removeAttr('disabled');
+            // validate_empstats.removeAttr('disabled');
+            // validate_education.removeAttr('disabled');
+            // validate_sex.removeAttr('disabled');
+            // input_majoring.removeAttr('disabled');
+            // input_preferage.removeAttr('disabled');
+            // input_workexp.removeAttr('disabled');
         }
     });
     input_resource_internalwho.on('keyup', function() {
@@ -356,7 +376,7 @@
         }
     });
 
-    // validate interviewer
+    // validate interviewer 3
     // validate interviewer name
     input_interviewer_name.on('keyup change', function() {
         // hapus kelas validasi
@@ -413,6 +433,63 @@
             }
         }
     });
+    // validate interviewer 4
+    // validate interviewer name
+    input_interviewer_name2.on('keyup change', function() {
+        // hapus kelas validasi
+        input_interviewer_position2.removeClass('is-invalid'); // hapus kelas is invalid
+        input_interviewer_position2.siblings('.invalid-tooltip').remove();
+        input_interviewer_name2.removeClass('is-invalid'); // hapus kelas is invalid
+        input_interviewer_name2.siblings('.invalid-tooltip').remove();
+        if(input_interviewer_name2.val() != ""){
+            if(input_interviewer_position2.val() == ""){
+                input_interviewer_position2.addClass('is-invalid'); // tambah kelas invalid
+                input_interviewer_position2.parent().append(msg_fill); // tampilkan pesan error
+            } else {
+                // nothing
+            }
+        } else {
+            if(input_interviewer_position2.val() != ""){
+                if(input_interviewer_name2.val() == ""){
+                    input_interviewer_name2.addClass('is-invalid'); // tambah kelas invalid
+                    input_interviewer_name2.parent().append(msg_fill); // tampilkan pesan error
+                    msg_validate += "<li>Interviewer Name is empty</li>"; // pesan empty
+                    counter_validate++; // validate counter add
+                } else {
+                    // nothing
+                }
+            }
+        }
+    });
+    // validate interviewer position
+    input_interviewer_position2.on('keyup change', function() {
+        // hapus kelas validasi
+        input_interviewer_position2.removeClass('is-invalid'); // hapus kelas is invalid
+        input_interviewer_position2.siblings('.invalid-tooltip').remove();
+        input_interviewer_name2.removeClass('is-invalid'); // hapus kelas is invalid
+        input_interviewer_name2.siblings('.invalid-tooltip').remove();
+        if(input_interviewer_position2.val() != ""){
+            if(input_interviewer_name2.val() == ""){
+                input_interviewer_name2.addClass('is-invalid'); // tambah kelas invalid
+                input_interviewer_name2.parent().append(msg_fill); // tampilkan pesan error
+                msg_validate += "<li>Interviewer Position is empty is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            } else {
+                // nothing
+            }
+        } else {
+            if(input_interviewer_name2.val() != ""){
+                if(input_interviewer_position2.val() == ""){
+                    input_interviewer_position2.addClass('is-invalid'); // tambah kelas invalid
+                    input_interviewer_position2.parent().append(msg_fill); // tampilkan pesan error
+                    msg_validate += "<li>Interviewer Name is empty</li>"; // pesan empty
+                    counter_validate++; // validate counter add
+                } else {
+                    // nothing
+                }
+            }
+        }
+    });
 
     <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>
         // Filter Divisi
@@ -443,6 +520,7 @@
             input_mpp.siblings('.invalid-tooltip').remove();
 
             removeInterviewer(); // hapus interviewer
+            get_jobLevel(""); // kosongkan job_level
 
             if($(this).val() != ""){
                 // validator
@@ -470,6 +548,7 @@
             
             let divisi = select_divisi.val();
             let departemen = $("#departementForm").val();
+            let budget = $('input[name="budget"]:checked').val();
 
             // position
             input_jpchoose.attr('disabled', "true"); // hapus attribut disabled
@@ -489,13 +568,14 @@
             input_mpp.siblings('.invalid-tooltip').remove();
 
             removeInterviewer(); // hapus interviewer
+            get_jobLevel(""); // kosongkan job_level
 
             if($("#departementForm").val() != ""){
                 // validator
                 select_department.addClass('is-valid'); // remove class invalid
                 select_department.siblings('.invalid-tooltip').remove(); // remove class invalid
 
-                getPosition(divisi, departemen); // get position and interviewer data
+                getPosition(divisi, departemen, "", budget); // get position and interviewer data
             } else {
                 // hapus interviewer 2
                 $("#interviewer_name2").val("");
@@ -534,16 +614,6 @@
     //     }
     // });
 
-    /* -------------------------------------------------------------------------- */
-    /*                           Job Profile Tab Trigger                          */
-    /* -------------------------------------------------------------------------- */
-    // ambil data job profile ketika dropdown berubah
-    $("#positionInput").on('change', function() {
-        let id_posisi = $(this).children("option:selected").val();
-
-        showMeJobProfile(id_posisi);
-    });
-
     // fungsi untuk mengolah departemen
     function getDepartment(divisi, choose = ""){
         $.ajax({
@@ -574,15 +644,110 @@
         });
     }
 
+    // ambil joblevel
+    function get_jobLevel(id_posisi = ""){
+        if(id_posisi != ""){
+            $.ajax({
+                url: "<?= base_url('ptk/ajax_getJobLevel'); ?>",
+                data: {
+                    id_posisi: id_posisi
+                },
+                method: "POST",
+                beforeSend: function(){
+                    select_jobLevel.attr('disabled', true); // tambahkan attribut disabled
+                },
+                success: function(data){
+                    let vya = JSON.parse(data);
+                    if(vya.data == undefined || vya.data == null || vya.data == ""){
+                        select_jobLevel.val(""); // pilih yang kosong
+                    } else {
+                        select_jobLevel.removeAttr('disabled'); // hapus attribut disabled
+                        select_jobLevel.val(vya.data);
+                    }
+                },
+                error: function(){
+                    select_jobLevel.val(""); // pilih yang kosong
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
+                    });
+                }
+            });
+        } else {
+            select_jobLevel.attr('disabled', true); // tambahkan attribut disabled
+            select_jobLevel.val(""); // pilih value yang kosong
+        }
+    }
+
+    // mendapatkan employee ketika udh diisiin positionnya
+    function get_selectReplacementWho(){
+        // aktifkan form replacement who
+        $('#replace').slideDown(); //  tampilkan form replacement who
+        // select_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
+        // tambahkan tooltip fill replacement who
+        select_replacement_who.addClass('is-invalid'); // add class invalid
+        select_replacement_who.parent().append(msg_fill); // show error tooltip
+        select_replacement_who.select2({theme: 'bootstrap4'}); // inisialisasi kalo replacement_who itu select2
+        // tambahkan pilihan
+
+        let position = input_jpchoose.val();
+        // cek apa positionnya kosong kalo kosong ganti dengan pilihan select position first
+        if(position == "" || position == null || position == undefined){
+            select_replacement_who.attr('disabled', true); // nonaktifkan kotak replacement who
+            select_replacement_who.empty().append('<option selected value="">Select Position first</option>'); //kosongkan selection value dan tambahkan satu selection option
+        } else {
+            select_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
+
+            $.ajax({
+                url: "<?= base_url('ptk/ajax_getEmployeeList'); ?>",
+                data: {
+                    position: position
+                },
+                method: "POST",
+                beforeSend: function(){
+                    select_replacement_who.attr('disabled', true); // nonaktifkan kotak replacement who
+                },
+                success: function(data, status, jqXHR){
+                    select_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
+
+                    if(data == undefined || data == null || data == ""){
+                        // nothing
+                    } else {
+                        let vya = JSON.parse(data);
+                        select_replacement_who.empty().append('<option value="">Replacement who?</option>'); //kosongkan selection value dan tambahkan satu selection option
+
+                        $.each(vya.data, function(index, value){
+                            select_replacement_who.append('<option value="'+value.value+'">'+value.text+'</option>'); //kosongkan selection value dan tambahkan satu selection option
+                        });
+                    }
+                },
+                error: function(jqXHR, error){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
+                    });
+                }
+            });
+        }
+    }
+
     // function to get position and interviewer data
-    function getPosition(divisi, departemen, choose = ""){
+    function getPosition(divisi, departemen, choose = "", budget = ""){
         $.ajax({
             url: "<?= base_url('ptk/ajax_getPosition'); ?>",
             data: {
+                budget: budget,
                 divisi: divisi,
                 departemen: departemen
             },
             method: "POST",
+            beforeSend: function(){
+                if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1){
+                    input_jpchoose.attr('disabled', true); // hapus attribut disabled
+                }
+            },
             success: (data) => {
                 if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1){
                     input_jpchoose.removeAttr('disabled'); // hapus attribut disabled
@@ -604,6 +769,7 @@
         });
     }
 
+    // menambahkan interviewer dengan melihat position
     function getInterviewer(position){
         // get interviewer data
         $.ajax({
@@ -694,8 +860,18 @@
         });
     }
 
+    // hide replacement who and reset its value
+    function hide_selectReplacementWho(){
+        $('#replace').slideUp(); // sembunyikan form replacement who
+        // select_replacement_who.attr('disabled', true); // nonaktifkan kotak replacement who
+        select_replacement_who.empty().append('<option selected value="">Replacement who?</option>'); //kosongkan selection value dan tambahkan satu selection option
+        select_replacement_who.val(''); // kosongkan kotak replacement who
+        // select_replacement_who.select2("destroy"); // hancurkan select2 replacement_who
+    }
+
+    // function untuk mengaktifkan tab job profile
     function showMeJobProfile(id_posisi){
-        if(id_posisi != "" && $('input[name="budget"]:checked').val() == 1){
+        if(id_posisi != "" && ($('input[name="budget"]:checked').val() == 1 || $('input[name="budget"]:checked').val() == 2)){
             // tampilkan tab job Profile dan orgChart
             $('#tab_jobProfile').fadeIn();
             $('#tab_orgChart').fadeIn();
@@ -747,6 +923,7 @@
         }
     }
 
+    // function untuk menghapus interviewer 1 dan 2
     function removeInterviewer(){
         // hapus nama di interviewer 1 dan 2
         $("#interviewer_name1").val("");

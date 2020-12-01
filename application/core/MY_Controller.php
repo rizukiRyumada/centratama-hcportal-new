@@ -40,16 +40,21 @@ class MainController extends MY_Controller {
     protected function cekUserAppAdmin(){
         // cek buat userapp admin di menusub health report
         if($this->session->userdata('role_id') == 2 || $this->session->userdata('role_id') == 1){
-            // get menu id sekaligus ini daftar aplikasi
-            $id_menu = $this->_general_m->getOnce('id_menu', 'user_menu', array('url' => $this->uri->segment(1)))['id_menu'];
-            $value = $this->_general_m->getRow('user_userapp_admins', array(
-                'id_menu' => $id_menu,
-                'nik' => $this->session->userdata('nik')
-            ));
+            // get menu id sekaligus ini daftar aplikasi            
+            $result = $this->_general_m->getOnce('id_menu', 'user_menu', array('url' => $this->uri->segment(1)));
+            if(!empty($result)){
+                $id_menu = $result['id_menu'];
+                $value = $this->_general_m->getRow('user_userapp_admins', array(
+                    'id_menu' => $id_menu,
+                    'nik' => $this->session->userdata('nik')
+                ));
 
-            if($value > 0){
-                return 1; // tandai sebagai iya
-            } else {
+                if($value > 0){
+                    return 1; // tandai sebagai iya
+                } else {
+                    return 0; // tandai sebagai tidak
+                }
+            } else { // jika tidak ada menunya tandai aja sebagai tidak
                 return 0; // tandai sebagai tidak
             }
         } else { // untuk user lain

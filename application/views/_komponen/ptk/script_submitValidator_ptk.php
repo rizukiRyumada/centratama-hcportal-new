@@ -49,6 +49,13 @@
             } else {
                 // nothing
             }
+        } else if($('input[name="budget"]:checked').val() == 2){
+            if(select_replacement_who.val() == ""){
+                select_replacement_who.addClass('is-invalid'); // add class invalid
+                select_replacement_who.parent().append(msg_fill); // show error tooltip
+                msg_validate += "<li>Replacement is empty</li>"; // pesan empty
+                counter_validate++; // validate counter add
+            }
         } else {
             input_budget.parent().parent().parent().parent().removeClass('border-gray-light').addClass('border-danger');
             input_budget.addClass('is-invalid');
@@ -77,18 +84,6 @@
             } else {
                 // nothing
             }
-        }
-
-        // validate replacement form
-        if(input_replacement.prop("checked") == true) { // cek jika replacement check box dicek
-            if(input_replacement_who.val() == ""){
-                $(input_replacement_who).addClass('is-invalid'); // add class invalid
-                $(input_replacement_who).parent().append(msg_fill); // show error tooltip
-                msg_validate += "<li>Replacement is empty</li>"; // pesan empty
-                counter_validate++; // validate counter add
-            }
-        } else if(input_replacement.prop("checked") == false) { // cek jika replacement check box tidak dicek
-            // nothing
         }
 
         // validate resource form

@@ -38,6 +38,9 @@
                     <li class="nav-item" id="tab_orgChart" style="display: none;">
                         <a class="nav-link" id="custom-tabs-orgchart-tab" data-toggle="pill" href="#custom-tabs-orgchart" role="tab" aria-controls="custom-tabs-orgchart" aria-selected="false"><i class="fa fa-sitemap"></i> Organization Chart</a>
                     </li>
+                    <li class="nav-item" id="tab_attachment">
+                        <a class="nav-link" id="custom-tabs-attachment-tab" data-toggle="pill" href="#custom-tabs-attachment" role="tab" aria-controls="custom-tabs-attachment" aria-selected="false"><i class="fa fa-paperclip"></i> Attachment</a>
+                    </li>
                 </ul>
             </div>
             <div class="card-body">
@@ -77,6 +80,34 @@
                     <!-- Tab form Organization Chart -->
                     <div class="tab-pane fade" id="custom-tabs-orgchart" role="tabpanel" aria-labelledby="custom-tabs-orgchart-tab">
                         <?php $this->load->view('ptk/ptk_jobprofile_orgchart_v'); ?>
+                    </div><!-- /Tab form Organization Chart -->
+
+                    <!-- Tab form Organization Chart -->
+                    <div class="tab-pane fade" id="custom-tabs-attachment" role="tabpanel" aria-labelledby="custom-tabs-attachment-tab">
+                        <!-- jquery upload area -->
+                        <div id="fileuploader">Upload</div>
+
+                        <div class="row mb-2">
+                            <div class="col">
+                                <p class="m-0">Total files uploaded: <span id="counter_files"></span></p>
+                            </div>
+                        </div>
+
+                        <!-- table list of files -->
+                        <table id="files_table" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Size</th>
+                                    <th>Type</th>
+                                    <th>Uploaded</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list_files">
+                            </tbody>
+                            
+                        </table>
                     </div><!-- /Tab form Organization Chart -->
                 </div>
             </div>

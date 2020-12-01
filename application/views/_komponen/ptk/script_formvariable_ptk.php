@@ -33,8 +33,7 @@
     var input_WLtrigger = $('#work_location_otherTrigger');
 
     // replacement variable
-    var input_replacement = $('input[name="replacement"]');
-    var input_replacement_who = $('input[name="replacement_who"]');
+    var select_replacement_who = $('select[name="replacement_who"]');
     
     // variable resource form
     var input_resource = $('input[name="resources"]');
@@ -52,22 +51,22 @@
     var validate_entity = $('select[name="' + input_select[0].input + '"]');
 
     // validation job_level
-    // let validate_job_level = $('select[name="' + input_select[1].input + '"]');
+    var select_jobLevel = $('select[name="job_level"]');
 
     // variable man power required
-    let input_mpp = $('input[name="mpp_req"]');
+    var input_mpp = $('input[name="mpp_req"]');
 
     // validation emp_stats
-    let validate_empstats = $('select[name="emp_stats"]');
+    var validate_empstats = $('select[name="emp_stats"]');
 
     // validation education
-    let validate_education = $('select[name="education"]');
+    var validate_education = $('select[name="education"]');
 
     // prefer age
-    let input_preferage = $('input[name="preferred_age"]');
+    var input_preferage = $('input[name="preferred_age"]');
 
     // validation sex
-    let validate_sex = $('select[name="sex"]');
+    var validate_sex = $('select[name="sex"]');
 
     // validate Date Required
     var input_daterequired = $('input[name="date_required"]');
@@ -78,6 +77,8 @@
     // validate interviewer
     var input_interviewer_name = $('#interviewer_name3');
     var input_interviewer_position = $('#interviewer_position3');
+    var input_interviewer_name2 = $('#interviewer_name4');
+    var input_interviewer_position2 = $('#interviewer_position4');
 
     // division, department, and position filter and validator
     var select_department = $('#departementForm');
@@ -89,4 +90,8 @@
     var cke_outline = "";
     var cke_main_responsibilities = "";
     var cke_tasks = "";
+
+    // $(".select2").select2({
+    //     theme: 'bootstrap4'
+    // });
 </script>

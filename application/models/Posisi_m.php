@@ -5,6 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Posisi_m extends CI_Model {
     protected $table = "master_position";
     protected $table_employee = "master_employee";
+    protected $table_level = 'master_level';
 
     public function getAll(){
         return $this->db->get_where($this->table)->result_array();
@@ -19,6 +20,32 @@ class Posisi_m extends CI_Model {
      */
     public function getAllWhere($where){
         return $this->db->get_where($this->table, $where)->result_array();
+    }
+    
+    /**
+     * ambil semua posisi yang mppnya masih tersedia dengan where
+     *
+     * @param  mixed $where
+     * @return void
+     */
+    function getAllWhere_mppAvailable($where){
+        // ambil semua posisi
+        $posisi = $this->getAllWhere($where);
+
+        if(!empty($posisi)){
+            // pilih posisi yang masih tersedia aja, mppnya masih kosong
+            foreach($posisi as $k => $v){
+                $posisi_pmk = $this->posisi_m->howMuchOnThisPosition($v['id']);
+                // jika jumlah mppnya sama antara yang terisi dengan yang dibutuhkan, hapus datanya
+                if($posisi_pmk['filled'] == $posisi_pmk['needed'] || $posisi_pmk['filled'] > $posisi_pmk['needed']){
+                    unset($posisi[$k]); // hapus terkain=t
+                }
+            }
+        } else {
+            $posisi = "";
+        }
+
+        return $posisi;
     }
 
     /**
@@ -71,6 +98,16 @@ class Posisi_m extends CI_Model {
     }
     
     /**
+     * get master level information on id parameter
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    function whatLevelIsThis($id){
+        return $this->db->get_where($this->table_level, array('id' => $id))->row_array();
+    }
+    
+    /**
      * Siapa yang ada di posisi ini? dan dapatkan detailnya
      *
      * @param  mixed $id
@@ -92,8 +129,18 @@ class Posisi_m extends CI_Model {
         // ambil data my position
         $my_position = $this->getOnceWhere(array("id" => $id_position));
         //ambil data approver detailnya dan orangnya
-        $data_approver['approver1'] = $this->whoIsOnThisPosition($my_position['id_approver1'])[0];
-        $data_approver['approver2'] = $this->whoIsOnThisPosition($my_position['id_approver2'])[0];
+        $approver1 = $this->whoIsOnThisPosition($my_position['id_approver1']);
+        $approver2 = $this->whoIsOnThisPosition($my_position['id_approver2']);
+        if(!empty($approver1)){
+            $data_approver['approver1'] = $approver1[0];
+        } else {
+            $data_approver['approver1'] = "";
+        }
+        if(!empty($approver2)){
+            $data_approver['approver2'] = $approver2[0];
+        } else {
+            $data_approver['approver2'] = "";
+        }
         
         return $data_approver;
     }
