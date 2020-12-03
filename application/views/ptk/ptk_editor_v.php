@@ -233,12 +233,23 @@
                     </select>
                 </div>
             </div>
+            <div id="temporary_month_container" class="form-group row" style="display: none;">
+                <label for="temporary_month" class="col-sm-5 col-form-label">Temporary Months</label>
+                <div class="col-sm-7">
+                    <select id="temporary_month" name="temporary_month" class="custom-select">
+                        <option value="" >Select Months...</option>
+                        <?php for($x = 1; $x <= 12; $x++): ?>
+                            <option value="<?= $x; ?>" ><?= $x; ?> <?php if($x == 1): ?>Month<?php else: ?>Months<?php endif; ?></option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="col-lg-6">
             <div class="form-group row">
                 <label for="date_required" class="col-sm-5 col-form-label">Date Required</label>
                 <div class="col-sm-7 input-group mb-3">
-                    <input type="text" name="date_required" id="date_required" class="pickadate form-control" placeholder="Click or Tap to choose date" value="<?php echo set_value('date_required'); ?>" required>
+                    <input type="text" name="date_required" id="date_required" class="ptkpickdate form-control" placeholder="Click or Tap to choose date" value="<?php echo set_value('date_required'); ?>" required>
                     <div class="input-group-append">
                         <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                     </div>
@@ -330,7 +341,7 @@
                 <div class="col-lg-5">
                     <div class="icheck-success">
                         <input type="radio" id="experiencedRadio" name="work_exp" value="1" >
-                        <label for="experiencedRadio">Experience</label>
+                        <label for="experiencedRadio">Experienced</label>
                     </div>
                 </div>
                 <!-- <div class="col-lg-4 align-self-center">
@@ -346,7 +357,7 @@
                 </div>
             </div>
             <!-- Experience Where -->
-            <div class="form-group row mb-0">
+            <div id="experienced_at" class="form-group row mb-0" style="display: none;">
                 <label for="exp_at" class="col-sm-5 col-form-label">Experienced at</label>
                 <div class="col-sm-7">
                     <input type="text" name="exp_at" class="form-control" id="exp_at" placeholder="Experienced at?" value="<?php echo set_value('exp_at'); ?>">
@@ -491,6 +502,6 @@
 
     <!-- hidden form for additional information -->
     <input type="hidden" name="action"> 
-    <input type="hidden" name="pesan_revisi"> 
+    <input type="hidden" name="pesan_komentar"> 
     <input type="hidden" name="status_now">
 </form>

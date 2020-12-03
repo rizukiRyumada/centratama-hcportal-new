@@ -46,6 +46,8 @@
     var input_workexp_checked = $('input[name="work_exp"]:checked');
     var input_workexp_years = $('#we_years');
     var input_workexp_yearstext = $('input[name="work_exp_years"]');
+    var input_workexp_at = $('input[name="exp_at"]');
+    var input_workexp_at_container = $('#experienced_at');
 
     // validation entity
     var validate_entity = $('select[name="' + input_select[0].input + '"]');
@@ -58,6 +60,8 @@
 
     // validation emp_stats
     var validate_empstats = $('select[name="emp_stats"]');
+    var select_temporary = $('select[name="temporary_month"]');
+    var select_temporary_container = $('#temporary_month_container');
 
     // validation education
     var validate_education = $('select[name="education"]');

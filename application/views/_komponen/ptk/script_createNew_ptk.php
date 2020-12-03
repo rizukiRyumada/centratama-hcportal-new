@@ -159,86 +159,86 @@
     /* -------------------------------------------------------------------------- */
     /*                           Customized Form Validation                       */
     /* -------------------------------------------------------------------------- */
-    $('.submitPTK').on('click', function() {
-        // ambil data pada tombol save atau submit
-        $('input[name="action"]').val($(this).data('id'));
-        let action = $(this).data('id');
+    // $('.submitPTK').on('click', function() {
+    //     // ambil data pada tombol save atau submit
+    //     $('input[name="action"]').val($(this).data('id'));
+    //     let action = $(this).data('id');
         
-        let validator = submit_validator(); // submit validator taken from .../application/views/_komponen/ptk/script_submitValidator_ptk.php
-        let counter_validate = validator[0];
-        let msg_validate = validator[1];
-        // cek apa ada form error
-        if(counter_validate != 0){
-            // List empty form popup
-            // $(document).Toasts('create', {
-            //     class: 'bg-danger', 
-            //     title: 'List of Empty Form',
-            //     subtitle: 'Lets fill it',
-            //     position: 'bottomLeft',
-            //     body: msg_validate + "Please look at red mark or border."
-            // });
-            // tampilkan pesan error dalam swal
-            Swal.fire({
-                title: 'Form Validation Error',
-                html: "Please fill the required input form.",
-                icon: 'warning',
-                showCancelButton: false,
-                // confirmButtonColor: '#99FF99',
-                // cancelButtonColor: '#d33',
-                confirmButtonText: 'Ok, I wiil check it.',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false
-            }).then((result) => {
-                if (result.value) {
-                    var el = $('select#entityInput');
-                    var elOffset = el.offset().top;
-                    var elHeight = el.height();
-                    var windowHeight = $(window).height();
-                    var offset;
+    //     let validator = submit_validator(); // submit validator taken from .../application/views/_komponen/ptk/script_submitValidator_ptk.php
+    //     let counter_validate = validator[0];
+    //     let msg_validate = validator[1];
+    //     // cek apa ada form error
+    //     if(counter_validate != 0){
+    //         // List empty form popup
+    //         // $(document).Toasts('create', {
+    //         //     class: 'bg-danger', 
+    //         //     title: 'List of Empty Form',
+    //         //     subtitle: 'Lets fill it',
+    //         //     position: 'bottomLeft',
+    //         //     body: msg_validate + "Please look at red mark or border."
+    //         // });
+    //         // tampilkan pesan error dalam swal
+    //         Swal.fire({
+    //             title: 'Form Validation Error',
+    //             html: "Please fill the required input form.",
+    //             icon: 'warning',
+    //             showCancelButton: false,
+    //             // confirmButtonColor: '#99FF99',
+    //             // cancelButtonColor: '#d33',
+    //             confirmButtonText: 'Ok, I wiil check it.',
+    //             allowOutsideClick: false,
+    //             allowEscapeKey: false,
+    //             allowEnterKey: false
+    //         }).then((result) => {
+    //             if (result.value) {
+    //                 var el = $('select#entityInput');
+    //                 var elOffset = el.offset().top;
+    //                 var elHeight = el.height();
+    //                 var windowHeight = $(window).height();
+    //                 var offset;
 
-                    if (elHeight < windowHeight) {
-                        offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
-                    }
-                    else {
-                        offset = elOffset;
-                    }
-                    $([document.documentElement, document.body]).animate({ //for animation
-                        scrollTop: offset
-                    }, 750);
-                }
-            });
+    //                 if (elHeight < windowHeight) {
+    //                     offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+    //                 }
+    //                 else {
+    //                     offset = elOffset;
+    //                 }
+    //                 $([document.documentElement, document.body]).animate({ //for animation
+    //                     scrollTop: offset
+    //                 }, 750);
+    //             }
+    //         });
 
-            // batalkan pengiriman form
-            return false;
-        } else {
-            // kirimkan form
+    //         // batalkan pengiriman form
+    //         return false;
+    //     } else {
+    //         // kirimkan form
 
-            <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>
-                let text_title = "";
-                if(action == "save"){
-                    text_title = 'Saving the form...';
-                } else {
-                    text_title = 'Submitting the form...';
-                }
-            <?php else: ?>
-                let text_title = 'Saving the form...';
-            <?php endif; ?>
+    //         <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $position_my['hirarki_org'] == "N-1"): ?>
+    //             let text_title = "";
+    //             if(action == "save"){
+    //                 text_title = 'Saving the form...';
+    //             } else {
+    //                 text_title = 'Submitting the form...';
+    //             }
+    //         <?php else: ?>
+    //             let text_title = 'Saving the form...';
+    //         <?php endif; ?>
 
-            // show submitting swal notification
-            Swal.fire({
-                icon: 'info',
-                title: text_title,
-                html: '<p>Form validation completed, Please Wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
-                showConfirmButton: false,
-                // allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false
-            });
+    //         // show submitting swal notification
+    //         Swal.fire({
+    //             icon: 'info',
+    //             title: text_title,
+    //             html: '<p>Form validation completed, Please Wait.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+    //             showConfirmButton: false,
+    //             // allowOutsideClick: false,
+    //             allowEscapeKey: false,
+    //             allowEnterKey: false
+    //         });
             
-            $('#ptkForm').submit(); // submit form if validation success
-        }
-    });
+    //         $('#ptkForm').submit(); // submit form if validation success
+    //     }
+    // });
 
 /* -------------------------------------------------------------------------- */
 /*                                  functions                                 */
@@ -246,8 +246,6 @@
 
     // this function used to remove files using ajax
     function deleteFiles(file){
-        console.log(file);
-
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -299,10 +297,7 @@
             $('#list_files').append('<tr><td>'+value.file_nameOrigin+'</td><td>'+value.size+'KB</td><td>'+value.type+'</td><td>'+value.time+'</td><td><div class="btn-group w-100"><a href="<?= base_url('assets/temp/files/ptk/'.$this->session->userdata('nik').'/'); ?>'+value.file_name+'" class="btn btn-primary" target="_blank"><i class="fa fa-search"></i></a><a href="javascript:deleteFiles('+"'"+value.file_name+"'"+');" class="btn btn-danger"><i class="fa fa-trash"></i></a></div></td></tr>');
         });
     }
-
-    // Swal.fire(
-    //             'Deleted!',
-    //             'Your file has been deleted.',
-    //             'success'
-    //             )
 </script>
+
+<!-- script modal pesan -->
+<?php $this->load->view('_komponen/ptk/script_modalPesan_ptk'); ?>

@@ -217,12 +217,13 @@ class Ptk extends SpecialUserAppController {
             
             $this->load->view('main_v', $data);
         } else {
+            // NOW atur save jadi action angka
             // cekakses hanya admin, superadmin, N-2 dan N-1 yang bisa akses
             if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1") {
-                if($this->input->post('action') == "save"){
+                if($this->input->post('action') == 3){
                     $status_now = 'ptk_stats-1'; // set status saved
                     $title = "Saved"; $msg = "Your form has been saved.";
-                } elseif ($this->input->post('action') == "submit"){
+                } elseif ($this->input->post('action') == 1){
                     // cek jika divisinya HC
                     if((int)$this->input->post('division') == 6){
                         $status_now = 'ptk_stats-3'; // set status proposed
@@ -231,7 +232,7 @@ class Ptk extends SpecialUserAppController {
                     }
                     $title = "Submitted"; $msg = "Your form has been submited.";
                 } else {
-                    show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                 }
             } elseif($my_hirarki == "N-2") {
                 $status_now = 'ptk_stats-1'; //  set status drafted
@@ -466,11 +467,18 @@ class Ptk extends SpecialUserAppController {
      */
     function ajax_getPositionMpp(){
         $id_posisi = $this->input->post('id_posisi');
+        $budget = $this->input->post('budget');
         $mpp = $this->posisi_m->howMuchOnThisPosition($id_posisi); // cari berapa banyak yang ada di posisi ini
+        
+        if($budget == 2){
+            $mpp_empty = $mpp['needed'];
+        } else {
+            $mpp_empty = $mpp['needed'] - $mpp['filled'];
+        }
 
         // $noi = $mpp - $mpp_filled;
         echo json_encode(array(
-            'empty' => $mpp['needed'] - $mpp['filled'],
+            'empty' => $mpp_empty,
             'noi' => $mpp['filled']
         ));
     }
@@ -710,6 +718,11 @@ class Ptk extends SpecialUserAppController {
      * @return void
      */
     public function saveForm_post($status_now, $status_data, $time = "") {
+        print_r($this->input->post());
+        exit;
+
+        // NOW
+
         //timestamp id
         if(empty($time)){
             $time = time();
@@ -736,6 +749,14 @@ class Ptk extends SpecialUserAppController {
             // masukkan id_posisi
             $data['id_pos'] = $this->input->post('job_position_choose');
             $data['position_other'] = "";
+
+            // jika budget replacement, isi replacement who dengan detail employee
+            if($this->input->post('budget') == 2){
+                $emp_detail = $this->employee_m->getDetails_employee($this->input->post('replacement_who'));
+                $data['replacement'] = json_encode($emp_detail);
+            } else {
+                $data['replacement'] = "";
+            }
         }
         // Job Level
         $data['job_level'] = $this->input->post('job_level');
@@ -754,12 +775,6 @@ class Ptk extends SpecialUserAppController {
                 "other"    => false,
                 "location" => $this->input->post('work_location_choose')];
             $data['work_location'] = json_encode($work_location);
-        }
-        // replacement
-        if(filter_var($this->input->post('replacement'), FILTER_VALIDATE_BOOLEAN) == true){
-            $data['replacement'] = $this->input->post('replacement_who');
-        } else {
-            $data['replacement'] = "";
         }
         // resources
         if($this->input->post('resources') == "int"){

@@ -54,11 +54,11 @@
                             <div class="col-md-6 text-right">
                                 <div class="btn-group w-100">
                                     <?php if($position_my['hirarki_org'] == "N-1" || $this->session->userdata('role_id') == 1 || $userApp_admin == 1): ?>
-                                        <button class="submitPTK btn btn-lg btn-success w-100" data-id="submit">
+                                        <button class="submitPTK btn btn-lg btn-success w-100" data-id="1">
                                             <i class="fa fa-paper-plane"></i> Submit
                                         </button>
                                     <?php endif; ?>
-                                    <button class="submitPTK btn btn-lg btn-warning w-100" data-id="save">
+                                    <button class="submitPTK btn btn-lg btn-warning w-100" data-id="3">
                                         <i class="fa fa-save"></i> Save
                                     </button>
                                 </div>
@@ -115,3 +115,6 @@
         </div>
     </div>
 </div>
+
+<!-- modal pesan komentar -->
+<?php $this->load->view('ptk/modalPesan_ptk_v'); ?>

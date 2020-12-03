@@ -50,8 +50,8 @@
             input_jptext.siblings('.invalid-tooltip').remove(); // remove class invalid
 
             // validator input jpchoose
-            input_jpchoose.addClass('is-invalid'); // remove class invalid
-            input_jpchoose.parent().append(msg_choose); // show error tooltip
+            // input_jpchoose.addClass('is-invalid'); // remove class invalid
+            // input_jpchoose.parent().append(msg_choose); // show error tooltip
 
             // cek position untuk update list
             let divisi = select_divisi.val();
@@ -259,28 +259,57 @@
         input_workexp.parent().parent().parent().parent().parent().removeClass('border border-danger'); // hapus border
         input_workexp.removeClass('is-invalid'); // hapus kelas invalid
         $('#experiencedRadio').siblings('.invalid-tooltip').remove(); // hapus tooltip invalid
+
+        // remove validation years text
+        input_workexp_yearstext.removeClass('is-invalid'); // remove class invalid
+        input_workexp_yearstext.siblings('.invalid-tooltip').remove(); // remove error tooltip
+        input_workexp_at.removeClass('is-invalid'); // remove class invalid
+        input_workexp_at.siblings('.invalid-tooltip').remove(); // remove error tooltip
         if($('input[name="work_exp"]:checked').val() == 1) { // cek jika cekbox work experience
             input_workexp_years.fadeIn(); // tampilkan kotak free text tahun
+            input_workexp_at_container.slideDown(); // tampilkan kotak experienced at
+
+            // tambahkan validasi untuk input_workexp_years
+            // input_workexp_yearstext.addClass('is-invalid'); // add class invalid
+            // input_workexp_yearstext.parent().append(msg_number); // add class invalid
+
+            // input_workexp_at.addClass('is-invalid'); // add class invalid
+            // input_workexp_at.parent().append(msg_fill); // tambahkan pesan msg_fill
         } else if($('input[name="work_exp"]:checked').val() == 0) { // cek jika cekbox fresh graduate
             input_workexp_years.fadeOut(); // sembunyikan kotak free text tahun
             input_workexp_yearstext.val(''); // kosongkan kotak we_years
-            // remove validation years text
-            input_workexp_yearstext.removeClass('is-invalid'); // remove class invalid
-            input_workexp_yearstext.siblings('.invalid-tooltip').remove(); // remove error tooltip
+            input_workexp_at_container.slideUp(); // tampilkan kotak experienced at
+            input_workexp_at.val(''); // tampilkan kotak experienced at
+
         }
     });
-
     // Work Experience Years text validation
-    // input_workexp_yearstext.on('keyup', function() {
-    //     input_workexp_yearstext.removeClass('is-invalid'); // remove class invalid
-    //     input_workexp_yearstext.siblings('.invalid-tooltip').remove(); // remove error tooltip
-    //     if(input_workexp_yearstext.val() == ""){
-    //         input_workexp_yearstext.addClass('is-invalid'); // add class invalid
-    //         input_workexp_yearstext.parent().append(msg_fill); // show error tooltip
-    //     } else {
-    //         // nothing
-    //     }
-    // });
+    input_workexp_yearstext.on('keyup change', function() {
+        input_workexp_yearstext.removeClass('is-invalid'); // remove class invalid
+        input_workexp_yearstext.siblings('.invalid-tooltip').remove(); // remove error tooltip
+        if($.isNumeric(input_workexp_yearstext.val()) != true) { // cek jika value kosong
+            if(input_workexp_yearstext.val() == ""){ // cek value yang diinput user
+                input_workexp_yearstext.addClass('is-invalid'); // add class invalid
+                input_workexp_yearstext.parent().append(msg_number); // show error tooltip
+            } else {
+                input_workexp_yearstext.addClass('is-invalid'); // add class invalid
+                input_workexp_yearstext.parent().append(msg_number); // show error tooltip
+            }
+        } else {
+            // nothing
+        }
+    });
+    // Work Experience at text validation
+    input_workexp_at.on('keyup change', function() {
+        input_workexp_at.removeClass('is-invalid'); // remove class invalid
+        input_workexp_at.siblings('.invalid-tooltip').remove(); // remove error tooltip
+        if(input_workexp_at.val() == ""){
+            input_workexp_at.addClass('is-invalid'); // add class invalid
+            input_workexp_at.parent().append(msg_fill); // show error tooltip
+        } else {
+            // nothing
+        }
+    });
 
     // validation entity
     validate_entity.on('change', function() {
@@ -315,12 +344,45 @@
         validate_empstats.removeClass('is-invalid'); // remove class invalid
         validate_empstats.removeClass('is-valid'); // remove class invalid
         validate_empstats.siblings('.invalid-tooltip').remove(); // remove class invalid
-        if($(this).val() != ""){
+        let value = $(this).val();
+        if(value != ""){
             validate_empstats.addClass('is-valid'); // remove class invalid
             validate_empstats.siblings('.invalid-tooltip').remove(); // remove class invalid
         } else {
             validate_empstats.addClass('is-invalid'); // remove class invalid
             validate_empstats.parent().append(msg_choose); // show error tooltip
+        }
+
+        // jika pilihan temporary yang dipilih
+        if(value == "emp_stats-3"){
+            select_temporary_container.slideDown();
+        } else {
+            select_temporary_container.slideUp();
+            select_temporary.val("");
+        }
+
+        // remove invalid class and invalid tooltip
+        input_daterequired.removeClass('is-invalid'); // hapus kelas is invalid
+        input_daterequired.siblings('.invalid-tooltip').remove();
+
+        // untuk mengisi tanggal date required, langsung isi dengan aturan
+        if(value == "emp_stats-1" || value == "emp_stats-2" || value == "emp_stats-3" || value == "emp_stats-5"){
+            input_daterequired.val(moment().add(60, 'days').calendar({sameElse: 'DD-MM-YYYY'}));
+        } else if(value == "emp_stats-4") {
+            input_daterequired.val(moment().add(14, 'days').calendar({sameElse: 'DD-MM-YYYY'}));
+        } else {
+            input_daterequired.val(''); // kosongkan date required
+        }
+    });
+    // validate Date Required
+    select_temporary.on('keyup change', function(){
+        select_temporary.removeClass('is-invalid'); // hapus kelas is invalid
+        select_temporary.siblings('.invalid-tooltip').remove();
+        if(select_temporary.val() == ""){
+            select_temporary.addClass('is-invalid'); // tambah kelas invalid
+            select_temporary.parent().append(msg_fill); // tampilkan pesan error
+        } else {
+            // nothing
         }
     });
 
@@ -686,8 +748,8 @@
         $('#replace').slideDown(); //  tampilkan form replacement who
         // select_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
         // tambahkan tooltip fill replacement who
-        select_replacement_who.addClass('is-invalid'); // add class invalid
-        select_replacement_who.parent().append(msg_fill); // show error tooltip
+        // select_replacement_who.addClass('is-invalid'); // add class invalid
+        // select_replacement_who.parent().append(msg_fill); // show error tooltip
         select_replacement_who.select2({theme: 'bootstrap4'}); // inisialisasi kalo replacement_who itu select2
         // tambahkan pilihan
 
@@ -837,10 +899,12 @@
 
     // get number of incumbent dengan id_posisi
     function getNoi(id_posisi){
+        let budget = $('input[name="budget"]:checked').val();
         $.ajax({
             url: '<?= base_url("ptk/ajax_getPositionMpp"); ?>',
             data: {
-                id_posisi: id_posisi
+                id_posisi: id_posisi,
+                budget: budget
             },
             method: "POST",
             success: function(data){
@@ -1010,6 +1074,21 @@
                 $('.overlay').fadeOut(); // hapus overlay
             }
         }
+    });
+
+    /* -------------------------------------------------------------------------- */
+    /*                             datepicker setting                             */
+    /* -------------------------------------------------------------------------- */
+    $('.ptkpickdate').datepicker({
+        format: "dd-mm-yyyy",
+        weekStart: 1,
+        startView: 1,
+        multidate: false,
+        daysOfWeekDisabled: "0,6",
+        daysOfWeekHighlighted: "0,6",
+        autoclose: true,
+        todayHighlight: true,
+        startDate: 'default'
     });
 
     /* -------------------------------------------------------------------------- */
