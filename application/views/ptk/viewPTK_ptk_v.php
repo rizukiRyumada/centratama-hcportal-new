@@ -42,6 +42,9 @@
                     <li class="nav-item" id="tab_orgChart" style="display: none;">
                         <a class="nav-link" id="custom-tabs-orgchart-tab" data-toggle="pill" href="#custom-tabs-orgchart" role="tab" aria-controls="custom-tabs-orgchart" aria-selected="false"><i class="fa fa-sitemap"></i> Organization Chart</a>
                     </li>
+                    <li class="nav-item" id="tab_attachment">
+                        <a class="nav-link" id="custom-tabs-attachment-tab" data-toggle="pill" href="#custom-tabs-attachment" role="tab" aria-controls="custom-tabs-attachment" aria-selected="false"><i class="fa fa-paperclip"></i> Attachment</a>
+                    </li>
                     <li class="nav-item" id="tab_timeline">
                         <a class="nav-link" id="custom-tabs-timeline-tab" data-toggle="pill" href="#custom-tabs-timeline" role="tab" aria-controls="custom-tabs-timeline" aria-selected="false"><i class="fa fa-history"></i> Approval Logs</a>
                     </li>
@@ -219,6 +222,9 @@
                     <div class="tab-pane fade" id="custom-tabs-orgchart" role="tabpanel" aria-labelledby="custom-tabs-orgchart-tab">
                         <?php $this->load->view('ptk/ptk_jobprofile_orgchart_v'); ?>
                     </div><!-- /Tab form Organization Chart -->
+
+                    <!-- Tab form Organization Chart -->
+                    <?php $this->load->view('ptk/attachment_tab_ptk_v') ?>
 
                     <!-- Tab form Status History -->
                     <div class="tab-pane fade" id="custom-tabs-timeline" role="tabpanel" aria-labelledby="custom-tabs-timeline-tab">

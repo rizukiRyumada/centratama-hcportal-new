@@ -27,11 +27,8 @@
                     <input type="text" id="budgetAlert" class="form-control border border-danger" value="Choose budgeted or unbudgeted first" title="Please Choose budgeted or unbudgeted first" disabled>
                     <input name="job_position_text" type="text" class="form-control" id="jobTitleInput" placeholder="Enter Job Title..." style="display: none;" required>
                     <input type="hidden" name="job_position_choose" >
-                    <select id="positionInput" class="custom-select" style="display: none;" disabled required>
+                    <select id="positionInput" class="form-control select2" style="display: none; width: 100%;" disabled required>
                         <option value="" >Select an Job Position...</option>
-                        <?php foreach($position as $v): ?>
-                        <option value="<?= $v['id']; ?>" ><?= $v['position_name']; ?></option>
-                        <?php endforeach;?>
                     </select>
                 </div>
             </div>
@@ -92,30 +89,45 @@
         <div class="col-lg-6 border-gray-light border p-3">
             <div class="form-group clearfix border border-gray-light">
                 <div id="chooseBudget" class="row text-sm-center px-3">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="icheck-success">
                             <input type="radio" id="budgetRadio" name="budget" value="1" disabled>
                             <label for="budgetRadio">Budgetted</label>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="icheck-danger">
                             <input type="radio" id="unbudgettedRadio" name="budget" value="0" disabled>
                             <label for="unbudgettedRadio">Unbudgetted</label>
                         </div>
                     </div>
+                    <div class="col-sm-4">
+                        <div class="icheck-warning">
+                            <input type="radio" id="replacementRadio" name="budget" value="2" disabled>
+                            <label for="replacementRadio">Replacement</label>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!-- Replacement -->
-            <div id="replace" class="form-group row">
-                <div class="col-sm-4">
+            <!-- Replacement Who -->
+            <div id="replace" class="form-group row" style="display: none;">
+                <!-- <div class="col-sm-4">
                     <div class="icheck-primary">
                         <input type="checkbox" id="replacementForm" name="replacement" disabled>
                         <label for="replacementForm">Replacement</label>
                     </div>
-                </div>
+                </div> -->
+                <label for="replacement_who" class="col-sm-4 col-form-label">Replacement</label>
                 <div class="col-sm-8">
-                    <input id="replacement_who" type="text" name="replacement_who" class="form-control" placeholder="Replacement who?" value="<?php echo set_value('replacement_who'); ?>" disabled>
+                    <!-- <input id="replacement_who" type="text" name="replacement_who" class="form-control" placeholder="Replacement who?" disabled> -->
+                    <div class="input-group">
+                        <select id="replacement_who" name="replacement_who" class="form-control" disabled>
+                            <option value="" >Replacement who?</option>
+                        </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Resources -->
@@ -187,6 +199,17 @@
                     </select>
                 </div>
             </div>
+            <div id="temporary_month_container" class="form-group row" style="display: none;">
+                <label for="temporary_month" class="col-sm-5 col-form-label">Temporary Months</label>
+                <div class="col-sm-7">
+                    <select id="temporary_month" name="temporary_month" class="custom-select" disabled>
+                        <option value="" >Select Months...</option>
+                        <?php for($x = 1; $x <= 12; $x++): ?>
+                            <option value="<?= $x; ?>" ><?= $x; ?> <?php if($x == 1): ?>Month<?php else: ?>Months<?php endif; ?></option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="col-lg-6">
             <div class="form-group row">
@@ -249,7 +272,7 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="form-group row">
+            <!-- <div class="form-group row">
                 <label for="sexForm" class="col-sm-5 col-form-label">Sex</label>
                 <div class="col-sm-7">
                     <select id="sexForm" name="sex" class="custom-select" required disabled>
@@ -258,7 +281,7 @@
                         <option value="0">Female</option>
                     </select>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div> <!-- /Preferred Age and Sex -->
     
@@ -279,7 +302,7 @@
             </div>
         </div>
         <div class="col-lg-6">
-            <div class="form-group row mb-0">
+            <div class="form-group row">
                 <!-- <label for="inputEmail3" class="col-lg-5 col-form-label">Sex</label> -->
                 <div class="col-lg-5">
                     <div class="icheck-success">
@@ -297,6 +320,13 @@
                             <span class="input-group-text">year(s)</span>
                         </div>
                     </div>
+                </div>
+            </div>
+            <!-- Experience Where -->
+            <div id="experienced_at" class="form-group row mb-0" style="display: none;">
+                <label for="work_exp_at" class="col-sm-5 col-form-label">Experienced at</label>
+                <div class="col-sm-7">
+                    <input type="text" name="work_exp_at" class="form-control" id="work_exp_at" placeholder="Experienced at?" disabled>
                 </div>
             </div>
         </div>
@@ -412,6 +442,11 @@
                         <td>3</td>
                         <td><input type="text" name="interviewer_name3" class="form-control" id="interviewer_name3" placeholder="Enter Name..." disabled></td>
                         <td><input type="text" name="interviewer_position3" class="form-control" id="interviewer_position3" placeholder="Enter Position..." disabled></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><input type="text" name="interviewer_name4" class="form-control" id="interviewer_name4" placeholder="Enter Name..." disabled></td>
+                        <td><input type="text" name="interviewer_position4" class="form-control" id="interviewer_position4" placeholder="Enter Position..." disabled></td>
                     </tr>
                 </table>
             </div>

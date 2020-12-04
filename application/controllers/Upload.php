@@ -21,6 +21,7 @@ class Upload extends MainController {
     public function ajax_upload(){
         if(isset($_FILES["myfile"])){
             $path = $this->input->post('path'); // ambil path
+            $session_name = $this->input->post('session_name'); // ambil nama session
 
             // cek directory dengan nik apa ada, kalo gaada bikin lah
             if(is_dir($path.$this->session->userdata('nik')) == false){
@@ -55,7 +56,7 @@ class Upload extends MainController {
                 $ret[]= $fileName;
                                 
                 // buat session untuk menyimpan nama files
-                if(empty($this->session->userdata('files_upload'))){
+                if(empty($this->session->userdata($session_name))){
                     $session_files[0] = array(
                         'file_name' => $fileName,
                         'file_nameOrigin' => $fileName_origin,
@@ -63,9 +64,9 @@ class Upload extends MainController {
                         'type' => $_FILES['myfile']['type'],
                         'time' => date('Y-m-d h:i', time())
                     );
-                    $this->session->set_userdata('files_upload', $session_files);
+                    $this->session->set_userdata($session_name, $session_files);
                 } else {
-                    $session_files = $this->session->userdata('files_upload');
+                    $session_files = $this->session->userdata($session_name);
 
                     $session_files[array_key_last($session_files) + 1] = array(
                         'file_name' => $fileName,
@@ -74,12 +75,12 @@ class Upload extends MainController {
                         'type' => $_FILES['myfile']['type'],
                         'time' => date('Y-m-d h:i', time())
                     );
-                    $this->session->set_userdata('files_upload', $session_files);
+                    $this->session->set_userdata($session_name, $session_files);
                 }
                 
             } else { //Multiple files, file[]
                 $fileCount = count($_FILES["myfile"]["name"]);
-                $session_files = $this->session->userdata('files_upload');
+                $session_files = $this->session->userdata($session_name);
 
                 if(empty($session_files)){
                     $y = 0;
@@ -111,11 +112,11 @@ class Upload extends MainController {
                         $y++;
                     }
                 }
-                $this->session->set_userdata('files_upload', $session_files);
+                $this->session->set_userdata($session_name, $session_files);
             }
 
             echo json_encode(array(
-                'counter_files' => count($session_files),
+                'file_counter' => count($session_files),
                 'session_files' => $session_files
             ));
             // echo json_encode($ret);
@@ -133,29 +134,55 @@ class Upload extends MainController {
     public function ajax_delete(){
         $path = $this->input->post('path'); // ambil path
         $file_name = $this->input->post('filename'); // ambil filename
-        $file_session = $this->session->userdata('files_upload');
+        $files = $this->input->post('files');
+        $session_name = $this->input->post('session_name');
+        $file_session = $this->session->userdata($session_name);
         
         // cek jika ada filenya, hapus
-        if(file_exists($path.$this->session->userdata('nik').'/'.$file_name) == true){
-            unlink($path.$this->session->userdata('nik').'/'.$file_name); // hapus file dari server
+        if(file_exists($path.$file_name) == true){
+            unlink($path.$file_name); // hapus file dari server
 
-            // perbarui data session file
-            $file_session_new = array(); $x = 0;
-            foreach($file_session as $v){
-                if($v['file_name'] != $file_name){
-                    $file_session_new[$x] = $v;
-                    $x++;
+            if(!empty($session_name) && !empty($file_session)){
+                // perbarui data session file
+                $files_new = array(); $x = 0;
+                foreach($file_session as $v){
+                    if($v['file_name'] != $file_name){
+                        $files_new[$x] = $v;
+                        $x++;
+                    }
+                }
+                $this->session->set_userdata($session_name, $files_new);
+            } else {
+                // perbarui file list
+                $files_temp = json_decode($files, true);
+                $files_new = array(); $x = 0;
+                foreach($files_temp as $v){
+                    if($v['file_name'] != $file_name){
+                        $files_new[$x] = $v;
+                        $x++;
+                    }
                 }
             }
-            $this->session->set_userdata('files_upload', $file_session_new);
+
+            // checker untuk empty data
+            if(empty($files_new)){
+                $files_new = "";
+                $file_counter = 0;
+            } else {
+                $file_counter = count($files_new);
+            }
 
             echo json_encode(array(
-                'counter_files' => count($file_session_new),
-                'session_files' => $file_session_new
+                'file_counter' => $file_counter,
+                'files_new' => $files_new
             ));
         }
 
     }
+
+/* -------------------------------------------------------------------------- */
+/*                               OTHER Function                               */
+/* -------------------------------------------------------------------------- */
 
     function unggahin($userfile){
         $CI =& get_instance(); //codeigniter tidak bisa memanggil library di helper, jadi gunakan ini
@@ -190,7 +217,7 @@ class Upload extends MainController {
 
     function removeSession(){
         
-        $this->session->unset_userdata('files_upload');
+        $this->session->unset_userdata('ptk_files');
         
     }
 

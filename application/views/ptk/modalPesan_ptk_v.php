@@ -8,13 +8,13 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="pesanKomentarLabel">Input a Message</h5>
+            <h5 class="modal-title" id="pesanKomentarLabel">Input a Comment</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">&times;</span>
             </button>
         </div>
         <div class="modal-body">
-            <p class="text">Please input a message to be revised.</p>
+            <!-- <p class="text">Please input a message.</p> -->
             <textarea id="textareaPesanKomentar" class="ckeditor" name="pesan_komentar" id="" cols="30" rows="10"></textarea>
         </div>
         <div class="modal-footer">

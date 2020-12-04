@@ -1,4 +1,13 @@
 <script>
+    // variable parameter untuk dapetin list file
+    var path = "";
+    var path_url = "";
+    var session_name = '';
+    var files = "";
+</script>
+<!-- script attachment, param(path, session_name, files) -->
+<?php $this->load->view('_komponen/ptk/script_attachment_ptk'); ?>
+<script>
     // get data ptk from ajax
     $(document).ready(function(){
         // set timeline data and set the view
@@ -41,7 +50,7 @@
                 if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1){
                     $('input[name="mpp_req"]').removeAttr('disabled'); // remove disabled attribute from input_mpp
                 }
-                getNoi(data.data.id_pos); // ambil number of incumbent
+                getNoi(data.data.id_pos, data.data.budget); // ambil number of incumbent
 
                 // interviewer set data
                 // console.log(data.data.interviewer);
@@ -52,14 +61,16 @@
                 $('input[name="interviewer_position2"]').val(interviewer[1].position);    
                 $('input[name="interviewer_name3"]').val(interviewer[2].name);
                 $('input[name="interviewer_position3"]').val(interviewer[2].position);
+                $('input[name="interviewer_name4"]').val(interviewer[3].name);
+                $('input[name="interviewer_position4"]').val(interviewer[3].position);
 
                 // select budget
                 $('input[name="budget"][value="'+data.data.budget+'"]').attr('checked',true);
                 $("#budgetAlert").hide(); // sembunyikan overlay job position alert
 
-                // replacement selector
-                if(data.data.replacement != ""){
-                    input_replacement.attr('checked', true); // check replacement checkbox
+                // jika budgetnya replacement
+                if(data.data.budget == 2){
+                    $('#replace').slideDown();
                     select_replacement_who.val(data.data.replacement); // isi kotak replacement
                     if(<?= $is_edit; ?> == 1){
                         select_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
@@ -101,26 +112,36 @@
                     validate_sex.removeAttr('disabled');
                     input_majoring.removeAttr('disabled');
                     input_workexp.removeAttr('disabled');
+                }
 
-                    // set nilai dari masing2 selector
+                // set nilai dari masing2 selector
                     // work experience
-                    if(data.data.work_exp > 0) { // cek jika cekbox work experience
-                        input_workexp_years.fadeIn(); // tampilkan kotak free text tahun
-                        input_workexp_yearstext.val(data.data.work_exp); // set data work experience
-                        $('input[name="work_exp"][value="1"]').attr('checked',true); // select work experience
-                    } else if(data.data.work_exp == 0) { // cek jika cekbox fresh graduate
-                        $('input[name="work_exp"][value="0"]').attr('checked',true); // select work experience
-                    }
-                    input_majoring.val(data.data.majoring); // majoring
-                    input_preferage.val(data.data.age); // prefered age
-                    $("#emp_stats option[value="+data.data.id_employee_status+"]").attr('selected', 'selected'); // select employee status base on data
-                    $("#education option[value="+data.data.id_ptk_edu+"]").attr('selected', 'selected'); // select education base on data
-                    $("#sexForm option[value="+data.data.sex+"]").attr('selected', 'selected'); // select sex base on data
+                if(data.data.work_exp > 0) { // cek jika cekbox work experience
+                    input_workexp_years.fadeIn(); // tampilkan kotak free text tahun
+                    input_workexp_yearstext.val(data.data.work_exp); // set data work experience
+                    input_workexp_at.val(data.data.work_exp_at);
+                    input_workexp_at_container.slideDown();
+                    $('input[name="work_exp"][value="1"]').attr('checked',true); // select work experience
+                } else if(data.data.work_exp == 0) { // cek jika cekbox fresh graduate
+                    $('input[name="work_exp"][value="0"]').attr('checked',true); // select work experience
+                }
+                input_majoring.val(data.data.majoring); // majoring
+                input_preferage.val(data.data.age); // prefered age
+                $("#education option[value="+data.data.id_ptk_edu+"]").attr('selected', 'selected'); // select education base on data
+                // $("#sexForm option[value="+data.data.sex+"]").attr('selected', 'selected'); // select sex base on data
+
+                // empstats
+                $("#emp_stats option[value="+data.data.id_employee_status+"]").attr('selected', 'selected'); // select employee status base on data
+                if(data.data.id_employee_status == "emp_stats-3"){
+                    select_temporary_container.slideDown();
+                    select_temporary.val(data.data.empstats_temporary_month); // set value empt stats temporary month
+                } else {
+                    select_temporary_container.slideUp();
+                    select_temporary.val("");
                 }
 
                 select_divisi.val(data.data.id_div); // taruh data division
                 getDepartment("div-"+data.data.id_div, data.data.id_dept); // get departemen dan pilih valuenya
-                getPosition(data.data.id_div, data.data.id_dept, data.data.id_pos);
                 getInterviewer(data.data.id_pos)// ambil data interviewer
                 
                 // tampilkan Job Position chooser atau text
@@ -129,12 +150,23 @@
                     input_jpchoose.hide(); // sembunyikan pilihan posisi job
                     // $('#positionInput').prop('selectedIndex',0);// kembalikan status ke default - position chooser
                     input_jptext.val(data.data.position_other); // isi nama position other
-                } else if(data.data.budget == 1) { // cek jika budgeted
+                } else if(data.data.budget == 1 || data.data.budget == 2) { // cek jika budgeted atau replacement
+                    input_jpchoose.select2({theme: 'bootstrap4'}); // inisialisasi kalo job position choose itu select2
                     input_jpchoose.fadeIn(); // tampilkan pilihan job position 
                     input_jptext.hide(); // sembunyikan free text job profile
                     input_jptext.val(''); // kosongkan kotak job_position_text
-                    $('select#positionInput option[value="'+ data.data.id_pos +'"]').attr('selected',true); // ubah job position yg dipilih
+                    // $('select#positionInput option[value="'+ data.data.id_pos +'"]').attr('selected',true); // ubah job position yg dipilih
                     $('input[name="job_position_choose"]').val(data.data.id_pos);
+
+                    getPosition(data.data.id_div, data.data.id_dept, data.data.id_pos, data.data.budget);
+
+                    // script khusus budget replacement dan select replacement whonya
+                    if($('input[name="budget"]:checked').val() == 2){
+                        let replacement_who = JSON.parse(data.data.replacement)
+                        get_selectReplacementWho(data.data.id_pos, replacement_who.nik); // get employee for replacement_who from position and show it
+                    } else {
+                        hide_selectReplacementWho(); // hide replacement who
+                    }
                 }
 
                 // ganti variable for ckeditor
@@ -143,6 +175,12 @@
                 cke_outline = data.data.outline;
                 cke_main_responsibilities = data.data.main_responsibilities;
                 cke_tasks = data.data.tasks;
+
+                // ganti variable untuk attachment tab
+                path = './assets/document/ptk/'+data.data.id_entity+data.data.id_div+data.data.id_dept+data.data.id_pos+data.data.id_time+'/';
+                path_url = "<?= base_url('assets/document/ptk/'); ?>"+data.data.id_entity+data.data.id_div+data.data.id_dept+data.data.id_pos+data.data.id_time+'/'
+                files = data.data.files
+                table_files.ajax.reload(); // update list files
 
                 // tampilkan tab job profile viewer dan ambil datanya
                 showMeJobProfile(id_pos);
@@ -153,4 +191,33 @@
             }
         })
     });
+
+/* -------------------------------------------------------------------------- */
+/*                                  functions                                 */
+/* -------------------------------------------------------------------------- */
+
+    function updateFilesToDatabase(){
+        $.ajax({
+            url: "<?= base_url('ptk/ajax_files_update'); ?>",
+            data: {
+                id_entity: id_entity,
+                id_div: id_div,
+                id_dept: id_dept,
+                id_pos: id_pos,
+                id_time: id_time,
+                files: files
+            },
+            method: "POST",
+            success: function(data){
+                
+            },
+            error: function(){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
+                });
+            }
+        })
+    }
 </script>

@@ -43,8 +43,8 @@
                     $('#'+id_timeline).parent().append('<div><i class="'+value.icon+' bg-'+value.css_color+'"></i><div id='+index+' class="timeline-item"><span class="time"><i class="fas fa-clock"></i> '+time_now+'</span><h3 class="timeline-header"><span class="text-primary font-weight-bold">'+value.signedby+'</span> '+value.signedbynik+'</h3></div></div>');
 
                     // jika tidak kosong tampilkan pesan revisi
-                    if(value.pesan_revisi != undefined){
-                        $('.timeline-item#'+index).append('<div class="timeline-body">'+value.pesan_revisi+'</div>'); // tambah pesan revisi
+                    if(value.pesan_komentar != undefined){
+                        $('.timeline-item#'+index).append('<div class="timeline-body">'+value.pesan_komentar+'</div>'); // tambah pesan komentar
                     }
                     $('.timeline-item#'+index).append('<div class="timeline-footer"><span class="badge badge-'+value.css_color+'">'+value.status_name+'</span></div>');
                 });

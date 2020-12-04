@@ -206,7 +206,6 @@ class Ptk extends SpecialUserAppController {
             // $data['custom_styles'] = array();
             $data['custom_script'] = array(
                 'plugins/datatables/script_datatables', 
-                'plugins/jqueryValidation/script_jqueryValidation', 
                 'plugins/datepicker/script_datepicker', 
                 'plugins/ckeditor/script_ckeditor',
                 'plugins/jquery-uploadfile/script',
@@ -217,7 +216,6 @@ class Ptk extends SpecialUserAppController {
             
             $this->load->view('main_v', $data);
         } else {
-            // NOW atur save jadi action angka
             // cekakses hanya admin, superadmin, N-2 dan N-1 yang bisa akses
             if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1 || $my_hirarki == "N-1") {
                 if($this->input->post('action') == 3){
@@ -249,10 +247,30 @@ class Ptk extends SpecialUserAppController {
             // buat status data
             $name_signed = $this->_general_m->getOnce('emp_name', $this->table['employee'], array('nik' => $this->session->userdata('nik')))['emp_name'];
             $nik_signed = $this->session->userdata('nik');
-            $status_data = $this->process_statusData($status_now, $temp_status_data, $name_signed, $nik_signed)['status_data'];
+            $status_data = $this->process_statusData($status_now, $temp_status_data, $name_signed, $nik_signed, $this->input->post('pesan_komentar'))['status_data'];
 
             // save form
             $data = $this->saveForm_post($status_now, $status_data);
+            $data['files'] = json_encode($this->session->userdata('ptk_files')); // masukkan data files
+
+            // deklarasi path folder dengan bantuan composite key
+            $path_temp = './assets/temp/files/ptk/'.$this->session->userdata('nik')."/";
+            $path = "./assets/document/ptk/".$data['id_entity'].$data['id_div'].$data['id_dept'].$data['id_pos'].$data['id_time']."/";
+            // buat directory penyimpanan
+            if(is_dir($path) == false){
+                mkdir($path);
+            }
+            // pindahkan 1 persatu file dari folder path_temp ke path
+            foreach($this->session->userdata('ptk_files') as $v){
+                //Move the file using PHP's rename function.
+                rename($path_temp.$v['file_name'], $path.$v['file_name']);
+            }
+            // hapus directory path temp
+            $this->load->model('upload_m');
+            $this->upload_m->delete_files($path_temp);
+            $this->session->unset_userdata('ptk_files'); // hapus session file ptk
+
+            // $data['files'] = json_encode($this->session->userdata())
             $this->saveForm_new($data);
             
             // set pesan berhasil disubmit
@@ -270,6 +288,10 @@ class Ptk extends SpecialUserAppController {
 /* -------------------------------------------------------------------------- */
 /*                                AJAX Function                               */
 /* -------------------------------------------------------------------------- */
+
+    function ajax_files_update(){
+        
+    }
     
     /**
      * ambil daftar employee yang terdaftar pada position
@@ -572,17 +594,27 @@ class Ptk extends SpecialUserAppController {
      * @return void
      */
     function ajax_refreshListFiles(){
-        $file_session = $this->session->userdata('files_upload');
-        if(!empty($file_session)){
-            $counter_files = count($file_session);
+        // variabel parameter data sessions dan files
+        $session_name = $this->input->post('session_name');
+        $files = $this->input->post('files');
+        $file_data = $this->session->userdata($session_name);
+        if(!empty($file_data) && !empty($session_name)){
+            $file_counter = count($file_data);
+        } elseif(!empty($files)){
+            $file_data = json_decode($files, true);
+            if(!empty($file_data)){
+                $file_counter = count($file_data);
+            } else {
+                $file_counter = 0;
+            }
         } else {
-            $counter_files = 0;
-            $file_session = "";
+            $file_counter = 0;
+            $file_data = "";
         }
 
         echo json_encode(array(
-            'counter_files' => $counter_files,
-            'data' => $file_session
+            'file_counter' => $file_counter,
+            'data' => $file_data
         ));
     }
 
@@ -718,11 +750,6 @@ class Ptk extends SpecialUserAppController {
      * @return void
      */
     public function saveForm_post($status_now, $status_data, $time = "") {
-        print_r($this->input->post());
-        exit;
-
-        // NOW
-
         //timestamp id
         if(empty($time)){
             $time = time();
@@ -790,10 +817,11 @@ class Ptk extends SpecialUserAppController {
         }
         // mpp
         $data['req_mpp'] = $this->input->post('mpp_req');
-        // status employement
+        // status employement dan temporary month
         $data['id_employee_status'] = $this->input->post('emp_stats');
+        $data['empstats_temporary_month'] = $this->input->post('temporary_month');
         // Date Required
-        $data['req_date'] = date("o-m-d", strtotime($this->input->post('date_required')));
+        $data['req_date'] = date("Y-m-d", strtotime($this->input->post('date_required')));
         // Education
         $data['id_ptk_edu'] = $this->input->post('education');
         // Majoring
@@ -801,15 +829,24 @@ class Ptk extends SpecialUserAppController {
         // Preferred Age
         $data['age'] = $this->input->post('preferred_age');
         // Sex
-        $data['sex'] = $this->input->post('sex');
+        // $data['sex'] = $this->input->post('sex');
         // Working Experience
         $data['work_exp'] = $this->input->post('work_exp_years');
+        if($this->input->post('work_exp_years') > 0){
+            $data['work_exp_at'] = $this->input->post('work_exp_at');
+        } else {
+            $data['work_exp_at'] = "";
+        }
         // ska
         $data['req_ska'] = $this->input->post('ska');
         // Special Requirement
         $data['req_special'] = $this->input->post('req_special');
         // Outline
         $data['outline'] = $this->input->post('outline');
+        // Main Responsibilities
+        $data['main_responsibilities'] = $this->input->post('main_responsibilities');
+        // Tasks
+        $data['tasks'] = $this->input->post('tasks');
         // Interviewer
         $data['interviewer'] = json_encode([
             0 => array(
@@ -823,12 +860,12 @@ class Ptk extends SpecialUserAppController {
             2 => array(
                 'name' => $this->input->post('interviewer_name3'),
                 'position' => $this->input->post('interviewer_position3')
+            ),
+            3 => array(
+                'name' => $this->input->post('interviewer_name4'),
+                'position' => $this->input->post('interviewer_position4')
             )
         ]);
-        // Main Responsibilities
-        $data['main_responsibilities'] = $this->input->post('main_responsibilities');
-        // Tasks
-        $data['tasks'] = $this->input->post('tasks');
 
         return $data;
     }
@@ -1111,12 +1148,17 @@ class Ptk extends SpecialUserAppController {
         $data['page_title'] = $this->page_title['form'];
         $data['load_view'] = 'ptk/viewPTK_ptk_v';
         // additional styles and custom script
-        $data['additional_styles'] = array('plugins/datepicker/styles_datepicker');
+        $data['additional_styles'] = array(
+            'plugins/datatables/styles_datatables',
+            'plugins/datepicker/styles_datepicker',
+            'plugins/jquery-uploadfile/styles'
+        );
         // $data['custom_styles'] = array();
         $data['custom_script'] = array(
-            // 'plugins/jqueryValidation/script_jqueryValidation', 
+            'plugins/datatables/script_datatables', 
             'plugins/datepicker/script_datepicker', 
             'plugins/ckeditor/script_ckeditor.php', 
+            'plugins/jquery-uploadfile/script',
             'ptk/script_formvariable_ptk',
             'ptk/script_viewer_ptk',
             'ptk/script_updateStatus_ptk',
@@ -1141,7 +1183,7 @@ class Ptk extends SpecialUserAppController {
         $id_pos = $this->input->post('id_pos');
         $id_time = $this->input->post('id_time');
         $action = $this->input->post('action');
-        $pesan_revisi = $this->input->post('pesan_revisi');
+        $pesan_komentar = $this->input->post('pesan_komentar');
         $status_now = $this->input->post('status_now'); // ambil id status
         $status_data = $this->ptk_m->getDetail_ptkStatus($id_entity, $id_div, $id_dept, $id_pos, $id_time); // get status data
         $name_signed = $this->_general_m->getOnce('emp_name', $this->table['employee'], array('nik' => $this->session->userdata('nik')))['emp_name'];
@@ -1175,11 +1217,11 @@ class Ptk extends SpecialUserAppController {
                 if($status_now == "ptk_stats-B"){
                     // cek action
                     if($action == 0){
-                        $new_statsData = $this->process_statusData("ptk_stats-8", $status_data, $name_signed, $nik_signed);
+                        $new_statsData = $this->process_statusData("ptk_stats-8", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-A", $status_data, $name_signed, $nik_signed);
+                        $new_statsData = $this->process_statusData("ptk_stats-A", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-C", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                        $new_statsData = $this->process_statusData("ptk_stats-C", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } else {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                         exit;
@@ -1192,11 +1234,11 @@ class Ptk extends SpecialUserAppController {
                 if($status_now == "ptk_stats-4"){
                     // cek action
                     if($action == 0){
-                        $new_statsData = $this->process_statusData("ptk_stats-7", $status_data, $name_signed, $nik_signed);
+                        $new_statsData = $this->process_statusData("ptk_stats-7", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed);
+                        $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                        $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } else {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                         exit;
@@ -1209,11 +1251,11 @@ class Ptk extends SpecialUserAppController {
                 if($status_now == "ptk_stats-2"){
                     // cek action
                     if($action == 0){
-                        $new_statsData = $this->process_statusData("ptk_stats-6", $status_data, $name_signed, $nik_signed);
+                        $new_statsData = $this->process_statusData("ptk_stats-6", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-3", $status_data, $name_signed, $nik_signed);
+                        $new_statsData = $this->process_statusData("ptk_stats-3", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-F", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                        $new_statsData = $this->process_statusData("ptk_stats-F", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } else {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                         exit;
@@ -1226,11 +1268,11 @@ class Ptk extends SpecialUserAppController {
                 if($status_now == "ptk_stats-3"){
                     // cek action
                     if($action == 0){
-                        $new_statsData = $this->process_statusData("ptk_stats-5", $status_data, $name_signed, $nik_signed);
+                        $new_statsData = $this->process_statusData("ptk_stats-5", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-4", $status_data, $name_signed, $nik_signed);
+                        $new_statsData = $this->process_statusData("ptk_stats-4", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-E", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                        $new_statsData = $this->process_statusData("ptk_stats-E", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } else {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                         exit;
@@ -1239,11 +1281,11 @@ class Ptk extends SpecialUserAppController {
                 // elseif($status_now == "ptk_stats-4"){
                 //     // cek action
                 //     if($action == 0){
-                //         $new_statsData = $this->process_statusData("ptk_stats-7", $status_data, $name_signed, $nik_signed);
+                //         $new_statsData = $this->process_statusData("ptk_stats-7", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                 //     } elseif($action == 1){
-                //         $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed);
+                //         $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                 //     } elseif($action == 2){
-                //         $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_revisi);
+                //         $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                 //     } else {
                 //         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                 //         exit;
@@ -1252,18 +1294,18 @@ class Ptk extends SpecialUserAppController {
                 else {
                     if((int)$this->input->post('division') == 6){
                         if($action == 1){
-                            $new_statsData = $this->process_statusData("ptk_stats-3", $status_data, $name_signed, $nik_signed);
+                            $new_statsData = $this->process_statusData("ptk_stats-3", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                         } elseif($action == 3){
-                            $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed);
+                            $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                         } else {
                             show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                             exit;
                         }
                     } else {
                         if($action == 1){
-                            $new_statsData = $this->process_statusData("ptk_stats-2", $status_data, $name_signed, $nik_signed);
+                            $new_statsData = $this->process_statusData("ptk_stats-2", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                         } elseif($action == 3){
-                            $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed);
+                            $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                         } else {
                             show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                             exit;
@@ -1273,16 +1315,16 @@ class Ptk extends SpecialUserAppController {
             } elseif($position_my['hirarki_org'] == "N-1") {
                 // cek action
                 if($action == 1){
-                    $new_statsData = $this->process_statusData("ptk_stats-2", $status_data, $name_signed, $nik_signed);
+                    $new_statsData = $this->process_statusData("ptk_stats-2", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                 } elseif($action == 3){
-                    $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed);
+                    $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                 } else {
                     show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                     exit;
                 }
             } elseif($position_my['hirarki_org'] == "N-2") {
                 if($action == 3){
-                    $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed);
+                    $new_statsData = $this->process_statusData("ptk_stats-1", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                 } else {
                     show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                     exit;
@@ -1327,11 +1369,12 @@ class Ptk extends SpecialUserAppController {
 /* -------------------------------------------------------------------------- */
 /*                                Mini Function                               */
 /* -------------------------------------------------------------------------- */
-    function process_statusData($status_new, $status_data, $name_signed, $nik_signed, $pesan_revisi = ""){
+    function process_statusData($status_new, $status_data, $name_signed, $nik_signed, $pesan_komentar = ""){
         if($status_data == array()){
             $status_data[0] = array(
                 'id' => $status_new,
                 'time' => time(),
+                'pesan_komentar' => $pesan_komentar,
                 'signedby' => $name_signed,
                 'signedbynik' => $nik_signed
             );
@@ -1340,13 +1383,10 @@ class Ptk extends SpecialUserAppController {
             $status_data[$index] = array(
                 'id' => $status_new,
                 'time' => time(),
+                'pesan_komentar' => $pesan_komentar,
                 'signedby' => $name_signed,
                 'signedbynik' => $nik_signed
             );
-            // masukkan pesan revisi jika ada
-            if(!empty($pesan_revisi)){
-                $status_data[$index]['pesan_revisi'] = $pesan_revisi;
-            }
         }
 
         return array(

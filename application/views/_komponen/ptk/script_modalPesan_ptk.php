@@ -118,7 +118,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Please write a message for user to revise the form!',
+                text: 'Please write a comment!',
             });
         } else {
             $('input[name="pesan_komentar"]').val(textarea_pesanKomentar); // taruh pesan revisi di form

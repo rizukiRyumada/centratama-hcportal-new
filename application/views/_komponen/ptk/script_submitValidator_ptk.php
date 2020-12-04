@@ -153,7 +153,7 @@
             if(select_temporary.val() == ""){
                 select_temporary.addClass('is-invalid'); // tambah kelas invalid
                 select_temporary.parent().append(msg_fill); // tampilkan pesan error
-                msg_validate += "<li>empstats is empty</li>"; // pesan empty
+                msg_validate += "<li>Temporary Month is empty</li>"; // pesan empty
                 counter_validate++; // validate counter add
             } else {
                 // nothing

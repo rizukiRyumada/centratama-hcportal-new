@@ -95,7 +95,7 @@
         input_jpchoose.removeClass('is-valid'); // remove class invalid
         input_jpchoose.siblings('.invalid-tooltip').remove(); // remove class invalid
         if(id_posisi != ""){
-            getNoi(id_posisi); // ambil data mpp dan set mpp ke form
+            getNoi(id_posisi, $('input[name="budget"]:checked').val()); // ambil data mpp dan set mpp ke form
             getInterviewer(id_posisi)// ambil data interviewer
             // ambil data job_level dari job_grade di master position dan set job_levelnya di form
 
@@ -119,7 +119,7 @@
         get_jobLevel(id_posisi);
         showMeJobProfile(id_posisi); // tampilkan job profile tab
         if($('input[name="budget"]:checked').val() == 2){
-            get_selectReplacementWho(); // proses replacement_who
+            get_selectReplacementWho(id_posisi); // proses replacement_who
         }
     });
 
@@ -743,7 +743,7 @@
     }
 
     // mendapatkan employee ketika udh diisiin positionnya
-    function get_selectReplacementWho(){
+    function get_selectReplacementWho(position = "", choose = ""){
         // aktifkan form replacement who
         $('#replace').slideDown(); //  tampilkan form replacement who
         // select_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
@@ -753,7 +753,6 @@
         select_replacement_who.select2({theme: 'bootstrap4'}); // inisialisasi kalo replacement_who itu select2
         // tambahkan pilihan
 
-        let position = input_jpchoose.val();
         // cek apa positionnya kosong kalo kosong ganti dengan pilihan select position first
         if(position == "" || position == null || position == undefined){
             select_replacement_who.attr('disabled', true); // nonaktifkan kotak replacement who
@@ -771,7 +770,9 @@
                     select_replacement_who.attr('disabled', true); // nonaktifkan kotak replacement who
                 },
                 success: function(data, status, jqXHR){
-                    select_replacement_who.removeAttr('disabled'); // aktifkan form replacement who
+                    if(<?php if(!empty($is_edit)){ echo($is_edit); } else { echo(0); } ?> == 1){
+                        select_replacement_who.removeAttr('disabled'); // aktifkan form replacement who jika mode edit
+                    }
 
                     if(data == undefined || data == null || data == ""){
                         // nothing
@@ -782,6 +783,12 @@
                         $.each(vya.data, function(index, value){
                             select_replacement_who.append('<option value="'+value.value+'">'+value.text+'</option>'); //kosongkan selection value dan tambahkan satu selection option
                         });
+                    }
+
+                    if(choose == undefined || choose == null || choose == ""){
+                        // nothing
+                    } else {
+                        select_replacement_who.val(choose);
                     }
                 },
                 error: function(jqXHR, error){
@@ -847,9 +854,11 @@
                     // hapus attribut disabled
                     $("#interviewer_name1").val("");
                     $("#interviewer_position1").val("");
+                    $("#interviewer_name1").attr('disabled', true);
                     $("#interviewer_name1").removeAttr('readonly');
                     $("#interviewer_name1").addClass('form-control');
                     $("#interviewer_name1").removeClass('form-control-plaintext');
+                    $("#interviewer_position1").attr('disabled', true);
                     $("#interviewer_position1").removeAttr('readonly');
                     $("#interviewer_position1").addClass('form-control');
                     $("#interviewer_position1").removeClass('form-control-plaintext');
@@ -858,9 +867,11 @@
                     $("#interviewer_name1").val(vya.approver1.emp_name);
                     $("#interviewer_position1").val(vya.approver1.position_name);
                     $("#interviewer_name1").attr('readonly', true);
+                    $("#interviewer_name1").removeAttr('disabled');
                     $("#interviewer_name1").removeClass('form-control');
                     $("#interviewer_name1").addClass('form-control-plaintext');
                     $("#interviewer_position1").attr('readonly', true);
+                    $("#interviewer_position1").removeAttr('disabled');
                     $("#interviewer_position1").removeClass('form-control');
                     $("#interviewer_position1").addClass('form-control-plaintext');
                 }
@@ -869,9 +880,11 @@
                     // hapus attribut disabled
                     $("#interviewer_name2").val("");
                     $("#interviewer_position2").val("");
+                    $("#interviewer_name2").attr('disabled', true);
                     $("#interviewer_name2").removeAttr('readonly');
                     $("#interviewer_name2").addClass('form-control');
                     $("#interviewer_name2").removeClass('form-control-plaintext');
+                    $("#interviewer_position2").attr('disabled', true);
                     $("#interviewer_position2").removeAttr('readonly');
                     $("#interviewer_position2").addClass('form-control');
                     $("#interviewer_position2").removeClass('form-control-plaintext');
@@ -880,9 +893,11 @@
                     $("#interviewer_name2").val(vya.approver2.emp_name);
                     $("#interviewer_position2").val(vya.approver2.position_name);
                     $("#interviewer_name2").attr('readonly', true);
+                    $("#interviewer_name2").removeAttr('disabled');
                     $("#interviewer_name2").removeClass('form-control');
                     $("#interviewer_name2").addClass('form-control-plaintext');
                     $("#interviewer_position2").attr('readonly', true);
+                    $("#interviewer_position2").removeAttr('disabled');
                     $("#interviewer_position2").removeClass('form-control');
                     $("#interviewer_position2").addClass('form-control-plaintext');
                 }
@@ -898,8 +913,7 @@
     }
 
     // get number of incumbent dengan id_posisi
-    function getNoi(id_posisi){
-        let budget = $('input[name="budget"]:checked').val();
+    function getNoi(id_posisi, budget){
         $.ajax({
             url: '<?= base_url("ptk/ajax_getPositionMpp"); ?>',
             data: {
@@ -1097,149 +1111,149 @@
     // With the above scripts loaded, you can call `tippy()` with a CSS
     // selector and a `content` prop:
 
-    // Entity
-    tippy('#entityInput', {
-        content: 'Please choose one entity',
-    });
+    // // Entity
+    // tippy('#entityInput', {
+    //     content: 'Please choose one entity',
+    // });
 
-    // Job Position
-    // alert budget
-    tippy('#budgetAlert', {
-        content: 'Please Choose one Budget',
-    });
-    // Job Title free text
-    tippy('#jobTitleInput', {
-        content: 'Job Position Free Text',
-    });
-    // job Position selection
-    tippy('#positionInput', {
-        content: 'Job Position Selection',
-    });
+    // // Job Position
+    // // alert budget
+    // tippy('#budgetAlert', {
+    //     content: 'Please Choose one Budget',
+    // });
+    // // Job Title free text
+    // tippy('#jobTitleInput', {
+    //     content: 'Job Position Free Text',
+    // });
+    // // job Position selection
+    // tippy('#positionInput', {
+    //     content: 'Job Position Selection',
+    // });
 
-    // Job Level
-    tippy('#jobLevelForm', {
-        content: 'Job Level',
-    });
+    // // Job Level
+    // tippy('#jobLevelForm', {
+    //     content: 'Job Level',
+    // });
 
-    // Work Location
-    // Work Location selection
-    tippy('#work_location_choose', {
-        content: 'Work Location selection',
-    });
-    // Work Location Text
-    tippy('#work_location_text', {
-        content: 'Work Location Text',
-    });
-    // Work Location Other Trigger
-    tippy('#work_location_otherTrigger', {
-        content: 'Work Location other trigger',
-    });
+    // // Work Location
+    // // Work Location selection
+    // tippy('#work_location_choose', {
+    //     content: 'Work Location selection',
+    // });
+    // // Work Location Text
+    // tippy('#work_location_text', {
+    //     content: 'Work Location Text',
+    // });
+    // // Work Location Other Trigger
+    // tippy('#work_location_otherTrigger', {
+    //     content: 'Work Location other trigger',
+    // });
 
-    // budget
-    tippy('#chooseBudget', {
-        content: 'Budget',
-    });
+    // // budget
+    // tippy('#chooseBudget', {
+    //     content: 'Budget',
+    // });
 
-    // Replacement
-    // replacement trigger
-    tippy('#replace', {
-        content: 'Replace',
-    });
-    // Replacement Who
-    tippy('#replacement_who', {
-        content: 'Replacement Who',
-    });
+    // // Replacement
+    // // replacement trigger
+    // tippy('#replace', {
+    //     content: 'Replace',
+    // });
+    // // Replacement Who
+    // tippy('#replacement_who', {
+    //     content: 'Replacement Who',
+    // });
 
-    // Resource
-    tippy('#resource', {
-        content: 'Resource',
-    });
-    // Internal Who
-    tippy('#internal_who', {
-        content: 'Internal Who',
-    });
+    // // Resource
+    // tippy('#resource', {
+    //     content: 'Resource',
+    // });
+    // // Internal Who
+    // tippy('#internal_who', {
+    //     content: 'Internal Who',
+    // });
 
-    // Man Power Required
-    tippy('#mppReq', {
-        content: 'Man Power Required',
-    });
+    // // Man Power Required
+    // tippy('#mppReq', {
+    //     content: 'Man Power Required',
+    // });
 
-    // Number of Incumbent
-    tippy('#noiReq', {
-        content: 'Number of Incumbent',
-    });
+    // // Number of Incumbent
+    // tippy('#noiReq', {
+    //     content: 'Number of Incumbent',
+    // });
 
-    // Employement Status
-    tippy('#emp_stats', {
-        content: 'Employement Status',
-    });
+    // // Employement Status
+    // tippy('#emp_stats', {
+    //     content: 'Employement Status',
+    // });
 
-    // Date required
-    tippy('#date_required', {
-        content: 'Date Required',
-    });
+    // // Date required
+    // tippy('#date_required', {
+    //     content: 'Date Required',
+    // });
 
-    // Education
-    tippy('#education', {
-        content: 'Education',
-    });
-    // Majoring
-    tippy('#majoring', {
-        content: 'Majoring',
-    });
+    // // Education
+    // tippy('#education', {
+    //     content: 'Education',
+    // });
+    // // Majoring
+    // tippy('#majoring', {
+    //     content: 'Majoring',
+    // });
 
-    // Age
-    tippy('#age', {
-        content: 'Preferred Age',
-    });
-    // Sex
-    tippy('#sexForm', {
-        content: 'Sex',
-    });
+    // // Age
+    // tippy('#age', {
+    //     content: 'Preferred Age',
+    // });
+    // // Sex
+    // tippy('#sexForm', {
+    //     content: 'Sex',
+    // });
 
-    // Fresh Graduate
-    tippy('#freshGradRadio', {
-        content: 'Fresh Graduate',
-    });
-    // Experienced
-    tippy('#experiencedRadio', {
-        content: 'Experienced',
-    });
-    // Work Experience Years
-    tippy('#we_years', {
-        content: 'Work Experienced Years',
-    });
+    // // Fresh Graduate
+    // tippy('#freshGradRadio', {
+    //     content: 'Fresh Graduate',
+    // });
+    // // Experienced
+    // tippy('#experiencedRadio', {
+    //     content: 'Experienced',
+    // });
+    // // Work Experience Years
+    // tippy('#we_years', {
+    //     content: 'Work Experienced Years',
+    // });
 
-    // Skill, Knowledge, and abilities (ska)
-    tippy('#ska_label', {
-        content: 'Skill, Knowledge, and abilities (ska)',
-    });
+    // // Skill, Knowledge, and abilities (ska)
+    // tippy('#ska_label', {
+    //     content: 'Skill, Knowledge, and abilities (ska)',
+    // });
 
-    // Special Requirement
-    tippy('#reqSpecial_label', {
-        content: 'Special Requirement',
-    });
+    // // Special Requirement
+    // tippy('#reqSpecial_label', {
+    //     content: 'Special Requirement',
+    // });
 
-    // Outline
-    tippy('#outline_label', {
-        content: 'Outline',
-    });
+    // // Outline
+    // tippy('#outline_label', {
+    //     content: 'Outline',
+    // });
 
-    // Interviewer
-    tippy('#interviewer_name3', {
-        content: 'Interviewer Name',
-    });
-    tippy('#interviewer_position3', {
-        content: 'Interviewer Position',
-    });
+    // // Interviewer
+    // tippy('#interviewer_name3', {
+    //     content: 'Interviewer Name',
+    // });
+    // tippy('#interviewer_position3', {
+    //     content: 'Interviewer Position',
+    // });
 
-    // Main Responsibilities
-    tippy('#main_responsibilities_label', {
-        content: 'main_responsibilities',
-    });
+    // // Main Responsibilities
+    // tippy('#main_responsibilities_label', {
+    //     content: 'main_responsibilities',
+    // });
 
-    // Tasks
-    tippy('#tasks_label', {
-        content: 'Tasks',
-    });
+    // // Tasks
+    // tippy('#tasks_label', {
+    //     content: 'Tasks',
+    // });
 </script>

@@ -46,7 +46,7 @@
     var input_workexp_checked = $('input[name="work_exp"]:checked');
     var input_workexp_years = $('#we_years');
     var input_workexp_yearstext = $('input[name="work_exp_years"]');
-    var input_workexp_at = $('input[name="exp_at"]');
+    var input_workexp_at = $('input[name="work_exp_at"]');
     var input_workexp_at_container = $('#experienced_at');
 
     // validation entity
