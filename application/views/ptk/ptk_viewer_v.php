@@ -33,9 +33,9 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="jobLevelForm" class="col-sm-4 col-form-label">Job Level</label>
+                <label for="jobLevelSelect" class="col-sm-4 col-form-label">Job Level</label>
                 <div class="col-sm-8">
-                    <select id="jobLevelForm" name="job_level" class="custom-select" required disabled>
+                    <select id="jobLevelSelect" name="job_level" class="custom-select jobLevelForm" required disabled>
                         <option value="" >Select Job Level...</option>
                         <?php foreach($master_level as $v): ?>
                             <option value="<?= $v['id']; ?>" ><?= $v['name']; ?></option>

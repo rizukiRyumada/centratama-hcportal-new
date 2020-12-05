@@ -50,7 +50,7 @@
                     job_level = data.data.job_level;
                 }
                 validate_entity.val(data.data.id_entity); // select entity base on data
-                $("#jobLevelForm").val(data.data.job_level); // select job level base on data
+                $(".jobLevelForm").val(data.data.job_level); // select job level base on data
                 
                 // fill free text form
                 $('input[name="mpp_req"]').val(data.data.req_mpp);

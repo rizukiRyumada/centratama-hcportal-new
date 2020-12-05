@@ -68,6 +68,17 @@
             </div>
             <div class="card-body table-responsive">
                 <div class="row justify-content-end">
+                    <div id="daterangeChooser" class="col-lg-4 col-sm-6" style="display: none;">
+                        <div class="form-group">
+                            <label for="daterange">Pick a daterange:</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                <input id="daterange" class="form-control daterange-chooser" type="text" name="dateChooser" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="statusPtk">Status :</label>

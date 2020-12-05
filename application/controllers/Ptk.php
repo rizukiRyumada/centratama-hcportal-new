@@ -127,6 +127,7 @@ class Ptk extends SpecialUserAppController {
 		// $data['custom_styles'] = array();
         $data['custom_script'] = array(
             'plugins/datatables/script_datatables', 
+            'plugins/daterange-picker/script_daterange-picker',
             'ptk/script_index_ptk',
             'ptk/script_ajax_timelineStatusHistory_ptk'
         );
@@ -386,6 +387,16 @@ class Ptk extends SpecialUserAppController {
     public function ajax_getMyFormList(){
         // get with status
         $getWithStatus = $this->input->post('status');
+        $filter_daterange = $this->input->post('daterange');
+
+        $where = "";
+        // filter daterange
+        if(!empty($filter_daterange)){
+            $daterange = explode(" - ", $filter_daterange); // pisahkan dulu daterangenya
+            $daterange[0] = strtotime($daterange[0]);
+            $daterange[1] = strtotime($daterange[1]);
+            $where .= "id_time >= ".$daterange[0]." AND id_time <= ".$daterange[1]; // tambahkan where tanggal buat ngebatesin view biar ga load lama
+        }
 
         // ambil divisi departemen posisi
         $deptDiv = $this->employee_m->getDeptDivFromNik($this->session->userdata('nik'));
@@ -396,28 +407,29 @@ class Ptk extends SpecialUserAppController {
 
         // date division department status details
         // get form list ptk
-        if($getWithStatus == "2"){ // jika history
-            if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
-                $data_ptk = $this->ptk_m->getAll_ptkList();
-            } else {
-                show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
-            }
-        } elseif($getWithStatus == "0" || $getWithStatus == "1") { // jika statusnya aktif atau tidak
+        // if($getWithStatus == "2"){ // jika history
+        //     if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+        //         $data_ptk = $this->ptk_m->getAll_ptkList();
+        //     } else {
+        //         show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        //     }
+        // } else
+        if($getWithStatus == "0" || $getWithStatus == "1") { // jika statusnya aktif atau tidak
             if((int)$position_my['id'] == 1 || (int)$position_my['id'] == 196 || $this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
-                $data_ptk = $this->ptk_m->get_ptkList(array(
-                    // 'type' => $getWithStatus
-                ));
+                $data_ptk = $this->ptk_m->get_ptkList($where);
+                // $data_ptk = $this->ptk_m->get_ptkList(array(
+                //     // 'type' => $getWithStatus
+                // ));
             } elseif($position_my['hirarki_org'] == "N"){
-                $data_ptk = $this->ptk_m->get_ptkList(array(
-                    // 'type' => $getWithStatus,
-                    'id_div' => $deptDiv['div_id']
-                ));
+                if(!empty($where)){
+                    $where .= " AND ";
+                }
+                $data_ptk = $this->ptk_m->get_ptkList($where.'id_div='.$deptDiv['div_id']);
             } elseif($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
-                $data_ptk = $this->ptk_m->get_ptkList(array(
-                    // 'type' => $getWithStatus,
-                    'id_div' => $deptDiv['div_id'],
-                    'id_dept' => $deptDiv['dept_id']
-                ));
+                if(!empty($where)){
+                    $where .= " AND ";
+                }
+                $data_ptk = $this->ptk_m->get_ptkList($where.'id_div='.$deptDiv['div_id'].' AND id_dept='.$deptDiv['dept_id']);
             } else {
                 show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
             }
@@ -425,28 +437,23 @@ class Ptk extends SpecialUserAppController {
             if(!empty($getWithStatus)) {
                 $statuses = json_decode($getWithStatus, true);
                 $statuses = $statuses['my_task'];
+
+                if(!empty($where)){
+                    $where .= " AND ";
+                }
                 
                 $temp_ptk = array();
                 if((int)$position_my['id'] == 1 || (int)$position_my['id'] == 196 || $this->userApp_admin == 1 || $this->session->userdata('role_id') == 1){
                     foreach($statuses as $k => $v){
-                        $temp_ptk[$k] = $this->ptk_m->get_ptkList(array(
-                            'status_now' => $v
-                        ));
+                        $temp_ptk[$k] = $this->ptk_m->get_ptkList($where.'status_now="'.$v.'"');
                     }
                 } elseif($position_my['hirarki_org'] == "N"){
                     foreach($statuses as $k => $v){
-                        $temp_ptk[$k] = $this->ptk_m->get_ptkList(array(
-                            'status_now' => $v,
-                            'id_div' => $deptDiv['div_id']
-                        ));
+                        $temp_ptk[$k] = $this->ptk_m->get_ptkList($where.'status_now="'.$v.'"'.' AND id_div='.$deptDiv['div_id']);
                     }
                 } elseif($position_my['hirarki_org'] == "N-1" || $position_my['hirarki_org'] == "N-2"){
                     foreach($statuses as $k => $v){
-                        $temp_ptk[$k] = $this->ptk_m->get_ptkList(array(
-                            'status_now' => $v,
-                            'id_div' => $deptDiv['div_id'],
-                            'id_dept' => $deptDiv['dept_id']
-                        ));
+                        $temp_ptk[$k] = $this->ptk_m->get_ptkList($where.'status_now="'.$v.'"'.' AND id_div='.$deptDiv['div_id'].' AND id_dept='.$deptDiv['dept_id']);
                     }
                 } else {
                     show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
@@ -1038,7 +1045,7 @@ class Ptk extends SpecialUserAppController {
         // cek akses
         $this->cekakses_ptk($position_my, $position);
 
-        $data['flag_viewer'] = 1; // penanda flag viewer
+        $data['flag_viewer'] = 1; // penanda flag viewer untuk files uploader
         $data['userApp_admin'] = $this->userApp_admin; // data useradmin app
         // form data
         $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id

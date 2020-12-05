@@ -4,6 +4,13 @@
     var mytask = '<?= $mytask; ?>';
     var status_selected = ""; // status selected buat filter per status
     var tab_clicked = 1; // flag tab clicked
+    var page_refreshed = 1;
+    var daterange_origin = "<?= date('m/01/Y', time()) ?> - <?= date('m/t/Y', time()); ?>";
+    <?php if(empty($mytask)): ?>
+        var daterange = "<?= date('m/01/Y', time()) ?> - <?= date('m/t/Y', time()); ?>";
+    <?php else: ?>
+        var daterange = "";
+    <?php endif; ?>
 
     // table index ptk
     // Tabel HealthReport
@@ -48,7 +55,8 @@
             type: 'POST',
             data: function(data) {
                 // kirim data ke server
-                data.status = status
+                data.status = status,
+                data.daterange = daterange
             },
             beforeSend: () => {
                 // $('.overlay').removeClass('d-none'); // hapus class d-none
@@ -133,10 +141,16 @@
     $('.ptk_tableTrigger').on('click', function(){
         tab_clicked = 1; // flag tab clicked
         status_selected = $(this).data('status'); // set tab selected status
-        if($(this).data('status') == "4"){
+        if(status_selected == "4"){ // jika pilihan tabnya my task
+            $('#daterangeChooser').fadeOut();
+            daterange = ""; // kosongkan daterange untuk ambil semua file
+            $("#daterange").val(""); // ubah nilai daterange
             status = mytask; // pake variable mytask
             table.ajax.reload(); // reload table
-        } else {
+        } else { // jika pilihan tabnya history
+            $('#daterangeChooser').fadeIn();
+            daterange = daterange_origin; // isi dengan daterange origin
+            $("#daterange").val(daterange_origin); // ubah nilai daterange
             status = $(this).data('status'); // ubah status variable
             table.ajax.reload(); // reload table
         }
@@ -160,6 +174,17 @@
         }
     });
 
+    // filter daterange
+    $("#daterange").on('change', function(){
+        if(page_refreshed == 0){
+            daterange = $(this).val(); // ubah variabel daterange
+            table.ajax.reload(); // reload table
+        } else {
+            page_refreshed = 0;
+        }
+        
+    });
+
     // on click export ptk button
     $('.exportPTK').on('click', () => {
         Swal.fire({
@@ -169,6 +194,39 @@
             allowOutsideClick: false,
         });
     });
+
+/* -------------------------------------------------------------------------- */
+/*                              daterange picker                              */
+/* -------------------------------------------------------------------------- */
+    $('.daterange-chooser').daterangepicker({
+        "showDropdowns": true,
+        "minYear": 1989,
+        "maxYear": 2580,
+        "showWeekNumbers": true,
+        "showISOWeekNumbers": true,
+        "autoApply": true,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        "alwaysShowCalendars": true,
+        "startDate": "<?= date('m/01/o',time()) ?>",
+        "endDate": "<?= date('m/t/o', time()); ?>",
+        "minDate": "YYYY-MM-DD",
+        "maxDate": "YYYY-MM-DD",
+        "drops": "auto",
+        "applyButtonClasses": "btn-success"
+    }, function(start, end, label) {
+        console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+    });
+
+/* -------------------------------------------------------------------------- */
+/*                                  functions                                 */
+/* -------------------------------------------------------------------------- */
 
     // open timeline
     function showTimeline(id_entity, id_div, id_dept, id_pos, id_time){
