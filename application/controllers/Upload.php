@@ -20,15 +20,17 @@ class Upload extends MainController {
      */
     public function ajax_upload(){
         if(isset($_FILES["myfile"])){
-            $path = $this->input->post('path'); // ambil path
+            $path = $_SERVER["DOCUMENT_ROOT"].$this->input->post('path'); // ambil path
             $session_name = $this->input->post('session_name'); // ambil nama session
+            $files = $this->input->post('files');
+            $flag_upload_new = $this->input->post('flag_upload_new');
 
             // cek directory dengan nik apa ada, kalo gaada bikin lah
-            if(is_dir($path.$this->session->userdata('nik')) == false){
-                mkdir($path.$this->session->userdata('nik'));
+            if(is_dir($path) == false){
+                mkdir($path, 0755, false);
             }
 
-            $output_dir = $path.$this->session->userdata('nik').'/';
+            $output_dir = $path.'/';
 
             // single file output
             // Array ( [myfile] => Array ( [name] => REVISI KAMUS PSIKOLOGI II_A5.pdf [type] => application/pdf [tmp_name] => /tmp/phpQQ8pSO [error] => 0 [size] => 844745 ) ) 
@@ -37,7 +39,7 @@ class Upload extends MainController {
             // generate unique filename
             do {
                 $fileName = md5($_FILES['myfile']['name'] . microtime()).".".$fileExtension;
-            } while (file_exists($path.$this->session->userdata('nik').'/'.$fileName) == true);
+            } while (file_exists($output_dir.$fileName) == true);
             $ret = array();
             
             //	This is for custom errors;	
@@ -54,46 +56,75 @@ class Upload extends MainController {
                 $fileName_origin = $_FILES["myfile"]["name"];
                 move_uploaded_file($_FILES["myfile"]["tmp_name"],$output_dir.$fileName);
                 $ret[]= $fileName;
-                                
-                // buat session untuk menyimpan nama files
-                if(empty($this->session->userdata($session_name))){
-                    $session_files[0] = array(
-                        'file_name' => $fileName,
-                        'file_nameOrigin' => $fileName_origin,
-                        'size' => $_FILES['myfile']['size'],
-                        'type' => $_FILES['myfile']['type'],
-                        'time' => date('Y-m-d h:i', time())
-                    );
-                    $this->session->set_userdata($session_name, $session_files);
-                } else {
-                    $session_files = $this->session->userdata($session_name);
-
-                    $session_files[array_key_last($session_files) + 1] = array(
-                        'file_name' => $fileName,
-                        'file_nameOrigin' => $fileName_origin,
-                        'size' => $_FILES['myfile']['size'],
-                        'type' => $_FILES['myfile']['type'],
-                        'time' => date('Y-m-d h:i', time())
-                    );
-                    $this->session->set_userdata($session_name, $session_files);
+                    
+                // jika upload pada new form simpan nama filenya ke session
+                if($flag_upload_new == 1){
+                    // buat session untuk menyimpan nama files
+                    if(empty($this->session->userdata($session_name))){
+                        $files_new[0] = array(
+                            'file_name' => $fileName,
+                            'file_nameOrigin' => $fileName_origin,
+                            'size' => $_FILES['myfile']['size'],
+                            'type' => $_FILES['myfile']['type'],
+                            'time' => date('Y-m-d h:i', time())
+                        );
+                        $this->session->set_userdata($session_name, $files_new);
+                    } else {
+                        $files_new = $this->session->userdata($session_name);
+                        $files_new[array_key_last($files_new) + 1] = array(
+                            'file_name' => $fileName,
+                            'file_nameOrigin' => $fileName_origin,
+                            'size' => $_FILES['myfile']['size'],
+                            'type' => $_FILES['myfile']['type'],
+                            'time' => date('Y-m-d h:i', time())
+                        );
+                        $this->session->set_userdata($session_name, $files_new);
+                    }
+                } else { // jika engga simpan ke variable files
+                    // perbarui file list
+                    $files_temp = json_decode($files, true);
+                    if(empty($files_temp)){
+                        $files_new[0] = array(
+                            'file_name' => $fileName,
+                            'file_nameOrigin' => $fileName_origin,
+                            'size' => $_FILES['myfile']['size'],
+                            'type' => $_FILES['myfile']['type'],
+                            'time' => date('Y-m-d h:i', time())
+                        );
+                    } else {
+                        // masukkan files remp ke variable files_new
+                        $files_new = $files_temp;
+                        $files_new[array_key_last($files_temp) + 1] = array(
+                            'file_name' => $fileName,
+                            'file_nameOrigin' => $fileName_origin,
+                            'size' => $_FILES['myfile']['size'],
+                            'type' => $_FILES['myfile']['type'],
+                            'time' => date('Y-m-d h:i', time())
+                        );
+                    }
                 }
                 
             } else { //Multiple files, file[]
                 $fileCount = count($_FILES["myfile"]["name"]);
-                $session_files = $this->session->userdata($session_name);
+                // jika upload file di create new form
+                if($flag_upload_new == 1){
+                    $files_new = $this->session->userdata($session_name);
+                } else { // jika upload file dari viewer
+                    $files_new = json_decode($files, true);
+                }
 
-                if(empty($session_files)){
+                if(empty($files_new)){
                     $y = 0;
                 } else {
-                    $y = array_key_last($session_files) + 1;
+                    $y = array_key_last($files_new) + 1;
                 }
                 for($i=0; $i < $fileCount; $i++){
                     $fileName_origin = $_FILES["myfile"]["name"][$i];
                     move_uploaded_file($_FILES["myfile"]["tmp_name"][$i],$output_dir.$fileName);
                     $ret[]= $fileName;
 
-                    if(empty($session_files)){
-                        $session_files[$i] = array(
+                    if(empty($files_new)){
+                        $files_new[$i] = array(
                             'file_name' => $fileName,
                             'file_nameOrigin' => $fileName_origin,
                             'size' => $_FILES['myfile']['size'][$i],
@@ -102,7 +133,7 @@ class Upload extends MainController {
                         );
                         $y = $i + 1;
                     } else {
-                        $session_files[$y] = array(
+                        $files_new[$y] = array(
                             'file_name' => $fileName,
                             'file_nameOrigin' => $fileName_origin,
                             'size' => $_FILES['myfile']['size'][$i],
@@ -112,12 +143,17 @@ class Upload extends MainController {
                         $y++;
                     }
                 }
-                $this->session->set_userdata($session_name, $session_files);
+                // jika upload dari create new form, masukkan data ke session
+                if($flag_upload_new == 1){
+                    $this->session->set_userdata($session_name, $files_new);
+                } else {
+                    // nothing
+                }
             }
 
             echo json_encode(array(
-                'file_counter' => count($session_files),
-                'session_files' => $session_files
+                'file_counter' => count($files_new),
+                'files_new' => $files_new
             ));
             // echo json_encode($ret);
         }
@@ -132,16 +168,18 @@ class Upload extends MainController {
      * @return void
      */
     public function ajax_delete(){
-        $path = $this->input->post('path'); // ambil path
+        $path = $_SERVER["DOCUMENT_ROOT"].$this->input->post('path'); // ambil path
         $file_name = $this->input->post('filename'); // ambil filename
         $files = $this->input->post('files');
         $session_name = $this->input->post('session_name');
         $file_session = $this->session->userdata($session_name);
         
         // cek jika ada filenya, hapus
-        if(file_exists($path.$file_name) == true){
-            unlink($path.$file_name); // hapus file dari server
+        if(file_exists($path."/".$file_name) == true){
+            unlink($path."/".$file_name); // hapus file dari server
 
+            // jika session name dan file_sessionnya kosong, brarti delete filenya dari fungsi viewer
+            // kalo dari fungsi create new form, ubah di session file
             if(!empty($session_name) && !empty($file_session)){
                 // perbarui data session file
                 $files_new = array(); $x = 0;
@@ -152,7 +190,7 @@ class Upload extends MainController {
                     }
                 }
                 $this->session->set_userdata($session_name, $files_new);
-            } else {
+            } else { // kalo dari fungsi viewer, ubah variabel file
                 // perbarui file list
                 $files_temp = json_decode($files, true);
                 $files_new = array(); $x = 0;

@@ -252,13 +252,14 @@ class Ptk extends SpecialUserAppController {
             // save form
             $data = $this->saveForm_post($status_now, $status_data);
             $data['files'] = json_encode($this->session->userdata('ptk_files')); // masukkan data files
+            $data['files_id'] = md5($data['id_entity'].$data['id_div'].$data['id_dept'].$data['id_pos'].$data['id_time'].microtime()); // generate unique id
 
             // deklarasi path folder dengan bantuan composite key
             $path_temp = './assets/temp/files/ptk/'.$this->session->userdata('nik')."/";
-            $path = "./assets/document/ptk/".$data['id_entity'].$data['id_div'].$data['id_dept'].$data['id_pos'].$data['id_time']."/";
+            $path = "./assets/document/ptk/".$data['files_id']."/";
             // buat directory penyimpanan
             if(is_dir($path) == false){
-                mkdir($path);
+                mkdir($path, 0755, false);
             }
             // pindahkan 1 persatu file dari folder path_temp ke path
             foreach($this->session->userdata('ptk_files') as $v){
@@ -288,9 +289,27 @@ class Ptk extends SpecialUserAppController {
 /* -------------------------------------------------------------------------- */
 /*                                AJAX Function                               */
 /* -------------------------------------------------------------------------- */
-
+    
+    /**
+     * function to update files data on database
+     *
+     * @return void
+     */
     function ajax_files_update(){
-        
+        $id_entity = $this->input->post('id_entity');
+        $id_div = $this->input->post('id_div');
+        $id_dept = $this->input->post('id_dept');
+        $id_pos = $this->input->post('id_pos');
+        $id_time = $this->input->post('id_time');
+        $files = $this->input->post('files');
+
+        $this->ptk_m->updateForm(array('files' => $files), array(
+            'id_entity' => $id_entity,
+            'id_div' => $id_div,
+            'id_dept' => $id_dept,
+            'id_pos' => $id_pos,
+            'id_time' => $id_time
+        ));
     }
     
     /**
@@ -1019,8 +1038,8 @@ class Ptk extends SpecialUserAppController {
         // cek akses
         $this->cekakses_ptk($position_my, $position);
 
-        // data useradmin app
-        $data['userApp_admin'] = $this->userApp_admin;
+        $data['flag_viewer'] = 1; // penanda flag viewer
+        $data['userApp_admin'] = $this->userApp_admin; // data useradmin app
         // form data
         $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
 
@@ -1129,6 +1148,7 @@ class Ptk extends SpecialUserAppController {
             }
         }
         
+        // form data
         $data['education']  = $this->_general_m->getAll('*', 'ptk_education', array()); // education
         $data['emp_status'] = $this->_general_m->getAll('*', 'employee_status', array()); // employee status
         $data['entity']     = $this->entity_m->getAll_notAtAll("*", $this->table['entity'], array()); // ambil entity

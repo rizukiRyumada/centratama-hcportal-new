@@ -1,10 +1,11 @@
 <!-- <script src="<?php // base_url('/assets/js/iframe-resize/iframeResizer.min.js'); ?>"></script> -->
 <script>
     // variable parameter untuk dapetin list file
-    var path = './assets/temp/files/ptk/'+<?= $this->session->userdata('nik'); ?>+'/';
+    var path = 'assets/temp/files/ptk/<?= $this->session->userdata('nik'); ?>';
     var path_url = "<?= base_url('assets/temp/files/ptk/'.$this->session->userdata('nik').'/'); ?>";
     var session_name = 'ptk_files';
     var files = "";
+    var flag_upload_new = 1;
 </script>
 <!-- script attachment, param(path, session_name, files) -->
 <?php $this->load->view('_komponen/ptk/script_attachment_ptk'); ?>
@@ -28,52 +29,6 @@
         //         table_files.ajax.reload();
         //     }
         // });
-
-        // script untuk uploader files
-        $("#fileuploader").uploadFile({
-            url:"<?= base_url('upload/ajax_upload'); ?>",
-            allowedTypes: "pdf,doc,docx,ppt,pptx,xps,odt,xls,xlsx,wps,jpg,jpeg,gif,png",
-            dragdropWidth: "100%",
-            fileName:"myfile",
-            formData: { 
-                path: path,
-                session_name: session_name
-            },
-            multiple: true,
-            showStatusAfterSuccess: false,
-            showProgress: true,
-            sequentialCount:1,
-            onSubmit:function(files)
-            {
-                //files : List of files to be uploaded
-                //return flase;   to stop upload
-
-            },
-            onSuccess:function(files,data,xhr,pd)
-            {
-                //files: list of files
-                //data: response from server
-                //xhr : jquer xhr object
-                // let vya = JSON.parse(data);
-            },
-            afterUploadAll:function(obj)
-            {
-                //You can get data of the plugin using obj
-                table_files.ajax.reload(); // update list files
-                toastr["success"]("Files was successfully uploaded.", "Upload Success");
-            },
-            onError: function(files,status,errMsg,pd)
-            {
-                //files: list of files
-                //status: error status
-                //errMsg: error message
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops, Something went wrong!',
-                    text: errMsg,
-                })
-            }
-        });
     });
 
     /* -------------------------------------------------------------------------- */

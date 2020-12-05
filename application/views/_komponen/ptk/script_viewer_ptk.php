@@ -4,17 +4,26 @@
     var path_url = "";
     var session_name = '';
     var files = "";
+    var flag_upload_new = 0;
+    // script attachment ada di baris paling bawah
 </script>
-<!-- script attachment, param(path, session_name, files) -->
-<?php $this->load->view('_komponen/ptk/script_attachment_ptk'); ?>
 <script>
     // get data ptk from ajax
     $(document).ready(function(){
         // set timeline data and set the view
         set_timelineView(id_entity, id_div, id_dept, id_pos, id_time);
+        ajax_getData(); // jalankan function ajax_getData
+    });
 
+/* -------------------------------------------------------------------------- */
+/*                                  functions                                 */
+/* -------------------------------------------------------------------------- */
+    // fungsi pengambilan data ptk
+    function ajax_getData(){
+        // NOTE:  This function must return the value 
+        //        from calling the $.ajax() method.
         // ajax function to get data from database and placed it on form
-        $.ajax({
+        return $.ajax({
             url: "<?= base_url('ptk/ajax_getPTKdata'); ?>",
             data: {
                 id_entity: id_entity,
@@ -177,10 +186,10 @@
                 cke_tasks = data.data.tasks;
 
                 // ganti variable untuk attachment tab
-                path = './assets/document/ptk/'+data.data.id_entity+data.data.id_div+data.data.id_dept+data.data.id_pos+data.data.id_time+'/';
-                path_url = "<?= base_url('assets/document/ptk/'); ?>"+data.data.id_entity+data.data.id_div+data.data.id_dept+data.data.id_pos+data.data.id_time+'/'
+                path = 'assets/document/ptk/'+data.data.files_id;
+                path_url = "<?= base_url('assets/document/ptk/'); ?>"+data.data.files_id+'/'
                 files = data.data.files
-                table_files.ajax.reload(); // update list files
+                // table_files.ajax.reload(); // update list files
 
                 // tampilkan tab job profile viewer dan ambil datanya
                 showMeJobProfile(id_pos);
@@ -190,34 +199,40 @@
                 // CKEDITOR.replace 'tasks', 
             }
         })
-    });
-
-/* -------------------------------------------------------------------------- */
-/*                                  functions                                 */
-/* -------------------------------------------------------------------------- */
-
-    function updateFilesToDatabase(){
-        $.ajax({
-            url: "<?= base_url('ptk/ajax_files_update'); ?>",
-            data: {
-                id_entity: id_entity,
-                id_div: id_div,
-                id_dept: id_dept,
-                id_pos: id_pos,
-                id_time: id_time,
-                files: files
-            },
-            method: "POST",
-            success: function(data){
-                
-            },
-            error: function(){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
-                });
-            }
-        })
     }
 </script>
+
+<!-- script attachment, param(path, session_name, files) -->
+<?php $this->load->view('_komponen/ptk/script_attachment_ptk'); ?>
+
+<!-- jalankan kode ini hanya jika mode edit -->
+<?php if($is_edit == 1): ?>
+    <script>
+        // fungsi untuk mengupdate list file ke database
+        function updateFilesToDatabase(files_new){
+            $.ajax({
+                url: "<?= base_url('ptk/ajax_files_update'); ?>",
+                data: {
+                    id_entity: id_entity,
+                    id_div: id_div,
+                    id_dept: id_dept,
+                    id_pos: id_pos,
+                    id_time: id_time,
+                    files: files_new
+                },
+                method: "POST",
+                success: function(data){
+                    // set ulang variabel files
+                    table_files.ajax.reload(); // update list files
+                },
+                error: function(){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Sorry, something went wrong!, Please Contact HC Care to get help.'
+                    });
+                }
+            })
+        }
+    </script>
+<?php endif; ?>
