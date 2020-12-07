@@ -256,12 +256,18 @@ class Ptk extends SpecialUserAppController {
             $data['files_id'] = md5($data['id_entity'].$data['id_div'].$data['id_dept'].$data['id_pos'].$data['id_time'].microtime()); // generate unique id
 
             // deklarasi path folder dengan bantuan composite key
-            // PRODUCTION ubah path dan path temp sesuai server windows
             $path_temp = './assets/temp/files/ptk/'.$this->session->userdata('nik')."/";
             $path = "./assets/document/ptk/".$data['files_id']."/";
+
+            // PRODUCTION ubah path dan path temp sesuai server windows
+            // $path_temp = str_replace('\\', '/', $path_temp);
+            // $path = str_replace('\\', '/', $path);
+
             // buat directory penyimpanan
             if(is_dir($path) == false){
                 mkdir($path, 0755, false);
+                // PRODUCTION masalah folder path windows
+                // mkdir($path, 0777, true); // buat di windows server, mode is ignored in windows
             }
             // pindahkan 1 persatu file dari folder path_temp ke path
             foreach($this->session->userdata('ptk_files') as $v){

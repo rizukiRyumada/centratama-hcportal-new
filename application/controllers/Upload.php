@@ -21,6 +21,10 @@ class Upload extends MainController {
     public function ajax_upload(){
         if(isset($_FILES["myfile"])){
             $path = $_SERVER["DOCUMENT_ROOT"].$this->input->post('path'); // ambil path
+
+            // PRODUCTION masalah folder path windows
+            // $path = $_SERVER["DOCUMENT_ROOT"].'/'.$this->input->post('path'); // ambil path
+
             $session_name = $this->input->post('session_name'); // ambil nama session
             $files = $this->input->post('files');
             $flag_upload_new = $this->input->post('flag_upload_new');
@@ -28,9 +32,13 @@ class Upload extends MainController {
             // cek directory dengan nik apa ada, kalo gaada bikin lah
             if(is_dir($path) == false){
                 mkdir($path, 0755, false);
+                // mkdir($path, 0777, true); // PRODUCTION buat di windows server, mode is ignored in windows
             }
 
             $output_dir = $path.'/';
+
+            // PRODUCTION masalah folder path windows
+            // $output_dir = str_replace('\\', '/', $output_dir); // pathnya sesuaikan untuk windows
 
             // single file output
             // Array ( [myfile] => Array ( [name] => REVISI KAMUS PSIKOLOGI II_A5.pdf [type] => application/pdf [tmp_name] => /tmp/phpQQ8pSO [error] => 0 [size] => 844745 ) ) 
@@ -169,14 +177,21 @@ class Upload extends MainController {
      */
     public function ajax_delete(){
         $path = $_SERVER["DOCUMENT_ROOT"].$this->input->post('path'); // ambil path
+
+        // PRODUCTION masalah folder path windows
+        // $path = $_SERVER["DOCUMENT_ROOT"].'/'.$this->input->post('path'); // ambil path
+
         $file_name = $this->input->post('filename'); // ambil filename
         $files = $this->input->post('files');
         $session_name = $this->input->post('session_name');
         $file_session = $this->session->userdata($session_name);
+
+        $dir_file = $path."/".$file_name;
+        // $dir_file = str_replace('\\', '/', $dir_file); // PRODUCTION ubah dirpath sesuai windows server
         
         // cek jika ada filenya, hapus
-        if(file_exists($path."/".$file_name) == true){
-            unlink($path."/".$file_name); // hapus file dari server
+        if(file_exists($dir_file) == true){
+            unlink($dir_file); // hapus file dari server
 
             // jika session name dan file_sessionnya kosong, brarti delete filenya dari fungsi viewer
             // kalo dari fungsi create new form, ubah di session file

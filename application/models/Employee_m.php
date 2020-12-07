@@ -242,8 +242,9 @@ class Employee_m extends CI_Model {
      */
     function check_empPhoto($nik){
         // PRODUCTION error sometimes file_headers empty
-        // PRODUCTION get employee images on user-img path
         $file = base_url('/assets/img/employee/'.$nik.'.jpg');
+        // PRODUCTION get employee images on user-img path
+        // $file = base_url('/user-img/'.$nik.'.jpg');
         $file_headers = @get_headers($file);
 
         // echo(is_readable($file));

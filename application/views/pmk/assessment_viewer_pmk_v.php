@@ -19,6 +19,7 @@
                                                 <div>
                                                 <div class="text-center">
                                                     <!-- PRODUCTION alamat ganti jadi /user-img/ -->
+                                                    <!-- <img class="border border-gray-dark img-fluid" src="<?php if($exist_empPhoto == true){ echo base_url('/user-img/'.$employee['nik'].'.jpg'); } else { echo base_url('/assets/img/user.svg'); } ?>" alt="User profile picture"> -->
                                                     <img class="border border-gray-dark img-fluid" src="<?php if($exist_empPhoto == true){ echo base_url('/assets/img/employee/'.$employee['nik'].'.jpg'); } else { echo base_url('/assets/img/user.svg'); } ?>" alt="User profile picture">
                                                 </div>
                                                 <!-- <h3 class="profile-username text-center"></h3> -->
