@@ -1,6 +1,7 @@
 <!-- <script src="<?php // base_url('/assets/js/iframe-resize/iframeResizer.min.js'); ?>"></script> -->
 <script>
     // variable parameter untuk dapetin list file
+    // PRODUCTION ubah alamat pathnya sesuai server windows
     var path = 'assets/temp/files/ptk/<?= $this->session->userdata('nik'); ?>';
     var path_url = "<?= base_url('assets/temp/files/ptk/'.$this->session->userdata('nik').'/'); ?>";
     var session_name = 'ptk_files';

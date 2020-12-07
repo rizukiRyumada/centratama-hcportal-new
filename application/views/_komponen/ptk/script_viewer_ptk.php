@@ -186,6 +186,7 @@
                 cke_tasks = data.data.tasks;
 
                 // ganti variable untuk attachment tab
+                // PRODUCTION ubah pathnya jadi sesuai server windows
                 path = 'assets/document/ptk/'+data.data.files_id;
                 path_url = "<?= base_url('assets/document/ptk/'); ?>"+data.data.files_id+'/'
                 files = data.data.files

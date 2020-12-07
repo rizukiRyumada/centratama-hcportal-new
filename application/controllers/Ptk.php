@@ -256,6 +256,7 @@ class Ptk extends SpecialUserAppController {
             $data['files_id'] = md5($data['id_entity'].$data['id_div'].$data['id_dept'].$data['id_pos'].$data['id_time'].microtime()); // generate unique id
 
             // deklarasi path folder dengan bantuan composite key
+            // PRODUCTION ubah path dan path temp sesuai server windows
             $path_temp = './assets/temp/files/ptk/'.$this->session->userdata('nik')."/";
             $path = "./assets/document/ptk/".$data['files_id']."/";
             // buat directory penyimpanan
