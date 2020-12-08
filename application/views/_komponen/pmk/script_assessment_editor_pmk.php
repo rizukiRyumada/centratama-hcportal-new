@@ -25,49 +25,51 @@
             return false; // jangan kirimkan form
         }
     });
-    $("#button_submit").on("click", function(e){
-        e.preventDefault(); // prevent default action
-        $('input[name="action"]').val("1");
+    <?php if($is_access == 1): ?>
+        $("#button_submit").on("click", function(e){
+            e.preventDefault(); // prevent default action
+            $('input[name="action"]').val("1");
 
-        if(formValidate() == 0){ // jika tidak ada error
-            Swal.fire({ 
-                title: 'Are you sure?',
-                // text: "This assessment will be addressed to your superior, please give the assessment carefully, your assessment will have an effect for this employee in the future.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Please Wait',
-                        html: '<p>'+"Please don't close this tab and the browser, your assessment for this employee is being submitted."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        allowEnterKey: false
-                    });
-                    $("#form_assessment").submit(); // submit form
-                } else if (
-                    /* Read more about handling dismissals below */
-                    result.dismiss === Swal.DismissReason.cancel) {
-                        // Swal.fire(
-                        //     'Okay',
-                        //     'Please have a more time to review this employee assessment.',
-                        //     'info'
-                        // )
-                        toastr["info"]("Please have a more time to review this employee assessment."); // tampilkan toastr error
-                        // scroll top
-                        // document.body.scrollTop = 0;
-                        // document.documentElement.scrollTop = 0;
-                        return false;
-                    }
-            });
-        } else {
-            return false; // jangan kirimkan form
-        }
-    });
+            if(formValidate() == 0){ // jika tidak ada error
+                Swal.fire({ 
+                    title: 'Are you sure?',
+                    // text: "This assessment will be addressed to your superior, please give the assessment carefully, your assessment will have an effect for this employee in the future.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Please Wait',
+                            html: '<p>'+"Please don't close this tab and the browser, your assessment for this employee is being submitted."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        });
+                        $("#form_assessment").submit(); // submit form
+                    } else if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel) {
+                            // Swal.fire(
+                            //     'Okay',
+                            //     'Please have a more time to review this employee assessment.',
+                            //     'info'
+                            // )
+                            toastr["info"]("Please have a more time to review this employee assessment."); // tampilkan toastr error
+                            // scroll top
+                            // document.body.scrollTop = 0;
+                            // document.documentElement.scrollTop = 0;
+                            return false;
+                        }
+                });
+            } else {
+                return false; // jangan kirimkan form
+            }
+        });
+    <?php endif; ?>
 
     // button used for delette pertanyaan form and its answer
     $('.btn-delete').on('click', function(){

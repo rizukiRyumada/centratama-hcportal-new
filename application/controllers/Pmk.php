@@ -3,6 +3,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pmk extends SpecialUserAppController {
+    protected $app_name = "Employee Requisition";
     protected $id_menu = 12; // id menu
 
     // page title variable
@@ -13,6 +14,7 @@ class Pmk extends SpecialUserAppController {
     ];
 
     protected $table = [
+        'admin'    => 'user_userapp_admins',
         'contract' => 'master_employee_contract',
         'form'     => 'pmk_form',
         'position' => 'master_position',
@@ -29,10 +31,40 @@ class Pmk extends SpecialUserAppController {
         // load models
         $this->load->model(['divisi_model', 'dept_model', 'email_m', 'employee_m', 'posisi_m', 'pmk_m', "user_m"]);
         
-        // Token Checker
+        // Token Checker buat ngapus token
         if(!empty($this->session->userdata('token'))){
-            // hapus token dari database
-            $this->Jobpro_model->delete('user_token', array('index' => 'token', 'data' => $this->session->userdata('token')));
+            $data_token = $this->_general_m->getOnce('data', 'user_token', array('token' => $this->session->userdata('token')))['data'];
+            $data_token = json_decode($data_token, true);
+
+            $whoami = $this->employee_m->getDetails_employee($this->session->userdata('nik'));
+
+            $is_allowed = 0; // penanda akses token
+            if(is_array($data_token['email_penerima'])){
+                // cek apa email user sama dengan yang tercantum di database
+                foreach($data_token['email_penerima'] as $v){ // liat satu per satu email
+                    if($whoami['email'] == $v){
+                        $is_allowed++;
+                    }
+                }
+            } else {
+                // cek apa email user sama dengan yang tercantum di database
+                if($whoami['email'] == $data_token['email_penerima']){
+                    $is_allowed++;
+                }
+            }
+            
+            // jika cek is_allowed benar datanya
+            if($is_allowed > 0){
+                // hapus token dari database
+                $this->_general_m->delete('user_token', array('index' => 'token', 'data' => $this->session->userdata('token')));
+            } else {
+                // set toastr notification
+                $this->session->set_userdata('msg', array(
+                    'icon' => 'error',
+                    'title' => 'Error',
+                    'msg' => 'The link token is not yours!'
+                ));
+            }
             // hapus session token
             $this->session->unset_userdata('token');            
         }
@@ -171,6 +203,9 @@ class Pmk extends SpecialUserAppController {
      */
     public function assessment(){
         $nik = substr($this->input->get("id"), 0, 8);
+        if(empty($nik)){ // cek apa niknya ada
+            show_404();
+        }
         // data posisi
         $position_my = $this->posisi_m->getMyPosition();
         $position = $this->employee_m->getDetails_employee($nik);
@@ -188,7 +223,10 @@ class Pmk extends SpecialUserAppController {
         // cek ketersediaan survey
         $data['id_pmk'] = $this->input->get('id'); // ambil data nik dan contract di get dari url
         $data_pmk = $this->pmk_m->getOnceWhere_form(array('id' => $data['id_pmk']));
-        if($data_pmk['status_now_id'] == 1 || $data_pmk['status_now_id'] == 2 || $data_pmk['status_now_id'] == 8){
+        if(empty($data_pmk)){ // cel apa data pmk kosong
+            show_error('Sorry you are not allowed to access this part of application.', 403, 'Forbidden');
+        }
+        if($data_pmk['status_now_id'] == 1 || $data_pmk['status_now_id'] == 2 || $data_pmk['status_now_id'] == 9){
             // cek izin akses khusus CEO dan HC Division Head
             $editable = 0; // penanda editable
             if($position_my['id'] == 196 || $position_my['id'] == 1){
@@ -1016,7 +1054,7 @@ class Pmk extends SpecialUserAppController {
 
         if($this->input->post('action') == 0){ // jika actionnya save
             // cek status sebelumnya
-            if($pmk_data['status_now_id'] == 1){
+            if($pmk_data['status_now_id'] == 1){ // status draft
                 $status_now_id = "1";
                 $status_new[array_key_last($status_new)+1] = array(
                     'id_status' => "1",
@@ -1025,7 +1063,7 @@ class Pmk extends SpecialUserAppController {
                     'time' => time(),
                     'text' => 'Assessment form was changed.'
                 );
-            } elseif($pmk_data['status_now_id'] == 2){
+            } elseif($pmk_data['status_now_id'] == 2){ // status submitted
                 $status_now_id = "2";
                 $status_new[array_key_last($status_new)+1] = array(
                     'id_status' => "2",
@@ -1034,10 +1072,10 @@ class Pmk extends SpecialUserAppController {
                     'time' => time(),
                     'text' => 'Assessment form was changed.'
                 );
-            } elseif($pmk_data['status_now_id'] == 8){
-                $status_now_id = "8";
+            } elseif($pmk_data['status_now_id'] == 9){ // status Draft for Divhead
+                $status_now_id = "9";
                 $status_new[array_key_last($status_new)+1] = array(
-                    'id_status' => "8",
+                    'id_status' => "9",
                     'by' => $penilai['emp_name'],
                     'nik' => $penilai['nik'],
                     'time' => time(),
@@ -1047,12 +1085,14 @@ class Pmk extends SpecialUserAppController {
                 show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
             }
         } else { // jika actionnya submit
+            // load email model
+            $this->load->model('email_m');
             if($penilai['hirarki_org'] == "N-2"){
                 // cek jika atasannya (N-1) ada atau engga
-                if(empty($this->posisi_m->whoIsOnThisPosition($penilai['id_approver1']))){ // kalo N-1nya kosong isi dengan status id 8
-                    $status_now_id = "8";
+                if(empty($this->posisi_m->whoIsOnThisPosition($penilai['id_approver1']))){ // kalo N-1nya kosong isi dengan status id 9, kirim ke divhead sebagai draft
+                    $status_now_id = "9";
                     $status_new[array_key_last($status_new)+1] = array(
-                        'id_status' => "2",
+                        'id_status' => "9",
                         'by' => $penilai['emp_name'],
                         'nik' => $penilai['nik'],
                         'time' => time(),
@@ -1100,6 +1140,74 @@ class Pmk extends SpecialUserAppController {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                     }
                 }
+            }
+        }
+
+        // jika actionnya bukan save, brarti submit
+        if($this->input->post('action') == 1){
+            // siapkan data untuk ngirim email notifikasi
+            if($status_now_id == "2"){ // kirim email ke atasan 1nya dia
+                $email_data = $this->posisi_m->whoIsOnThisPosition($penilai['id_approver1']);                
+                // email data
+                // jika atasan 1 nya lebih dari satu
+                if(count($email_data) > 1){
+                    $email_penerima = array(); $temp_namaPenerima = array();
+                    foreach($email_data as $k => $v){
+                        $email_penerima[$k] = $v['email'];
+                        $temp_namaPenerima[$k] = $v['emp_name'];
+                    }
+                    $penerima_nama = implode(', ', $temp_namaPenerima);
+                } else { // jika atasan 1 nya cuma satu
+                    $email_penerima = $email_data[0]['email'];
+                    $penerima_nama = $email_data[0]['emp_name'];
+                }
+                $email_cc = "";
+            } elseif($status_now_id == "3" || $status_now_id == "9"){ // kirim email ke division head
+                $email_data = $this->divisi_model->get_divHead($position['div_id']);
+                // email data
+                $email_penerima = $email_data['email'];
+                $email_cc = "";
+                $penerima_nama = $email_data['emp_name'];
+            } elseif($status_now_id == "4"){ // kirim email ke OD Department atau adminsapp
+                $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+                $admins = array();
+                foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                    $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+                }
+                // jika adminnya lebih dari satu
+                if(count($admins) > 1){
+                    $email_penerima = array(); $temp_namaPenerima = array();
+                    foreach($admins as $k => $v){
+                        $email_penerima[$k] = $v['email'];
+                        $temp_namaPenerima[$k] = $v['emp_name'];
+                    }
+                    $penerima_nama = implode(', ', $temp_namaPenerima);
+                } else { // jika adminnya cuma satu
+                    $email_penerima = $admins[0]['email'];
+                    $penerima_nama = $admins[0]['emp_name'];
+                }
+                $email_cc = "";
+            }
+
+            // ambil status detail
+            $status_text = $this->pmk_m->getDetail_pmkStatusDetailByStatusId($status_now_id)['name_text'];
+            $email_subject = "[".$this->app_name."] ".$status_text;
+            $message = $status_new[array_key_last($status_new)]['text'];
+            $data_employee = $this->employee_m->getDetails_employee($nik);
+            if($status_now_id == "3" || $status_now_id == "4"){
+                $direct_to = "pmk/index?direct=sumhis";
+            } else {
+                $direct_to = "pmk";
+            }
+
+            $token_data = array( // data buat disave di token url
+                'direct'            => $direct_to,
+                'email_penerima'    => $email_penerima
+            );
+
+            // kirim email permberitahuan kalo ada emailnya
+            if(!empty($email_penerima)){
+                $this->email_m->general_sendNotifikasi_employeeForm($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $message, $data_employee, $token_data);
             }
         }
 
@@ -1276,6 +1384,176 @@ class Pmk extends SpecialUserAppController {
                 show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
             }
         }
+
+        // ambil data summary
+        $data_summary = $this->pmk_m->getDetail_summary($id_summary);
+
+        // kirim email notifikasi berdasarkan action dan status
+        if($action == 0){ // jika actionnya revise
+            // cek per status
+            if($summary_status_now_id == "pmksum-02"){
+                // kirim email ke OD
+                $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+                foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                    $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+                }
+                // jika adminnya lebih dari satu
+                if(count($admins) > 1){
+                    $email_penerima = array(); $temp_namaPenerima = array();
+                    foreach($admins as $k => $v){
+                        $email_penerima[$k] = $v['email'];
+                        $temp_namaPenerima[$k] = $v['emp_name'];
+                    }
+                    $penerima_nama = implode(', ', $temp_namaPenerima);
+                } else { // jika adminnya cuma satu
+                    $email_penerima = $admins[0]['email'];
+                    $penerima_nama = $admins[0]['emp_name'];
+                }
+                $email_cc = "";
+            } elseif($summary_status_now_id == "pmksum-03"){
+                // kirim email ke HC Divhead
+                $email_data = $this->divisi_model->get_divHead(6);
+                // email data
+                $email_penerima = $email_data['email'];
+                $email_cc = "";
+                $penerima_nama = $email_data['emp_name'];
+            } elseif($summary_status_now_id == "pmksum-01"){
+                // kirim email ke divhead
+                $email_data = $this->divisi_model->get_divHead($data_summary['id_div']);
+                // email data
+                $email_penerima = $email_data['email'];
+                $email_cc = "";
+                $penerima_nama = $email_data['emp_name'];
+            } else {
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            }
+        } else { // jika actionnya approve
+            // cek per status
+            if($summary_status_now_id == "pmksum-02"){
+                // kirim email ke OD
+                $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+                foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                    $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+                }
+                // jika adminnya lebih dari satu
+                if(count($admins) > 1){
+                    $email_penerima = array(); $temp_namaPenerima = array();
+                    foreach($admins as $k => $v){
+                        $email_penerima[$k] = $v['email'];
+                        $temp_namaPenerima[$k] = $v['emp_name'];
+                    }
+                    $penerima_nama = implode(', ', $temp_namaPenerima);
+                } else { // jika adminnya cuma satu
+                    $email_penerima = $admins[0]['email'];
+                    $penerima_nama = $admins[0]['emp_name'];
+                }
+                $email_cc = "";
+            } elseif($summary_status_now_id == "pmksum-03"){
+                // kirim email ke HC Divhead dan semua aktor summary
+                $ed_hc = $this->divisi_model->get_divHead(6);
+                $ed_ceo = $this->divisi_model->get_divHead(1);
+                $ed_dh = $this->divisi_model->get_divHead($data_summary['id_div']);
+                // email data
+                $email_penerima = $ed_hc['email'];
+                $penerima_nama = $ed_hc['emp_name'];
+                $email_cc = [$ed_ceo['email'], $ed_dh['email']];
+
+                // ambil email admins
+                $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+                foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                    $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+                }
+                $x = array_key_last($email_cc) + 1;
+                foreach($admins as $k => $v){
+                    $email_cc[$x] = $v['email'];
+                    $x++;
+                }
+            } elseif($summary_status_now_id == "pmksum-04"){
+                // kirim email ke CEO dan semua aktor summary
+                $ed_hc = $this->divisi_model->get_divHead(6);
+                $ed_ceo = $this->divisi_model->get_divHead(1);
+                $ed_dh = $this->divisi_model->get_divHead($data_summary['id_div']);
+                // email data
+                $email_penerima = $ed_ceo['email'];
+                $penerima_nama = $ed_ceo['emp_name'];
+                $email_cc = [$ed_hc['email'], $ed_dh['email']];
+                // ambil email admins
+                $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+                foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                    $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+                }
+                $x = array_key_last($email_cc) + 1;
+                foreach($admins as $k => $v){
+                    $email_cc[$x] = $v['email'];
+                    $x++;
+                }
+            } elseif($summary_status_now_id == "pmksum-05"){
+                // kirim email ke semua kecuali CEO
+                $ed_hc = $this->divisi_model->get_divHead(6);
+                $ed_ceo = $this->divisi_model->get_divHead(1);
+                $ed_dh = $this->divisi_model->get_divHead($data_summary['id_div']);
+                // email data
+                $email_penerima = [$ed_hc['email'], $ed_dh['email']];
+                $penerima_nama = "yang Terhormat.";
+                $email_cc = [$ed_ceo['email']];
+                // ambil email admins
+                $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+                foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                    $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+                }
+                $x = array_key_last($email_penerima) + 1;
+                foreach($admins as $k => $v){
+                    $email_penerima[$x] = $v['email'];
+                    $x++;
+                }
+            } else {
+                show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+            }
+        }
+
+        $detail_divisi = $this->divisi_model->getOnceWhere(array('id' => $data_summary['id_div'])); // ambil informasi divisi
+
+        // email data
+        $status_detailText = $this->pmk_m->getDetail_pmkStatusDetailByStatusId_summary($summary_status_now_id)['name_text'];
+        $status_text = "Status : ".$status_detailText;
+        $email_subject = "[".$this->app_name.'] '.$status_detailText;
+        $message = $summary_status_text;
+        $message_details = array(
+            0 => array(
+                'info_name' => 'Divisi',
+                'info' => $detail_divisi['division']
+            ),
+            1 => array(
+                'info_name' => 'Date Modified',
+                'info' => date('j F Y H:i')
+            )
+        );
+        $token_data = array( // data buat disave di token
+            'direct'         => 'pmk/index?direct=sumhis',
+            'email_penerima' => $email_penerima
+        );
+
+        // jika statusnya buat HC Divhead, tambahkan notes ke email notifikasi message details
+        if($summary_status_now_id == "pmksum-03"){
+            $x = array_key_last($message_details) + 1;
+            foreach($summary_notes as $v){
+                if($v['text'] != ""){
+                    $message_details[$x] = array(
+                        'info_name' => "Message from ".$v['whoami'],
+                        'info' => $v['text']
+                    );
+                    $x++;
+                }
+            }
+        }
+
+        // kirim email permberitahuan kalo ada emailnya
+        if(!empty($email_penerima) && $summary_status_now_id != "pmksum-05"){
+            $this->email_m->general_sendNotifikasi($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $message, $message_details, $token_data);
+        } else {
+            $this->email_m->general_sendNotifikasi($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $message, $message_details, $token_data, false);
+        }
+        
         // update status summary
         $summary_status_new[array_key_last($summary_status_new)+1] = array(
             'id_status' => $summary_status_now_id,
