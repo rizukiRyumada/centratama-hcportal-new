@@ -113,12 +113,12 @@
     $("#submitPesanKomentar").on('click', function() {
         let textarea_pesanKomentar = CKEDITOR.instances['textareaPesanKomentar'].getData();
 
-        if(textarea_pesanKomentar == ""){
+        if(textarea_pesanKomentar == "" || textarea_pesanKomentar.length < 2){
             // tampilkan pesan error
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Please write a comment!',
+                text: 'Please write a comment and your comment must be at least 2 characters long!',
             });
         } else {
             $('input[name="pesan_komentar"]').val(textarea_pesanKomentar); // taruh pesan revisi di form

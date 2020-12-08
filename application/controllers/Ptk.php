@@ -484,7 +484,12 @@ class Ptk extends SpecialUserAppController {
         foreach ($data_ptk as $key => $value) {
             $data_ptk[$key]["name_div"] = $this->divisi_model->getDetailById($value['id_div'])['division'];
             $data_ptk[$key]["name_dept"] = $this->dept_model->getDetailById($value['id_dept'])['nama_departemen'];
-            $data_ptk[$key]["name_pos"] = $this->posisi_m->getOnceWhere(array('id' => $value['id_pos']))['position_name'];
+            // jika id_posisi nya kosong, biasanya untuk unbudgetted
+            if(empty($value['id_pos'])){
+                $data_ptk[$key]['name_pos'] = $value['position_other']; // ambil nama position customnya
+            } else {
+                $data_ptk[$key]["name_pos"] = $this->posisi_m->getOnceWhere(array('id' => $value['id_pos']))['position_name'];
+            }
             $data_ptk[$key]["time_modified"] = date("o-m-d", $value['time_modified']);
             $data_ptk[$key]["href"] = base_url('ptk/viewPTK')."?id_entity=".$value['id_entity']."&id_div=".$value['id_div']."&id_dept=".$value['id_dept']."&id_pos=".$value['id_pos']."&id_time=".$value['id_time'];
             $data_ptk[$key]['status_now'] = $value['status_now']."<~>".json_encode(array($value['id_entity'], $value['id_div'], $value['id_dept'], $value['id_pos'], $value['id_time']));

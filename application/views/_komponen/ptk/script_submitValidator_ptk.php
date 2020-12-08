@@ -125,10 +125,13 @@
             if(mpp > 0 && mpp <= noiReq){
             // nothing
             } else {
-                input_mpp.addClass('is-invalid'); // tambah kelas invalid
-                input_mpp.parent().append('<div class="invalid-tooltip">The man power required that you input should be in range one to less or equal to number of incumbent.</div>'); // show error tooltip
-                msg_validate += "<li>Man Power Required is more higher than Number of incumbent.</li>"; // pesan empty
-                counter_validate++; // validate counter add
+                // cek apa budgetnya unbudgetted
+                if($('input[name="budget"]:checked').val() != 0){
+                    input_mpp.addClass('is-invalid'); // tambah kelas invalid
+                    input_mpp.parent().append('<div class="invalid-tooltip">The man power required that you input should be in range one to less or equal to number of incumbent.</div>'); // show error tooltip
+                    msg_validate += "<li>Man Power Required is more higher than Number of incumbent.</li>"; // pesan empty
+                    counter_validate++; // validate counter add
+                }
             }
         }
 
