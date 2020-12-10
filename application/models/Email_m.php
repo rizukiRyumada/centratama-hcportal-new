@@ -46,6 +46,7 @@ class email_m extends CI_Model {
      * fungsi untuk mengirim email notifikasi dengan template general, apa yang ada di fungsi ini?
      * - informasi karyawan terkait form
      * - status form
+     * - mengirim dengan link atau tidak
      *
      * @param  string~array $email_penerima = alamat email "employee@centratamagroup.com" atau dengan array jika ingin mengirim lebih dari satu orang
      * @param  string~array $email_cc       = alamat email "employee@centratamagroup.com" atau dengan array jika ingin mengirim CC dari satu orang
