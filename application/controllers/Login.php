@@ -114,8 +114,10 @@ class Login extends CI_Controller {
      * @return void
      */
     public function logout(){
-        $this->session->unset_userdata('nik');
-        $this->session->unset_userdata('role_id');
+        $this->session->sess_destroy(); // hapus data session
+        
+        // $this->session->unset_userdata('nik');
+        // $this->session->unset_userdata('role_id');
         $this->session->set_userdata(array('error' => 1)); // buat munculin modal login form
         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Thank You for using HC Portal, have a nice day :)</div>');
         redirect('login');
