@@ -72,7 +72,12 @@ class Dept_model extends CI_Model {
     public function getDeptHead($id_div, $id_dept){
         // ambil posisi depthead
         $depthead_pos = $this->posisi_m->getOnceWhere(array('div_id' => $id_div, 'dept_id' => $id_dept, 'is_head' => 2));
-        return $this->posisi_m->whoIsOnThisPosition($depthead_pos['id'])[0]; // ambil karyawan pertama untuk depthead
+        $result = $this->posisi_m->whoIsOnThisPosition($depthead_pos['id']);
+        if(empty($result)){
+            return ""; // ambil karyawan pertama untuk depthead
+        } else {
+            return $result[0]; // ambil karyawan pertama untuk depthead
+        }
     }
     
     /**
