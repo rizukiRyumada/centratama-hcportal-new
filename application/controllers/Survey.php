@@ -18,7 +18,7 @@ class Survey extends MainController {
         // exit;
         parent::__construct();
         
-        $this->load->model(['posisi_m']);
+        $this->load->model(['posisi_m', 'employee_m']);
     }
 
     public function index(){
@@ -45,7 +45,6 @@ class Survey extends MainController {
             $data['survey_status']['eng'] = 'closed';
         }
 
-        // cek apa survey 360 sudah diisi atau dia tidak memiliki akses
         $data_employe = $this->_general_m->getJoin2tables(
             'master_employee.nik, master_position.hirarki_org, master_position.dept_id, master_position.div_id, master_position.id_atasan1', 
             'master_employee', 
@@ -53,6 +52,7 @@ class Survey extends MainController {
             'master_position.id = master_employee.position_id', 
             array('nik' => $this->session->userdata('nik'))
         )[0];
+        // cek apa survey 360 sudah diisi atau dia tidak memiliki akses
         if($this->checkIsActive(2) == 0){
             $data['survey_status']['f360'] = 'closed';
         } elseif($data_employe['hirarki_org'] == 'N-1' || $data_employe['hirarki_org'] == 'N-2' || $data_employe['hirarki_org'] == 'N-3' || $data_employe['hirarki_org'] == 'Functional-div' || $data_employe['hirarki_org'] == 'Functional-dep') { // cek hirarki apa dia N-1, N-2, atau N-3
@@ -369,6 +369,9 @@ class Survey extends MainController {
         if(!empty($data_survey['data_notyet_of'])){
             $data['data_notyet_of'] = $data_survey['data_notyet_of'];
         }
+        if(!empty($data_survey['data_other_function_penilaian'])){
+            $data['data_other_function_penilaian'] = $data_survey['data_other_function_penilaian'];
+        }
 
         // main data
         $data['sidebar'] = getMenu(); // ambil menu
@@ -620,21 +623,45 @@ class Survey extends MainController {
                 $data_atasan[$k]['status'] = $this->f360cekStatus($data_employe['nik'], $v['nik']);
             }
         }
-        if(!empty($data_peers)){  // data peers
+        if(!empty($data_peers)){ // data peers
             foreach($data_peers as $k => $v){
                 // cek status dengan melihat nik penilai dan nik dinilai
                 $data_peers[$k]['status'] = $this->f360cekStatus($data_employe['nik'], $v['nik']);
             }
         }
+
+        // ambil other function dari penilaian yang dipilihin
+        $result_other_function_penilaian = $this->_general_m->getAll('*', 'survey_f360_penilaian', array('nik_penilai' => $this->session->userdata('nik')));
+        // lengkapi data
+        $data_other_function_penilaian = array();
+        foreach($result_other_function_penilaian as $k => $v){
+            $data_other_function_penilaian[$k] = $this->employee_m->getDetails_employee($v['nik_dinilai']);
+        }
+
         $data_complete_of = array(); $data_notyet_of = array(); $x=0; $y=0;
         if(!empty($data_other_function)){ // data other function
             foreach($data_other_function as $k => $v){
                 if($this->f360cekStatus($data_employe['nik'], $v['nik']) == TRUE){
+                    // jika niknya udh diisi, kosongkan dari variable penilaian, karena variable penilaian itu yang belum diisi
+                    foreach($data_other_function_penilaian as $key => $value){
+                        if($v['nik'] == $value['nik']){
+                            unset($data_other_function_penilaian[$key]);
+                        }
+                    }
                     $data_complete_of[$x] = $v;
                     $x++;
                 } else {
-                    $data_notyet_of[$y] = $v;
-                    $y++;
+                    // cek pada data penilaian
+                    $flag = 0; // siapkan flag
+                    foreach($data_other_function_penilaian as $value){
+                        if($v['nik'] == $value['nik']){
+                            $flag = 1; // tandai flag
+                        }
+                    }
+                    if($flag == 0){
+                        $data_notyet_of[$y] = $v;
+                        $y++;
+                    }
                 }
             }
         }
@@ -655,6 +682,9 @@ class Survey extends MainController {
         }
         if(!empty($data_notyet_of)){
             $data['data_notyet_of'] = $data_notyet_of;
+        }
+        if(!empty($data_other_function_penilaian)){
+            $data['data_other_function_penilaian'] = $data_other_function_penilaian;
         }
         
         //cek apa ada datanya
