@@ -1602,22 +1602,36 @@ class Ptk extends SpecialUserAppController {
             $email_penerima = $email_data['email'];
             $email_cc = "";
             $penerima_nama = $email_data['emp_name'];
-        } 
-        // elseif($status_new == "ptk_stats-5" || $status_new == "ptk_stats-6" || $status_new == "ptk_stats-7" || $status_new == "ptk_stats-8" || $status_new == "ptk_stats-C" || $status_new == "ptk_stats-D" || $status_new == "ptk_stats-E" || $status_new == "ptk_stats-F" || $status_new == "ptk_stats-A"){ // status rejected
-        //     // kirim email ke OP form
-        //     $email_data = $this->employee_m->getDetails_employee($status_data[0]['signedbynik']); // ambil data OP
-        //     // email data
-        //     $email_penerima = $email_data['email'];
-        //     $email_cc = "";
-        //     $penerima_nama = $email_data['emp_name'];
-        // } 
-        elseif($status_new == "ptk_stats-1"){
+        } elseif($status_new == "ptk_stats-1"){
             // kirim email ke Depthead dari divisi dan departemen dipilih
             $email_data = $this->dept_model->getDeptHead($id_div, $id_dept);
-            // email data
-            $email_penerima = $email_data['email'];
-            $email_cc = "";
-            $penerima_nama = $email_data['emp_name'];
+            if(!empty($email_data)){
+                // email data
+                $email_penerima = $email_data['email'];
+                $email_cc = "";
+                $penerima_nama = $email_data['emp_name'];
+            } else {
+                // kirim email ke OD Department
+                $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+                foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                    $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+                }
+                if(!empty($admins)){
+                    // jika adminnya lebih dari satu
+                    if(count($admins) > 1){
+                        $email_penerima = array(); $temp_namaPenerima = array();
+                        foreach($admins as $k => $v){
+                            $email_penerima[$k] = $v['email'];
+                            $temp_namaPenerima[$k] = $v['emp_name'];
+                        }
+                        $penerima_nama = implode(', ', $temp_namaPenerima);
+                    } else { // jika adminnya cuma satu
+                        $email_penerima = $admins[0]['email'];
+                        $penerima_nama = $admins[0]['emp_name'];
+                    }
+                    $email_cc = "";
+                }
+            }
         }
 
         if($this->input->post('action') == 0){ // action rejected
