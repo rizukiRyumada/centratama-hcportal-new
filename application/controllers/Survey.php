@@ -631,11 +631,13 @@ class Survey extends MainController {
         }
 
         // ambil other function dari penilaian yang dipilihin
-        $result_other_function_penilaian = $this->_general_m->getAll('*', 'survey_f360_penilaian', array('nik_penilai' => $this->session->userdata('nik')));
-        // lengkapi data
         $data_other_function_penilaian = array();
-        foreach($result_other_function_penilaian as $k => $v){
-            $data_other_function_penilaian[$k] = $this->employee_m->getDetails_employee($v['nik_dinilai']);
+        if($data_employe['hirarki_org'] == "N-1"){
+            $result_other_function_penilaian = $this->_general_m->getAll('*', 'survey_f360_penilaian', array('nik_penilai' => $this->session->userdata('nik')));
+            // lengkapi data
+            foreach($result_other_function_penilaian as $k => $v){
+                $data_other_function_penilaian[$k] = $this->employee_m->getDetails_employee($v['nik_dinilai']);
+            }
         }
 
         $data_complete_of = array(); $data_notyet_of = array(); $x=0; $y=0;
