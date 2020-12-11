@@ -62,7 +62,6 @@
                     },
                     complete: (data, jqXHR) => { // run function when ajax complete
                         table.columns.adjust();
-                        console.log(data);
                         $('#file_counter').text(data.responseJSON.file_counter); // set jumlah files
                         // ajax data counter
                         var ajax_request_time = new Date().getTime() - ajax_start_time;
@@ -124,7 +123,7 @@
             sequentialCount:1,
             onLoad:function(obj)
             {
-                    console.log(files);
+                    // console.log(files);
             },
             onSubmit:function(files_jqxhr)
             {
@@ -141,7 +140,6 @@
                 // ganti data di table dengan data dari variabel dan update ke database jika bukan dari session files
                 if(session_name == undefined || session_name == null || session_name == ""){
                     files = JSON.stringify(vya.files_new);
-                    console.log(files);
                     updateFilesToDatabase(files); // update ke database, fungsi ini ada di script_viewer_ptk
                 } else {
                     // nothing
@@ -178,8 +176,12 @@
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
                 icon: 'warning',
-                showCancelButton: true
-                // confirmButtonText: 'Yes, delete it!'
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                focusConfirm: false,
+                focusCancel: true,
+                allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({

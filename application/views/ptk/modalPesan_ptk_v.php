@@ -14,6 +14,25 @@
             </button>
         </div>
         <div class="modal-body">
+            <!-- revise to container -->
+            <div id="container_reviseto" style="display: none;">
+                <div class="form-group">
+                    <p class="m-0">Address revise to...</p>
+                </div>
+                <div class="form-group">
+                    <!-- <label>Minimal</label> -->
+                    <select class="form-control select2" style="width: 100%;" name="revise_to">
+                        <!-- <option value="" selected="selected">Choose to who?</option> -->
+                        <optgroup label="Revise to who?">
+                            <?php if(!empty($status_before)): ?>
+                                <?php foreach($status_before as $v): ?>
+                                    <option value="<?= $v['id']; ?>"><?= $v['pic_name']; ?></option>
+                                <?php endforeach;?>
+                            <?php endif; ?>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
             <!-- <p class="text">Please input a message.</p> -->
             <textarea id="textareaPesanKomentar" class="ckeditor" name="pesan_komentar" id="" cols="30" rows="10"></textarea>
         </div>

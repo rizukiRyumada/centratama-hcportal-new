@@ -29,6 +29,9 @@
         <div class="card card-primary card-outline card-outline-tabs">
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                    <li class="nav-item" id="tab_timeline">
+                        <a class="nav-link" href="<?= base_url('ptk'); ?>" aria-selected="false"><i class="fas fa-arrow-left"></i></a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link active" id="custom-tabs-ptkForm-tab" data-toggle="pill" href="#custom-tabs-ptkForm" role="tab" aria-controls="custom-tabs-ptkForm" aria-selected="true"><i class="fa fa-file-alt"></i> Form</a>
                     </li>

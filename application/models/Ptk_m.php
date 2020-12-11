@@ -165,6 +165,26 @@ class Ptk_m extends CI_Model {
             'id_time'   => $id_time
         ))->num_rows();
     }
+
+    /**
+     * get status summary before status now id
+     *
+     * @param  mixed $status_now_id
+     * @return void
+     */
+    function getStatusBefore($status_now_id){
+        // ambil order status now_id
+        $status_detail = $this->_general_m->getOnce('*', $this->table['status'], array('id' => $status_now_id));
+
+        $result = array();
+        if(!empty($status_detail['order'])){
+            for($x = 1; $x < $status_detail['order']; $x++){
+                $result[$x] = $this->_general_m->getOnce('id, pic_name', $this->table['status'], array('order' => $x));
+            }
+        }
+
+        return $result;
+    }
     
     /**
      * saveForm

@@ -1200,6 +1200,7 @@ class Ptk extends SpecialUserAppController {
         $data['userApp_admin'] = $this->userApp_admin; // data useradmin app
         // form data
         $data['status_form'] = $this->ptk_m->getDetail_ptkStatusNow($data['id_entity'], $data['id_div'], $data['id_dept'], $data['id_pos'], $data['id_time']); // get status id
+        $data['status_before'] = $this->ptk_m->getStatusBefore($data['status_form']);
 
         // cek apa dia CEO Office
         if((int)$position_my['id'] == 1){
@@ -1366,6 +1367,11 @@ class Ptk extends SpecialUserAppController {
         $status_data = $this->ptk_m->getDetail_ptkStatus($id_entity, $id_div, $id_dept, $id_pos, $id_time); // get status data
         $name_signed = $this->_general_m->getOnce('emp_name', $this->table['employee'], array('nik' => $this->session->userdata('nik')))['emp_name'];
         $nik_signed = $this->session->userdata('nik');
+        
+        // jika actionnya revise
+        if($action == 2){
+            $revise_to = $this->input->post('revise_to');
+        }
 
         // cek apa ada datanya
         if($this->ptk_m->getRow_form($id_entity, $id_div, $id_dept, $id_pos, $id_time) < 1){
@@ -1399,7 +1405,7 @@ class Ptk extends SpecialUserAppController {
                     } elseif($action == 1){
                         $new_statsData = $this->process_statusData("ptk_stats-A", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-C", $status_data, $name_signed, $nik_signed, $pesan_komentar);
+                        $new_statsData = $this->process_statusData($revise_to, $status_data, $name_signed, $nik_signed, $pesan_komentar, $this->input->post('division'), $this->input->post('department'));
                     } else {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                         exit;
@@ -1416,7 +1422,7 @@ class Ptk extends SpecialUserAppController {
                     } elseif($action == 1){
                         $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_komentar);
+                        $new_statsData = $this->process_statusData($revise_to, $status_data, $name_signed, $nik_signed, $pesan_komentar, $this->input->post('division'), $this->input->post('department'));
                     } else {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                         exit;
@@ -1433,7 +1439,7 @@ class Ptk extends SpecialUserAppController {
                     } elseif($action == 1){
                         $new_statsData = $this->process_statusData("ptk_stats-3", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-F", $status_data, $name_signed, $nik_signed, $pesan_komentar);
+                        $new_statsData = $this->process_statusData($revise_to, $status_data, $name_signed, $nik_signed, $pesan_komentar, $this->input->post('division'), $this->input->post('department'));
                     } else {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                         exit;
@@ -1450,26 +1456,12 @@ class Ptk extends SpecialUserAppController {
                     } elseif($action == 1){
                         $new_statsData = $this->process_statusData("ptk_stats-4", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 2){
-                        $new_statsData = $this->process_statusData("ptk_stats-E", $status_data, $name_signed, $nik_signed, $pesan_komentar);
+                        $new_statsData = $this->process_statusData($revise_to, $status_data, $name_signed, $nik_signed, $pesan_komentar, $this->input->post('division'), $this->input->post('department'));
                     } else {
                         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                         exit;
                     }
-                } 
-                // elseif($status_now == "ptk_stats-4"){
-                //     // cek action
-                //     if($action == 0){
-                //         $new_statsData = $this->process_statusData("ptk_stats-7", $status_data, $name_signed, $nik_signed, $pesan_komentar);
-                //     } elseif($action == 1){
-                //         $new_statsData = $this->process_statusData("ptk_stats-B", $status_data, $name_signed, $nik_signed, $pesan_komentar);
-                //     } elseif($action == 2){
-                //         $new_statsData = $this->process_statusData("ptk_stats-D", $status_data, $name_signed, $nik_signed, $pesan_komentar);
-                //     } else {
-                //         show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
-                //         exit;
-                //     }
-                // } 
-                else {
+                } else {
                     if((int)$this->input->post('division') == 6){
                         if($action == 1){
                             $new_statsData = $this->process_statusData("ptk_stats-3", $status_data, $name_signed, $nik_signed, $pesan_komentar);
@@ -1547,7 +1539,7 @@ class Ptk extends SpecialUserAppController {
 /* -------------------------------------------------------------------------- */
 /*                                Mini Function                               */
 /* -------------------------------------------------------------------------- */
-    function process_statusData($status_new, $status_data, $name_signed, $nik_signed, $pesan_komentar = ""){
+    function process_statusData($status_new, $status_data, $name_signed, $nik_signed, $pesan_komentar = "", $id_div = "", $id_dept = ""){
         if($status_data == array()){
             $status_data[0] = array(
                 'id' => $status_new,
@@ -1610,9 +1602,18 @@ class Ptk extends SpecialUserAppController {
             $email_penerima = $email_data['email'];
             $email_cc = "";
             $penerima_nama = $email_data['emp_name'];
-        } elseif($status_new == "ptk_stats-5" || $status_new == "ptk_stats-6" || $status_new == "ptk_stats-7" || $status_new == "ptk_stats-8" || $status_new == "ptk_stats-C" || $status_new == "ptk_stats-D" || $status_new == "ptk_stats-E" || $status_new == "ptk_stats-F" || $status_new == "ptk_stats-A"){ // status rejected
-            // kirim email ke OP form
-            $email_data = $this->employee_m->getDetails_employee($status_data[0]['signedbynik']); // ambil data OP
+        } 
+        // elseif($status_new == "ptk_stats-5" || $status_new == "ptk_stats-6" || $status_new == "ptk_stats-7" || $status_new == "ptk_stats-8" || $status_new == "ptk_stats-C" || $status_new == "ptk_stats-D" || $status_new == "ptk_stats-E" || $status_new == "ptk_stats-F" || $status_new == "ptk_stats-A"){ // status rejected
+        //     // kirim email ke OP form
+        //     $email_data = $this->employee_m->getDetails_employee($status_data[0]['signedbynik']); // ambil data OP
+        //     // email data
+        //     $email_penerima = $email_data['email'];
+        //     $email_cc = "";
+        //     $penerima_nama = $email_data['emp_name'];
+        // } 
+        elseif($status_new == "ptk_stats-1"){
+            // kirim email ke Depthead dari divisi dan departemen dipilih
+            $email_data = $this->dept_model->getDeptHead($id_div, $id_dept);
             // email data
             $email_penerima = $email_data['email'];
             $email_cc = "";

@@ -1,10 +1,13 @@
 <script>
+    // initialize revise_to
+    $('select[name="revise_to"]').select2({theme: 'bootstrap4'});
+
     /* -------------------------------------------------------------------------- */
     /*                           Customized Form Validation                       */
     /* -------------------------------------------------------------------------- */
     $('.submitPTK').on('click', function() {
         action = $(this).data('id');
-        // let status = $(this).data('status');
+        let status = $(this).data('status');
         let action_msg = "";
         let css_color = "";
         
@@ -102,7 +105,13 @@
                     // ubah form action dan status
                     $('input[name="action"]').val(action);
                     $('input[name="status_now"]').val(status);
-
+                    if(action == 2){
+                        $('#container_reviseto').show();
+                    } else {
+                        // $('select[name="revise_to"]').select2("destroy");
+                        $('#container_reviseto').hide();
+                        // nothing
+                    }
                     // tampilkan modal pesan revisi
                     $('#pesanKomentar').modal('show');
                 }
@@ -122,6 +131,11 @@
             });
         } else {
             $('input[name="pesan_komentar"]').val(textarea_pesanKomentar); // taruh pesan revisi di form
+            // jika actionnya revise, ambil value select revise to masukkan ke form hidden input
+            if(action == 2){
+                let revise_to = $('select[name="revise_to"]').val();
+                $('input[name="revise_to"]').val(revise_to);
+            }
             $('#pesanKomentar').modal('hide'); // tutup modal pesan revisi
             // pergi ke function submit
             letSubmitForm(action);

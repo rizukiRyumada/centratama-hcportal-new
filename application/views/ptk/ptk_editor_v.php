@@ -508,7 +508,8 @@
     <input type="hidden" name="id_time" value="<?php if(!empty($id_time)): ?> <?= $id_time; ?> <?php endif; ?>">
 
     <!-- hidden form for additional information -->
-    <input type="hidden" name="action"> 
-    <input type="hidden" name="pesan_komentar"> 
+    <input type="hidden" name="action">
+    <input type="hidden" name="pesan_komentar">
+    <input type="hidden" name="revise_to">
     <input type="hidden" name="status_now">
 </form>

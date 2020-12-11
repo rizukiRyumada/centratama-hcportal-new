@@ -71,7 +71,7 @@
                 if(tab_clicked == 1){ // cek jika actionnya tab clicked
                     let eldata = data.responseJSON.statuses;
                     let statusPTK = $("#statusPtk");
-                    statusPTK.empty().append('<option value="">Filter Status</option>'); //kosongkan selection value dan tambahkan satu selection option
+                    statusPTK.empty().append('<option value="">All</option>'); //kosongkan selection value dan tambahkan satu selection option
                     $.each(eldata, function(i, v) {
                         statusPTK.append('<option value="' + v.id + '">' + v.name + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                     });
