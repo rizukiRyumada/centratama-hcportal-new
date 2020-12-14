@@ -719,14 +719,14 @@
                 },
                 method: "POST",
                 beforeSend: function(){
-                    select_jobLevel.attr('disabled', true); // tambahkan attribut disabled
+                    // select_jobLevel.attr('disabled', true); // tambahkan attribut disabled
                 },
                 success: function(data){
                     let vya = JSON.parse(data);
                     if(vya.data == undefined || vya.data == null || vya.data == ""){
                         select_jobLevel.val(""); // pilih yang kosong
                     } else {
-                        select_jobLevel.removeAttr('disabled'); // hapus attribut disabled
+                        // select_jobLevel.removeAttr('disabled'); // hapus attribut disabled
                         select_jobLevel.val(vya.data);
                     }
                 },

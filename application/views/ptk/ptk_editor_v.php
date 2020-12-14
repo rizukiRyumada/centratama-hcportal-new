@@ -41,32 +41,18 @@
             <div class="form-group row">
                 <label for="jobLevelSelect" class="col-sm-4 col-form-label">Job Level</label>
                 <div class="col-sm-8">
-                    <select id="jobLevelSelect" class="custom-select jobLevelForm"
-                    <?php // selain admin select form didisabled ?>
-                    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1 || $position_my['hirarki_org'] == "N"): ?>
-                        name="job_level"
-                    <?php else: ?>
-                        disabled
-                    <?php endif; ?>
-                    >
+                    <select id="jobLevelSelect" class="custom-select jobLevelForm" name="job_level" disabled>
                         <option value="" >Select Job Level...</option>
                         <?php foreach($master_level as $v): ?>
                             <option value="<?= $v['id']; ?>" ><?= $v['name']; ?></option>
                         <?php endforeach;?>
                     </select>
-                    <?php // admin buatin input type hidden buat nandain job level ?>
-                    <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1 || $position_my['hirarki_org'] == "N"): ?>
-                        <?php // nothing ?>
-                    <?php else: ?>
-                        <!-- <input type="hidden" class="jobLevelForm" name="job_level"> -->
-                        <select id="jobLevelSelect" class="custom-select jobLevelForm" name="job_level" style="display: none;"
-                        >
-                            <option value="" >Select Job Level...</option>
-                            <?php foreach($master_level as $v): ?>
-                                <option value="<?= $v['id']; ?>" ><?= $v['name']; ?></option>
-                            <?php endforeach;?>
-                        </select>
-                    <?php endif; ?>
+                    <select id="jobLevelSelect" class="custom-select jobLevelForm" name="job_level" style="display: none;">
+                        <option value="" >Select Job Level...</option>
+                        <?php foreach($master_level as $v): ?>
+                            <option value="<?= $v['id']; ?>" ><?= $v['name']; ?></option>
+                        <?php endforeach;?>
+                    </select>
                 </div>
             </div>
             <?php if($this->userApp_admin == 1 || $this->session->userdata('role_id') == 1): ?>

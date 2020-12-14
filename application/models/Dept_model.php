@@ -70,13 +70,19 @@ class Dept_model extends CI_Model {
      * @return void
      */
     public function getDeptHead($id_div, $id_dept){
-        // ambil posisi depthead
-        $depthead_pos = $this->posisi_m->getOnceWhere(array('div_id' => $id_div, 'dept_id' => $id_dept, 'is_head' => 2));
-        $result = $this->posisi_m->whoIsOnThisPosition($depthead_pos['id']);
-        if(empty($result)){
-            return ""; // ambil karyawan pertama untuk depthead
+        // cek apa departement buat assistant
+        $dept_assistant = $this->_general_m->getRow($this->table, array('id' => $id_dept, 'is_assistant' => 1));
+        if($dept_assistant < 1){
+            // ambil posisi depthead
+            $depthead_pos = $this->posisi_m->getOnceWhere(array('div_id' => $id_div, 'dept_id' => $id_dept, 'is_head' => 2));
+            $result = $this->posisi_m->whoIsOnThisPosition($depthead_pos['id']);
+            if(empty($result)){
+                return ""; // ambil karyawan pertama untuk depthead
+            } else {
+                return $result[0]; // ambil karyawan pertama untuk depthead
+            }
         } else {
-            return $result[0]; // ambil karyawan pertama untuk depthead
+            return "";
         }
     }
     

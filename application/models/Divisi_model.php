@@ -49,9 +49,14 @@ class Divisi_model extends CI_Model {
      * @return void
      */
     function get_divHead($id_div){
-        $this->load->model('employee_m');
-        $divhead_nik = $this->db->select("nik_div_head")->get_where($this->table, array('id' => $id_div))->row_array()['nik_div_head'];
-        return $this->employee_m->getDetails_employee($divhead_nik);
+        // ambil posisi depthead
+        $divhead_pos = $this->posisi_m->getOnceWhere(array('div_id' => $id_div, 'is_head' => 1));
+        $result = $this->posisi_m->whoIsOnThisPosition($divhead_pos['id']);
+        if(empty($result)){
+            return ""; // ambil karyawan pertama untuk depthead
+        } else {
+            return $result[0]; // ambil karyawan pertama untuk depthead
+        }
     }
     
     /**

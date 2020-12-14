@@ -1403,7 +1403,7 @@ class Ptk extends SpecialUserAppController {
                     if($action == 0){
                         $new_statsData = $this->process_statusData("ptk_stats-8", $status_data, $name_signed, $nik_signed, $pesan_komentar);
                     } elseif($action == 1){
-                        $new_statsData = $this->process_statusData("ptk_stats-A", $status_data, $name_signed, $nik_signed, $pesan_komentar);
+                        $new_statsData = $this->process_statusData("ptk_stats-A", $status_data, $name_signed, $nik_signed, $pesan_komentar, $this->input->post('division'), $this->input->post('department'));
                     } elseif($action == 2){
                         $new_statsData = $this->process_statusData($revise_to, $status_data, $name_signed, $nik_signed, $pesan_komentar, $this->input->post('division'), $this->input->post('department'));
                     } else {
@@ -1513,6 +1513,8 @@ class Ptk extends SpecialUserAppController {
             } elseif($action == 1){
                 if($status_now == "ptk_stats-1"){
                     $icon = "success"; $title = "Proposed"; $msg = "You have Proposed this form.";
+                } elseif($status_now == "ptk_stats-B"){
+                    $icon = "success"; $title = "Completed"; $msg = "The form Approval has been completed.";
                 } else {
                     $icon = "success"; $title = "Approved"; $msg = "You have Approved this form.";
                 }
@@ -1632,6 +1634,50 @@ class Ptk extends SpecialUserAppController {
                     $email_cc = "";
                 }
             }
+        } elseif($status_new == "ptk_stats-A"){
+            // kirim notifikasi ke semua aktor
+            $ed_divh = $this->divisi_model->get_divHead($this->input->post('division'));
+            $ed_hc = $this->divisi_model->get_divHead(6);
+
+            // set email penerima
+            $email_penerima = array(
+                0 => $ed_divh['email'],
+                1 => $ed_hc['email']
+            );
+            $temp_namaPenerima = array(
+                0 => $ed_divh['emp_name'],
+                1 => $ed_hc['emp_name']
+            );
+
+            // tambah email email OD Department
+            $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+            foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+            }
+            if(!empty($admins)){
+                // jika adminnya lebih dari satu
+                $x = array_key_last($email_penerima) + 1; $y = array_key_last($temp_namaPenerima) + 1;
+                foreach($admins as $k => $v){
+                    $email_penerima[$x] = $v['email'];
+                    $temp_namaPenerima[$y] = $v['emp_name'];
+                    $x++; $y++;
+                }
+            }
+
+            // tambah email dephead
+            $ed_deph = $this->dept_model->getDeptHead($id_div, $id_dept);
+            if(!empty($ed_deph)){
+                // email data
+                $email_penerima[array_key_last($email_penerima) + 1] = $ed_deph['email'];
+                $penerima_nama[array_key_last($temp_namaPenerima) + 1]= $ed_deph['emp_name'];
+            }
+
+            // gabungkan nama penerima email
+            $penerima_nama = implode(', ', $temp_namaPenerima);
+
+            // kirim cc ke CEO
+            $ed_ceo = $this->divisi_model->get_divHead(1);
+            $email_cc = $ed_ceo['email'];
         }
 
         if($this->input->post('action') == 0){ // action rejected
@@ -1643,6 +1689,10 @@ class Ptk extends SpecialUserAppController {
                 // email data
                 $title = "Proposed";
                 $message = "An Employee Requisition Form has been Proposed.";
+            } elseif($status_new == "ptk_stats-A"){
+                // email data
+                $title = "Completed";
+                $message = "The form Approval has been completed.";
             } else {
                 // email data
                 $title = "Approved";
