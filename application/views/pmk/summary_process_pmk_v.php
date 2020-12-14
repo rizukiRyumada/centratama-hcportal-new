@@ -74,8 +74,8 @@
                                 <td><?= $v['emp_name']; ?></td>
                                 <td><?= $v['position']; ?></td>
                                 <td><?= $v['department']; ?></td>
-                                <td><?= date('j M Y', $v['date_birth']); ?></td>
-                                <td><?= date('j M Y', $v['date_join']); ?></td>
+                                <td><?= $v['date_birth']; ?></td>
+                                <td><?= $v['date_join']; ?></td>
                                 <td><?= $v['emp_stats']; ?></td>
                                 <td><?= $v['eoc_probation']; ?></td>
                                 <td>
