@@ -509,7 +509,7 @@ class Pmk extends SpecialUserAppController {
                     $data_pmk[$x]['modified'] = time();
 
                     $data_employee = $this->employee_m->getDetails_employee($v['nik']); // ambil detail data employee
-                    $data_pmk[$x]['id_summary'] = date("Ym", $result['date_end']).$data_employee['div_id']; // pmk_id nanti setelah hc divhead melakukan pembuatan summary
+                    $data_pmk[$x]['id_summary'] = date("Ym", strtotime($result['date_end'])).$data_employee['div_id']; // pmk_id nanti setelah hc divhead melakukan pembuatan summary
                     $this->cekPmkSummary($data_pmk[$x]['id_summary'], $result['date_end'], $data_employee['div_id']); // lakukan pemeriksaan summary
                     $x++;
                 } else {
@@ -590,7 +590,7 @@ class Pmk extends SpecialUserAppController {
                 $url_token = urlencode($token);
                 $link = base_url('direct').'?token='.$url_token;
                 
-                $this->email_m->general_sendEmail($email, $email_cc, $penerima_nama, $subject_email, $status, $details, $msg, $link);
+                $this->email_m->general_sendEmail($email, $email_cc, $penerima_nama, $subject_email, $status, $details, $msg, $link, TRUE);
             }
         }
 
@@ -702,7 +702,7 @@ class Pmk extends SpecialUserAppController {
             }
 
             // cek hirarki
-            if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){ // apakah dia admin?
+            if(($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1) && $position_my['id'] != 196){ // apakah dia admin?
                 $where .= "status_now_id='pmksum-02'";
             } elseif($position_my['id'] == 196){ // apakah dia hc divhead?
                 // $status = "pmksum-02";
@@ -983,8 +983,8 @@ class Pmk extends SpecialUserAppController {
         if($this->_general_m->getRow($this->table['summary'], array('id_summary' => $id_summary)) < 1){
             // buat data status summary pmk
             $data['id_summary'] = $id_summary;
-            $data['bulan']  = date("m", $date_end);
-            $data['tahun']  = date("Y", $date_end);
+            $data['bulan']  = date("m", strtotime($date_end));
+            $data['tahun']  = date("Y", strtotime($date_end));
             $data['id_div'] = $id_div;
             $data['status'] = json_encode([
                 0 => [
@@ -996,7 +996,7 @@ class Pmk extends SpecialUserAppController {
                 ]
             ]);
             $data['status_now_id'] = "pmksum-01";
-            $data['deadline'] = $date_end;
+            $data['deadline'] = strtotime($date_end);
             $data['created'] = time();
             $data['modified'] = time();
 

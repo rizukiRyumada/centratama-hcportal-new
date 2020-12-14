@@ -305,7 +305,7 @@ class Pmk_m extends CI_Model {
             $dataPmk[$x]['department'] = $department['nama_departemen'];
             $dataPmk[$x]['position']   = $data_pos['position_name'];
             $dataPmk[$x]['emp_name']   = $employee['emp_name'];
-            $dataPmk[$x]['eoc']        = date('Y-m-d', $contract_last_detail['date_end']);
+            $dataPmk[$x]['eoc']        = date('Y-m-d', strtotime($contract_last_detail['date_end']));
             $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
             $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
             $x++;
@@ -426,7 +426,7 @@ class Pmk_m extends CI_Model {
             // atur data contract
             $contract_output = array();
             foreach($contract_details as $kunci => $nilai){
-                $contract_output[$kunci] = $nilai['contract']." | ".date("j M'y", $nilai['date_start'])." - ".date("j M'y", $nilai['date_end'])." | ".$this->entity_m->getOnce(array('id' => $nilai['entity']))['nama_entity'];
+                $contract_output[$kunci] = $nilai['contract']." | ".date("j M'y", strtotime($nilai['date_start']))." - ".date("j M'y", strtotime($nilai['date_end']))." | ".$this->entity_m->getOnce(array('id' => $nilai['entity']))['nama_entity'];
             }
 
             // ambil entity last
@@ -439,7 +439,7 @@ class Pmk_m extends CI_Model {
             $dataPmk[$x]['date_birth'] = $employee['date_birth'];
             $dataPmk[$x]['date_join']  = $employee['date_join'];
             $dataPmk[$x]['emp_stats']  = $employee['emp_stats'];
-            $dataPmk[$x]['eoc_probation'] = date("j M'y", $contract_last_detail['date_end']);
+            $dataPmk[$x]['eoc_probation'] = date("j M'y", strtotime($contract_last_detail['date_end']));
             $dataPmk[$x]['contract']   = $contract_last['contract'];
             $dataPmk[$x]['yoc_probation'] = $contract_output;
             $dataPmk[$x]['position']   = $employee['position_name'];
