@@ -58,7 +58,14 @@
                     <?php if($this->session->userdata('role_id') == 1 || $userApp_admin == 1 || $position_my['hirarki_org'] == "N"): ?>
                         <?php // nothing ?>
                     <?php else: ?>
-                        <input type="hidden" class="jobLevelForm" name="job_level">
+                        <!-- <input type="hidden" class="jobLevelForm" name="job_level"> -->
+                        <select id="jobLevelSelect" class="custom-select jobLevelForm" name="job_level" style="display: none;"
+                        >
+                            <option value="" >Select Job Level...</option>
+                            <?php foreach($master_level as $v): ?>
+                                <option value="<?= $v['id']; ?>" ><?= $v['name']; ?></option>
+                            <?php endforeach;?>
+                        </select>
                     <?php endif; ?>
                 </div>
             </div>
