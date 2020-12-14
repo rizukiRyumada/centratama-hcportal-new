@@ -185,7 +185,7 @@ class email_m extends CI_Model {
         $url_token = urlencode($token);
         $link = base_url('direct').'?token='.$url_token;
         
-        $this->email_m->general_sendEmail($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $employee_details, $message, $link);
+        $this->email_m->general_sendEmail($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $employee_details, $message, $link, TRUE);
     }
 
 /* -------------------------------------------------------------------------- */
