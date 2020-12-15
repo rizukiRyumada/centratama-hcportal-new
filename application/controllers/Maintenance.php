@@ -10,7 +10,7 @@ class Maintenance extends MainController {
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
 		$data['user'] = getDetailUser(); //ambil informasi user
-        $data['page_title'] = ' ';
+        $data['page_title'] = 'Maintenance';
 		$data['load_view'] = 'maintenance_v';
 		// additional styles and custom script
         // $data['additional_styles'] = array();
