@@ -19,7 +19,6 @@ class Login extends CI_Controller {
         // BUG cek status login dengan nik aja vurnerable
         if ($this->session->userdata('nik')) { // cek apa sudah login
             if(empty($this->session->userdata('token'))){ // cek apa ada token
-                // TODO tambah fitur buat ganti arah redirect sehabis login
                 // redirect
                 $this->redirect();
             } else {
@@ -68,7 +67,6 @@ class Login extends CI_Controller {
                 $this->session->set_userdata($data);
 
                 if(empty($this->session->userdata('token'))){ // cek apa ada token
-                    // TODO tambahkan fitur buat mengganti arah redirect sehabis login
                     // redirect
                     $this->redirect();
                 } else {
@@ -99,7 +97,7 @@ class Login extends CI_Controller {
             $redirect = $this->session->userdata('redirect');
             // hapus session redirect
             $this->session->unset_userdata('redirect');
-            // hapus session buat nampilin otomatis popup login
+            // buat session buat nampilin otomatis popup login
             $this->session->set_userdata(array('error' => 1));
             
             redirect($redirect, 'refresh');
@@ -146,6 +144,64 @@ class Login extends CI_Controller {
         );
 
         $this->load->view('testOop', $data); // load the view
+    }
+
+    /**
+     * convert csv to array associative
+     *
+     * @return void
+     */
+    public function convertToCsv(){
+        $file = fopen(base_url('mycsv.csv'), 'r'); // take file location
+
+        $arr = array(); $x = 0; $index = array(); // prepare variable for container and index
+        while (($line = fgetcsv($file)) !== FALSE) { // iteration on each line of csv
+            //$line is an array of the csv elements
+            if($x == 0){ // for the first line, use it as index
+                foreach($line as $k => $v){ // iterate the first line
+                    $index[$k] = $v; // place it to index variable
+                }
+                $x++; // add flag 
+            } else {
+                $y = 0; // for indexing line
+                foreach($index as $k => $v){ // iterate the index
+                    $arr[$x-1][$v] = $line[$y]; 
+                    $y++;
+                }
+                $x++;
+            }
+        }
+        fclose($file); // close the file
+
+        // buat insert contract
+        foreach($arr as $k => $v){
+            $arr[$k]['date_start'] = date("Y-m-d", ($v['date_start']));
+            $arr[$k]['date_end'] = date("Y-m-d", ($v['date_end']));
+            // $arr[$k]['entity'] = $this->_general_m->getOnce('id', 'master_entity', array('nama_entity' => $v['entity']))['id'];
+            $arr[$k]['entity'] = $v['entity'];
+        }
+
+        // print_r($arr); // print array
+
+        $this->_general_m->insertAll('master_employee_contract', $arr);
+
+        // buat update ke database dengan nik master employee
+        // foreach($arr as $v){
+        //     $this->db->where('nik', $v['nik']);
+        //     $this->db->update('master_employee', array(
+        //         'date_birth' => date("Y-m-d", strtotime($v['date_birth'])),
+        //         'date_join' => date("Y-m-d", strtotime($v['date_join']))
+        //     ));
+        // }
+
+        // buat update ke database dengan nik master employee
+        // foreach($arr as $v){
+        //     $this->db->where('nik', $v['nik']);
+        //     $this->db->update('master_employee', array(
+        //         'emp_stats' => $v['emp_stats'],
+        //         'level_personal' => $v['level_personal']
+        //     ));
+        // }
     }
 
 }
