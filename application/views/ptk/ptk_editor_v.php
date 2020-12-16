@@ -358,7 +358,7 @@
             </div>
             <!-- Experience Where -->
             <div id="experienced_at" class="form-group row mb-0" style="display: none;">
-                <label for="work_exp_at" class="col-sm-5 col-form-label">Experienced at</label>
+                <label for="work_exp_at" class="col-sm-5 col-form-label"></label>
                 <div class="col-sm-7">
                     <input type="text" name="work_exp_at" class="form-control" id="work_exp_at" placeholder="Experienced at?" value="<?php echo set_value('work_exp_at'); ?>">
                 </div>

@@ -282,7 +282,7 @@
             input_workexp_years.fadeOut(); // sembunyikan kotak free text tahun
             input_workexp_yearstext.val(''); // kosongkan kotak we_years
             input_workexp_at_container.slideUp(); // tampilkan kotak experienced at
-            input_workexp_at.val(''); // tampilkan kotak experienced at
+            input_workexp_at.val(''); // kosongkan value experienced at
 
         }
     });
