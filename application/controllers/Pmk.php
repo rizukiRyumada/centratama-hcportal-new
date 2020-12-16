@@ -8,9 +8,9 @@ class Pmk extends SpecialUserAppController {
 
     // page title variable
     protected $page_title = [
-        'index' => 'Evaluasi Masa Kontrak',
+        'index' => 'Penilaian Kontrak',
         'assessment' => 'Assessment Form',
-        'summary' => 'Approval Evaluasi Masa Kontrak'
+        'summary' => 'Approval Penilaian Kontrak'
     ];
 
     protected $table = [
