@@ -48,12 +48,12 @@
                 <div class="card">
                     <div class="card-body p-2">
                         <dl class="row m-0">
-                            <dt class="col-10 align-self-center">End of Contract</dt>
-                            <dd id="eoc" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
-                            <dt class="col-10 align-self-center">Active</dt>
-                            <dd id="act" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
-                            <dt class="col-10 align-self-center">Completed</dt>
-                            <dd id="cpt" class="col-2 align-self-center m-0 text-center"><i class="fas fa-question-circle text-danger"></i></dd>
+                            <dt class="col-8 align-self-center">End of Contract</dt>
+                            <dd id="eoc" class="col-4 align-self-center m-0 text-right"><i class="fas fa-question-circle text-danger"></i></dd>
+                            <dt class="col-8 align-self-center">Active</dt>
+                            <dd id="act" class="col-4 align-self-center m-0 text-right"><i class="fas fa-question-circle text-danger"></i></dd>
+                            <dt class="col-8 align-self-center">Completed</dt>
+                            <dd id="cpt" class="col-4 align-self-center m-0 text-right"><i class="fas fa-question-circle text-danger"></i></dd>
                         </dl>
                         <div class="row mt-1">
                             <div class="col">
