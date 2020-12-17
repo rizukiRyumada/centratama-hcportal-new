@@ -37,6 +37,10 @@
                 //     $('.role').append('<option value="'+ v.id +'">'+ v.role +'</option>'); // tambah 1 per 1 option
                 // });
                 $('#role_edit').val(data.role_id); // select value optiondari data employe
+                $('#empstats_edit').val(data.emp_stats); // employee status select
+                $('#mlevel_edit').val(data.level_personal); // level personal select
+                $('#date_birth_edit').val(data.date_birth); // level personal select
+                $('#date_join_edit').val(data.date_join); // level personal select
 
                 // role surat
                 if(data.akses_surat_id == 1){
@@ -258,6 +262,18 @@
             },
             password: {
                 minlength: 8
+            },
+            emp_stats: {
+                required: true
+            },
+            master_level: {
+                required: true
+            },
+            date_birth: {
+                required: true
+            },
+            date_join: {
+                required: true
             }
         },
         messages: {
@@ -274,6 +290,18 @@
             },
             password: {
                 minlength: "Password harus memiliki minimal 8 karakter"
+            },
+            emp_stats: {
+                required: "Silakan pilih status Employee"
+            },
+            master_level: {
+                required: "Silakan pilih status master level"
+            },
+            date_birth: {
+                required: "Silakan isi tanggal lahir karyawan"
+            },
+            date_join: {
+                required: "Silakan isi tanggal lahir karyawan"
             }
         }
     });
@@ -310,6 +338,18 @@
                 },
                 role: {
                     required: true
+                },
+                emp_stats: {
+                    required: true
+                },
+                master_level: {
+                    required: true
+                },
+                date_birth: {
+                    required: true
+                },
+                date_join: {
+                    required: true
                 }
             },
             messages: {
@@ -333,6 +373,18 @@
                 },
                 entity: {
                     required: "Silakan pilih Entity Karyawan."
+                },
+                emp_stats: {
+                    required: "Silakan pilih status Employee"
+                },
+                master_level: {
+                    required: "Silakan pilih status master level"
+                },
+                date_birth: {
+                    required: "Silakan isi tanggal lahir karyawan"
+                },
+                date_join: {
+                    required: "Silakan isi tanggal lahir karyawan"
                 }
             },
             errorElement: 'span',
@@ -415,17 +467,17 @@
     });
 
     // submit swal loading for add employee
-    $("#submitEmployee").on('click', () => {
-        Swal.fire({
-            icon: 'info',
-            title: 'Please Wait',
-            html: '<p>'+"Please don't close this tab and the browser, the employee data is being added to the system."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
-            showConfirmButton: false,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false
-        });
-    });
+    // $("#submitEmployee").on('click', () => {
+    //     Swal.fire({
+    //         icon: 'info',
+    //         title: 'Please Wait',
+    //         html: '<p>'+"Please don't close this tab and the browser, the employee data is being added to the system."+'<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+    //         showConfirmButton: false,
+    //         allowOutsideClick: false,
+    //         allowEscapeKey: false,
+    //         allowEnterKey: false
+    //     });
+    // });
 
     //validator input typeit
     input_typeit.on('keyup', function(){
@@ -450,4 +502,16 @@
             return true;
         }
     }
+
+    // settings script
+    $('.date-master').datepicker({
+        format: "yyyy-mm-dd",
+        weekStart: 1,
+        startView: 1,
+        multidate: false,
+        // daysOfWeekDisabled: "0,6",
+        // daysOfWeekHighlighted: "0,6",
+        autoclose: true,
+        todayHighlight: true
+    });
 </script>

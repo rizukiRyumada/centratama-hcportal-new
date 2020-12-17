@@ -9,6 +9,11 @@ class Settings extends SuperAdminController {
         'masterData_employee' => 'Master Employee',
         'masterData_position' => 'Master Position'
     ];
+
+    protected $table = [
+        'emp_stats' => "employee_status",
+        'level' => "master_level"
+    ];
     
     public function __construct()
     {
@@ -86,6 +91,8 @@ class Settings extends SuperAdminController {
         $data['divisi'] = $this->divisi_model->getAll();
         $data['entity'] = $this->entity_m->getAll();
         $data['role'] = $this->master_m->getAll_userRole();
+        $data['emp_stats'] = $this->_general_m->getAll("*", $this->table['emp_stats'], []);
+        $data['master_level'] = $this->_general_m->getAll('*', $this->table['level'], []);
 
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
@@ -94,10 +101,14 @@ class Settings extends SuperAdminController {
         $data['page_title'] = $this->page_title['masterData_employee'];
 		$data['load_view'] = 'settings/masterData_employee_settings_v';
 		// additional styles and custom script
-        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+        $data['additional_styles'] = array(
+            'plugins/datatables/styles_datatables',
+            'plugins/datepicker/styles_datepicker'
+        );
 		// $data['custom_styles'] = array();
         $data['custom_script'] = array(
             'plugins/datatables/script_datatables',
+            'plugins/datepicker/script_datepicker', 
             'plugins/jqueryValidation/script_jqueryValidation',
             'settings/script_masterData_employee_settings'
         );
@@ -114,15 +125,18 @@ class Settings extends SuperAdminController {
         // cek role surat dan is_active
         //ubah password ke bcrypt
         //simpan ke database
-
         $data = array(
-            'nik' => $this->input->post('nik'),
-            'emp_name' => $this->input->post('name'),
-            'position_id' => $this->input->post('position'),
-            'id_entity' => $this->input->post('entity'),
-            'role_id' => $this->input->post('role'),
-            'email' => $this->input->post('email'),
-            'password' => password_hash($this->input->post('password'), PASSWORD_BCRYPT) // hashing password
+            'nik'            => $this->input->post('nik'),
+            'emp_name'       => $this->input->post('name'),
+            'position_id'    => $this->input->post('position'),
+            'id_entity'      => $this->input->post('entity'),
+            'role_id'        => $this->input->post('role'),
+            'emp_stats'      => $this->input->post('emp_stats'),
+            'level_personal' => $this->input->post('master_level'),
+            'date_birth'     => $this->input->post('date_birth'),
+            'date_join'      => $this->input->post('date_join'),
+            'email'          => $this->input->post('email'),
+            'password'       => password_hash($this->input->post('password'), PASSWORD_BCRYPT)  // hashing password
         );
 
         // cek role surat 
@@ -157,6 +171,10 @@ class Settings extends SuperAdminController {
             'emp_name' => $this->input->post('name'),
             'id_entity' => $this->input->post('entity'),
             'role_id' => $this->input->post('role'),
+            'emp_stats'      => $this->input->post('emp_stats'),
+            'level_personal' => $this->input->post('master_level'),
+            'date_birth'     => $this->input->post('date_birth'),
+            'date_join'      => $this->input->post('date_join'),
             'email' => $this->input->post('email')
         );
         //get origin data
@@ -207,6 +225,10 @@ class Settings extends SuperAdminController {
 /* -------------------------------------------------------------------------- */
 
     function masterData_position() {
+        $data['dept'] = $this->dept_model->getAll();
+        $data['divisi'] = $this->divisi_model->getAll();
+        $data['master_level'] = $this->_general_m->getAll('*', $this->table['level'], []);
+
         // main data
 		$data['sidebar'] = getMenu(); // ambil menu
 		$data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
@@ -225,18 +247,23 @@ class Settings extends SuperAdminController {
 		$this->load->view('main_v', $data);
     }
 
-    function getData_position(){
+    function ajax_getDataPosition(){
         // position data
         $data_posisi = $this->posisi_m->getAll();
+        
         // lengkapi data posisi
-        // foreach($data_posisi as $k => $v){
-        //     $data_posisi[$k]['divisi'] = $this->divisi_model->getOnceWhere(['id' => $v['div_id']])['division']; // ambil data divisi
-        //     $data_posisi[$k]['department'] = $this->dept_model->getDetailById(['id' => $v['dept_id']])['nama_departemen']; // ambil data department
-        //     $data_posisi[$k]['nama_atasan1'] = $this-> // ambil data atasan 1
-        //     // ambil data atasan 2
-        //     // ambil data approver 1
-        //     // ambil data approver 2
-        // }
+        foreach($data_posisi as $k => $v){
+            $data_posisi[$k]['divisi'] = $this->divisi_model->getOnceWhere(array('id' => $v['div_id']))['division']; // ambil data divisi
+            $data_posisi[$k]['department'] = $this->dept_model->getDetailById($v['dept_id'])['nama_departemen']; // ambil data department
+            // $data_posisi[$k]['nama_atasan1'] = 
+            // ambil data atasan 2
+            // ambil data approver 1
+            // ambil data approver 2
+        }
+
+        echo(json_encode(array(
+            'data' => $data_posisi
+        )));
     }
 
 /* -------------------------------------------------------------------------- */

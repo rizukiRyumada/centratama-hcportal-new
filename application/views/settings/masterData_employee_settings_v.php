@@ -61,10 +61,10 @@
                                 <td data-filter="div-<?= $employe['div_id'] ?>"><?= $employe['division'] ?></td>
                                 <td data-filter="dept-<?= $employe['dept_id'] ?>"><?= $employe['nama_departemen'] ?></td>
                                 <td>
-                                    <div class="btn-group">
+                                    <div class="btn-group w-100">
                                         <button class="btn btn-success btn-sm editEmp" data-nik="<?= $employe['nik']; ?>" type="button"><i class="fas fa-user-edit"></i></button>
                                         <button class="btn btn-danger btn-sm deleteEmp" data-nik="<?= $employe['nik']; ?>"><i class="fas fa-user-minus"></i></button>
-                                    </div>        
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -144,6 +144,36 @@
                         <div class="col-lg-2 form-group">
                             <label for="role_surat_tambah">Role Surat</label>
                             <input name="role_surat" id="role_surat_tambah" type="checkbox" class="form-control" >
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <label for="empstats_tambah">Employee Status</label>
+                            <select name="emp_stats" id="empstats_tambah" class="custom-select form-control">
+                                <option value="" >Pilih Employee Status...</option>
+                                <?php foreach($emp_stats as $v): ?>
+                                    <option value="<?= $v['status_name']; ?>" ><?= $v['status_name']; ?></option>
+                                <?php endforeach;?>
+                            </select>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <label for="mlevel_tambah">Level Personal</label>
+                            <select name="master_level" id="mlevel_tambah" class="custom-select form-control">
+                                <option value="" >Pilih Level Personal...</option>
+                                <?php foreach($master_level as $v): ?>
+                                    <option value="<?= $v['id']; ?>" ><?= $v['id']; ?> - <?= $v['name']; ?></option>
+                                <?php endforeach;?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <label for="date_birth_tambah">Date Birth</label>
+                            <input name="date_birth" type="text" class="date-master form-control" id="date_birth_tambah" required>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <label for="date_join_tambah">Date Join</label>
+                            <input name="date_join" type="text" class="date-master form-control" id="date_join_tambah" required>
                         </div>
                     </div>
                     <div class="row">
@@ -235,6 +265,36 @@
                         <div class="col-lg-2 form-group">
                             <label for="role_surat_edit">Role Surat</label>
                             <input name="role_surat" type="checkbox" class="form-control" id="role_surat_edit" >
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <label for="empstats_edit">Employee Status</label>
+                            <select name="emp_stats" id="empstats_edit" class="custom-select form-control">
+                                <option value="" >Pilih Employee Status...</option>
+                                <?php foreach($emp_stats as $v): ?>
+                                    <option value="<?= $v['status_name']; ?>" ><?= $v['status_name']; ?></option>
+                                <?php endforeach;?>
+                            </select>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <label for="mlevel_edit">Level Personal</label>
+                            <select name="master_level" id="mlevel_edit" class="custom-select form-control">
+                                <option value="" >Pilih Level Personal...</option>
+                                <?php foreach($master_level as $v): ?>
+                                    <option value="<?= $v['id']; ?>" ><?= $v['id']; ?> - <?= $v['name']; ?></option>
+                                <?php endforeach;?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 form-group">
+                            <label for="date_birth_edit">Date Birth</label>
+                            <input name="date_birth" type="text" class="date-master form-control" id="date_birth_edit" required>
+                        </div>
+                        <div class="col-lg-6 form-group">
+                            <label for="date_join_edit">Date Join</label>
+                            <input name="date_join" type="text" class="date-master form-control" id="date_join_edit" required>
                         </div>
                     </div>
                     <div class="row">
