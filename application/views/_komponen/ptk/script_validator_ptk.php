@@ -26,7 +26,10 @@
         get_jobLevel(""); // kosongkan job_level
         
         if($('input[name="budget"]:checked').val() == 0) { // cek jika unbudgeted
-            input_jpchoose.select2("destroy"); // hancurkan select2 job position choose
+            if (input_jpchoose.hasClass("select2-hidden-accessible")) {
+                // Select2 has been initialized
+                input_jpchoose.select2("destroy"); // hancurkan select2 job position choose
+            }
             input_jptext.fadeIn(); // tampilkan free text buat nulis nama job 
             input_jpchoose.hide(); // sembunyikan pilihan posisi job
             input_jpchoose.prop('selectedIndex',0);// kembalikan status ke default - position chooser
