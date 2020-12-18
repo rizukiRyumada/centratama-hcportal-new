@@ -2,7 +2,7 @@
     var department = ""; var divisi = "";
     var mTable = $('#positionTable').DataTable({
         responsive: true,
-        // processing: true,
+        processing: true,
         language : { 
             processing: '<div class="spinner-grow text-primary" role="status"><span class="sr-only">Loading...</span></div>',
             zeroRecords: '<p class="m-0 text-danger font-weight-bold">No Data.</p>'
@@ -73,7 +73,7 @@
                 render: (data, type) => {
                     if(type === 'display'){
                         // jika aksesnya edit tampilkan tombol delete files
-                        return '<div class="btn-group w-100"><a href="'+data+'" class="btn btn-success btn-sm"  type="button"><i class="fas fa-pen"></i></a><a href="'+data+'" class="btn btn-danger btn-sm" ><i class="fas fa-trash"></i></a></div>';
+                        return '<div class="btn-group w-100"><a href="javascript:viewPosition('+data+')" class="btn btn-success btn-sm"  type="button"><i class="fas fa-pen"></i></a><a href="javascript:deletePosition('+data+')" class="btn btn-danger btn-sm" ><i class="fas fa-trash"></i></a></div>';
                     }
                     return data;
                 }
@@ -81,9 +81,13 @@
         ]
     });
 
+    // division filtering
     $('#divisi').change(function(){
         var dipilih = $(this).val(); //ambil value dari yang terpilih
-        
+        divisi = dipilih; // ubah variabel divisi
+        department = "";
+        mTable.ajax.reload(); // reload tabel ajax
+
         $.ajax({
             url: "<?php echo base_url('settings/ajax_getDepartment'); ?>",
             data: {
@@ -97,6 +101,35 @@
                     $('#departement').append('<option value="dept-' + v.id + '">' + v.nama_departemen + '</option>'); //tambahkan 1 per 1 option yang didapatkan
                 });
             }
-        })
+        });
     });
+
+    // department filtering
+    $('#departement').change(function(){
+        department = $(this).val(); // ubah variabel department
+        mTable.ajax.reload(); // reload tabel ajax
+
+    });
+
+    // fungsi untuk menampilkan posisi
+    function viewPosition(id_posisi){
+        $.ajax({
+            url: "<?= base_url('settings/ajax_getDetailPosition'); ?>",
+            data: {
+                id_posisi: id_posisi
+            },
+            method: "POST",
+            success: function(data){
+
+            },
+            error: function(){
+                
+            }
+        });
+    }
+
+    // fungsi untuk menghapus posisi
+    function deletePosition(id){
+        console.log(id);
+    }
 </script>

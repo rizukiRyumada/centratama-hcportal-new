@@ -248,8 +248,39 @@ class Settings extends SuperAdminController {
     }
 
     function ajax_getDataPosition(){
+        $where = "";
+        // filtering data
+        if(!empty($this->input->post('divisi'))){
+            $divisi = explode("-", $this->input->post('divisi'))[1];
+        } else {
+            $divisi = "";
+        }
+        if(!empty($this->input->post('department'))){
+            $department = explode("-", $this->input->post('department'))[1];
+        } else {
+            $department = "";
+        }
+        // taruh divisi
+        if(!empty($divisi)){
+            $where .= "div_id='".$divisi."'";
+        }
+
+        if(!empty($department)){
+            if(!empty($where)){
+                $where .= " AND ";
+            } else {
+                // nothing
+            }
+
+            $where .= "dept_id='".$department."'";
+        }
+
         // position data
-        $data_posisi = $this->posisi_m->getAll();
+        if(empty($where)){
+            $data_posisi = $this->posisi_m->getAll();
+        } else {
+            $data_posisi = $this->posisi_m->getAllWhere($where);
+        }
         
         // lengkapi data posisi
         foreach($data_posisi as $k => $v){
@@ -307,6 +338,11 @@ class Settings extends SuperAdminController {
         $employe['departemen'] = $this->dept_model->ajaxDeptById($employe['dept_id'])['nama_departemen'];
 
         echo json_encode($employe);
+    }
+
+    function ajax_getDetailPosition(){
+        $id_posisi = $this->input->post('id_posisi');
+        
     }
     
     /**
