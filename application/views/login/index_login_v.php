@@ -96,7 +96,7 @@
                     </body>
                 </foreignObject>
             </g>	
-    </svg>
+        </svg>
     
     <!-- <div id="bannerPengumuman" class="carousel slide banner-pengumuman" data-ride="carousel">
         <ol class="carousel-indicators">
@@ -141,8 +141,7 @@
         <div class="container-fluid">
             <a href="../../index3.html" class="navbar-brand d-flex">
                 <img class="brand-image navbar-logo" src="<?= base_url('assets/'); ?>img/logo.png" alt="Centratama Group Logo">
-                <!-- FIXME judul aplikasi -->
-                <span class="brand-text font-weight-light d-inline-block navbar-text-leftbordered font-berlinsans"><span class="text-nowrap">Continuous<br/>Improvement<br/>Survey</span></span>
+                <span class="brand-text font-weight-light d-inline-block navbar-text-leftbordered font-berlinsans"><span class="text-nowrap">HC Portal</span></span>
             </a>
             
             <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -188,31 +187,30 @@
         </div>
     </nav><!-- /navbar -->
 
-    <!-- FIXME tanggalan -->
     <!-- content wrapper for more than 1080px -->
     <div class="content-wrapper bg-transparent" id="content-wrap">
         <!-- konten tanggal -->
         <div class="content" id="content-tanggal">
             <div class="container-fluid">
-                <div class="row portal-body m-0 text-dark">
-                    <div class="col-1">
+                <div class="row portal-body m-0 text-dark justify-content-start">
+                    <div class="col-auto">
                         <div class="text-center align-middle">
                             <div class="container d-flex mx-0">
                                 <div class="row justify-content-center align-self-center">
-                                    <!-- <p style="font-size: 1.55em; margin: 0;"><?= date("l", time()) ?>,</p> -->
+                                    <p style="font-size: 1.55em; margin: 0;"><?= date("l", time()) ?>,</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-11 px-3">
+                    <div class="col-auto px-3">
                         <div class="container d-flex mx-0 px-2">
                             <div class="row justify-content-center align-self-center">
                                 <div class="col">
                                     <div class="row justify-content-bottom align-self-bottom">
-                                        <!-- <p style="font-size: 1.35em; margin: 0; line-height: 1;"><?= date("j", time()) ?></p> -->
+                                        <p style="font-size: 1.35em; margin: 0; line-height: 1;"><?= date("j", time()) ?></p>
                                     </div>
                                     <div class="row justify-content-left align-self-left">
-                                        <!-- <p style="font-size: 1.35em; margin: 0; line-height: 1;"><?= date("F", time()) ?></p> -->
+                                        <p style="font-size: 1.35em; margin: 0; line-height: 1;"><?= date("F", time()) ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -279,8 +277,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- FIXME Judul Aplikasi ngambil dari database aja kali ya -->
-                <h5 class="modal-title" id="loginModalTitle">Login to <b class="font-berlinsans" style="color: #0072C6">Continuous Improvement Survey</b></h5>
+                <h5 class="modal-title" id="loginModalTitle">Login to <b class="font-berlinsans" style="color: #0072C6">HC Portal</b></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -317,3 +314,7 @@
         </div>
     </div>
 </div>
+
+<!-- TODO pasang ION Auth -->
+<!-- TODO buat halaman dashboard -->
+<!-- TODO buat halaman reset password -->

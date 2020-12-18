@@ -147,6 +147,23 @@
                                                 <?php $x++; ?>
                                             <?php endforeach;?>
                                         <?php endif; ?>
+                                        <!-- other function penilaian data terdaftar -->
+                                        <?php if(!empty($data_other_function_penilaian)): ?>
+                                            <?php foreach($data_other_function_penilaian as $k => $v): ?>
+                                                <tr>
+                                                    <td class="th-f360-wider"><?= $v['emp_name']; ?></td>
+                                                    <td class="th-f360" ><?= $v['departemen']; ?></td>
+                                                    <td class="th-f360" ><?= $v['divisi']; ?></td>
+                                                    <td class="th-f360-wider" ><?= $v['position_name']; ?></td>
+                                                    <td class="th-f360-btn">
+                                                        <div id="hrefWrapper_<?= $x ?>" class="justify-content-center">
+                                                            <a id="href_<?= $x ?>" href="<?= base_url('survey/f360survey?nik=').$v['nik']; ?>" class="btn btn-sm btn-primary"><i class="fa fa-pencil-alt"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <?php $x++; ?>
+                                            <?php endforeach;?>
+                                        <?php endif; ?>
                                         <?php if(!empty($data_notyet_of)): ?>
                                             <!-- options -->
                                             <?php $y=1; ?>
@@ -335,6 +352,26 @@
                                                     <td>
                                                         <div class="justify-content-center">
                                                             <i class="fa fa-check-circle fa-2x text-success"></i>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <?php $x++; ?>
+                                            <?php endforeach;?>
+                                        <?php endif; ?>
+                                        <?php if(!empty($data_other_function_penilaian)): ?>
+                                            <?php foreach($data_other_function_penilaian as $k => $v): ?>
+                                                <tr>
+                                                    <td><?= $v['emp_name']; ?></td>
+                                                    <td>
+                                                        <div class="d-flex justify-content-center">
+                                                            <a id="btnEmployeInfo_mobile_<?= $x; ?>" href="#" class="btnEmployeInfo" data-nik="<?= $v['nik']; ?>" data-emp_name="<?= $v['emp_name']; ?>" data-departemen="<?= $v['departemen']; ?>" data-divisi="<?= $v['divisi']; ?>" data-position_name="<?= $v['position_name']; ?>">
+                                                                <i class="fa fa-info-circle fa-2x link-primary"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="justify-content-center">
+                                                            <a href="<?= base_url('survey/f360survey?nik=').$v['nik']; ?>" id="href_mobile_<?= $x; ?>" class="btn btn-sm btn-primary"><i class="fa fa-pencil-alt"></i></a>
                                                         </div>
                                                     </td>
                                                 </tr>

@@ -48,6 +48,40 @@ class _general_m extends CI_Model {
         return $this->db->get()->result_array();
     }
 
+    // SELECT more row and order
+    /**
+     * getAllOrder
+     *
+     * @param  mixed $select
+     * @param  mixed $table
+     * @param  mixed $where
+     * @return void
+     */
+    public function getAllOrder($select, $table, $where, $order){
+        $this->db->select($select);
+        $this->db->from($table);
+        $this->db->where($where);
+        $this->db->order_by($order);
+        return $this->db->get()->result_array();
+    }
+
+    // SELECT more row and order
+    /**
+     * getAllOrderDescend
+     *
+     * @param  mixed $select
+     * @param  mixed $table
+     * @param  mixed $where
+     * @return void
+     */
+    public function getAllOrderDescend($select, $table, $where, $order){
+        $this->db->select($select);
+        $this->db->from($table);
+        $this->db->where($where);
+        $this->db->order_by($order, 'desc');
+        return $this->db->get()->result_array();
+    }
+
     // SELECT with join 2 tables    
     /**
      * getJoin2tables
@@ -82,6 +116,25 @@ class _general_m extends CI_Model {
         $this->db->order_by($order);
         return $this->db->get_where($table, $where)->result_array();
     }
+    
+    /**
+     * getJoin2tablesOrderDescend
+     *
+     * @param  mixed $select
+     * @param  mixed $table
+     * @param  mixed $joinTable
+     * @param  mixed $joinIndex
+     * @param  mixed $where
+     * @param  mixed $order
+     * @return void
+     */
+    public function getJoin2tablesOrderDescend($select, $table, $joinTable, $joinIndex, $where, $order){
+        $this->db->select($select);
+        $this->db->join($joinTable, $joinIndex, 'left');
+        $this->db->order_by($order);
+        $this->db->order_by($order, 'desc');
+        return $this->db->get_where($table, $where)->result_array();
+    }
 
     /**
      * getRow
@@ -114,9 +167,7 @@ class _general_m extends CI_Model {
      * @return void
      */
     public function insertAll($table, $data){
-        foreach($data as $v){
-            $this->db->insert($table, $v);
-        }
+        $this->db->insert_batch($table, $data);
     }
 
     // UPDATE    
@@ -133,9 +184,16 @@ class _general_m extends CI_Model {
         $this->db->where($whereIndex, $whereAttrib);
         $this->db->update($table, $data);
     }
-    
-    
 
+    /**
+     * TRUNCATE
+     *
+     * @return void
+     */
+    public function truncate($table){
+        $this->db->truncate($table);
+    }
+    
 }
 
 /* End of file _general_m.php */

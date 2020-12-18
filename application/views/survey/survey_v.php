@@ -19,7 +19,7 @@
             <div class="inner">
                 <h3>Engagement</h3>
 
-                <p><?= $survey_title['engagement']; ?> Survey</p>
+                <p><?= $survey_title['engagement']; ?></p>
             </div>
             <div class="icon">
                 <i class="fa fa-file-alt"></i>
@@ -45,7 +45,7 @@
             <div class="inner">
                 <h3>Service</h3>
 
-                <p><?= $survey_title['excellence']; ?> Survey</p>
+                <p><?= $survey_title['excellence']; ?></p>
             </div>
             <div class="icon">
                 <i class="fa fa-file-alt"></i>

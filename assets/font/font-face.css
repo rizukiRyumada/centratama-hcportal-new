@@ -1,0 +1,140 @@
+/* -------------------------------------------------------------------------- */
+/*                            Default font                                    */
+/* -------------------------------------------------------------------------- */
+
+/* how to use it */
+body{
+    font-family: "opensans-regular";
+}
+.font-weight-semibold{
+    font-family: 'opensans-semibold';
+}
+.font-weight-bold{
+    font-family: 'opensans-bold'
+}
+.font-weight-bolder{
+    font-family: 'opensans-extrabold';
+
+}
+.font-weight-light{
+    font-family: 'opensans-light';
+}
+.font-italic{
+    font-family: 'opensans-italic';
+}
+/* -------------------------------------------------------------------------- */
+/*                              Declare the font                              */
+/* -------------------------------------------------------------------------- */
+
+/* example make font readable on css */
+/* @font-face {
+    font-family: 'openSans';
+    src: url('OpenSans-Regular.woff2') format('woff2'),
+        url('OpenSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+} */
+
+/* -------------------------------- OPEN SANS ------------------------------- */
+
+/* opensans regular font */
+@font-face {
+    font-family: 'opensans-regular';
+    src: url('./opensans/opensans-regular-webfont.woff2') format('woff2'),
+        url('./opensans/opensans-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* opensans bold font */
+@font-face {
+    font-family: 'opensans-bold';
+    src: url('./opensans/opensans-bold-webfont.woff2') format('woff2'),
+        url('./opensans/opensans-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* opensans italic font */
+@font-face {
+    font-family: 'opensans-italic';
+    src: url('./opensans/opensans-italic-webfont.woff2') format('woff2'),
+        url('./opensans/opensans-italic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* opensans light font */
+@font-face {
+    font-family: 'opensans-light';
+    src: url('./opensans/opensans-light-webfont.woff2') format('woff2'),
+        url('./opensans/opensans-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* opensans extrabold font */
+@font-face {
+    font-family: 'opensans-extrabold';
+    src: url('./opensans/opensans-extrabold-webfont.woff2') format('woff2'),
+        url('./opensans/opensans-extrabold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* opensans semibold font */
+@font-face {
+    font-family: 'opensans-semibold';
+    src: url('./opensans/opensans-semibold-webfont.woff2') format('woff2'),
+        url('./opensans/opensans-semibold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* --------------------------------- POPPINS -------------------------------- */
+
+/* poppins regular font */
+@font-face {
+    font-family: 'poppins-regular';
+    src: url('./poppins/poppins-regular-webfont.woff2') format('woff2'),
+        url('./poppins/poppins-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* poppins medium font */
+@font-face {
+    font-family: 'poppins-medium';
+    src: url('./poppins//poppins-medium-webfont.woff2') format('woff2'),
+        url('./poppins/poppins-medium-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* poppins bold font */
+@font-face {
+    font-family: 'poppins-bold';
+    src: url('./poppins/poppins-bold-webfont.woff2') format('woff2'),
+        url('./poppins/poppins-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* poppins light font */
+@font-face {
+    font-family: 'poppins-light';
+    src: url('./poppins/poppins-light-webfont.woff2') format('woff2'),
+        url('./poppins/poppins-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* poppins extrabold font */
+@font-face {
+    font-family: 'poppins-extrabold';
+    src: url('./poppins/poppins-extrabold-webfont.woff2') format('woff2'),
+        url('./poppins/poppins-extrabold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}

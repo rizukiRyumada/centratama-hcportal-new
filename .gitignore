@@ -28,3 +28,5 @@ application/config/config.php
 ### CodeIgniter Patch ###
 
 # End of https://www.toptal.com/developers/gitignore/api/codeigniter
+assets/img/employee/*
+mycsv.csv

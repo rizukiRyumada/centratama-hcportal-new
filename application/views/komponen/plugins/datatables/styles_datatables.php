@@ -1,3 +1,0 @@
-<link rel="stylesheet" href="<?= base_url('/assets/vendor/node_modules/admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'); ?>">
-<link rel="stylesheet" href="<?= base_url('/assets/vendor/node_modules/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css'); ?>">
-<link rel="stylesheet" href="<?= base_url('/assets/vendor/node_modules/admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'); ?>">

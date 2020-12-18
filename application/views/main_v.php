@@ -2,40 +2,40 @@
 <html lang="en">
 <head>
     <!-- head settings -->
-    <?php $this->load->view('komponen/main_head'); ?>
+    <?php $this->load->view('_komponen/main_head'); ?>
 
     <!-- additional css -->
     <?php if(!empty($additional_styles)): ?>
         <?php foreach($additional_styles as $v): ?>
-            <?php $this->load->view('komponen/'.$v); ?>
+            <?php $this->load->view('_komponen/'.$v); ?>
         <?php endforeach;?>
     <?php endif; ?>
             
     <!-- custom styles -->
     <?php if(!empty($custom_styles)): ?>
         <?php foreach($custom_styles as $v): ?>
-            <link rel="stylesheet" href="<?= base_url('assets/css/').$v.'.css'; ?>">
+            <link rel="stylesheet" media="screen, print" href="<?= base_url('assets/css/').$v.'.css'; ?>">
         <?php endforeach; ?>
     <?php endif; ?>
 </head>
 <body class="sidebar-mini layout-fixed layout-navbar-fixed" style="height: auto;">
     <!-- load preloader -->
-    <?php $this->load->view('komponen/preloader_v'); ?>
+    <?php $this->load->view('_komponen/preloader_v'); ?>
     <!-- floating contact -->
-    <?php $this->load->view('komponen/floating_contact') ?>
+    <?php $this->load->view('_komponen/floating_contact') ?>
     <!-- page wrapper -->
     <div class="wrapper">
         <!-- main navbar -->
-        <?php $this->load->view('komponen/main_navbar'); ?> 
+        <?php $this->load->view('_komponen/main_navbar'); ?> 
         <!-- main sidebar -->
-        <?php $this->load->view('komponen/main_sidebar'); ?>
+        <?php $this->load->view('_komponen/main_sidebar'); ?>
         <!-- control sidebar -->
-        <?php $this->load->view('komponen/main_control_sidebar'); ?>
+        <?php $this->load->view('_komponen/main_control_sidebar'); ?>
         
         <!-- content wrapper -->
         <div class="content-wrapper">
             <!-- content header -->
-            <?php $this->load->view('komponen/main_content_header'); ?>
+            <?php $this->load->view('_komponen/main_content_header'); ?>
 
             <!-- content -->
             <div class="content">
@@ -48,19 +48,19 @@
         </div><!-- content wrapper -->
 
         <!-- main footer -->
-        <?php $this->load->view('komponen/main_footer'); ?>
+        <?php $this->load->view('_komponen/main_footer'); ?>
     </div> <!-- /page wrapper -->
 
     <!-- main script file -->
-    <?php $this->load->view('komponen/main_script'); ?>
+    <?php $this->load->view('_komponen/main_script'); ?>
 
     <!-- load other custom script -->
     <?php if(!empty($custom_script)): ?>
         <?php foreach($custom_script as $v): ?>
-            <?php $this->load->view('komponen/'.$v); ?>
+            <?php $this->load->view('_komponen/'.$v); ?>
         <?php endforeach; ?>
     <?php endif; ?>
     <!-- load preloader -->
-    <?php $this->load->view('komponen/preloader_script'); ?>
+    <?php $this->load->view('_komponen/preloader_script'); ?>
 </body>
 </html>

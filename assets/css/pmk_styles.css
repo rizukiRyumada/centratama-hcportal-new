@@ -1,0 +1,4 @@
+/* hapus padding dari tabel skala */
+.table#tabelSkala > thead > tr > th, .table#tabelSkala > tbody > tr > td {
+    padding: 0;
+}
