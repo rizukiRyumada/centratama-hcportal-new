@@ -312,8 +312,6 @@ class Ptk extends SpecialUserAppController {
                         $email_cc = "";
                         $penerima_nama = $email_data['emp_name'];
                     }
-                } else {
-                    show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
                 }
             } elseif($my_hirarki == "N-2") {
                 // kirim email ke N-1
