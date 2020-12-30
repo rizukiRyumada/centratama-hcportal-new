@@ -54,6 +54,7 @@
 
     // validation job_level
     var select_jobLevel = $('select[name="job_level"]');
+    var select_jobLevel_view = $('#jobLevelSelectView');
 
     // variable man power required
     var input_mpp = $('input[name="mpp_req"]');

@@ -743,7 +743,8 @@
                 }
             });
         } else {
-            select_jobLevel.attr('disabled', true); // tambahkan attribut disabled
+            select_jobLevel_view.attr('disabled', true); // tambahkan attribut disabled
+            select_jobLevel_view.val(""); // pilih value yang kosong
             select_jobLevel.val(""); // pilih value yang kosong
         }
     }
