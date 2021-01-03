@@ -640,7 +640,7 @@ class Pmk extends SpecialUserAppController {
         foreach($status_data as $k => $v){
             $el = $this->pmk_m->getDetail_pmkStatusDetailByStatusId($v['id_status']);
             // get status data attribute
-            $status_data[$k]['time'] = date("j M o<~>H:i", $v['time']);
+            $status_data[$k]['time'] = date("j M Y<~>H:i", $v['time']);
             $status_data[$k]['name_text'] = $el['name_text'];
             $status_data[$k]['css_color'] = $el['css_color'];
             $status_data[$k]['icon'] = $el['icon'];
@@ -665,7 +665,7 @@ class Pmk extends SpecialUserAppController {
         foreach($status_data as $k => $v){
             $el = $this->pmk_m->getDetail_pmkStatusDetailByStatusId_summary($v['id_status']);
             // get status data attribute
-            $status_data[$k]['time'] = date("j M o<~>H:i", $v['time']);
+            $status_data[$k]['time'] = date("j M Y<~>H:i", $v['time']);
             $status_data[$k]['name_text'] = $el['name_text'];
             $status_data[$k]['css_color'] = $el['css_color'];
             $status_data[$k]['icon'] = $el['icon'];

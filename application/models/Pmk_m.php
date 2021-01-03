@@ -605,7 +605,7 @@ class Pmk_m extends CI_Model {
     function getId_form($nik, $contract){
         // ambil counter dan update ke table counter
         $counter = $this->db->get_where($this->table['counter'], array("id" => "pmk"))->row_array();
-        if(date("o", $counter['date_modified']) != date("o", time())){
+        if(date("Y", $counter['date_modified']) != date("Y", time())){
             $increment = 1;
         } else {
             $increment = $counter['counter'];

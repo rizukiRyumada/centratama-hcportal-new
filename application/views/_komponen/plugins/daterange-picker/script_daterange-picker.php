@@ -18,8 +18,8 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
         "alwaysShowCalendars": true,
-        "startDate": "<?= date('m/d/o', strtotime("-6 Days")) ?>",
-        "endDate": "<?= date('m/d/o', time()); ?>",
+        "startDate": "<?= date('m/d/Y', strtotime("-6 Days")) ?>",
+        "endDate": "<?= date('m/d/Y', time()); ?>",
         "minDate": "YYYY-MM-DD",
         "maxDate": "YYYY-MM-DD",
         "drops": "auto",
@@ -37,8 +37,8 @@
     //     "showWeekNumbers": true,
     //     "showISOWeekNumbers": true,
     //     "autoApply": false,
-    //     // "startDate": "<?= date('m/d/o', time()); ?>",
-    //     // "endDate": "<?= date('m/d/o', time()); ?>",
+    //     // "startDate": "<?= date('m/d/Y', time()); ?>",
+    //     // "endDate": "<?= date('m/d/Y', time()); ?>",
     //     "drops": "auto",
     //     "opens": "center"
     // }, function(start, end, label) {

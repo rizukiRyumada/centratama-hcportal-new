@@ -108,7 +108,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_healthyLabel"><?= date("l, j M o"); ?> <span id="checkTime"></span></h5>
+                <h5 class="modal-title" id="modal_healthyLabel"><?= date("l, j M Y"); ?> <span id="checkTime"></span></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -137,7 +137,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_sickLabel"><?= date("l, j M o"); ?> <span id="checkTime"></span></h5>
+                <h5 class="modal-title" id="modal_sickLabel"><?= date("l, j M Y"); ?> <span id="checkTime"></span></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

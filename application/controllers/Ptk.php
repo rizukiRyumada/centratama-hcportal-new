@@ -619,7 +619,7 @@ class Ptk extends SpecialUserAppController {
             } else {
                 $data_ptk[$key]["name_pos"] = $this->posisi_m->getOnceWhere(array('id' => $value['id_pos']))['position_name'];
             }
-            $data_ptk[$key]["time_modified"] = date("o-m-d", $value['time_modified']);
+            $data_ptk[$key]["time_modified"] = date("Y-m-d", $value['time_modified']);
             $data_ptk[$key]["href"] = base_url('ptk/viewPTK')."?id_entity=".$value['id_entity']."&id_div=".$value['id_div']."&id_dept=".$value['id_dept']."&id_pos=".$value['id_pos']."&id_time=".$value['id_time'];
             $data_ptk[$key]['status_now'] = $value['status_now']."<~>".json_encode(array($value['id_entity'], $value['id_div'], $value['id_dept'], $value['id_pos'], $value['id_time']));
         }
@@ -723,7 +723,7 @@ class Ptk extends SpecialUserAppController {
             $this->input->post('id_time')
         );
         // ubah bentuk date
-        $data['req_date'] = date("d-m-o", strtotime($data['req_date']));
+        $data['req_date'] = date("d-m-Y", strtotime($data['req_date']));
 
         // print_r($data);
         // exit;
@@ -752,7 +752,7 @@ class Ptk extends SpecialUserAppController {
 
         // lengkapi data
         foreach($status_data as $k => $v){
-            $status_data[$k]['time'] = date("j M o<~>H:i", $v['time']);
+            $status_data[$k]['time'] = date("j M Y<~>H:i", $v['time']);
             // get status data attribute
             $el = $this->ptk_m->getDetail_ptkStatusDetailByStatusId($v['id']);
             $status_data[$k]['status_name'] = $el['status_name'];
@@ -846,7 +846,7 @@ class Ptk extends SpecialUserAppController {
             $data_ptk[$k]['education'] = $this->_general_m->getOnce('name', $this->table['ptk_education'], array('id' => $v['id_ptk_edu']))['name']; // get ptk edu name
             $data_ptk[$k]['employee_status'] = $this->_general_m->getOnce('status_name', $this->table['employee_status'], array('id' => $v['id_employee_status']))['status_name']; // get employee status name
             $data_ptk[$k]['status'] = $this->_general_m->getOnce('status_text', $this->table['ptk_status'], array('id' => $v['status_now']))['status_text']; // lengkapi data status
-            $data_ptk[$k]['time_modified'] = date('o-m-d H:i', $v['time_modified']);
+            $data_ptk[$k]['time_modified'] = date('Y-m-d H:i', $v['time_modified']);
 
             // lengkapi data posisi 
             if($v['id_pos'] != 0){
@@ -916,7 +916,7 @@ class Ptk extends SpecialUserAppController {
             unset($data_ptk[$k]['internal_who']);
         }
 
-        export2Excel($data_ptk, 'Employee Requisition Data_'.date('o-m-d_H:i', time()));
+        export2Excel($data_ptk, 'Employee Requisition Data_'.date('Y-m-d_H:i', time()));
     }
     
     /**

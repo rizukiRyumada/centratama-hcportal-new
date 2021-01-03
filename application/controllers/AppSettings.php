@@ -132,24 +132,24 @@ class AppSettings extends SuperAdminController {
                 show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
                 exit;
             }
-            $year_archive = date('o', time()); // tentukan tahun archive
+            $year_archive = date('Y', time()); // tentukan tahun archive
             $year_last = $year_archive; // tentukan tahun last quartal
         } elseif($yearQuarter == 2 || $yearQuarter == 1){
             if($yearQuarter == 2){
                 $yearQuarter_last = 1; // periode terakhir dari sistem
                 $period_text = "Q1"; // nama periode
                 $yearQuarter_archive = 4; // periode archive dari sistem
-                $year_last = date('o', time()); // tentukan tahun last quartal
+                $year_last = date('Y', time()); // tentukan tahun last quartal
             } elseif($yearQuarter == 1){
                 $yearQuarter_last = 4; // periode terakhir dari sistem
                 $period_text = "FY"; // nama periode
                 $yearQuarter_archive = 3; // periode archive dari sistem
-                $year_last = date('o', strtotime("-1 year", time())); // tentukan tahun last quartal
+                $year_last = date('Y', strtotime("-1 year", time())); // tentukan tahun last quartal
             } else {
                 show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
                 exit;
             }
-            $year_archive = date('o', strtotime("-1 year", time())); // tahun archive
+            $year_archive = date('Y', strtotime("-1 year", time())); // tahun archive
         } else {
             show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
             exit;
@@ -209,7 +209,7 @@ class AppSettings extends SuperAdminController {
             $period_text = "FY"; // nama periode
             $period_archive = 1; // periode archive dari sistem
             // tentukan tahunnya
-            $year_last = date('o', strtotime("-1 year", time())); // tahun terakhir dari sistem
+            $year_last = date('Y', strtotime("-1 year", time())); // tahun terakhir dari sistem
             $year_archive = $year_last; // tahun archive buat sistem
         } elseif($period_now == 2) { // jika di periode pertama
             // tentukan period
@@ -217,8 +217,8 @@ class AppSettings extends SuperAdminController {
             $period_text = "H1"; // nama periode
             $period_archive = 2; // periode archive dari sistem
             // tentukan tahunnya
-            $year_last = date('o', time()); // tahun terakhir dari sistem
-            $year_archive = date('o', strtotime("-1 year", time())); // tahun archive buat sistem
+            $year_last = date('Y', time()); // tahun terakhir dari sistem
+            $year_archive = date('Y', strtotime("-1 year", time())); // tahun archive buat sistem
         } else {
             show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
             exit;
@@ -273,7 +273,7 @@ class AppSettings extends SuperAdminController {
             $period_text = "FY"; // nama periode
             $period_archive = 1; // periode archive dari sistem
             // tentukan tahunnya
-            $year_last = date('o', strtotime("-1 year", time())); // tahun terakhir dari sistem
+            $year_last = date('Y', strtotime("-1 year", time())); // tahun terakhir dari sistem
             $year_archive = $year_last; // tahun archive buat sistem
         } elseif($period_now == 2) { // jika di periode pertama
             // tentukan period
@@ -281,8 +281,8 @@ class AppSettings extends SuperAdminController {
             $period_text = "H1"; // nama periode
             $period_archive = 2; // periode archive dari sistem
             // tentukan tahunnya
-            $year_last = date('o', time()); // tahun terakhir dari sistem
-            $year_archive = date('o', strtotime("-1 year", time())); // tahun archive buat sistem
+            $year_last = date('Y', time()); // tahun terakhir dari sistem
+            $year_archive = date('Y', strtotime("-1 year", time())); // tahun archive buat sistem
         } else {
             show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
             exit;
@@ -352,22 +352,22 @@ class AppSettings extends SuperAdminController {
                 show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
                 exit;
             }
-            $year_archive_exc = date('o', time()); // tentukan tahun archive
+            $year_archive_exc = date('Y', time()); // tentukan tahun archive
             $year_last_exc = $year_archive_exc; // tentukan tahun last quartal
         } elseif($yearQuarter == 2 || $yearQuarter == 1){
             if($yearQuarter == 2){
                 $yearQuarter_last = 1; // periode terakhir dari sistem
                 $yearQuarter_archive = 4; // periode archive dari sistem
-                $year_last_exc = date('o', time()); // tentukan tahun last quartal
+                $year_last_exc = date('Y', time()); // tentukan tahun last quartal
             } elseif($yearQuarter == 1){
                 $yearQuarter_last = 4; // periode terakhir dari sistem
                 $yearQuarter_archive = 3; // periode archive dari sistem
-                $year_last_exc = date('o', strtotime("-1 year", time())); // tentukan tahun last quartal
+                $year_last_exc = date('Y', strtotime("-1 year", time())); // tentukan tahun last quartal
             } else {
                 show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
                 exit;
             }
-            $year_archive_exc = date('o', strtotime("-1 year", time())); // tahun archive
+            $year_archive_exc = date('Y', strtotime("-1 year", time())); // tahun archive
         } else {
             show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
             exit;
@@ -379,15 +379,15 @@ class AppSettings extends SuperAdminController {
             $period_last = 2; // periode terakhir dari sistem
             $period_archive = 1; // periode archive dari sistem
             // tentukan tahunnya
-            $year_last = date('o', strtotime("-1 year", time())); // tahun terakhir dari sistem
+            $year_last = date('Y', strtotime("-1 year", time())); // tahun terakhir dari sistem
             $year_archive = $year_last; // tahun archive buat sistem
         } elseif($period_now == 2) { // jika di periode pertama
             // tentukan period
             $period_last = 1; // periode terakhir dari sistem
             $period_archive = 2; // periode archive dari sistem
             // tentukan tahunnya
-            $year_last = date('o', time()); // tahun terakhir dari sistem
-            $year_archive = date('o', strtotime("-1 year", time())); // tahun archive buat sistem
+            $year_last = date('Y', time()); // tahun terakhir dari sistem
+            $year_archive = date('Y', strtotime("-1 year", time())); // tahun archive buat sistem
         } else {
             show_error('The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.', 406, 'Not Acceptable');
             exit;

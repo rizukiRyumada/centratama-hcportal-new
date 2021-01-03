@@ -41,7 +41,7 @@
                                         <button data-status="0" class="sendNotificatiOnStatus btn btn-circle btn-danger"><i class="fa fa-envelope text-white"></i></button>
                                     </div>
                                     <div class="col my-1">
-                                        <p>Last sent: <ryu id="status0" class="d-inline" ><?= date('j-m-o, H:i', $status_time[0]['date']) ?></ryu></p>
+                                        <p>Last sent: <ryu id="status0" class="d-inline" ><?= date('j-m-Y, H:i', $status_time[0]['date']) ?></ryu></p>
                                     </div>
                                 </div>
                                 <div class="row mt-3" >
@@ -52,7 +52,7 @@
                                         <button data-status="1" class="sendNotificatiOnStatus btn btn-circle btn-warning"><i class="fa fa-envelope text-white"></i></button>
                                     </div>
                                     <div class="col my-1">
-                                        <p>Last sent: <ryu id="status1" class="d-inline" ><?= date('j-m-o, H:i', $status_time[1]['date']) ?></ryu></p>
+                                        <p>Last sent: <ryu id="status1" class="d-inline" ><?= date('j-m-Y, H:i', $status_time[1]['date']) ?></ryu></p>
                                     </div>
                                 </div>
                                 <div class="row mt-3" >
@@ -63,7 +63,7 @@
                                         <button data-status="2" class="sendNotificatiOnStatus btn btn-circle btn-warning"><i class="fa fa-envelope text-white"></i></button>
                                     </div>
                                     <div class="col my-1">
-                                        <p>Last sent: <ryu id="status2" class="d-inline"><?= date('j-m-o, H:i', $status_time[2]['date']) ?></ryu> </p>
+                                        <p>Last sent: <ryu id="status2" class="d-inline"><?= date('j-m-Y, H:i', $status_time[2]['date']) ?></ryu> </p>
                                     </div>
                                 </div>
                                 <div class="row mt-3" >
@@ -74,7 +74,7 @@
                                         <button data-status="3" class="sendNotificatiOnStatus btn btn-circle btn-info"><i class="fa fa-envelope text-white"></i></button>
                                     </div>
                                     <div class="col my-1">
-                                        <p>Last sent: <ryu id="status3" class="d-inline" ><?= date('j-m-o, H:i', $status_time[3]['date']) ?></ryu></p>    
+                                        <p>Last sent: <ryu id="status3" class="d-inline" ><?= date('j-m-Y, H:i', $status_time[3]['date']) ?></ryu></p>    
                                     </div>
                                 </div>
                                 <div class="row mt-3" >
@@ -85,7 +85,7 @@
                                         <button data-status="4" class="sendNotificatiOnStatus btn btn-circle btn-success"><i class="fa fa-envelope text-white"></i></button>
                                     </div>
                                     <div class="col my-1">
-                                        <p>Last sent: <ryu id="status4" class="d-inline" ><?= date('j-m-o, H:i', $status_time[4]['date']) ?></ryu> </p>
+                                        <p>Last sent: <ryu id="status4" class="d-inline" ><?= date('j-m-Y, H:i', $status_time[4]['date']) ?></ryu> </p>
                                     </div>
                                 </div>
                             </div>

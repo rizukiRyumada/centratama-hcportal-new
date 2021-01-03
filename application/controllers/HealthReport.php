@@ -21,7 +21,7 @@ class HealthReport extends MainController {
     /* -------------------------------------------------------------------------- */
     public function healthStatus(){
         // cek apa user udh isi pada tanggal segini
-        $checkedIn = $this->_general_m->getOnce('*', 'healthReport_reports', array('date' => date('o-m-d', time()), 'nik' => $this->session->userdata('nik')));
+        $checkedIn = $this->_general_m->getOnce('*', 'healthReport_reports', array('date' => date('Y-m-d', time()), 'nik' => $this->session->userdata('nik')));
 
         if(!empty($checkedIn)){
             // beri penanda dia sudah checkedin
@@ -138,7 +138,7 @@ class HealthReport extends MainController {
         if($this->input->post('checkIn') == '1'){
             // siapin data buat dimasukkin ke database
             $data = array(
-                'date'     => date('o-m-d', time()),
+                'date'     => date('Y-m-d', time()),
                 'nik'      => $this->session->userdata('nik'),
                 'id_posisi'=> $this->_general_m->getOnce('position_id', 'master_employee', array('nik' => $this->session->userdata('nik')))['position_id'],
                 'time'     => date('H:i:s', time()),
@@ -198,7 +198,7 @@ class HealthReport extends MainController {
             }
 
             $data = array(
-                'date'     => date('o-m-d', time()),
+                'date'     => date('Y-m-d', time()),
                 'nik'      => $this->session->userdata('nik'),
                 'id_posisi'=> $this->_general_m->getOnce('position_id', 'master_employee', array('nik' => $this->session->userdata('nik')))['position_id'],
                 'time'     => date('H:i:s', time()),

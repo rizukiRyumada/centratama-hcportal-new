@@ -10,7 +10,7 @@ $(document).ready(function () {
                 extend: 'excel',
                 text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to Excel',
                 title: '',
-                filename: 'Report Job Profile-<?= date("dmo-Hi"); ?>',
+                filename: 'Report Job Profile-<?= date("dmY-Hi"); ?>',
                 exportOptions: {
                     modifier: {
                         //Datatables Core
@@ -71,7 +71,7 @@ $(document).ready(function () {
     //             extend: 'excel',
     //             text: 'Export to Excel',
     //             title: '',
-    //             filename: 'Report Job Profile-<?= date("dmo-Hi"); ?>',
+    //             filename: 'Report Job Profile-<?= date("dmY-Hi"); ?>',
     //             exportOptions: {
     //                 modifier: {
     //                     //Datatables Core
