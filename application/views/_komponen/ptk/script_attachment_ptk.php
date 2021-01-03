@@ -88,6 +88,10 @@
                     }
                 ]
             });
+
+            // script ckeditor
+            <?php $this->load->view('_komponen/ptk/script_ckeditor_ptk'); ?>
+
     // jika flag_viewer ptk, maka aktifkan baris kode ini
     <?php if(!empty($flag_viewer)): ?>
         });
