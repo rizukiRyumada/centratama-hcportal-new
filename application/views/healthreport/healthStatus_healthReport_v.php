@@ -50,7 +50,7 @@
                     <div class="col">
                         <!-- <img class="responsive-image" src="<?= base_url('assets/img/healthReport/main-logo.svg'); ?>" alt="Health Check main logo"> -->
                         <p class="card-text text-center">
-                            <?= date("l, j M o"); ?>
+                            <?= date("l, j M Y"); ?>
                         </p>
                     </div>
                 </div>
