@@ -310,11 +310,12 @@ class Pmk extends SpecialUserAppController {
 
         // ambil semua form pada summary tersebut
         $summaryForms = $this->_general_m->getAll('*', $this->table['form'], ['id_summary' => $detail_assessment['id_summary']]);
+        $detail_divisi = $this->divisi_model->getOnceWhere(array('id' => substr($detail_assessment['id_summary'], 6, 6))); // ambil informasi divisi
 
         //cek satu per satu apa sudah memenuhi kondisi sudah selesai semua formnya?, beri tanda pada flag
         $count_summaryForms = count($summaryForms); $count_complete = 0;
         foreach($summaryForms as $v){
-            if($v['status_now_id'] == '9' || $v['status_now_id'] == '4' || $v['status_now_id'] == '3'){
+            if($v['status_now_id'] == '4' || $v['status_now_id'] == '3'){
                 $count_complete++;
             }
         }
@@ -356,15 +357,24 @@ class Pmk extends SpecialUserAppController {
                 $status_text = 'All Assessment Completed';
                 $email_subject = "[".$this->app_name."] ".$status_text;
                 $message = 'Semua assessment pada Penilaian Kontrak di Divisi anda sudah terisi, dimohon untuk melakukan approval melalui link yang tertera.';
-                $data_employee = $this->employee_m->getDetails_employee($nik);
                 $direct_to = "pmk/index?direct=sumhis";
+                $message_details = array(
+                    0 => array(
+                        'info_name' => 'Divisi',
+                        'info' => $detail_divisi['division']
+                    ),
+                    1 => array(
+                        'info_name' => 'Date Modified',
+                        'info' => date('j F Y H:i')
+                    )
+                );
 
                 $token_data = array( // data buat disave di token url
                     'direct'            => $direct_to,
                     'email_penerima'    => $email_penerima
                 );
                 
-                $this->email_m->general_sendNotifikasi_employeeForm($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $message, $data_employee, $token_data);
+                $this->email_m->general_sendNotifikasi($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $message, $message_details, $token_data);
             }
         }
     }
@@ -1224,6 +1234,25 @@ class Pmk extends SpecialUserAppController {
             }
         }
 
+        // masukkan assessment ke database
+        if($this->_general_m->getRow($this->table['survey'], array('id' => $this->input->post('id'))) > 0){ // cek jika ada isi surveynya
+            $this->pmk_m->delete_assessment($this->input->post('id'));
+        }
+        $this->pmk_m->insertAll_surveyHasil($data_assess['data_assess']); // masukkan data penilaian assessment
+
+        // prepare updated data
+        $update_pmk = array(
+            'status' => json_encode($status_new),
+            'status_now_id' => $status_now_id,
+            'modified' => time(),
+            'survey_rerata' => json_encode($data_assess['data_rerata'])
+        );
+        // update pmk data form
+        $this->pmk_m->updateForm($update_pmk, array('id' => $this->input->post('id')));
+
+        /* -------------------------------------------------------------------------- */
+        /*                              kirim notifikasi                              */
+        /* -------------------------------------------------------------------------- */
         // jika actionnya submit
         if($this->input->post('action') == 1){
             // siapkan data untuk ngirim email notifikasi
@@ -1270,11 +1299,6 @@ class Pmk extends SpecialUserAppController {
                 $email_cc = "";
             }
 
-            // jika status now idnya 9, 4 atau 3, yaitu submitted dari N-2 untuk OD atau division head
-            if($status_now_id == '9' || $status_now_id == '4' || $status_now_id == '3'){
-                $this->sendEmail_allComplete($this->input->post("id")); // kirim email bahwa summary ini sudah selesai semua assessmentnya
-            }
-
             // ambil status detail
             $status_text = $this->pmk_m->getDetail_pmkStatusDetailByStatusId($status_now_id)['name_text'];
             $email_subject = "[".$this->app_name."] ".$status_text;
@@ -1295,23 +1319,12 @@ class Pmk extends SpecialUserAppController {
             if(!empty($email_penerima)){
                 $this->email_m->general_sendNotifikasi_employeeForm($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $message, $data_employee, $token_data);
             }
-        }
 
-        // masukkan ke database
-        if($this->_general_m->getRow($this->table['survey'], array('id' => $this->input->post('id'))) > 0){ // cek jika ada isi surveynya
-            $this->pmk_m->delete_assessment($this->input->post('id'));
+            // jika status now idnya 9, 4 atau 3, yaitu submitted dari N-2 untuk OD atau division head
+            if($status_now_id == '4' || $status_now_id == '3'){
+                $this->sendEmail_allComplete($this->input->post("id")); // kirim email bahwa summary ini sudah selesai semua assessmentnya
+            }
         }
-        $this->pmk_m->insertAll_surveyHasil($data_assess['data_assess']); // masukkan data penilaian assessment
-
-        // prepare updated data
-        $update_pmk = array(
-            'status' => json_encode($status_new),
-            'status_now_id' => $status_now_id,
-            'modified' => time(),
-            'survey_rerata' => json_encode($data_assess['data_rerata'])
-        );
-        // update pmk data form
-        $this->pmk_m->updateForm($update_pmk, array('id' => $this->input->post('id')));
 
         redirect('pmk');
     }
