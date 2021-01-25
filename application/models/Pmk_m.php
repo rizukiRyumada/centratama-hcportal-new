@@ -252,13 +252,9 @@ class Pmk_m extends CI_Model {
                 // exit;
             }
         } elseif($showhat == 1){ // ambil data history
-            $daterange = explode(" - ", $filter_daterange); // pisahkan dulu daterangenya
-            $daterange[0] = strtotime($daterange[0]);
-            $daterange[1] = strtotime($daterange[1]);
-            $where .= " AND created >= ".$daterange[0]." AND created <= ".$daterange[1]; // tambahkan where tanggal buat ngebatesin view biar ga load lama
-                                            // ada filter status?
+            // ada filter status?
             if(!empty($filter_status)){
-                $where .= " AND status_now_id = ".$filter_status;
+                $where .= "status_now_id = ".$filter_status;
             }
         } else { // tampilkan error
             show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
@@ -275,7 +271,7 @@ class Pmk_m extends CI_Model {
             }
         }
 
-        $dataPmk = $this->detail_assessment($data_pmk);
+        $dataPmk = $this->detail_assessment($data_pmk, $showhat, $filter_daterange);
         return $dataPmk;
     }
     
@@ -285,7 +281,7 @@ class Pmk_m extends CI_Model {
      * @param  mixed $data_pmk
      * @return void
      */
-    function detail_assessment($data_pmk){
+    function detail_assessment($data_pmk, $showhat, $filter_daterange){
         // lengkapi data pmk
         $dataPmk = array(); $x = 0;
         foreach($data_pmk as $k => $v){
@@ -300,15 +296,36 @@ class Pmk_m extends CI_Model {
                 'contract' => $contract_last['contract']
             ));
 
-            $dataPmk[$x]['nik']        = substr($v['id'], 0, 8);
-            $dataPmk[$x]['divisi']     = $divisi['division'];
-            $dataPmk[$x]['department'] = $department['nama_departemen'];
-            $dataPmk[$x]['position']   = $data_pos['position_name'];
-            $dataPmk[$x]['emp_name']   = $employee['emp_name'];
-            $dataPmk[$x]['eoc']        = date('Y-m-d', strtotime($contract_last_detail['date_end']));
-            $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
-            $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
-            $x++;
+            // cek apakah viewnya untuk admin
+            if($showhat == 1){
+                // explode filter daterange
+                $daterange = explode(" - ", $filter_daterange); // pisahkan dulu daterangenya
+                $daterange[0] = date('Y-m-d', strtotime($daterange[0]));
+                $daterange[1] = date('Y-m-d', strtotime($daterange[1]));
+                // $where .= "created >= '".$daterange[0]."' AND created <= '".$daterange[1]."'"; // tambahkan where tanggal buat ngebatesin view biar ga load lama
+
+                // cek apa contractnya berada di jangkauan filter
+                if($contract_last_detail['date_end'] >= $daterange[0] && $contract_last_detail['date_end'] <= $daterange[1]){
+                    $flag_add = 1;
+                } else {
+                    $flag_add = 0;
+                }
+            } else {
+                $flag_add = 1;
+            }
+
+            // cek apa datanya bisa untuk ditambahkan
+            if($flag_add == 1){
+                $dataPmk[$x]['nik']        = substr($v['id'], 0, 8);
+                $dataPmk[$x]['divisi']     = $divisi['division'];
+                $dataPmk[$x]['department'] = $department['nama_departemen'];
+                $dataPmk[$x]['position']   = $data_pos['position_name'];
+                $dataPmk[$x]['emp_name']   = $employee['emp_name'];
+                $dataPmk[$x]['eoc']        = date('Y-m-d', strtotime($contract_last_detail['date_end']));
+                $dataPmk[$x]['status_now'] = json_encode(array('status' => $status, 'trigger' => $v['id']));
+                $dataPmk[$x]['action']     = json_encode(array('id' => $v['id']));
+                $x++;
+            }
         }
 
         return $dataPmk;

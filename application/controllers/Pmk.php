@@ -426,7 +426,8 @@ class Pmk extends SpecialUserAppController {
         // $date = strtotime("+2 month", time());
         // ambil hari terakhir di dua bulan lagi
         // TODO buat range pengambilan tanggal by setting
-        $date = strtotime(date('t-m-Y', strtotime("+2 month", time())));
+        $date = date('Y-m-t', strtotime("+2 month", time()));
+        $date_now = date('Y-m-d', time());
         // ambil data contract terakhir
         $data_contract = $this->pmk_m->getAll_LastContract();
         // cari yg datenya udh beberapa bulan lagi
@@ -435,7 +436,13 @@ class Pmk extends SpecialUserAppController {
             // cek apa data sudah ada di pmk_form
             $vya = $this->pmk_m->getRow_form($v['nik'], $v['contract']);
             // cek apa kontraknya mau habis dalam 2 bulan
-            $result = $this->_general_m->getOnce('*', $this->table['contract'], "nik = '".$v['nik']."' AND contract = '".$v['contract']."' AND date_end <= ".$date);
+            $result = $this->_general_m->getOnce(
+                '*', 
+                $this->table['contract'], 
+                "nik = '".$v['nik'].
+                    "' AND contract = '".$v['contract'].
+                    "' AND date_start >= '".$date_now.
+                    "' AND date_end <= '".$date."'");
             // cek apa ada pada 2 bulan ke depan dengan kontrak terakhir
             if(!empty($result)){
                 $counter_pmk++; // counter data yg abis di 2 bulan ke depan
