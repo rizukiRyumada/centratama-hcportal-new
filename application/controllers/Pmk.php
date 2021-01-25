@@ -294,6 +294,80 @@ class Pmk extends SpecialUserAppController {
         
 		$this->load->view('main_v', $data);
     }
+    
+    /**
+     * kirim email notifikasi bahwa semua assessment
+     * dalam summary di form assessment ini sudah 
+     * diisi semua
+     *
+     * @param  mixed $id_assessment
+     * @return void
+     */
+    public function sendEmail_allComplete($id_assessment)
+    {
+        // ambil detail assessment buat ngambil id_summary
+        $detail_assessment = $this->_general_m->getOnce('*', $this->table['form'], ['id' => $id_assessment]);
+
+        // ambil semua form pada summary tersebut
+        $summaryForms = $this->_general_m->getAll('*', $this->table['form'], ['id_summary' => $detail_assessment['id_summary']]);
+
+        //cek satu per satu apa sudah memenuhi kondisi sudah selesai semua formnya?, beri tanda pada flag
+        $count_summaryForms = count($summaryForms); $count_complete = 0;
+        foreach($summaryForms as $v){
+            if($v['status_now_id'] == '9' || $v['status_now_id'] == '4' || $v['status_now_id'] == '3'){
+                $count_complete++;
+            }
+        }
+
+        if($count_summaryForms == $count_complete){
+            if($summaryForms[0]['status_now_id'] == "4"){ // kirim email ke OD Department atau adminsapp
+                $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+                $admins = array();
+                foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                    $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+                }
+                // jika adminnya lebih dari satu
+                if(count($admins) > 1){
+                    $email_penerima = array(); $temp_namaPenerima = array();
+                    foreach($admins as $k => $v){
+                        $email_penerima[$k] = $v['email'];
+                        $temp_namaPenerima[$k] = $v['emp_name'];
+                    }
+                    $penerima_nama = implode(', ', $temp_namaPenerima);
+                } else { // jika adminnya cuma satu
+                    $email_penerima = $admins[0]['email'];
+                    $penerima_nama = $admins[0]['emp_name'];
+                }
+                $email_cc = "";
+            } else { // kirim email ke division head
+                // data posisi
+                $nik = substr($id_assessment, 0, 8);
+                $position = $this->employee_m->getDetails_employee($nik);
+
+                $email_data = $this->divisi_model->get_divHead($position['div_id']);
+                // email data
+                $email_penerima = $email_data['email'];
+                $email_cc = "";
+                $penerima_nama = $email_data['emp_name'];
+            }
+
+            if(!empty($email_penerima)){
+                // ambil status detail
+                $status_text = 'All Assessment Completed';
+                $email_subject = "[".$this->app_name."] ".$status_text;
+                $message = 'Semua assessment pada Penilaian Kontrak di Divisi anda sudah terisi, dimohon untuk melakukan approval melalui link yang tertera.';
+                $data_employee = $this->employee_m->getDetails_employee($nik);
+                $direct_to = "pmk/index?direct=sumhis";
+
+                $token_data = array( // data buat disave di token url
+                    'direct'            => $direct_to,
+                    'email_penerima'    => $email_penerima
+                );
+                
+                $this->email_m->general_sendNotifikasi_employeeForm($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $message, $data_employee, $token_data);
+            }
+        }
+    }
 
     /**
      * summary process
@@ -1150,7 +1224,7 @@ class Pmk extends SpecialUserAppController {
             }
         }
 
-        // jika actionnya bukan save, brarti submit
+        // jika actionnya submit
         if($this->input->post('action') == 1){
             // siapkan data untuk ngirim email notifikasi
             if($status_now_id == "2"){ // kirim email ke atasan 1nya dia
@@ -1194,6 +1268,11 @@ class Pmk extends SpecialUserAppController {
                     $penerima_nama = $admins[0]['emp_name'];
                 }
                 $email_cc = "";
+            }
+
+            // jika status now idnya 9, 4 atau 3, yaitu submitted dari N-2 untuk OD atau division head
+            if($status_now_id == '9' || $status_now_id == '4' || $status_now_id == '3'){
+                $this->sendEmail_allComplete($this->input->post("id")); // kirim email bahwa summary ini sudah selesai semua assessmentnya
             }
 
             // ambil status detail
