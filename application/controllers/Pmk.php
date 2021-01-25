@@ -515,7 +515,7 @@ class Pmk extends SpecialUserAppController {
                 $this->table['contract'], 
                 "nik = '".$v['nik'].
                     "' AND contract = '".$v['contract'].
-                    "' AND date_start >= '".$date_now.
+                    "' AND date_end >= '".$date_now.
                     "' AND date_end <= '".$date."'");
             // cek apa ada pada 2 bulan ke depan dengan kontrak terakhir
             if(!empty($result)){
@@ -995,10 +995,7 @@ class Pmk extends SpecialUserAppController {
      */
     function cekAkses_pmk($position_my, $position){
         // cek apa dia admin atau userapp admin
-        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
-            // perbolehkan akses bebas
-            $value = 3; // flag bisa akses tapi ga berhak submit
-        } elseif($position_my['id'] == 196 || $position_my['id'] == 1){
+        if($position_my['id'] == 196 || $position_my['id'] == 1){
             if($position_my['div_id'] == $position['div_id']){
                 // perbolehkan akses
                 $value = 1;
@@ -1006,6 +1003,9 @@ class Pmk extends SpecialUserAppController {
                 // perbolehkan akses tapi jangan kasih dia buat submit form
                 $value = 3;
             }
+        } elseif($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+            // perbolehkan akses bebas
+            $value = 3; // flag bisa akses tapi ga berhak submit
         } else {
             // cek berdasarkan hirarki
             if($position_my['hirarki_org'] == "N"){
