@@ -1,4 +1,6 @@
 <script>
+    let summary_notes = <?php echo "`" . trim(preg_replace('/\s\s+/', ' ', nl2br($summary_notes[$whoami]['text']))) . "`"; ?>;
+
     // CKEditor Instances
     CKEDITOR.replace('notes', {
         enterMode: CKEDITOR.ENTER_BR,
@@ -9,7 +11,7 @@
                 <?php endif; ?>
                 // set draft pesan untuk hc divhead
                 <?php if(!empty($summary_notes)): ?>
-                    CKEDITOR.instances['notes'].setData("<?php echo nl2br($summary_notes[$whoami]['text']); ?>");
+                    CKEDITOR.instances['notes'].setData(summary_notes);
                 <?php endif; ?>
                 $('#ckeditor_loader').slideUp(); // sembunyikan loader
             }
