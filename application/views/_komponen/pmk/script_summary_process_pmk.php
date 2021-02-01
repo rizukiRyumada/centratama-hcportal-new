@@ -9,7 +9,7 @@
                 <?php endif; ?>
                 // set draft pesan untuk hc divhead
                 <?php if(!empty($summary_notes)): ?>
-                    CKEDITOR.instances['notes'].setData("<?echo nl2br($summary_notes[$whoami]['text']); ?>");
+                    CKEDITOR.instances['notes'].setData("<?php echo nl2br($summary_notes[$whoami]['text']); ?>");
                 <?php endif; ?>
                 $('#ckeditor_loader').slideUp(); // sembunyikan loader
             }
