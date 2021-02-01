@@ -9,7 +9,7 @@
                 <?php endif; ?>
                 // set draft pesan untuk hc divhead
                 <?php if(!empty($summary_notes)): ?>
-                    CKEDITOR.instances['notes'].setData("<?= $summary_notes[$whoami]['text']; ?>");
+                    CKEDITOR.instances['notes'].setData("<?echo nl2br($summary_notes[$whoami]['text']); ?>");
                 <?php endif; ?>
                 $('#ckeditor_loader').slideUp(); // sembunyikan loader
             }
@@ -172,7 +172,7 @@
                 extend: 'excel',
                 text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to Excel',
                 title: '',
-                filename: 'Health Report-<?= date("dmo-Hi"); ?>',
+                filename: 'Health Report-<?= date("dmY-Hi"); ?>',
                 exportOptions: {
                     modifier: {
                         //Datatables Core

@@ -198,7 +198,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                         </div>
-                                        <input id="daterange" class="form-control daterange-chooser" type="text" name="dateChooser" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
+                                        <input id="daterange" class="form-control daterange-chooser" type="text" name="dateChooser" value="<?= date('m/01/Y', strtotime("-2 month", time())) ?> - <?= date('m/t/Y', strtotime("+2 month", time())); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -212,7 +212,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                         </div>
-                                        <input id="superdatepicker" class="form-control " type="text" name="sdvvd" value="<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>">
+                                        <input id="superdatepicker" class="form-control " type="text" name="sdvvd" value="<?= date('m/01/Y', strtotime("-2 month", time())) ?> - <?= date('m/t/Y', strtotime("+2 month", time())); ?>">
                                     </div>
                                 </div>
                             </div> -->

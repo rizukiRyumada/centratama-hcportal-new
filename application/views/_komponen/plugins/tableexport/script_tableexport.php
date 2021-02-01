@@ -8,7 +8,7 @@
         headers: true,
         footers: false,
         formats: ['xlsx', 'csv'],
-        filename: excelFileName+'-<?= date("dmo-Hi"); ?>',
+        filename: excelFileName+'-<?= date("dmY-Hi"); ?>',
         bootstrap: false,
         exportButtons: true,
         position: 'bottom',

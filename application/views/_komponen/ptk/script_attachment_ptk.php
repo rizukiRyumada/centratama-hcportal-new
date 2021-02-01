@@ -34,7 +34,7 @@
                         extend: 'excel',
                         text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to Excel',
                         title: '',
-                        filename: 'Health Report-<?= date("dmo-Hi"); ?>',
+                        filename: 'Health Report-<?= date("dmY-Hi"); ?>',
                         exportOptions: {
                             modifier: {
                                 //Datatables Core
@@ -88,6 +88,10 @@
                     }
                 ]
             });
+
+            // script ckeditor
+            <?php $this->load->view('_komponen/ptk/script_ckeditor_ptk'); ?>
+
     // jika flag_viewer ptk, maka aktifkan baris kode ini
     <?php if(!empty($flag_viewer)): ?>
         });

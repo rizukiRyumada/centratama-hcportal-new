@@ -30,7 +30,7 @@
                 extend: 'excel',
                 text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to Excel',
                 title: '',
-                filename: 'Health Report-<?= date("dmo-Hi"); ?>',
+                filename: 'Health Report-<?= date("dmY-Hi"); ?>',
                 exportOptions: {
                     modifier: {
                         //Datatables Core
@@ -175,8 +175,8 @@
         $('#status').prop('selectedIndex',0);
         filter_summary_status = "";
         // reset daterange filter
-        filter_summary_daterange = "<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>";
-        $('#daterange_summary').val('<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>');
+        filter_summary_daterange = "<?= date('m/01/Y', strtotime("-2 month", time())) ?> - <?= date('m/t/Y', strtotime("+2 month", time())); ?>";
+        $('#daterange_summary').val('<?= date('m/01/Y', strtotime("-2 month", time())) ?> - <?= date('m/t/Y', strtotime("+2 month", time())); ?>');
         table_summary.ajax.reload(); // reload table
     });
 

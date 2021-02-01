@@ -33,7 +33,7 @@
                 extend: 'excel',
                 text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to Excel',
                 title: '',
-                filename: 'Health Report-<?= date("dmo-Hi"); ?>',
+                filename: 'Health Report-<?= date("dmY-Hi"); ?>',
                 exportOptions: {
                     modifier: {
                         //Datatables Core
@@ -162,7 +162,7 @@
             $('#status').prop('selectedIndex',0);
             status = "";
             // reset daterange status
-            $('#daterange').val('<?= date('m/01/o', strtotime("-2 month", time())) ?> - <?= date('m/t/o', strtotime("+2 month", time())); ?>');
+            $('#daterange').val('<?= date('m/01/Y', strtotime("-2 month", time())) ?> - <?= date('m/t/Y', strtotime("+2 month", time())); ?>');
             table.ajax.reload(); // reload table
         });
 
@@ -348,8 +348,8 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
         "alwaysShowCalendars": true,
-        "startDate": "<?= date('m/01/o', strtotime("-2 month", time())) ?>",
-        "endDate": "<?= date('m/t/o', strtotime("+2 month", time())); ?>",
+        "startDate": "<?= date('m/01/Y', strtotime("-2 month", time())) ?>",
+        "endDate": "<?= date('m/t/Y', strtotime("+2 month", time())); ?>",
         "minDate": "YYYY-MM-DD",
         "maxDate": "YYYY-MM-DD",
         "drops": "auto",

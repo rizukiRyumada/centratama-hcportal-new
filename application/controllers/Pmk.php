@@ -294,6 +294,93 @@ class Pmk extends SpecialUserAppController {
         
 		$this->load->view('main_v', $data);
     }
+    
+    /**
+     * kirim email notifikasi bahwa semua assessment
+     * dalam summary di form assessment ini sudah 
+     * diisi semua
+     *
+     * @param  mixed $id_assessment
+     * @return void
+     */
+    public function sendEmail_allComplete($id_assessment)
+    {
+        // ambil detail assessment buat ngambil id_summary
+        $detail_assessment = $this->_general_m->getOnce('*', $this->table['form'], ['id' => $id_assessment]);
+
+        // ambil semua form pada summary tersebut
+        $summaryForms = $this->_general_m->getAll('*', $this->table['form'], ['id_summary' => $detail_assessment['id_summary']]);
+        $detail_divisi = $this->divisi_model->getOnceWhere(array('id' => substr($detail_assessment['id_summary'], 6, 6))); // ambil informasi divisi
+
+        //cek satu per satu apa sudah memenuhi kondisi sudah selesai semua formnya?, beri tanda pada flag
+        $count_summaryForms = count($summaryForms); $count_complete = 0;
+        foreach($summaryForms as $v){
+            if($v['status_now_id'] == '4' || $v['status_now_id'] == '3'){
+                $count_complete++;
+            }
+        }
+
+        if($count_summaryForms == $count_complete){
+            if($summaryForms[0]['status_now_id'] == "4"){ // kirim email ke OD Department atau adminsapp
+                $admins_nik = $this->_general_m->getAll('nik', $this->table['admin'], array('id_menu' => $this->id_menu));
+                $admins = array();
+                foreach($admins_nik as $k => $v){ // ambil data admins 1 per 1
+                    $admins[$k] = $this->employee_m->getDetails_employee($v['nik']);
+                }
+                // jika adminnya lebih dari satu
+                if(count($admins) > 1){
+                    $email_penerima = array(); $temp_namaPenerima = array();
+                    foreach($admins as $k => $v){
+                        $email_penerima[$k] = $v['email'];
+                        $temp_namaPenerima[$k] = $v['emp_name'];
+                    }
+                    $penerima_nama = implode(', ', $temp_namaPenerima);
+                } else { // jika adminnya cuma satu
+                    $email_penerima = $admins[0]['email'];
+                    $penerima_nama = $admins[0]['emp_name'];
+                }
+                $email_cc = "";
+
+                // update summary ke OD
+                $this->updateSummaryToOD($this->input->post("id")); // update summary untuk ke OD
+            } else { // kirim email ke division head
+                // data posisi
+                $nik = substr($id_assessment, 0, 8);
+                $position = $this->employee_m->getDetails_employee($nik);
+
+                $email_data = $this->divisi_model->get_divHead($position['div_id']);
+                // email data
+                $email_penerima = $email_data['email'];
+                $email_cc = "";
+                $penerima_nama = $email_data['emp_name'];
+            }
+
+            if(!empty($email_penerima)){
+                // ambil status detail
+                $status_text = 'All Assessment Completed';
+                $email_subject = "[".$this->app_name."] ".$status_text;
+                $message = 'Semua assessment pada Penilaian Kontrak di Divisi anda sudah terisi, dimohon untuk melakukan approval melalui link yang tertera.';
+                $direct_to = "pmk/index?direct=sumhis";
+                $message_details = array(
+                    0 => array(
+                        'info_name' => 'Divisi',
+                        'info' => $detail_divisi['division']
+                    ),
+                    1 => array(
+                        'info_name' => 'Date Modified',
+                        'info' => date('j F Y H:i')
+                    )
+                );
+
+                $token_data = array( // data buat disave di token url
+                    'direct'            => $direct_to,
+                    'email_penerima'    => $email_penerima
+                );
+                
+                $this->email_m->general_sendNotifikasi($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $message, $message_details, $token_data);
+            }
+        }
+    }
 
     /**
      * summary process
@@ -426,7 +513,8 @@ class Pmk extends SpecialUserAppController {
         // $date = strtotime("+2 month", time());
         // ambil hari terakhir di dua bulan lagi
         // TODO buat range pengambilan tanggal by setting
-        $date = strtotime(date('t-m-Y', strtotime("+2 month", time())));
+        $date = date('Y-m-t', strtotime("+2 month", time()));
+        $date_now = date('Y-m-d', time());
         // ambil data contract terakhir
         $data_contract = $this->pmk_m->getAll_LastContract();
         // cari yg datenya udh beberapa bulan lagi
@@ -435,7 +523,13 @@ class Pmk extends SpecialUserAppController {
             // cek apa data sudah ada di pmk_form
             $vya = $this->pmk_m->getRow_form($v['nik'], $v['contract']);
             // cek apa kontraknya mau habis dalam 2 bulan
-            $result = $this->_general_m->getOnce('*', $this->table['contract'], "nik = '".$v['nik']."' AND contract = '".$v['contract']."' AND date_end <= ".$date);
+            $result = $this->_general_m->getOnce(
+                '*', 
+                $this->table['contract'], 
+                "nik = '".$v['nik'].
+                    "' AND contract = '".$v['contract'].
+                    "' AND date_end >= '".$date_now.
+                    "' AND date_end <= '".$date."'");
             // cek apa ada pada 2 bulan ke depan dengan kontrak terakhir
             if(!empty($result)){
                 $counter_pmk++; // counter data yg abis di 2 bulan ke depan
@@ -640,7 +734,7 @@ class Pmk extends SpecialUserAppController {
         foreach($status_data as $k => $v){
             $el = $this->pmk_m->getDetail_pmkStatusDetailByStatusId($v['id_status']);
             // get status data attribute
-            $status_data[$k]['time'] = date("j M o<~>H:i", $v['time']);
+            $status_data[$k]['time'] = date("j M Y<~>H:i", $v['time']);
             $status_data[$k]['name_text'] = $el['name_text'];
             $status_data[$k]['css_color'] = $el['css_color'];
             $status_data[$k]['icon'] = $el['icon'];
@@ -665,7 +759,7 @@ class Pmk extends SpecialUserAppController {
         foreach($status_data as $k => $v){
             $el = $this->pmk_m->getDetail_pmkStatusDetailByStatusId_summary($v['id_status']);
             // get status data attribute
-            $status_data[$k]['time'] = date("j M o<~>H:i", $v['time']);
+            $status_data[$k]['time'] = date("j M Y<~>H:i", $v['time']);
             $status_data[$k]['name_text'] = $el['name_text'];
             $status_data[$k]['css_color'] = $el['css_color'];
             $status_data[$k]['icon'] = $el['icon'];
@@ -706,7 +800,7 @@ class Pmk extends SpecialUserAppController {
                 $where .= "status_now_id='pmksum-02'";
             } elseif($position_my['id'] == 196){ // apakah dia hc divhead?
                 // $status = "pmksum-02";
-                $where .= "status_now_id='pmksum-03' OR (status_now_id='pmksum-01' AND id_div='6')";
+                $where .= "status_now_id='pmksum-03'";
             } elseif($position_my['id'] == 1){ // apakah dia CEO?
                 // $status = "pmksum-03";
                 $where .= "status_now_id='pmksum-04'";
@@ -914,10 +1008,7 @@ class Pmk extends SpecialUserAppController {
      */
     function cekAkses_pmk($position_my, $position){
         // cek apa dia admin atau userapp admin
-        if($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
-            // perbolehkan akses bebas
-            $value = 3; // flag bisa akses tapi ga berhak submit
-        } elseif($position_my['id'] == 196 || $position_my['id'] == 1){
+        if($position_my['id'] == 196 || $position_my['id'] == 1){
             if($position_my['div_id'] == $position['div_id']){
                 // perbolehkan akses
                 $value = 1;
@@ -925,6 +1016,9 @@ class Pmk extends SpecialUserAppController {
                 // perbolehkan akses tapi jangan kasih dia buat submit form
                 $value = 3;
             }
+        } elseif($this->session->userdata('role_id') == 1 || $this->userApp_admin == 1){
+            // perbolehkan akses bebas
+            $value = 3; // flag bisa akses tapi ga berhak submit
         } else {
             // cek berdasarkan hirarki
             if($position_my['hirarki_org'] == "N"){
@@ -1118,32 +1212,77 @@ class Pmk extends SpecialUserAppController {
                         'time' => time(),
                         'text' => 'Assessment form was submitted by N-1.'
                     );
+                    // jadi gua letakin summary updater to OD ke $this->sendEmail_allComplete()
                 } else { // jika bukan CEO Office
-                    $status_now_id = "3";
-                    if($penilai['hirarki_org'] == "N-1"){
-                        $status_new[array_key_last($status_new)+1] = array(
-                            'id_status' => "3",
-                            'by' => $penilai['emp_name'],
-                            'nik' => $penilai['nik'],
-                            'time' => time(),
-                            'text' => 'Assessment form was submitted by N-1.'
-                        );
-                    } elseif($penilai['hirarki_org'] == "N"){
-                        $status_new[array_key_last($status_new)+1] = array(
-                            'id_status' => "3",
-                            'by' => $penilai['emp_name'],
-                            'nik' => $penilai['nik'],
-                            'time' => time(),
-                            'text' => 'Assessment form was submitted by N.'
-                        );
+                    if($penilai['div_id'] == 6){
+                        $status_now_id = "4";
+                        if($penilai['hirarki_org'] == "N-1"){
+                            $status_now_id = "";
+                            $status_new[array_key_last($status_new)+1] = array(
+                                'id_status' => "4",
+                                'by' => $penilai['emp_name'],
+                                'nik' => $penilai['nik'],
+                                'time' => time(),
+                                'text' => 'Assessment form was submitted by N-1.'
+                            );
+                        } elseif($penilai['hirarki_org'] == "N"){
+                            $status_new[array_key_last($status_new)+1] = array(
+                                'id_status' => "4",
+                                'by' => $penilai['emp_name'],
+                                'nik' => $penilai['nik'],
+                                'time' => time(),
+                                'text' => 'Assessment form was submitted by N.'
+                            );
+                        } else {
+                            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                        }
+                        // jadi gua letakin summary updater to OD ke $this->sendEmail_allComplete()
                     } else {
-                        show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                        $status_now_id = "3";
+                        if($penilai['hirarki_org'] == "N-1"){
+                            $status_new[array_key_last($status_new)+1] = array(
+                                'id_status' => "3",
+                                'by' => $penilai['emp_name'],
+                                'nik' => $penilai['nik'],
+                                'time' => time(),
+                                'text' => 'Assessment form was submitted by N-1.'
+                            );
+                        } elseif($penilai['hirarki_org'] == "N"){
+                            $status_new[array_key_last($status_new)+1] = array(
+                                'id_status' => "3",
+                                'by' => $penilai['emp_name'],
+                                'nik' => $penilai['nik'],
+                                'time' => time(),
+                                'text' => 'Assessment form was submitted by N.'
+                            );
+                        } else {
+                            show_error("This response is sent when the web server, after performing server-driven content negotiation, doesn't find any content that conforms to the criteria given by the user agent.", 406, 'Not Acceptable');
+                        }
                     }
                 }
             }
         }
 
-        // jika actionnya bukan save, brarti submit
+        // masukkan assessment ke database
+        if($this->_general_m->getRow($this->table['survey'], array('id' => $this->input->post('id'))) > 0){ // cek jika ada isi surveynya
+            $this->pmk_m->delete_assessment($this->input->post('id'));
+        }
+        $this->pmk_m->insertAll_surveyHasil($data_assess['data_assess']); // masukkan data penilaian assessment
+
+        // prepare updated data
+        $update_pmk = array(
+            'status' => json_encode($status_new),
+            'status_now_id' => $status_now_id,
+            'modified' => time(),
+            'survey_rerata' => json_encode($data_assess['data_rerata'])
+        );
+        // update pmk data form
+        $this->pmk_m->updateForm($update_pmk, array('id' => $this->input->post('id')));
+
+        /* -------------------------------------------------------------------------- */
+        /*                              kirim notifikasi                              */
+        /* -------------------------------------------------------------------------- */
+        // jika actionnya submit
         if($this->input->post('action') == 1){
             // siapkan data untuk ngirim email notifikasi
             if($status_now_id == "2"){ // kirim email ke atasan 1nya dia
@@ -1209,23 +1348,12 @@ class Pmk extends SpecialUserAppController {
             if(!empty($email_penerima)){
                 $this->email_m->general_sendNotifikasi_employeeForm($email_penerima, $email_cc, $penerima_nama, $email_subject, $status_text, $message, $data_employee, $token_data);
             }
-        }
 
-        // masukkan ke database
-        if($this->_general_m->getRow($this->table['survey'], array('id' => $this->input->post('id'))) > 0){ // cek jika ada isi surveynya
-            $this->pmk_m->delete_assessment($this->input->post('id'));
+            // jika status now idnya 9, 4 atau 3, yaitu submitted dari N-2 untuk OD atau division head
+            if($status_now_id == '4' || $status_now_id == '3'){
+                $this->sendEmail_allComplete($this->input->post("id")); // kirim email bahwa summary ini sudah selesai semua assessmentnya
+            }
         }
-        $this->pmk_m->insertAll_surveyHasil($data_assess['data_assess']); // masukkan data penilaian assessment
-
-        // prepare updated data
-        $update_pmk = array(
-            'status' => json_encode($status_new),
-            'status_now_id' => $status_now_id,
-            'modified' => time(),
-            'survey_rerata' => json_encode($data_assess['data_rerata'])
-        );
-        // update pmk data form
-        $this->pmk_m->updateForm($update_pmk, array('id' => $this->input->post('id')));
 
         redirect('pmk');
     }
@@ -1625,6 +1753,41 @@ class Pmk extends SpecialUserAppController {
 
         // redirect ke pmk summary
         header('location: ' . base_url('pmk').'?direct=sumhis');
+    }
+
+    public function updateSummaryToOD($id_assessment)
+    {
+        // ambil detail assessment buat ngambil id_summary
+        $detail_assessment = $this->_general_m->getOnce('*', $this->table['form'], ['id' => $id_assessment]);
+        $id_summary = $detail_assessment['id_summary'];
+
+        // ambil data pribadi
+        $whoami = $this->employee_m->getDetails_employee($this->session->userdata('nik'));
+        // result for summary
+        $result_summary = $this->_general_m->getOnce('status, notes', $this->table['summary'], array('id_summary' => $id_summary));
+        // ambil status dari summary
+        $summary_status_new = json_decode($result_summary['status'], true);
+
+        // persiapkan data summary status dan notes
+        $summary_status_now_id = "pmksum-02";
+        $summary_status_text = "Summary form was submitted by Division Head.";
+
+        // update status summary
+        $summary_status_new[array_key_last($summary_status_new)+1] = array(
+            'id_status' => $summary_status_now_id,
+            'by' => $whoami['emp_name'],
+            'nik' => $whoami['nik'],
+            'time' => time(),
+            'text' => $notes."<br/><br/>".$summary_status_text
+        );
+        // prepare updated summary data
+        $update_pmkSummary = array(
+            'status' => json_encode($summary_status_new),
+            'status_now_id' => $summary_status_now_id,
+            'modified' => time()
+        );
+        // update pmk data form
+        $this->pmk_m->updateForm_summary($update_pmkSummary, array('id_summary' => $id_summary));
     }
 
     function test(){

@@ -38,7 +38,7 @@
                 extend: 'excel',
                 text: '<i class="fas fa-file-excel" aria-hidden="true"></i> Export to Excel',
                 title: '',
-                filename: 'Health Report-<?= date("dmo-Hi"); ?>',
+                filename: 'Health Report-<?= date("dmY-Hi"); ?>',
                 exportOptions: {
                     modifier: {
                         //Datatables Core
@@ -214,8 +214,8 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
         "alwaysShowCalendars": true,
-        "startDate": "<?= date('m/01/o',time()) ?>",
-        "endDate": "<?= date('m/t/o', time()); ?>",
+        "startDate": "<?= date('m/01/Y',time()) ?>",
+        "endDate": "<?= date('m/t/Y', time()); ?>",
         "minDate": "YYYY-MM-DD",
         "maxDate": "YYYY-MM-DD",
         "drops": "auto",

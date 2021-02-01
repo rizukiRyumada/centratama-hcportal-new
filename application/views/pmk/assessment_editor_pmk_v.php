@@ -87,10 +87,10 @@
                                                 </a>
                                             </li> -->
                                             <li class="list-group-item">
-                                                <b>Start of Contract</b> <a class="float-right"><?= date("j F o", strtotime($contract['date_start'])); ?></a>
+                                                <b>Start of Contract</b> <a class="float-right"><?= date("j F Y", strtotime($contract['date_start'])); ?></a>
                                             </li>
                                             <li class="list-group-item">
-                                                <b>End of Contract</b> <a class="float-right"><?= date("j F o", strtotime($contract['date_end'])); ?></a>
+                                                <b>End of Contract</b> <a class="float-right"><?= date("j F Y", strtotime($contract['date_end'])); ?></a>
                                             </li>
                                         </ul>
                                     </div>
