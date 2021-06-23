@@ -3,9 +3,16 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Posisi_m extends CI_Model {
-    protected $table = "master_position";
+    protected $table = 'master_position';
     protected $table_employee = "master_employee";
     protected $table_level = 'master_level';
+
+    public function __construct()
+    {
+        // cari nama table yang terupdate
+        $this->load->library('tablename');
+        $this->table = $this->tablename->get($this->table);
+    }
 
     public function getAll(){
         return $this->db->get_where($this->table)->result_array();

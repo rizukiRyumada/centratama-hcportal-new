@@ -7,7 +7,8 @@ class Settings extends SuperAdminController {
     protected $page_title = [
         'masterData' => 'Master Data Management',
         'masterData_employee' => 'Master Employee',
-        'masterData_position' => 'Master Position'
+        'masterData_position' => 'Master Position',
+        'masterData_position_update' => 'Update Master Position',
     ];
 
     protected $table = [
@@ -75,6 +76,9 @@ class Settings extends SuperAdminController {
         // $data['additional_styles'] = array();
 		// $data['custom_styles'] = array();
         // $data['custom_script'] = array();
+        $data['custom_js'] = [
+            '_core/settings/settings',
+        ];
         
 		$this->load->view('main_v', $data);
     }
@@ -243,6 +247,28 @@ class Settings extends SuperAdminController {
             'plugins/jqueryValidation/script_jqueryValidation',
             'settings/script_masterData_position_settings'
         );
+
+		$this->load->view('main_v', $data);
+    }
+
+    function masterData_position_update() {
+        // main data
+        $data['sidebar'] = getMenu(); // ambil menu
+        $data['breadcrumb'] = getBreadCrumb(); // ambil data breadcrumb
+        $data['user'] = getDetailUser(); //ambil informasi user
+        $data['page_title'] = $this->page_title['masterData_position_update'];
+        $data['load_view'] = 'settings/masterData_position_update_v';
+        // additional styles and custom script
+        $data['additional_styles'] = array('plugins/datatables/styles_datatables');
+        // $data['custom_styles'] = array();
+        $data['custom_script'] = array(
+            'plugins/datatables/script_datatables',
+            // 'plugins/jqueryValidation/script_jqueryValidation',
+            'settings/script_masterData_position_settings'
+        );
+        $data['custom_js'] = [
+            // '_core/settings/masterData/positions', // position js file
+        ];
 
 		$this->load->view('main_v', $data);
     }
