@@ -30,3 +30,7 @@ application/config/config.php
 # End of https://www.toptal.com/developers/gitignore/api/codeigniter
 assets/img/employee/*
 mycsv.csv
+
+# document
+assets/document/surat/*
+!assets/document/surat.htaccess
