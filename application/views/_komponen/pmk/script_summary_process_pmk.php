@@ -1,5 +1,5 @@
 <script>
-    let summary_notes = <?php echo "`" . trim(preg_replace('/\s\s+/', ' ', nl2br($summary_notes[$whoami]['text']))) . "`"; ?>;
+    let summary_notes = <?php if(!empty($summary_notes[$whoami]['text'])){ echo "`" . trim(preg_replace('/\s\s+/', ' ', nl2br($summary_notes[$whoami]['text']))) . "`"; } else {echo("''");} ?>;
 
     // CKEditor Instances
     CKEDITOR.replace('notes', {
