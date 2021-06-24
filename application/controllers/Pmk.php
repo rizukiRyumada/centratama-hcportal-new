@@ -30,6 +30,9 @@ class Pmk extends SpecialUserAppController {
 
         // load models
         $this->load->model(['divisi_model', 'dept_model', 'email_m', 'employee_m', 'posisi_m', 'pmk_m', "user_m"]);
+        // ambil nama table yang terupdate
+        $this->load->library('tablename');
+        $this->table['position'] = $this->tablename->get($this->table['position']);
         
         // Token Checker buat ngapus token
         if(!empty($this->session->userdata('token'))){

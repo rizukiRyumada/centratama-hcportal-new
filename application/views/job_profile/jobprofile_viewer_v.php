@@ -11,7 +11,7 @@
 	$hub           = $this->Jobpro_model->getDetail('*', 'jobprofile_hubkerja', array('id_posisi' => $posisi['id']));
 	$tgjwb         = $this->Jobpro_model->getDetails('*', 'jobprofile_tanggungjawab', array('id_posisi' => $posisi['id']));
 	$wen           = $this->Jobpro_model->getDetails('*', 'jobprofile_wewenang', array('id_posisi' => $posisi['id']));
-	$atasan        = $this->Jobpro_model->getDetail('position_name', 'master_position', array('id' => $posisi['id_atasan1']));
+	$atasan        = $this->Jobpro_model->getDetail('position_name', $table_position, array('id' => $posisi['id_atasan1']));
 ?>
 
                 <div class="card-body">

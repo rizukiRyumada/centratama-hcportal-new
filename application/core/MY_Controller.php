@@ -135,9 +135,15 @@ class SuperAdminController extends MainController {
  * SpecialUserAppController
  */
 class SpecialUserAppController extends MainController{
-    
+    protected $table = [
+        'position' => 'master_position',
+    ];
     public function __construct() {
         parent::__construct();
+
+        // ambil nama table yang terupdate
+        $this->load->library('tablename');
+        $this->table['position'] = $this->tablename->get($this->table['position']);
         
         // special user checker to check basic user who has special access based on user identifier
         // superadmin has all access
@@ -168,9 +174,9 @@ class SpecialUserAppController extends MainController{
             // cari rule dengan gabungin table master employee dan master position
             $result = $this->_general_m->getJoin2tables(
                 'nik', 
-                'master_employee', 
-                'master_position', 
-                'master_employee.position_id = master_position.id',
+                'master_employee',
+                $this->table['position'],
+                'master_employee.position_id = '. $this->table['position'] .'.id',
                 array(
                     'nik' => $this->session->userdata('nik'),
                     $v['rule'] => $v['rule_value']

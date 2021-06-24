@@ -23,6 +23,10 @@ class Pmk_m extends CI_Model {
     {
         parent::__construct();
         $this->load->model(['entity_m']); // load model
+
+        // ambil nama table yang terupdate
+        $this->load->library('tablename');
+        $this->table['position'] = $this->tablename->get($this->table['position']);
     }
     
     

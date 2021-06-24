@@ -8,7 +8,8 @@ class Survey extends MainController {
 
     protected $table = array(
         'title' => 'survey_setting',
-        'department' => 'master_department'
+        'position' => 'master_position',
+        'department' => 'master_department',
     );
     
     public function __construct(){
@@ -19,6 +20,9 @@ class Survey extends MainController {
         parent::__construct();
         
         $this->load->model(['posisi_m', 'employee_m']);
+        // ambil nama table yang terupdate
+        $this->load->library('tablename');
+        $this->table['position'] = $this->tablename->get($this->table['position']);
     }
 
     public function index(){
@@ -46,10 +50,10 @@ class Survey extends MainController {
         }
 
         $data_employe = $this->_general_m->getJoin2tables(
-            'master_employee.nik, master_position.hirarki_org, master_position.dept_id, master_position.div_id, master_position.id_atasan1', 
+            'master_employee.nik, '. $this->table['position'] .'.hirarki_org, '. $this->table['position'] .'.dept_id, '. $this->table['position'] .'.div_id, '. $this->table['position'] .'.id_atasan1', 
             'master_employee', 
-            'master_position', 
-            'master_position.id = master_employee.position_id', 
+            $this->table['position'], 
+            $this->table['position'] .'.id = master_employee.position_id', 
             array('nik' => $this->session->userdata('nik'))
         )[0];
         // cek apa survey 360 sudah diisi atau dia tidak memiliki akses
@@ -117,7 +121,7 @@ class Survey extends MainController {
             $departemen = $this->_general_m->getAll('*', 'survey_exc_departemen', array());
 
             //  ambil id departemen
-            $my_departemen = $this->_general_m->getJoin2tables('nama_departemen, '.$this->table['department'].'.id', 'master_position', 'master_department', 'master_position.dept_id = master_department.id', 'master_position.id='.$this->session->userdata('position_id'))[0];
+            $my_departemen = $this->_general_m->getJoin2tables('nama_departemen, '.$this->table['department'].'.id', $this->table['position'], 'master_department', $this->table['position'] .'.dept_id = master_department.id', $this->table['position'] .'.id='.$this->session->userdata('position_id'))[0];
 
             // samain id departemen dan hapus yang sama
             // hapus departemen kalo dia itu berada di departemen itu
@@ -164,10 +168,10 @@ class Survey extends MainController {
         // print_r($this->session->userdata('login'));
         
         $employe_data =  $this->_general_m->getJoin2tables(
-            'nik, emp_name, master_position.id, master_position.dept_id, master_position.div_id',
+            'nik, emp_name, '. $this->table['position'] .'.id, '. $this->table['position'] .'.dept_id, '. $this->table['position'] .'.div_id',
             'master_employee',
-            'master_position',
-            'master_employee.position_id = master_position.id',
+            $this->table['position'],
+            'master_employee.position_id = '. $this->table['position'] .'.id',
             array('nik' => $this->session->userdata('nik'))
         )[0];
         $employe_data['divisi'] = $this->_general_m->getOnce('division', 'master_division', array('id' => $employe_data['div_id']))['division'];
@@ -251,10 +255,10 @@ class Survey extends MainController {
     }
     public function engSubmit(){ // submit engagement function
         $employe_data =  $this->_general_m->getJoin2tables(
-            'nik, emp_name, master_position.id, master_position.dept_id, master_position.div_id',
+            'nik, emp_name, '. $this->table['position'] .'.id, '. $this->table['position'] .'.dept_id, '. $this->table['position'] .'.div_id',
             'master_employee',
-            'master_position',
-            'master_employee.position_id = master_position.id',
+            $this->table['position'],
+            'master_employee.position_id = '. $this->table['position'] .'.id',
             array('nik' => $this->session->userdata('nik'))
         )[0];
         $employe_data['divisi'] = $this->_general_m->getOnce('division', 'master_division', array('id' => $employe_data['div_id']))['division'];
@@ -311,10 +315,10 @@ class Survey extends MainController {
         // N-1 menilai teman sebaya N-1, N-1 di div lain max 3
 
         $data_employe = $this->_general_m->getJoin2tables(
-            'master_employee.nik, master_position.hirarki_org, master_position.dept_id, master_position.div_id, master_position.id_atasan1', 
+            'master_employee.nik, '. $this->table['position'] .'.hirarki_org, '. $this->table['position'] .'.dept_id, '. $this->table['position'] .'.div_id, '. $this->table['position'] .'.id_atasan1', 
             'master_employee', 
-            'master_position', 
-            'master_position.id = master_employee.position_id', 
+            $this->table['position'], 
+            $this->table['position'] .'.id = master_employee.position_id', 
             array('nik' => $this->session->userdata('nik'))
         )[0];
 
@@ -559,7 +563,7 @@ class Survey extends MainController {
         } elseif($data_employe['hirarki_org'] == 'Functional-dep'){
             // ambil data atasannya
             $data_atasan = $this->f360getEmployeDetail(array(
-                'master_position.id' => $data_employe['id_atasan1']
+                $this->table['position'] .'.id' => $data_employe['id_atasan1']
             ));
         } elseif($data_employe['hirarki_org'] == 'N-1') {
             //ambil data teman sebaya di divisi dan deptnya
@@ -583,7 +587,7 @@ class Survey extends MainController {
         } elseif($data_employe['hirarki_org'] == 'N-2') {
             // ambil atasan di dept dan divisi yang sama N-1
             $data_atasan = $this->f360getEmployeDetail(array(
-                'master_position.id' => $data_employe['id_atasan1']
+                $this->table['position'] .'.id' => $data_employe['id_atasan1']
             ));
             // ambil data teman sebaya di div, dept, dan hirarki yang sama
             $data_peers = $this->f360getEmployeDetail(
@@ -610,7 +614,7 @@ class Survey extends MainController {
         } elseif($data_employe['hirarki_org'] == 'N-3') {
             // ambil data atasannya
             $data_atasan = $this->f360getEmployeDetail(array(
-                'master_position.id' => $data_employe['id_atasan1']
+                $this->table['position'] .'.id' => $data_employe['id_atasan1']
             ));
         } else { // jika posisinya bukan N-1, N-2, atau N-3
             // nothing
@@ -722,7 +726,7 @@ class Survey extends MainController {
         } elseif($data_penilai['hirarki_org'] == 'Functional-dep'){
             // ambil data atasannya
             $data_atasan = $this->f360getEmployeDetail(array(
-                'master_position.id' => $data_penilai['id_atasan1'],
+                $this->table['position'] .'.id' => $data_penilai['id_atasan1'],
                 'nik' => $nik_dinilai
             ));
         } elseif($data_penilai['hirarki_org'] == 'N-1') {
@@ -749,7 +753,7 @@ class Survey extends MainController {
         } elseif($data_penilai['hirarki_org'] == 'N-2') {
             // ambil atasan di dept dan divisi yang sama N-1 dengan nik penilai
             $data_atasan = $this->f360getEmployeDetail(array(
-                'master_position.id' => $data_penilai['id_atasan1'],
+                $this->table['position'] .'.id' => $data_penilai['id_atasan1'],
                 'nik' => $nik_dinilai
             ));
             // ambil data teman sebaya di div, dept, dan hirarki yang sama dengan nik penilai
@@ -781,7 +785,7 @@ class Survey extends MainController {
                 // 'hirarki_org' => 'N-2', 
                 // 'div_id' => $data_penilai['div_id'],
                 // 'dept_id' => $data_penilai['dept_id'],
-                'master_position.id' => $data_penilai['id_atasan1'],
+                $this->table['position'] .'.id' => $data_penilai['id_atasan1'],
                 'nik' => $nik_dinilai
             ));
         } else { // jika bukan N-1, N-2, N-3 tampilkan pesan error
@@ -818,8 +822,8 @@ class Survey extends MainController {
         $data = $this->_general_m->getJoin2tablesOrder(
             'nik, emp_name, position_name, div_id, dept_id, hirarki_org, id_atasan1',
             'master_employee',
-            'master_position',
-            'master_position.id = master_employee.position_id',
+            $this->table['position'],
+            $this->table['position'] .'.id = master_employee.position_id',
             $where,
             'emp_name'
         );
@@ -838,8 +842,8 @@ class Survey extends MainController {
         $data = ($this->_general_m->getJoin2tables(
             'nik, emp_name, position_name, div_id, dept_id, hirarki_org',
             'master_employee',
-            'master_position',
-            'master_position.id = master_employee.position_id',
+            $this->table['position'],
+            $this->table['position'] .'.id = master_employee.position_id',
             array('nik' => $this->input->post('nik'))
         ));
 
@@ -869,11 +873,11 @@ class Survey extends MainController {
         foreach($data_karyawan as $k => $v){
             // get detail position sama nama departemen
             $temp_position = $this->_general_m->getJoin2tables(
-                'position_name, master_position.div_id, master_position.dept_id, nama_departemen, master_position.hirarki_org, master_position.id_atasan1',
-                'master_position',
+                'position_name, '. $this->table['position'] .'.div_id, '. $this->table['position'] .'.dept_id, nama_departemen, '. $this->table['position'] .'.hirarki_org, '. $this->table['position'] .'.id_atasan1',
+                $this->table['position'],
                 'master_department',
-                'master_department.id = master_position.dept_id',
-                array('master_position.id' => $v['position_id'])
+                'master_department.id = '. $this->table['position'] .'.dept_id',
+                array($this->table['position'] .'.id' => $v['position_id'])
             )[0];
             $temp_position['nik'] = $v['nik'];
             // ambil nama divisi
@@ -974,13 +978,13 @@ class Survey extends MainController {
             // ambil data 
             foreach($data_survey[$k]['departemen'] as $key => $value){
                 $data_karyawan = $this->_general_m->getJoin2tables(
-                    'master_employee.nik, master_employee.position_id, master_position.div_id, master_position.dept_id, master_position.hirarki_org, master_position.id_atasan1',
+                    'master_employee.nik, master_employee.position_id, '. $this->table['position'] .'.div_id, '. $this->table['position'] .'.dept_id, '. $this->table['position'] .'.hirarki_org, '. $this->table['position'] .'.id_atasan1',
                     'master_employee',
-                    'master_position',
-                    'master_position.id = master_employee.position_id',
-                    'master_position.div_id = "'.$v['id'].
-                    '" AND master_position.dept_id = "'.$value['id'].
-                    '" AND master_position.hirarki_org != "N"'
+                    $this->table['position'],
+                    $this->table['position'] .'.id = master_employee.position_id',
+                    $this->table['position'] .'.div_id = "'.$v['id'].
+                    '" AND '. $this->table['position'] .'.dept_id = "'.$value['id'].
+                    '" AND '. $this->table['position'] .'.hirarki_org != "N"'
                 );
 
                 // counter

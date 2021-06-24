@@ -9,7 +9,7 @@ class Posisi_m extends CI_Model {
 
     public function __construct()
     {
-        // cari nama table yang terupdate
+        // ambil nama table yang terupdate
         $this->load->library('tablename');
         $this->table = $this->tablename->get($this->table);
     }

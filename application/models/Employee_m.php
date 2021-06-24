@@ -11,6 +11,13 @@ class Employee_m extends CI_Model {
         'division' => 'master_division',
         'department' => 'master_department'
     );
+
+    function __construct()
+    {
+        // ambil nama table yang terupdate
+        $this->load->library('tablename');
+        $this->table['position'] = $this->tablename->get($this->table['position']);
+    }
     
     /**
      * count employee with where parameter

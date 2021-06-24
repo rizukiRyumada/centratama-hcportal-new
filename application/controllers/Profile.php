@@ -3,21 +3,29 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Profile extends MainController {
+
+    protected $table = [
+        'position' => 'master_position',
+    ];
     
     public function __construct()
     {
         parent::__construct();
         //Do your magic here
+
+        // ambil nama table yang terupdate
+        $this->load->library('tablename');
+        $this->table['position'] = $this->tablename->get($this->table['position']);
     }
 
     public function index() {
         // ambil data karyawan
         $data['data_karyawan'] = $this->_general_m->getJoin2tables(
             'master_employee.nik, master_employee.emp_name, master_employee.position_id, master_employee.email, 
-             master_position.position_name, master_position.dept_id, master_position.div_id, master_position.hirarki_org',
+             '. $this->table['position'] .'.position_name, '. $this->table['position'] .'.dept_id, '. $this->table['position'] .'.div_id, '. $this->table['position'] .'.hirarki_org',
             'master_employee',
-            'master_position',
-            'master_employee.position_id = master_position.id',
+            $this->table['position'],
+            'master_employee.position_id = '. $this->table['position'] .'.id',
             array('nik' => $this->session->userdata('nik'))
         )[0];
         $data['data_karyawan']['departemen'] = $this->_general_m->getOnce('nama_departemen', 'master_department', array('id' => $data['data_karyawan']['dept_id']))['nama_departemen'];

@@ -71,7 +71,9 @@ class Ptk extends SpecialUserAppController {
         $this->load->model(['entity_m', 'divisi_model', 'dept_model', 'employee_m', 'posisi_m', 'ptk_m']);
 
         // load library
-        $this->load->library('form_validation');
+        $this->load->library(['form_validation', 'tablename']);
+        // ambil nama table yang terupdate
+        $this->table['position'] = $this->tablename->get($this->table['position']);
 
         // Token Checker buat ngapus token
         if(!empty($this->session->userdata('token'))){

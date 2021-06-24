@@ -156,8 +156,11 @@ function getDetailUser(){
  */
 function getMenu(){
     $CI =& get_instance();
-
     $CI->load->model('_general_m');
+
+    // ambil nama table yang terupdate
+    $CI->load->library('tablename');
+    $table_position = $CI->tablename->get('master_position');
 
     // $menu = $CI->_general_m->getJoin2tables('*', 'user_menu', 'user_menu_access', 'user_menu.id_menu = user_menu_access.id_menu', array('id_user' => $CI->session->userdata('role_id')));
     if($CI->session->userdata('role_id') == 2){
@@ -264,9 +267,9 @@ function getMenu(){
                     // cari rule dengan gabungin table master employee dan master position
                     $result = $CI->_general_m->getJoin2tables(
                         'nik', 
-                        'master_employee', 
-                        'master_position', 
-                        'master_employee.position_id = master_position.id',
+                        'master_employee',
+                        $table_position, 
+                        'master_employee.position_id = '. $table_position .'.id',
                         array(
                             'nik' => $CI->session->userdata('nik'),
                             $value['rule'] => $value['rule_value']

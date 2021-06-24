@@ -22,11 +22,6 @@ class Settings extends SuperAdminController {
         // Load Models
         $this->load->model(['dept_model', 'divisi_model', 'employee_m', 'entity_m', 'master_m', 'posisi_m']);
     }
-    
-
-    public function index() {
-        echo"adminsApp";
-    }
 
 /* -------------------------------------------------------------------------- */
 /*                                main function                               */
@@ -38,6 +33,9 @@ class Settings extends SuperAdminController {
      * @return void
      */
     public function adminsApp(){
+        redirect('maintenance');
+        die;
+        
         // ambil data aplikasi admin
         $data['adminsapp'] = $this->_general_m->getAll('*', 'user_adminsapp', array());
         // ambil detail icon menu
