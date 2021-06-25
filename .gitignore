@@ -1,5 +1,3 @@
-
-
 # Created by https://www.toptal.com/developers/gitignore/api/codeigniter
 # Edit at https://www.toptal.com/developers/gitignore?templates=codeigniter
 
@@ -10,6 +8,7 @@
 */cache/*
 !*/cache/index.html
 !*/cache/.htaccess
+assets/vendor/package-lock.json
 
 user_guide_src/build/*
 user_guide_src/cilexer/build/*
@@ -34,3 +33,9 @@ mycsv.csv
 # document
 assets/document/surat/*
 !assets/document/surat.htaccess
+
+# temporary files
+assets/temp/files/masterData/*
+!assets/temp/files/masterData/.masterData
+assets/temp/files/ptk/*
+!assets/temp/files/ptk/.ptk-temp-files
