@@ -18,7 +18,6 @@
                         <p class="font-weight-light">Add, edit, or remove master Position Data.</p>
                         <!-- <a href="<?= base_url('maintenance'); ?>" class="btn btn-success"><i class="fas fa-sitemap"></i> Manage Position</a> -->
                         <a href="<?= base_url('settings/masterData_position'); ?>" class="btn btn-primary"><i class="fas fa-sitemap"></i> Manage</a>
-                        <a href="<?= base_url('settings/masterData_position_update'); ?>" id="goUpdate" type="button" class="btn btn-warning" data-placement="left" title="Update master data"><i class="fas fa-sync-alt"></i> Update</a>
                     </div>
                 </div>
                 <div class="row mt-3">

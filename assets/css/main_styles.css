@@ -1,5 +1,7 @@
 /* -------------------------------------------------------------------------- */
+
 /*                              custom core style                             */
+
 /* -------------------------------------------------------------------------- */
 
 /* -------------------------------- HTML tag -------------------------------- */
@@ -13,9 +15,11 @@ body {
 }
 
 /* ------------------------------ Main Class Styles Replacement ----------------------------- */
-.btn{
+
+.btn {
     border-radius: 2em;
 }
+
 /* .btn-primary{
     background-color: #0072C6;
     border-color: #0072C6;
@@ -27,69 +31,77 @@ body {
 } */
 
 /* form control styles */
-.form-control, .custom-select{
+
+.form-control, .custom-select {
     border-radius: 1.5rem;
 }
 
 /* form control input group styles */
-.input-group-append span.input-group-text{
+
+.input-group-append span.input-group-text {
     border-radius: 0 1.5rem 1.5rem 0 !important;
 }
 
 /* input-text */
-.input-group-text{
+
+.input-group-text {
     border-radius: 1.5em 0 0 1.5em;
 }
 
-div.input-group-prepend span.input-group-text{
+div.input-group-prepend span.input-group-text {
     border-radius: 1.5em 0 0 1.5em;
 }
 
-div.input-group span.input-group-append button.btn{
+div.input-group span.input-group-append button.btn {
     border-radius: 0 1.5em 1.5em 0;
-
-}
-
-.select2-container--bootstrap4 .select2-selection{
-    border-radius: 1.5em;
 }
 
 /* custom color and hover */
-.link-primary{
+
+.link-primary {
     color: #0072C6;
     transition: 0.25s;
 }
-.link-primary:hover{
+
+.link-primary:hover {
     color: rgb(0, 82, 141);
 }
 
 /* Table style */
-.card-body.p-0 .table tbody > tr > td:first-of-type, .card-body.p-0 .table tbody > tr > th:first-of-type, .card-body.p-0 .table thead > tr > td:first-of-type, .card-body.p-0 .table thead > tr > th:first-of-type{
+
+.card-body.p-0 .table tbody>tr>td:first-of-type, .card-body.p-0 .table tbody>tr>th:first-of-type, .card-body.p-0 .table thead>tr>td:first-of-type, .card-body.p-0 .table thead>tr>th:first-of-type {
     padding-left: .75rem;
 }
 
 /* Datatables button styles */
+
 /* export to excel buttons */
-div.dt-buttons.btn-group.flex-wrap button.btn.btn-secondary.buttons-excel.buttons-html5{
+
+div.dt-buttons.btn-group.flex-wrap button.btn.btn-secondary.buttons-excel.buttons-html5 {
     background-color: #28a745;
     border-color: #28a745;
 }
-div.dt-buttons.btn-group.flex-wrap button.btn.btn-secondary.buttons-excel.buttons-html5:hover{
+
+div.dt-buttons.btn-group.flex-wrap button.btn.btn-secondary.buttons-excel.buttons-html5:hover {
     background-color: #1e8035;
     border-color: #1e8035;
 }
+
 /* page Length */
-div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.buttons-page-length{
+
+div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.buttons-page-length {
     background-color: #0072C6;
     border-color: #0072C6;
 }
-div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.buttons-page-length:hover{                      
+
+div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.buttons-page-length:hover {
     background-color: #013c66;
     border-color: #013c66;
 }
 
 /* user dropdown on navbar */
-.navbar-nav > .user-menu > .dropdown-menu {
+
+.navbar-nav>.user-menu>.dropdown-menu {
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
     padding: .5rem 0;
@@ -97,36 +109,49 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
 }
 
 /* -------------------------------------------------------------------------- */
+
 /*                              responsive style                              */
+
 /* -------------------------------------------------------------------------- */
-.responsive-image{
+
+.responsive-image {
     width: 100%;
     height: auto;
 }
 
 /* -------------------------------------------------------------------------- */
+
 /*                             CUSTOM MAIN STYLES                             */
+
 /* -------------------------------------------------------------------------- */
-.border-radius-1{
+
+.border-radius-1 {
     border-radius: 1em;
 }
-.border-radius-2{
+
+.border-radius-2 {
     border-radius: 2em;
 }
-.border-radius-3{
+
+.border-radius-3 {
     border-radius: 3em;
 }
-.border-radius-4{
+
+.border-radius-4 {
     border-radius: 4em;
 }
-.border-radius-5{
+
+.border-radius-5 {
     border-radius: 5em;
 }
 
 /* -------------------------------------------------------------------------- */
+
 /*                         Floating Contact Us button                         */
+
 /* -------------------------------------------------------------------------- */
-.fl-fl{
+
+.fl-fl {
     background: #06D755;
     text-transform: uppercase;
     letter-spacing: 3px;
@@ -144,10 +169,12 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
     border-radius: 30px 0 0 30px;
     opacity: 0.65;
 }
+
 .fl-fl:hover {
     right: 0;
     opacity: 1;
 }
+
 .fl-fl a {
     font-size: 12px;
     color: #fff !important;
@@ -156,14 +183,18 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
     line-height: 43px !important;
     vertical-align: top !important;
 }
+
 .float-wa {
     height: 55px;
     top: 160px;
 }
 
 /* -------------------------------------------------------------------------- */
+
 /*                               Orgchart Styles                              */
+
 /* -------------------------------------------------------------------------- */
+
 #chart-container {
     font-family: Arial;
     /* height: 420px; */
@@ -172,12 +203,33 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
     overflow: auto;
     text-align: center;
 }
-#chart-container { background-color: #eee; height: 100%; }
-.orgchart { background: #fff; }
-.orgchart.edit-state .edge { display: none; }
-.orgchart .node { width: 150px; }
-.orgchart .node .title { height: 30px; line-height: 30px; }
-.orgchart .node .title .symbol { margin-top: 1px; }
+
+#chart-container {
+    background-color: #eee;
+    height: 100%;
+}
+
+.orgchart {
+    background: #fff;
+}
+
+.orgchart.edit-state .edge {
+    display: none;
+}
+
+.orgchart .node {
+    width: 150px;
+}
+
+.orgchart .node .title {
+    height: 30px;
+    line-height: 30px;
+}
+
+.orgchart .node .title .symbol {
+    margin-top: 1px;
+}
+
 #edit-panel {
     position: relative;
     left: 10px;
@@ -189,13 +241,30 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
     color: #fff;
     background-color: #449d44;
 }
+
 /* edit panel */
-#edit-panel .btn-inputs { font-size: 24px; }
-#edit-panel.edit-state>:not(#chart-state-panel) { display: none; }
-#edit-panel label { font-weight: bold; }
-#edit-panel.edit-parent-node .selected-node-group { display: none; }
-#chart-state-panel, #selected-node, #btn-remove-input { margin-right: 20px; }
-#edit-panel button{
+
+#edit-panel .btn-inputs {
+    font-size: 24px;
+}
+
+#edit-panel.edit-state>:not(#chart-state-panel) {
+    display: none;
+}
+
+#edit-panel label {
+    font-weight: bold;
+}
+
+#edit-panel.edit-parent-node .selected-node-group {
+    display: none;
+}
+
+#chart-state-panel, #selected-node, #btn-remove-input {
+    margin-right: 20px;
+}
+
+#edit-panel button {
     color: #333;
     background-color: #fff;
     display: inline-block;
@@ -216,27 +285,57 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-#edit-panel.edit-parent-node button:not(#btn-add-nodes) { display: none; }
-#edit-panel button:hover,.edit-panel button:focus,.edit-panel button:active {
+
+#edit-panel.edit-parent-node button:not(#btn-add-nodes) {
+    display: none;
+}
+
+#edit-panel button:hover, .edit-panel button:focus, .edit-panel button:active {
     border-color: #eea236;
     box-shadow: 0 0 10px #eea236;
 }
-#new-nodelist{
+
+#new-nodelist {
     display: inline-block;
     list-style: none;
     margin-top: -2px;
     padding: 0;
     vertical-align: text-top;
 }
-#new-nodelist>* { padding-bottom: 4px; }
-.btn-inputs { vertical-align: sub; }
-#edit-panel.edit-parent-node .btn-inputs { display: none; }
-.btn-inputs:hover { text-shadow: 0 0 4px #fff; }
-.radio-panel input[type='radio'] { display: inline-block; height: 24px; width: 24px; vertical-align: top; }
-#edit-panel.view-state .radio-panel input[type='radio']+label { vertical-align: -webkit-baseline-middle; }
-#btn-add-nodes { margin-left: 20px; }
+
+#new-nodelist>* {
+    padding-bottom: 4px;
+}
+
+.btn-inputs {
+    vertical-align: sub;
+}
+
+#edit-panel.edit-parent-node .btn-inputs {
+    display: none;
+}
+
+.btn-inputs:hover {
+    text-shadow: 0 0 4px #fff;
+}
+
+.radio-panel input[type='radio'] {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    vertical-align: top;
+}
+
+#edit-panel.view-state .radio-panel input[type='radio']+label {
+    vertical-align: -webkit-baseline-middle;
+}
+
+#btn-add-nodes {
+    margin-left: 20px;
+}
 
 /* assistant node style - has been used in inline style on chartorg.js */
+
 .orgchart .assistant-node {
     display: inline-block;
     margin: 0;
@@ -244,118 +343,152 @@ div.btn-group button.btn.btn-secondary.buttons-collection.dropdown-toggle.button
     border: 2px dashed transparent;
     text-align: center;
     width: 140px;
-    /* left: 140px; */ /* been used on chartorg.js */
-    /* top: 100px; */ /* been used on chartorg.js */
+    /* left: 140px; */
+    /* been used on chartorg.js */
+    /* top: 100px; */
+    /* been used on chartorg.js */
     z-index: 2;
     position: absolute;
 }
+
 .orgchart .assistant-node .connector {
     /* border-left: #1180FF dashed 2px; */
     border-bottom: #1180FF dashed 2px;
     position: absolute;
-    /* left: -65px; */ /* been used on chartorg.js */
+    /* left: -65px; */
+    /* been used on chartorg.js */
     width: 72px;
     height: 12.5px;
     top: 21px;
 }
+
 /* my position style */
+
 .orgchart .my-position .title {
     background-color: #e14141 !important;
 }
 
 /* -------------------------------------------------------------------------- */
+
 /*                           Responsive Styles on screen                      */
+
 /* -------------------------------------------------------------------------- */
 
 /* ----------------------------- MIN WIDTH STYLE ---------------------------- */
+
 /* Extra small devices (portrait phones, less than 576px) */
+
 /* No media query for `xs` since this is the default in Bootstrap */
+
 /* Small devices (landscape phones, 320px and up) */
+
 @media (min-width: 320px) {
-    .text-responsive{
+    .text-responsive {
         font-size: 0.85rem;
     }
-    .text-index-responsive{
+    .text-index-responsive {
         font-size: 0.75rem;
     }
 }
 
 /* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) { 
-    .text-responsive{
+
+@media (min-width: 576px) {
+    .text-responsive {
         font-size: 0.85rem;
     }
-    .text-index-responsive{
+    .text-index-responsive {
         font-size: 0.75rem;
     }
 }
 
 /* Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) { 
-    .text-responsive{
+
+@media (min-width: 768px) {
+    .text-responsive {
         font-size: 0.85rem;
     }
-    .text-index-responsive{
+    .text-index-responsive {
         font-size: 0.75rem;
     }
 }
 
 /* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) { 
-    .text-responsive{
+
+@media (min-width: 992px) {
+    .text-responsive {
         font-size: 0.85rem;
     }
-    .text-index-responsive{
+    .text-index-responsive {
         font-size: 0.75rem;
     }
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) { 
-    .text-responsive{
+
+@media (min-width: 1200px) {
+    .text-responsive {
         font-size: 0.92rem;
     }
-    .text-index-responsive{
+    .text-index-responsive {
         font-size: 0.92rem;
     }
 }
 
 /* ----------------------------- MAX WIDTH STYLE ---------------------------- */
+
 /* Extra small devices (portrait phones, less than 576px) */
-@media (max-width: 575.98px) { 
-    
-}
+
+@media (max-width: 575.98px) {}
 
 /* Small devices (landscape phones, less than 768px) */
-@media (max-width: 767.98px) { 
-    
-}
+
+@media (max-width: 767.98px) {}
 
 /* Medium devices (tablets, less than 992px) */
-@media (max-width: 991.98px) { 
 
-}
+@media (max-width: 991.98px) {}
 
 /* Large devices (desktops, less than 1200px) */
-@media (max-width: 1199.98px) { 
-    
-}
+
+@media (max-width: 1199.98px) {}
 
 /* Extra large devices (large desktops) */
+
 /* No media query since the extra-large breakpoint has no upper bound on its width */
 
 /* -------------------------------------------------------------------------- */
+
 /*                                PRINT STYLES                                */
+
 /* -------------------------------------------------------------------------- */
+
 @media print {
-    body > div.wrapper > div.content-wrapper{
+    body>div.wrapper>div.content-wrapper {
         background-color: #fff;
     }
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                  toastr js                                 */
+
+/*                                   select2                                  */
+
 /* -------------------------------------------------------------------------- */
-#toast-container > div {
-    opacity:1;
+
+.select2-container--bootstrap4 .select2-selection {
+    border-radius: 1.5em;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 1rem;
+}
+
+/* -------------------------------------------------------------------------- */
+
+/*                                  toastr js                                 */
+
+/* -------------------------------------------------------------------------- */
+
+#toast-container>div {
+    opacity: 1;
 }
