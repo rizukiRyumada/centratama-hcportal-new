@@ -16,6 +16,30 @@ class _general_m extends CI_Model {
         $this->db->delete($table);
     }
 
+    /**
+     * download all position data on current table
+     *
+     * @return void
+     */
+    function downloadTableDataAsCsv($table_name) {
+        // ambil data posisi dari database
+        try {
+            $data_head = $this->getFields($table_name);
+            $data_row = $this->getAll('*', $table_name);
+            $data_posisi = [$data_head, ...$data_row];
+            export2Csv($data_posisi, $table_name . date('-Ymd-His') . '.csv');
+        } catch(Exception $e) {
+            return [
+                'code' => 500,
+                'message' => 'Caught exception: ' . $e->getMessage() . '\n',
+            ];
+        }
+        return [
+            'code' => 200,
+            'message' => 'Status: complete',
+        ];
+    }
+
     // SELECT one row    
     /**
      * getOnce
@@ -41,7 +65,7 @@ class _general_m extends CI_Model {
      * @param  mixed $where
      * @return void
      */
-    public function getAll($select, $table, $where){
+    public function getAll($select, $table, $where = []){
         $this->db->select($select);
         $this->db->from($table);
         $this->db->where($where);
@@ -80,6 +104,16 @@ class _general_m extends CI_Model {
         $this->db->where($where);
         $this->db->order_by($order, 'desc');
         return $this->db->get()->result_array();
+    }
+    
+    /**
+     * get fields name from a table
+     *
+     * @param  mixed $table
+     * @return void
+     */
+    public function getFields($table){
+        return $this->db->list_fields($table);
     }
 
     // SELECT with join 2 tables    

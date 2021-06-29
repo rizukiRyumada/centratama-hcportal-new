@@ -2,6 +2,18 @@
     <div class="col">
         <div class="card shadow">
             <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <p class="text-lg text-bold mb-0">Current Data</p>
+                    </div>
+                    <hr class="mt-0 mb-1">
+                    <p>
+                        Table Name: position_2021_01
+                        <br />
+                        Updated at: 22/11/2021
+                    </p>
+                    <hr class="mt-0">
+                </div>
                 <!-- filter position -->
                 <div class="row">
                     <div class="col-12 col-md">
@@ -31,8 +43,6 @@
                             <label for="dataHistory">Data History</label>
                             <select id="dataHistory" class="custom-select form-control form-control-sm">
                                 <option value="">All</option>
-                                <option value="">All</option>
-                                <option value="">All</option>
                             </select>
                         </div>
                     </div>
@@ -41,7 +51,7 @@
                             <!-- this container make the element to vertically and horizontally centered -->
                             <div class="row justify-content-center align-self-center w-100 m-0">
                                 <div class="col">
-                                    <a type="button" class="btn btn-warning w-100" data-placement="left" title="Update Position Data" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-sync-alt"></i> Update</a>
+                                    <a type="button" class="btn btn-warning w-100" data-placement="left" title="Update Position Data" data-toggle="modal" data-target="#modalUpdatePosition"><i class="fas fa-sync-alt"></i> Update</a>
                                 </div>
                                 <div class="col-auto">
                                     <a type="button" class="btn btn-success" data-placement="left" title="Add New Position" data-toggle="modal" data-target="#modal_tambah_posisi"><i class="fas fa-user-plus text-white"></i></a>
@@ -74,16 +84,14 @@
 </div>
 
 <!-- modals -->
-<?php 
-    foreach(
-        [
-            '_komponen/settings/modals/position_modal_add.php',
-            '_komponen/settings/modals/position_modal_edit.php',
-            '_komponen/settings/modals/position_modal_update.php'
-        ] as $v 
-    ) {
-        $this->load->view($v);
-    }
+<?php
+foreach ([
+    '_komponen/settings/modals/position_modal_add.php',
+    '_komponen/settings/modals/position_modal_edit.php',
+    '_komponen/settings/modals/position_modal_update.php'
+] as $v) {
+    $this->load->view($v);
+}
 ?>
 
 <!-- hidden inputs -->

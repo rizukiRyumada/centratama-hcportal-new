@@ -311,6 +311,16 @@ class Settings extends SuperAdminController {
 /* -------------------------------------------------------------------------- */
         
     /**
+     * download all position data on current table
+     *
+     * @return void
+     */
+    function ajax_downloadPositionData() {
+        $table_posisi = $this->posisi_m->getTableName();
+        $this->_general_m->downloadTableDataAsCsv($table_posisi);
+    }
+
+    /**
      * get Departement data
      *
      * @return void
@@ -396,6 +406,85 @@ class Settings extends SuperAdminController {
         $this->_archives_m->insert($this->table_employee['employee'], $data_employee); // masukkan data employee ke dalam database archives
         $this->employee_m->remove($nik); // hapus data employee dengan nik tersebut
         echo(1); // tandai proses berhasil atau gagal
+    }
+
+    function ajax_updatePositionData() {
+        $path        = $this->input->post('path');
+        $file_update = $this->input->post('file_update');
+        $tablename_posisi = 'master_position';
+        $tablename_table = 'setting_tablename';
+
+        try {
+            $data = array_map('str_getcsv', file($path . '/' . $file_update['file_name']));
+            // tarik row pertama, row pertama adalah header, jadiin buat bikin tabel dengan fields
+            $data_fields = $data[0];
+            array_splice($data, 0, 1);
+            // ubah data ke bentuk queriable
+            foreach($data as $k => $v) {
+                $prepareData = [];
+                foreach ($v as $key => $value){
+                    $prepareData[$data_fields[$key]] = $value;
+                }
+                $data[$k] = $prepareData;
+            }
+            // ambil data nama tabel di database
+            $tablename = $this->_general_m->getOnce('*', $tablename_table, ['tablename' => $tablename_posisi]);
+            // untuk id cek tahun, kalo tahunnya sama, tambah increment
+            $tablename_postfix = explode('_', $tablename['currentPostfix']);
+            if($tablename_postfix[0] == date('Y')){
+                $tablename_postfix[1] = str_pad(intval($tablename_postfix[1]) + 1, 2, '0', STR_PAD_LEFT);
+                $tablename_postfixNew = implode('_', $tablename_postfix);
+            }
+            // siapkan data history
+            $historyPostfix = json_decode($tablename['historyPostfix'], true);
+            $historyPostfix_new = [];
+            if($historyPostfix != []){
+                $historyPostfix_new = [
+                    ...$historyPostfix,
+                    [
+                        'postfix' => $tablename['currentPostfix'],
+                        'date_changed' => date('Ymd-His'),
+                    ],
+                ];
+            } else {
+                $historyPostfix_new = [
+                    [
+                        'postfix' => $tablename['currentPostfix'],
+                        'date_changed' => date('Ymd-His'),
+                    ],
+                ];
+            }
+            // ambil fields buat bikin table posisi
+            $this->load->library('tablefields');
+            $fields = $this->tablefields->get()[$tablename_posisi];
+            // buat tabel baru, dan masukkan data ke database
+            $this->load->dbforge();
+            $this->dbforge->add_field($fields);
+            $this->dbforge->add_key('id', TRUE); // primary key
+            $this->dbforge->create_table($tablename_posisi.'_'.$tablename_postfixNew);
+            // masukkan data ke dalam table baru
+            $this->_general_m->insertAll($tablename_posisi.'_'.$tablename_postfixNew, $data);
+            // foreach($data as $v) {
+            //     $this->_general_m->insert($tablename_posisi . '_' . $tablename_postfixNew, $v);
+            // }
+            // update tablename
+            $this->_general_m->update($tablename_table, 'tablename', $tablename_posisi, [
+                'currentPostfix' => $tablename_postfixNew,
+                'historyPostfix' => json_encode($historyPostfix_new),
+            ]);
+            // hapus session tablename
+            $this->session->unset_userdata('tablename');
+            // kirim pesan komplit
+            echo json_encode([
+                'code' => 200,
+                'message' => 'Position data was successfully updated.',
+            ]);
+        } catch(Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }
 

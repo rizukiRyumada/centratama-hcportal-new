@@ -1,0 +1,51 @@
+{
+  "master_position": {
+    "id": {
+      "type": "INT",
+      "auto_increment": true,
+      "unique": true
+    },
+    "position_name": {
+      "type": "VARCHAR",
+      "constraint": 200
+    },
+    "dept_id": {
+      "type": "INT"
+    },
+    "div_id": {
+      "type": "INT"
+    },
+    "id_atasan1": {
+      "type": "INT"
+    },
+    "id_atasan2": {
+      "type": "INT"
+    },
+    "assistant": {
+      "type": "INT"
+    },
+    "id_approver1": {
+      "type": "VARCHAR",
+      "constraint": 3
+    },
+    "id_approver2": {
+      "type": "VARCHAR",
+      "constraint": 3
+    },
+    "mpp": {
+      "type": "INT"
+    },
+    "hirarki_org": {
+      "type": "VARCHAR",
+      "constraint": 20
+    },
+    "job_grade": {
+      "type": "VARCHAR",
+      "constraint": 64
+    },
+    "is_head": {
+      "type": "INT",
+      "default": 0
+    }
+  }
+}

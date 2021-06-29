@@ -83,6 +83,16 @@ class Posisi_m extends CI_Model {
     public function getOnceWhere($where){
         return $this->db->get_where($this->table, $where)->row_array();
     }
+
+        
+    /**
+     * get the table name
+     *
+     * @return void
+     */
+    public function getTableName(){
+        return $this->table;
+    }
     
     /**
      * buat ngecek berapa banyak yang terdaftar dalam suatu posisi

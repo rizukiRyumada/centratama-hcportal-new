@@ -337,6 +337,39 @@ function getMenu(){
     return $data;
 }
 
+/**
+ * export array to csv file
+ *
+ * @param  mixed $array
+ * @param  mixed $filename
+ * @param  mixed $delimiter
+ * @return void
+ */
+function export2Csv($array, $filename = "export.csv", $delimiter = ",") {
+    // open raw memory as file so no temp files needed, you might run out of memory though
+    $f = fopen('php://memory', 'w');
+    // loop over the input array
+    foreach ($array as $line) {
+        // generate csv lines from the inner arrays
+        fputcsv($f, $line, $delimiter);
+    }
+    // reset the file pointer to the start of the file
+    fseek($f, 0);
+    // tell the browser it's going to be a csv file
+    header('Content-Type: application/csv');
+    // tell the browser we want to save it instead of displaying it
+    header('Content-Disposition: attachment; filename="' . $filename . '";');
+    // make php send the generated csv lines to the browser
+    fpassthru($f);
+}
+
+/**
+ * export array to excel file
+ *
+ * @param  mixed $data
+ * @param  mixed $file_name
+ * @return void
+ */
 function export2Excel($data, $file_name){
     // Original PHP code by Chirp Internet: www.chirp.com.au
     // Please acknowledge use of this code by including this header.
@@ -370,6 +403,7 @@ function export2Excel($data, $file_name){
 
     exit;
 }
+
 function cleanData(&$str) {
     $str = preg_replace("/\t/", "\\t", $str);
     $str = preg_replace("/\r?\n/", "\\n", $str);

@@ -1,11 +1,12 @@
 <script>
-    // NOW
-    // TODO kasih peringatan sebelum save perubahan, sama challenge
-    // TODO notifikasi di tiap action
-    // TODO tampilkan notifikasi
+    // PRODUCTION solve masalah path windows
     const path = 'assets/temp/files/masterData/<?= $this->session->userdata('nik'); ?>';
     const path_url = "<?= base_url('assets/temp/files/masterData/' . $this->session->userdata('nik') . '/'); ?>";
     const session_name = 'ptk_files';
+
+    const downloadCsvData = $('#downloadCsvData');
+    const updateToNewPosition = $('#updateToNewPosition');
+
     let files = "";
     let flag_upload_new = 1;
     var department = "";
@@ -100,6 +101,113 @@
         ]
     });
 
+    const uploaderPosition = $("#fileuploader").uploadFile({
+        url: "<?= base_url('upload/ajax_upload'); ?>",
+        allowedTypes: "csv",
+        autoSubmit: false,
+        dragDrop: false,
+        maxFileCount: 1,
+        // dragdropWidth: "100%",
+        statusBarWidth: "100%",
+        fileName: "myfile",
+        // formData: { 
+        //     path: path,
+        //     session_name: session_name,
+        //     files: files,
+        //     flag_upload_new: flag_upload_new
+        // },
+        dynamicFormData: function() {
+            var data = {
+                path: path,
+                session_name: session_name,
+                files: files,
+                flag_upload_new: flag_upload_new
+            }
+            return data;
+        },
+        multiple: false,
+        showStatusAfterSuccess: false,
+        sequentialCount: 1,
+        onLoad: function(obj) {
+            // console.log(files);
+        },
+        onSubmit: function(files_jqxhr) {
+            //files_jqxhr : List of files to be uploaded
+            //return flase;   to stop upload
+            Swal.fire({
+                icon: 'info',
+                title: 'Uploading Updated Data...',
+                html: '<p><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            });
+        },
+        onSuccess: function(files_jqxhr, data, xhr, pd) {
+            //files_jqxhr: list of files
+            //data: response from server
+            //xhr : jquer xhr object
+
+            Swal.fire({
+                icon: 'info',
+                title: 'Database Update',
+                html: '<p>Updating Position Data on database.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            });
+            toastr["success"]("Files was successfully uploaded.", "Upload Success");
+
+            // ambil data file yang diupload
+            response = JSON.parse(data);
+            filesUploaded = response.files_new[response.files_new.length - 1];
+
+            // update ke database
+            $.ajax({
+                url: '<?= base_url('settings/ajax_updatePositionData') ?>',
+                method: 'POST',
+                data: {
+                    path: path,
+                    file_update: filesUploaded,
+                },
+                complete: function() {
+                    uploaderPosition.reset();
+                },
+                success: function(data) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Successfully Updated',
+                        text: 'Position data was successfuly updated',
+                    });
+                },
+                error: function(jqXhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Server Error',
+                        html: `<p>${jqXhr}</p>` +
+                            `<p>${status}</p>` +
+                            `<p>${error}</p>`
+                    });
+                }
+            });
+        },
+        afterUploadAll: function(obj) {
+            //You can get data of the plugin using obj
+        },
+        onError: function(files_jqxhr, status, errMsg, pd) {
+            //files_jqxhr: list of files
+            //status: error status
+            //errMsg: error message
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops, Something went wrong!',
+                text: errMsg,
+            });
+        }
+    });
+
     // division filtering
     $('#divisi').change(function() {
         var dipilih = $(this).val(); //ambil value dari yang terpilih
@@ -134,70 +242,37 @@
         theme: 'bootstrap4',
     });
 
-    // fileuploader
-    $("#fileuploader").uploadFile({
-        url: "<?= base_url('upload/ajax_upload'); ?>",
-        allowedTypes: "csv",
-        autoSubmit: false,
-        dragDrop: false,
-        maxFileCount: 1,
-        // dragdropWidth: "100%",
-        statusBarWidth: "100%",
-        fileName: "myfile",
-        // formData: { 
-        //     path: path,
-        //     session_name: session_name,
-        //     files: files,
-        //     flag_upload_new: flag_upload_new
-        // },
-        dynamicFormData: function() {
-            var data = {
-                path: path,
-                session_name: session_name,
-                files: files,
-                flag_upload_new: flag_upload_new
-            }
-            return data;
-        },
-        multiple: false,
-        showStatusAfterSuccess: true,
-        showProgress: true,
-        sequentialCount: 1,
-        onLoad: function(obj) {
-            // console.log(files);
-        },
-        onSubmit: function(files_jqxhr) {
-            //files_jqxhr : List of files to be uploaded
-            //return flase;   to stop upload
+    downloadCsvData.on('click', function() {
+        Swal.fire({
+            icon: 'info',
+            title: 'Downloading file...',
+            html: '<p>Please wait the download dialog will popup in a few seconds.<br/><br/><i class="fa fa-spinner fa-spin fa-2x"></i></p>',
+            allowEscapeKey: false,
+            allowEnterKey: false
+        });
+    });
 
-        },
-        onSuccess: function(files_jqxhr, data, xhr, pd) {
-            //files_jqxhr: list of files
-            //data: response from server
-            //xhr : jquer xhr object
-            let vya = JSON.parse(data);
-            // ganti data di table dengan data dari variabel dan update ke database jika bukan dari session files
-            if (session_name == undefined || session_name == null || session_name == "") {
-                files = JSON.stringify(vya.files_new);
-                updateFilesToDatabase(files); // update ke database, fungsi ini ada di script_viewer_ptk
-            } else {
-                // nothing
+    updateToNewPosition.on('click', function() {
+        let text_confirm = 'update data posisi';
+        $('#modalUpdatePosition').modal('hide');
+        Swal.fire({
+            title: 'Update Position Data',
+            icon: 'warning',
+            html: '<p class="mb-0">Apa anda yakin untuk memperbarui data posisi?</p>' +
+                '<p class="text-danger">Update ini tidak dapat di-<em>undo</em></p>' +
+                '<p>Harap ketikkan teks dibawah ini untuk konfirmasi.</p>' +
+                `<p><b>${text_confirm}</b></p>`,
+            input: 'text',
+            inputLabel: '',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (value != text_confirm) {
+                    return 'Teks yang anda ketikkan salah, silakan coba lagi.'
+                } else {
+                    uploaderPosition.startUpload();
+                }
             }
-        },
-        afterUploadAll: function(obj) {
-            //You can get data of the plugin using obj
-            toastr["success"]("Files was successfully uploaded.", "Upload Success");
-        },
-        onError: function(files_jqxhr, status, errMsg, pd) {
-            //files_jqxhr: list of files
-            //status: error status
-            //errMsg: error message
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops, Something went wrong!',
-                text: errMsg,
-            });
-        }
+        });
     });
 
     // fungsi untuk menampilkan posisi
